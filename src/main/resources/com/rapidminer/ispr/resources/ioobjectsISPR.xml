@@ -1,0 +1,12 @@
+<ioobjects>
+    <!-- This file is used to define new IOObjects, how they are called, their implementation class and
+            with what renderer they are displayed in the Results perspective  -->
+	<!--
+	<ioobject
+		name="Example IOObject"
+		class="com.rapidminer.ispr.ioobjects.ExampleIOObject"
+		reportable="true">
+	  <renderer>com.rapidminer.ispr.ioobjects.renderer.ExampleIOObjectRenderer</renderer>
+	</ioobject>
+    -->
+</ioobjects>

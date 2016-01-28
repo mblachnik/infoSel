@@ -1,0 +1,60 @@
+buildscript {
+	repositories {
+	    jcenter()
+		maven { url 'https://maven.rapidminer.com/content/groups/public/' }
+	}
+}
+
+plugins { id 'com.rapidminer.extension' version '0.8.0' }
+
+// Define Maven artifact repositories
+repositories {
+    jcenter()
+	maven { url 'https://maven.rapidminer.com/content/groups/public/' }
+}
+
+extensionConfig {
+
+    // The extension name
+    name 'Information Selection'
+
+    /*
+     * The artifact group which will be used when publishing the extensions Jar
+     * and for package customization when initializing the project repository.
+     *
+     * It is 'com.rapidminer.extension' by default.
+     */
+    groupId = 'com.rapidminer.ispr'
+
+    /*
+     * The extension vendor which will be displayed in the extensions about box
+     * and for customizing the license headers when initializing the project repository.
+     *
+     * It is 'RapidMiner GmbH' by default.
+     */
+    vendor = "Silesian University of Technology, Marcin Blachnik"
+
+    /*
+     * The vendor homepage which will be displayed in the extensions about box
+     * and for customizing the license headers when initializing the project repository.
+     *
+     * It is 'www.rapidminer.com' by default.
+     */
+    homepage = "www.prules.org"
+
+	// define RapidMiner version and extension dependencies
+	dependencies {
+       rapidminer '6.5.0'
+		//extension namespace: 'text', version: '6.1.0'
+	}
+}
+
+// Define third party library dependencies
+dependencies {
+	//compile 'com.google.guava:guava:18.0'
+        compile files('lib/mdsj.jar')
+        compile files('lib/rapidminer-Weka-5.3.002.jar')
+        compile files('lib/weka.jar')
+        compile files('lib/instanceselection.jar')
+        compile files('lib/Infosel.jar')
+}

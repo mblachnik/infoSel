@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../rapidminerreferencemanual/documentation2html.xsl"?>
+<p1:documents xmlns:p1="http://rapid-i.com/schemas/documentation/reference/1.0"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://rapid-i.com/schemas/documentation/reference/1.0 ">
+
+    <operator key="operator.ispr:example_operator_key" locale="en"
+              version="6.0.000">
+        <title>Example Operator</title>
+        <synopsis>This is an example Operator. It does nothing when being executed.
+        </synopsis>
+        <text>
+            <paragraph>First paragraph.</paragraph>
+            <paragraph>Second paragraph.</paragraph>
+        </text>
+        <inputPorts>
+            <port name="input" type="com.rapidminer.example.ExampleSet">
+                Input port description.
+            </port>
+        </inputPorts>
+        <outputPorts>
+            <port name="output" type="com.rapidminer.example.ExampleSet">
+                Output port description.
+            </port>
+        </outputPorts>
+
+        <!-- description of the parameters and the corresponding values -->
+        <parameters>
+            <parameter key="first_parameter" type="configurable">
+                Description here
+            </parameter>
+            <parameter key="second_parameter" type="selection">
+                Description here
+            </parameter>
+            <parameter key="third_parameter" type="">
+                Description here
+            </parameter>
+        </parameters>
+
+        <tutorialProcesses>
+            <tutorialProcess key="process.python.clustering" title="Clustering using Python">
+                <description>
+                    <paragraph>
+                        Tutorial description here.
+                    </paragraph>
+                </description>
+                <process version="6.4.000">
+                    <context>
+                        <input/>
+                        <output/>
+                        <macros/>
+                    </context>
+                    <operator activated="true" class="process" compatibility="6.4.000" expanded="true" name="Process">
+                        <process expanded="true">
+                            <operator activated="true" class="retrieve" compatibility="6.4.000" expanded="true" height="60" name="Retrieve Iris" width="90" x="380" y="210">
+                                <parameter key="repository_entry" value="//Samples/data/Iris"/>
+                            </operator>
+                            <connect from_op="Retrieve Iris" from_port="output" to_port="result 1"/>
+                            <portSpacing port="source_input 1" spacing="0"/>
+                            <portSpacing port="sink_result 1" spacing="0"/>
+                            <portSpacing port="sink_result 2" spacing="0"/>
+                        </process>
+                    </operator>
+                </process>
+            </tutorialProcess>
+        </tutorialProcesses>
+
+        <relatedDocuments>
+            <!-- ... -->
+        </relatedDocuments>
+    </operator>
+</p1:documents>
