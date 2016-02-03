@@ -55,7 +55,7 @@ public abstract class AbstractISMetaOperator extends AbstractPRulesOperatorChain
 
     public static final String PARAMETER_ITERATIOINS = "Number of iterations";
     public static final String PARAMETER_THRESHOLD = "Acceptance threshold";
-    public static final String PARAMETER_ADD_WEIGHTS = "Add weight attribute";    
+    public static final String PARAMETER_ADD_WEIGHTS = "Add weight attribute";
 
     /**
      *
@@ -73,6 +73,7 @@ public abstract class AbstractISMetaOperator extends AbstractPRulesOperatorChain
     private int numberOfInstancesBeaforeSelection;
     private int numberOfInstancesAfterSelection;
     private int compression;
+    private int currentIteration;
     protected DistanceMeasureHelper measureHelper;
 
     public AbstractISMetaOperator(OperatorDescription description) {
@@ -116,6 +117,16 @@ public abstract class AbstractISMetaOperator extends AbstractPRulesOperatorChain
         //modelInnerSourcePort.addPrecondition(new LearnerPrecondition(this, exampleSetInnerSourcePort));
     }
 
+    /**
+     * This si main method responsible for meta instance selection. It iterates over single
+     * subprocess and counts how many times given example was selected within subprocess.
+     * Each time it is executed prepareExampleSet method is called to adjust specific properties 
+     * of dataset used in single iteration of instance selection. The prepareExampleSet may implement
+     * bagging then subset of examples is returned, randum feature subset or noise addition
+     * @param trainingSet
+     * @return
+     * @throws OperatorException 
+     */
     @Override
     public ExampleSet processExamples(ExampleSet trainingSet) throws OperatorException {
         Attribute idAttribute = trainingSet.getAttributes().getId();
@@ -127,24 +138,30 @@ public abstract class AbstractISMetaOperator extends AbstractPRulesOperatorChain
         int iterations = getParameterAsInt(PARAMETER_ITERATIOINS);
         HashMap<Double, Double> idCounter = new HashMap<Double, Double>(trainingSet.size());
         double step = 1.0 / iterations;
-        int[] mapping;
+        //int[] mapping;
+
+        initializeProcessExamples(trainingSet);
         //Performing bootstrap validation
-        for (int i = 0; i < iterations; i++) {
-            ExampleSet trainingSubSet = prepareExampleSet(trainingSet);
-            exampleInnerSourcePort.deliver(trainingSubSet);
-            getSubprocess(0).execute();
-            ExampleSet resultSet = prototypeExampleSetOutput.getDataOrNull(ExampleSet.class);
-            if (resultSet != null) {
-                for (Example e : resultSet) {
-                    double id = e.getId();
-                    Double value = idCounter.get(id);
-                    if (value == null) {
-                        value = 0.0;
+        try {
+            for (currentIteration = 0; currentIteration < iterations; currentIteration++) {
+                ExampleSet trainingSubSet = prepareExampleSet(trainingSet);
+                exampleInnerSourcePort.deliver(trainingSubSet);
+                getSubprocess(0).execute();
+                ExampleSet resultSet = prototypeExampleSetOutput.getDataOrNull(ExampleSet.class);
+                if (resultSet != null) {
+                    for (Example e : resultSet) {
+                        double id = e.getId();
+                        Double value = idCounter.get(id);
+                        if (value == null) {
+                            value = 0.0;
+                        }
+                        value += step;
+                        idCounter.put(id, value);
                     }
-                    value += step;
-                    idCounter.put(id, value);
                 }
             }
+        } finally {
+            finalizeProcessExamples();            
         }
 
         boolean addWeights = getParameterAsBoolean(PARAMETER_ADD_WEIGHTS);
@@ -166,7 +183,6 @@ public abstract class AbstractISMetaOperator extends AbstractPRulesOperatorChain
                 Double valueO = idCounter.get(id);
                 double value = valueO == null ? 0 : valueO.doubleValue();
                 example.setWeight(value);
-
             }
         } else {
             DataIndex index = new DataIndex(trainingSet.size());
@@ -187,7 +203,7 @@ public abstract class AbstractISMetaOperator extends AbstractPRulesOperatorChain
             DistanceMeasure distance = new MixedEuclideanDistance();
             distance.init(output);
             if (output.getAttributes().getLabel().isNominal()) {
-                ISPRGeometricDataCollection<Number> samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, output, distance);                
+                ISPRGeometricDataCollection<Number> samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, output, distance);
                 MyKNNClassificationModel<Number> model = new MyKNNClassificationModel<Number>(output, samples, 1, VotingType.MAJORITY, PredictionType.Classification);
                 modelOutputPort.deliver(model);
             } else if (output.getAttributes().getLabel().isNumerical()) {
@@ -205,8 +221,43 @@ public abstract class AbstractISMetaOperator extends AbstractPRulesOperatorChain
         return output;
     }
 
+    /**
+     *Method responsible for preparing dataset used by processExample method. This 
+     * method is called in each iteration of the processExample method and is responsible
+     * for diversity of the datasets used in the subprocess
+     * 
+     */
     abstract ExampleSet prepareExampleSet(ExampleSet trainingSet) throws OperatorException;
 
+    /**
+     * This method is used to initialize method called processExamples. It is
+     * called before the main loop of iterations starts. It is used for example
+     * to initialize SplittedExampleSet etc.
+     *
+     * @param examploeSet
+     * @throws com.rapidminer.operator.OperatorException
+     */
+    public void initializeProcessExamples(ExampleSet examploeSet) throws OperatorException {
+    }
+
+    /**
+     * This method is used to finalize method called processExamples. It is
+     * called after the main loop of iterations of meta instance selection. It
+     * is used for example to clean all references to SplittedExampleSet which are stored as
+     * parameters of sub class etc.
+     */
+    public void finalizeProcessExamples() {
+    }
+    
+    /**
+     * Returns number of current iteration of subprocess execution. It starts 
+     * from 0 upto getParameterAsInt(PARAMETER_ITERATIOINS)
+     * @return 
+     */
+    public int getIteration(){
+        return currentIteration;
+    }
+    
     @Override
     protected MDInteger getSampledSize(ExampleSetMetaData emd) throws UndefinedParameterError {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
