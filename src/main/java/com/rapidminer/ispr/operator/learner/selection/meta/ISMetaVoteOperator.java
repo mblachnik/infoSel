@@ -62,7 +62,7 @@ public class ISMetaVoteOperator extends AbstractPRulesOperatorChain {
     /**
      *
      */
-    protected final OutputPort modelOutputPort = getOutputPorts().createPort("Model");
+    protected final OutputPort modelOutputPort = getOutputPorts().createPort("model");
 
     private int numberOfInstancesBeaforeSelection;
     private int numberOfInstancesAfterSelection;

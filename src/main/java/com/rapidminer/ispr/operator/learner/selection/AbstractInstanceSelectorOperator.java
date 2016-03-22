@@ -67,7 +67,7 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPRulesOpe
     private double numberOfInstancesAfterSelection = -1;
     private double compression = -1;
     protected DistanceMeasureHelper measureHelper;
-    protected final OutputPort modelOutputPort = getOutputPorts().createPort("Model");    
+    protected final OutputPort modelOutputPort = getOutputPorts().createPort("model");    
     // private boolean isDistanceBasedMethod;
 
     /**

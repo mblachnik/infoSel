@@ -26,7 +26,7 @@
     </operator>
 
     <operator>
-        <name>LVQ Family</name>
+        <name>NeuralNet LVQ</name>
         <synopsis>LVQ neural network</synopsis>
         <help>
             LVQ is a neural network which is based on local and competitive learning. 
@@ -47,7 +47,7 @@
         <icon>ispr.png</icon>
     </operator>
     <operator>
-        <name>VQ</name>
+        <name>Clustering (VQ)</name>
         <synopsis>Vector Quantization clustering algorithm</synopsis>
         <help>
             This operator implements Vector Quantization (VQ) clustering algorithm. &lt;br/&gt;
@@ -61,14 +61,14 @@
                 &lt;br/&gt;
             Kohonen T., Self-Organizing Maps, Springer Verlag, 2001                                 
         </help>                
-        <key>vq</key>
+        <key>VQ</key>
         <icon>ispr.png</icon>
     </operator>
     
     <operator>
+        <name>Flatten Clustering (Distance)</name>
         <key>FlattenClustersByDistance</key>
         <class>com.rapidminer.ispr.operator.clustering.FlattenByDistanceClusterModel</class>        
-        <name>Flatten Clusters By Distance</name>
         <synopsis>Flatten Clusters by Distance value</synopsis>
         <help>This algorithm can be used as an alternative for default Flatten Clustering algorithm provided by RapidMiner.
             It is used to split data clustered with Agglomerative Clustering into clusters. &lt;br/&gt;
@@ -88,7 +88,7 @@
     </operator>
     -->
     <operator>
-        <name>Random selection</name>
+        <name>Select Examples (Random)</name>
         <synopsis>Random instances selection</synopsis>
         <help>
             This operator performs naive example set filtering. It simple randomly selects examples.
@@ -99,7 +99,7 @@
     </operator>
 
     <operator>
-        <name>CNN selection</name>
+        <name>Select Examples (CNN)</name>
         <synopsis>Condensed Neares Neighbor instance selection</synopsis>
         <help>
             This operator performs instance selection which is a process of selecting a subset of examples
@@ -118,7 +118,7 @@
     </operator>
 
     <operator>
-        <name>IB2 selection</name>
+        <name>Select Examples (IB2)</name>
         <synopsis>IB2 instance selection</synopsis>
         <help>            This operator performs instance selection which is a process of selecting a subset of examples
             from the full training set of any classification or regression task. &lt;br/&gt;
@@ -136,7 +136,7 @@
     </operator>
     
     <operator>
-        <name>IB3 selection</name>
+        <name>Select Examples (IB3)</name>
         <synopsis>IB3 instance selection</synopsis>
         <help>            This operator performs instance selection which is a process of selecting a subset of examples
             from the full training set of any classification or regression task. &lt;br/&gt;
@@ -154,7 +154,7 @@
     </operator>
         
     <operator>
-        <name>ENN selection</name>
+        <name>Select Examples (ENN)</name>
         <synopsis>Edited Neares Neighbor instance selection</synopsis>
         <help>            This operator performs instance selection which is a process of selecting a subset of examples
             from the full training set of any classification or regression task. &lt;br/&gt;
@@ -172,7 +172,7 @@
     </operator>
 
     <operator>
-        <name>RENN selection</name>
+        <name>Select Examples (RENN)</name>
         <synopsis>Repeated Edited Neares Neighbor instances selection</synopsis>
         <help>            This operator performs instance selection which is a process of selecting a subset of examples
             from the full training set of any classification or regression task. &lt;br/&gt;
@@ -190,7 +190,7 @@
     </operator>
   
     <operator>
-        <name>All-kNN selection</name>
+        <name>Select Examples (All-kNN)</name>
         <synopsis>All kNN instances selection</synopsis>
         <help>            This operator performs instance selection which is a process of selecting a subset of examples
             from the full training set of any classification or regression task. &lt;br/&gt;
@@ -208,7 +208,7 @@
     </operator>
 	
     <operator>
-        <name>GE selection</name>
+        <name>Select Examples (GE)</name>
         <synopsis>Instance selection based on Gabriel Graph Editing. This algorithm keeps instances which are on the border between different classes according to Gabriel Graph </synopsis>
         <help>            This operator performs instance selection which is a process of selecting a subset of examples
             from the full training set of any classification or regression task. &lt;br/&gt;
@@ -227,7 +227,7 @@
     </operator>
     
     <operator>
-        <name>RNG selection</name>
+        <name>Select Examples (RNG)</name>
         <synopsis>Instance selection based on Relative Neighbor Graph Editing This algorithm keeps instances which are on the border between different classes</synopsis>
         <help>            This operator performs instance selection which is a process of selecting a subset of examples
             from the full training set of any classification or regression task. &lt;br/&gt;
@@ -246,7 +246,7 @@
     </operator>
 
     <operator>
-        <name>RMHC selection</name>
+        <name>Select Examples (RMHC)</name>
         <synopsis>Instance selection based on Random Mutation Hill Climbing </synopsis>
         <help>            This operator performs instance selection which is a process of selecting a subset of examples
             from the full training set of any classification or regression task. &lt;br/&gt;
@@ -265,7 +265,7 @@
     </operator>
 
     <operator>
-        <name>MC selection</name>
+        <name>Select Examples (MC)</name>
         <synopsis>Instance selection based on Monte Carlo sampling </synopsis>
         <help>            This operator performs instance selection which is a process of selecting a subset of examples
             from the full training set of any classification or regression task. &lt;br/&gt;
@@ -287,7 +287,7 @@
 </operator>  
     -->
     <operator>
-        <name>ELH selection</name>
+        <name>Select Examples (ELH)</name>
         <synopsis>ELH instances selection</synopsis>
         <help>            This operator performs instance selection which is a process of selecting a subset of examples
             from the full training set of any classification or regression task. &lt;br/&gt;
@@ -305,7 +305,7 @@
     </operator>
     
     <operator>
-        <name>Weka IS selection</name>
+        <name>Select Examples (Weka IS)</name>
         <key>weka_sel</key>
         <synopsis>Weka instances selection</synopsis>
         <help>             This operator performs instance selection which is a process of selecting a subset of examples
@@ -321,7 +321,7 @@
     </operator>
     
     <operator>
-        <name>Generalized ENN</name>
+        <name>Select Examples (G-ENN)</name>
         <synopsis>GENN instances selection</synopsis>
         <help>It is an implementation of Generalized ENN algorithm. It allows for replacing default kNN classifier by
             any other classification algorithm. By doing this user can tune training set for given particular classifier.
@@ -332,7 +332,7 @@
     </operator>
     
     <operator>
-        <name>Generalized CNN</name>
+        <name>Select Examples (G-CNN)</name>
         <synopsis>Generalized Condensed Neares Neighbor instance selection</synopsis>
         <help>It is an implementation of Generalized CNN algorithm. It allows for replacing default kNN classifier by
             any other classification algorithm. By doing this user can tune training set for given particular classifier.
@@ -343,16 +343,16 @@
     </operator>
   
     <operator>
-        <name>Infosel feature ranker</name>
+        <name>Ranker Attributes (Infosel)</name>
         <synopsis>Infosel feature ranker</synopsis>
         <help>Feature selection based on Infosel++ library, for detaitls see: www.prules.org. This library was written in C++, and this operator is 
             a wrapper for that library. It requires to define name of the feature selection algorithm and its parameters. 
-            For estimation of probability dystribution it requires discrete values so the input set discretised by this library with one
+            For estimation of probability dystribution it library performs internal discretization with one
             of build in methods. All the parameters are given as strings because this allows to keep this library open for new algorithms 
-            implemented init. &lt;/br&gt;
+            implemented in it. &lt;/br&gt;
             Remember that this RapidMiner plugin requires to have infosel++.exe. It is not included in this extension. You have to ask for it Jacek Biesiada who recently works at  Cincinnati Children's Hospital Medical Center.
             &lt;/br&gt;
-            Then you have configure this operator by pointing the folder which include infosel++.exe library.
+            When you have Infosel++.exe you have to configure this operator by pointing the folder which includes infosel++.exe library.
         </help>
         <key>infosel_featsel</key>
         <icon>ispr.png</icon>
@@ -382,7 +382,7 @@
     </operator>
     -->
     <operator>
-        <name>FCM</name>
+        <name>Clustering (FCM)</name>
         <synopsis>Fuzzy c-Means </synopsis>
         <help>
             Fuzzy c-means clustering algorithm. As a result it aslo returns cluster centers on Proto output port. &lt;br/&gt;
@@ -396,7 +396,7 @@
     </operator>
     
     <operator>
-        <name>CFCM</name>
+        <name>Clustering (CFCM)</name>
         <synopsis>Conditional Fuzzy c-Means </synopsis>
         <help>Conditional Fuzzy c-means clustering algorithm. This algorithm requires weight attribute which is used as a clustering condition.
             As a result it aslo returns cluster centers on Proto output port. &lt;br/&gt;
@@ -410,10 +410,15 @@
     </operator>
 
     <operator>
-        <name>Class assigner</name>
+        <name>Assign Labels</name>
         <synopsis>Assigns appropriate class label for a set of prototype instances.</synopsis>
         <help>This operator determine class label for each instance delivered to the Prototypes input based 
-            on the frequency of labels of the nearest instances from the ExampleSet input. 
+            on the frequency of class labels of the nearest instances from the ExampleSet input. 
+            &lt;br/&gt;
+            It creates a Voronoi diagram for the dataset delivered to the prototype input, 
+            then calculates some statistics for each cell based on data delivered 
+            to the exampleSet input (examples of both prototapes and exampleSet must have common attribute space)
+            From this statisitcs it takes the most frequent class label in each cell and set it to the prototype representing given cell.
         &lt;br/&gt;
             Usually it is used for assigning label to the prototypes (cluster centers) obtained after clustering some labeled exampleset.            
         </help>
@@ -423,7 +428,7 @@
     </operator>
     
     <operator>
-        <name>Class iterator</name>
+        <name>Loop Label Values</name>
         <synopsis>Iterates over each class label of an example set </synopsis>
         <help> This operator iterates over each value of class label of input example set, allowing to applay 
             instance processing method (ex. clastering) to each class independent. Finally all example sets delivered 
@@ -440,7 +445,7 @@
     </operator>  
     
     <operator>
-        <name>ENN Weighting</name>
+        <name>Weight Examples (ENN)</name>
         <synopsis>Instance Weighting</synopsis>
         <help>    
             This algorithm performs ENN algorithm but instead of selecting instances it assignes weight to each instance. 
@@ -510,7 +515,7 @@
             
             In can be used to identify the model, which returned certain results. For example when using X-Validation (parallel )  it is impossible to combine results logged on the training and test side. By using prediction model ID you can collect logs independently on the training side and testing side and then join them together.
         </help>
-        <name>Get ID</name>
+        <name>Get IOObject ID</name>
         <key>InputID</key>
         <icon>ispr.png</icon>
         <class>com.rapidminer.ispr.operator.learner.misc.GetIOModelID</class>                
@@ -518,7 +523,7 @@
     <operator>
         <key>is_performance</key>
         <class>com.rapidminer.ispr.operator.performance.InstanceSSelectionPerformance</class>
-        <name>IS Performance</name>
+        <name>Performance (IS)</name>
         <synopsis>Calculate various IS performances</synopsis>
         <help> 
             This operator gets two ExampleSet's as input and calculates various statistics related to the instance selection problems. These are size_difference - a difference between sizes of both example sets (the value is abs), relative_size_difference - size_difference divided by the size of the first example set, compression - calculated as the ration of example set sizes
@@ -528,7 +533,7 @@
     <operator>
         <key>cluster_performance</key>
         <class>com.rapidminer.ispr.operator.performance.ClusteringMinimumVarianceCriterion</class>
-        <name>Cluster Performance</name>
+        <name>Performance (IS Clustering)</name>
         <synopsis>Calculate within cluster variance and returns it as performance</synopsis>
         <help> 
             This operator is used to analyze the performance of the clustering methods. It gets a set of cluster prototypes and  ExampleSet's as input, and calculates the variance within clusters - the same as is used in k-means clustering
@@ -537,7 +542,7 @@
     </operator>  
     <operator>
         <key>bagging_sel</key>
-        <name>Bagging IS</name>
+        <name>Select Examples (Bagging)</name>
         <class>com.rapidminer.ispr.operator.learner.selection.meta.ISMetaBaggingOperator</class>
         <synopsis>Meta Instance Selection based on Bagging</synopsis>
         <help>This operator implements bagging instance selection. It repeates instance selectin process given number of times and for each example calculates average number of times example was selected. This average may be grater then 1 because it uses sampling with replacement so it is possible that single vector may be selected more often then the number of iterations. The number of times given vector was selected depends on the ID in the output set of the subprocess. So if all vectors will be delivered to the output all vectors will be selected (according to the bootstrap distribution)</help>
@@ -546,7 +551,7 @@
     
     <operator>
         <key>vote_sel</key>
-        <name>Voted IS</name>
+        <name>Select Examples (Vote)</name>
         <class>com.rapidminer.ispr.operator.learner.selection.meta.ISMetaVoteOperator</class>
         <synopsis>Meta Instance Selection based on Voting</synopsis>
         <help>It allows to combine results of many independent instance selection algorithms. It combines selected instances and calculate votes, how often given example was selected by all of the instance selection methods. Finally instances selected more often then the threshold will appear in the final selected example set.</help>
@@ -555,7 +560,7 @@
     
     <operator>
         <key>RndFeature_sel</key>
-        <name>Meta - Random Features IS</name>
+        <name>Select Examples (Rand.Attributes)</name>
         <class>com.rapidminer.ispr.operator.learner.selection.meta.ISMetaRndFeatureOperator</class>
         <synopsis>Meta Instance Selection based on Random Features</synopsis>
         <help>
@@ -567,7 +572,7 @@
         
     <operator>
         <key>meta_noise_sel</key>
-        <name>Meta - Nois IS</name>
+        <name>Select Examples (Noise)</name>
         <class>com.rapidminer.ispr.operator.learner.selection.meta.ISMetaNoisOperator</class>
         <synopsis>Meta Instance Selection based on additive Gaussian Noise</synopsis>
         <help>      
@@ -582,7 +587,7 @@
 				
     <operator>
         <key>mds_scaling</key>
-        <name>MDS Operator</name>
+        <name>MDS</name>
         <synopsis>This operator uses special MDS algorithm from MDSJ library to provide a visual
             representation of the pattern of proximities (i.e., similarities or
             distances) among a set of objects.

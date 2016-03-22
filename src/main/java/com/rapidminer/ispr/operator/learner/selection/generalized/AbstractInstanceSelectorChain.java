@@ -51,27 +51,27 @@ public abstract class AbstractInstanceSelectorChain extends AbstractPRulesOperat
     /**
      *
      */
-    protected final OutputPort exampleInnerSourcePort = getSubprocess(0).getInnerSources().createPort("ExampleSet");
+    protected final OutputPort exampleInnerSourcePort = getSubprocess(0).getInnerSources().createPort("exampleSet");
     /**
      *
      */
-    protected final InputPort predictionModelInputInnerSourcePort = getSubprocess(0).getInnerSinks().createPort("Model");
+    protected final InputPort predictionModelInputInnerSourcePort = getSubprocess(0).getInnerSinks().createPort("model");
     /**
      *
      */
-    protected final OutputPort predictionModelOutputInnerSourcePort = getSubprocess(1).getInnerSources().createPort("Model");
+    protected final OutputPort predictionModelOutputInnerSourcePort = getSubprocess(1).getInnerSources().createPort("model");
     /**
      *
      */
-    protected final OutputPort testExampleInnerSourcePort = getSubprocess(1).getInnerSources().createPort("TestSet");
+    protected final OutputPort testExampleInnerSourcePort = getSubprocess(1).getInnerSources().createPort("testSet");
     /**
      *
      */
-    protected final InputPort predictedExampleSetInnerSourcePort = getSubprocess(1).getInnerSinks().createPort("Labeled Example Set");
+    protected final InputPort predictedExampleSetInnerSourcePort = getSubprocess(1).getInnerSinks().createPort("labeled example set");
     /**
      *
      */
-    protected final OutputPort modelOutputPort = getOutputPorts().createPort("Model");
+    protected final OutputPort modelOutputPort = getOutputPorts().createPort("model");
     //protected final InputPort PerformanceInnerSourcePort = getSubprocess(1).getInnerSinks().createPort("Performance");
     int sampleSize = -1;
     private double numberOfInstancesBeaforeSelection = -1;

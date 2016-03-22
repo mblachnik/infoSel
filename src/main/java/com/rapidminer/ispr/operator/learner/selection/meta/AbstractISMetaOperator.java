@@ -60,16 +60,16 @@ public abstract class AbstractISMetaOperator extends AbstractPRulesOperatorChain
     /**
      *
      */
-    protected final OutputPort exampleInnerSourcePort = getSubprocess(0).getInnerSources().createPort("ExampleSet");
+    protected final OutputPort exampleInnerSourcePort = getSubprocess(0).getInnerSources().createPort("exampleSet");
     /**
      *
      */
     //protected final InputPort prototypeExampleSetOutput = getSubprocess(0).getInnerSinks().createPort("Output Example Set");
-    protected final InputPort prototypeExampleSetOutput = getSubprocess(0).getInnerSinks().createPort("Output Example Set");
+    protected final InputPort prototypeExampleSetOutput = getSubprocess(0).getInnerSinks().createPort("output example set");
     /**
      *
      */
-    protected final OutputPort modelOutputPort = getOutputPorts().createPort("Model");
+    protected final OutputPort modelOutputPort = getOutputPorts().createPort("model");
     private int numberOfInstancesBeaforeSelection;
     private int numberOfInstancesAfterSelection;
     private int compression;

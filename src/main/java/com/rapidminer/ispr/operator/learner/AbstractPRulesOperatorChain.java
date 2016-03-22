@@ -28,15 +28,15 @@ public abstract class AbstractPRulesOperatorChain extends OperatorChain implemen
     /**
      * Input port which delivers training ExampleSet
      */
-    protected final InputPort exampleSetInputPort = getInputPorts().createPort("ExampleSet");
+    protected final InputPort exampleSetInputPort = getInputPorts().createPort("exampleSet");
     /**
      * Output port which delivers ExampleSet with constructed prototypes
      */
-    protected final OutputPort prototypesOutputPort = getOutputPorts().createPort("Prototypes");
+    protected final OutputPort prototypesOutputPort = getOutputPorts().createPort("prototypes");
     /**
      * Output port which delivers the training ExampleSet
      */
-    protected final OutputPort exampleSetOutputPort = getOutputPorts().createPassThroughPort("ExampleSet");
+    protected final OutputPort exampleSetOutputPort = getOutputPorts().createPassThroughPort("exampleSet");
     //getOutputPorts().createPort("labelled ExampleSet");		
 
     /**

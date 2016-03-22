@@ -21,7 +21,7 @@ public abstract class AbstractPRulesOperator extends AbstractPRulesBasicOperator
     /**
      * Output port which is used to return selected prototypes
      */
-    protected final OutputPort prototypesOutputPort = getOutputPorts().createPort("Prototypes");
+    protected final OutputPort prototypesOutputPort = getOutputPorts().createPort("prototypes");
 
     /**
      * Constructor of the AbstractPRulesOperator class.

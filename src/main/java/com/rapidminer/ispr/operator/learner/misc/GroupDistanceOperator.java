@@ -44,11 +44,11 @@ public class GroupDistanceOperator extends Operator implements CapabilityProvide
     /**
      * Input port which delivers training ExampleSet
      */
-    protected final InputPort exampleSetInputPort = getInputPorts().createPort("ExampleSet");
+    protected final InputPort exampleSetInputPort = getInputPorts().createPort("exampleSet");
     /**
      * Output port which returns an initial ExampleSet
      */
-    protected final OutputPort exampleSetOutputPort = getOutputPorts().createPassThroughPort("ExampleSet");
+    protected final OutputPort exampleSetOutputPort = getOutputPorts().createPassThroughPort("exampleSet");
     DistanceMeasureHelper measureHelper = new DistanceMeasureHelper(this);
 
     public GroupDistanceOperator(OperatorDescription description) {

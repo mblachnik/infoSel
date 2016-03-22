@@ -25,7 +25,7 @@ public class GetIOModelID extends Operator {
     /**
      * Output port which returns what it got as input
      */
-    protected final OutputPort outputPort = getOutputPorts().createPassThroughPort("Out");
+    protected final OutputPort outputPort = getOutputPorts().createPassThroughPort("out");
     private long id = -1;
     
     public GetIOModelID(OperatorDescription description) {

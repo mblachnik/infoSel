@@ -35,11 +35,11 @@ import java.util.List;
  */
 public class ClassIteratorOperator extends OperatorChain {
 
-    private final InputPort exampleSetInputPort = getInputPorts().createPort("Example Set");
-    private final OutputPort exampleInnerSourcePort = getSubprocess(0).getInnerSources().createPort("Example Set");
-    private final InputPort prototypesInnerSourcePort = getSubprocess(0).getInnerSinks().createPort("Prototypes");
-    private final OutputPort prototypesOutputPort = getOutputPorts().createPort("Prototypes");
-    private final OutputPort exampleSetOutputPort = getOutputPorts().createPort("Example Set");
+    private final InputPort exampleSetInputPort = getInputPorts().createPort("exampleSet");
+    private final OutputPort exampleInnerSourcePort = getSubprocess(0).getInnerSources().createPort("example Set");
+    private final InputPort prototypesInnerSourcePort = getSubprocess(0).getInnerSinks().createPort("prototypes");
+    private final OutputPort prototypesOutputPort = getOutputPorts().createPort("prototypes");
+    private final OutputPort exampleSetOutputPort = getOutputPorts().createPort("example Set");
     //CollectingPortPairExtender outExtender = new CollectingPortPairExtender("out", getSubprocess(0).getInnerSinks(), getOutputPorts());
 
     /**

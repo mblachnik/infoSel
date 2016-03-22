@@ -3,6 +3,7 @@ package com.rapidminer.ispr.operator.learner.optimization;
 import com.rapidminer.example.Attribute;
 import java.util.List;
 import com.rapidminer.example.ExampleSet;
+import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
@@ -113,7 +114,9 @@ public class FCMOperator extends AbstractPrototypeOptimizationOperator {
         prepareTrainingExampleSet(trainingSet, batchModel);
         List<Attribute> attributes = new ArrayList<>(trainingSet.getAttributes().size());
         for (Attribute a : trainingSet.getAttributes()) {
-            attributes.add(a);
+            Attribute newAttribute = AttributeFactory.createAttribute(a);
+            newAttribute.clearTransformations();
+            attributes.add(newAttribute);
         }
         ExampleSet codebooksSet = prepareCodebooksExampleSet(codebooks, attributes);
 

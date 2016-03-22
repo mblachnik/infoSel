@@ -41,7 +41,7 @@ public abstract class AbstractPrototypeOptimizationOperator extends AbstractPRul
     private double numberOfInstancesAfterSelection = -1;
     private double compression = -1;
     protected final PredictionType predictionType;
-    protected final OutputPort modelOutputPort = getOutputPorts().createPort("Model");
+    protected final OutputPort modelOutputPort = getOutputPorts().createPort("model");
     protected HashMap<Integer, String> clusterNamesMap;
 
     /**

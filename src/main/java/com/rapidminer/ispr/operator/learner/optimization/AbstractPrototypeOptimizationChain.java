@@ -50,17 +50,17 @@ public abstract class AbstractPrototypeOptimizationChain extends AbstractPRulesO
     /**
      *
      */
-    protected final OutputPort exampleInnerSourcePort = getSubprocess(0).getInnerSources().createPort("Example Set");
+    protected final OutputPort exampleInnerSourcePort = getSubprocess(0).getInnerSources().createPort("example Set");
     /**
      *
      */
-    protected final InputPort initialPrototypesInnerSourcePort = getSubprocess(0).getInnerSinks().createPort("Codebooks");
+    protected final InputPort initialPrototypesInnerSourcePort = getSubprocess(0).getInnerSinks().createPort("codebooks");
     /**
      *
      */
     //protected final OutputPort initialPrototyoesOutputPort = getOutputPorts().createPassThroughPort("Initial Prototpes");    
 
-    protected final OutputPort modelOutputPort = getOutputPorts().createPort("Model");
+    protected final OutputPort modelOutputPort = getOutputPorts().createPort("model");
 
     private double numberOfInstancesBeaforeSelection = -1;
     private double numberOfInstancesAfterSelection = -1;

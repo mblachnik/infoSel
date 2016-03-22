@@ -18,11 +18,11 @@ public abstract class AbstractPRulesBasicOperator extends Operator implements Ca
     /**
      * Input port which delivers training ExampleSet
      */
-    protected final InputPort exampleSetInputPort = getInputPorts().createPort("ExampleSet");    
+    protected final InputPort exampleSetInputPort = getInputPorts().createPort("exampleSet");    
     /**
      * Output port which returns an initial ExampleSet
      */
-    protected final OutputPort exampleSetOutputPort = getOutputPorts().createPassThroughPort("ExampleSet");    
+    protected final OutputPort exampleSetOutputPort = getOutputPorts().createPassThroughPort("exampleSet");    
 
     /**
      * Creates AbstractPRulesBasicOperator class

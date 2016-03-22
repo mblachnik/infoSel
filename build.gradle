@@ -16,7 +16,7 @@ repositories {
 extensionConfig {
 
     // The extension name
-    name 'Information Selection'
+    name = 'Information Selection'
 
     /*
      * The artifact group which will be used when publishing the extensions Jar

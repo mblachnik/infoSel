@@ -37,7 +37,7 @@ public class ClassAssignerOperator extends AbstractPRulesOperator {
     /**
      * 
      */
-    protected final InputPort prototypesInputPort = getInputPorts().createPort("Prototpes");
+    protected final InputPort prototypesInputPort = getInputPorts().createPort("prototpes");
     /** The parameter name for &quot;The used number of nearest neighbors.&quot; */
     public static final String PARAMETER_K = "k";
     private DistanceMeasureHelper measureHelper;
