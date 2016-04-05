@@ -13,6 +13,10 @@ repositories {
 	maven { url 'https://maven.rapidminer.com/content/groups/public/' }
 }
 
+configurations {
+    runtime
+ }
+ 
 extensionConfig {
 
     // The extension name
@@ -57,4 +61,30 @@ dependencies {
         compile files('lib/weka.jar')
         compile files('lib/instanceselection.jar')
         compile files('lib/Infosel.jar')
+        //runtime fileTree(dir: 'C:/Marcin/Projects/Java/Common/RapidMiner/6.x/RapidM~1/lib/', include: '*.*', exclude: 'output/*')
+        runtime fileTree(dir: 'C:/Programs/RapidMiner Studio/lib/', include: '*.*')
+}
+
+def usersHomeDir = 'C:/Marcin/Projects/Java/Common/RapidMiner/7.x/home'
+    
+task copyPlugin(type: Copy, dependsOn: jar) {
+     description 'Copy jar file into RapidMiner extensions folder'   
+    //from 'C:/Marcin/Projects/Java/Common/RapidMiner/Extension/ISPR/build/libs/ISPR-1.0.0.jar'
+    from jar.archivePath
+    into "$usersHomeDir /.RapidMiner/extensions"
+}
+
+task run(type: JavaExec, dependsOn:copyPlugin) {    
+    description 'Executes RapidMiner'
+    main = 'com.rapidminer.launcher.GUILauncher'
+    classpath = configurations.runtime
+    jvmArgs = ["-Duser.home=$usersHomeDir"]
+}
+
+task debug(type: JavaExec, dependsOn: copyPlugin) {
+    description 'Executes RapidMiner in debug mode'
+    main = 'com.rapidminer.launcher.GUILauncher'
+    classpath = configurations.runtime
+    jvmArgs = ["-Duser.home=$usersHomeDir"]
+    debug true
 }

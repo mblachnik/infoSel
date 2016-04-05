@@ -32,8 +32,15 @@ import java.util.Stack;
 
 import com.rapidminer.datatable.SimpleDataTable;
 import com.rapidminer.datatable.SimpleDataTableRow;
+import com.rapidminer.example.Attribute;
+import com.rapidminer.example.Attributes;
+import com.rapidminer.example.Example;
+import com.rapidminer.example.ExampleSet;
 import com.rapidminer.tools.math.container.BoundedPriorityQueue;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This class is an implementation of a Ball-Tree for organizing
@@ -61,6 +68,33 @@ public class BallTree<T extends Serializable> implements ISPRGeometricDataCollec
         this.distance = distance;
     }
 
+    public BallTree(ExampleSet exampleSet, Attribute storedValuesAttribute, DistanceMeasure distance) {
+        this.distance = distance;
+        initialize(exampleSet, storedValuesAttribute);
+    }
+
+    /**
+     * Initialize data structure
+     *
+     * @param exampleSet
+     * @param storedValuesAttribute     
+     */
+    @Override
+    public final void initialize(ExampleSet exampleSet, Attribute storedValuesAttribute) {
+        Attributes attributes = exampleSet.getAttributes();
+        int valuesSize = attributes.size();
+        for (Example example : exampleSet) {
+            double[] exampleValues = new double[valuesSize];
+            int i = 0;
+            for (Attribute attribute : attributes) {
+                exampleValues[i] = example.getValue(attribute);
+                i++;
+            }
+            Number labelValue = example.getValue(storedValuesAttribute);
+            this.add(exampleValues, (T)labelValue);
+        }
+    }
+    
     @Override
     public void add(double[] values, T storeValue) {
         this.size++;
@@ -308,4 +342,19 @@ public class BallTree<T extends Serializable> implements ISPRGeometricDataCollec
     public void setSample(int index, double[] sample, T storedValue) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    /**
+     * Count how many unique appears in the storedValue structure
+     *
+     * @return number of unique values
+     */
+    @Override
+    public int numberOfUniquesOfStoredValues() {
+        Set<T> uniqueValues = new HashSet<>();
+        for (T value : values) {
+            uniqueValues.add(value);
+        }
+        return uniqueValues.size();
+    }
+    
 }

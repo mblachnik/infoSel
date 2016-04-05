@@ -9,6 +9,7 @@ import com.rapidminer.ispr.operator.learner.optimization.Prototype;
 import com.rapidminer.ispr.operator.learner.tools.KNNTools;
 import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import java.util.ArrayList;
 
 /**
  *
@@ -19,30 +20,30 @@ public class FCMModel extends AbstractBatchModel {
     boolean nextItertion = false;
     double m;
     double minGain;
-    int iteration, numberOfIterations;
-    RandomGenerator randomGenerator;
+    int iteration, numberOfIterations, numberOfPrototypes;
+    RandomGenerator randomGenerator;    
 
     /**
-     *
-     * @param prototypes
-     * @param distance
-     * @param u
-     * @param m
-     * @param maxIterations
-     * @param minGain
-     * @param randomGenerator
+     * Constructor of the model
+     * @param distance - distance measure
+     * @param m - fuzziness parameter
+     * @param maxIterations - number of iterations
+     * @param minGain - minimal gain required to perform new iteration
+     * @param randomGenerator - random number generators
+     * @param numberOfPrototypes - number of clusters
      */
-    public FCMModel(DistanceMeasure distance, double m, int maxIterations, double minGain, RandomGenerator randomGenerator, int c, ExampleSet trainingSet) {
-        super(distance, c, trainingSet);
+    public FCMModel(DistanceMeasure distance, double m, int maxIterations, double minGain, RandomGenerator randomGenerator, int numberOfPrototypes) {
+        super(distance);
         this.m = m;
         iteration = 0;
         this.minGain = minGain;
         this.numberOfIterations = maxIterations;
         this.randomGenerator = randomGenerator;
+        this.numberOfPrototypes = numberOfPrototypes;
     }
 
     /**
-     *
+     * Method returns true if next iteration of the clustering algorithm should be performed
      * @return
      */
     @Override
@@ -51,8 +52,13 @@ public class FCMModel extends AbstractBatchModel {
         return nextItertion && (iteration < numberOfIterations);
     }
 
-    private void updatePrototypes(ExampleSet trainingSet) {
-       int prototypeIndex = 0;
+    /**
+     * Update prototype posiotion based on partition matrix
+     * @param trainingSet 
+     */
+    @Override
+    public void updatePrototypes(ExampleSet trainingSet) {
+        int prototypeIndex = 0;
         for (Prototype prototype : prototypes) {
             Iterator<Attribute> trainingAttributesIterator = trainingSet.getAttributes().iterator();
             int attribute = 0;
@@ -78,7 +84,13 @@ public class FCMModel extends AbstractBatchModel {
         }
     }
 
-    private double updateU(ExampleSet trainingSet) {
+    /**
+     * Based on prototypes calculates partition matrix
+     * @param trainingSet     
+     */
+    
+    @Override
+    public void updatePartitionMatrix(ExampleSet trainingSet) {
         double objFun = 0;
         double exp = -2.0 / (m - 1.0);
         double[] exampleValues = new double[trainingSet.getAttributes().size()];
@@ -109,33 +121,27 @@ public class FCMModel extends AbstractBatchModel {
                 double v = partitionMatrixEntry[prototypeIndex];
                 partitionMatrixEntry[prototypeIndex] = v / sum;
             }
-        }
-        return objFun;
-    }
-
-    /**
-     *
-     * @param trainingSet
-     */
-    @Override
-    protected void update(ExampleSet trainingSet) {
-        double objFun = updateU(trainingSet);
-        updatePrototypes(trainingSet);
-
+        }        
         if (costFunctionValue - objFun > minGain) {
             nextItertion = true;
             costFunctionValue = objFun;
         } else {
             nextItertion = false;
-        }
+        }        
     }
 
     /**
-     *
+     * Method executed before main training used to initialize data
      * @param trainingSet
      */
     @Override
-    public void initialize(ExampleSet trainingSet) {
+    public void initialize(ExampleSet trainingSet) {  
+        int numberOfAttributes = trainingSet.getAttributes().size();
+        prototypes = new ArrayList<>(numberOfPrototypes);
+        for (int i = 0; i < numberOfPrototypes; i++) {
+            prototypes.add(new Prototype(numberOfAttributes));
+        }  
+        resetPartitionMatrix(trainingSet);
         int i;
         //partition matrix initialization				     
         for (double[] partitionMatrixEntry : partitionMatrix) {
@@ -149,32 +155,36 @@ public class FCMModel extends AbstractBatchModel {
                 double value = partitionMatrixEntry[i];
                 partitionMatrixEntry[i] = value / sum;
             }
-        }
-        updatePrototypes(trainingSet);
-        //costFunctionValue = updateU(trainingSet);				
+        }			
     }
-
-    /**
-     *
-     * @param trainingSet
-     */
-    @Override
-    public void apply(ExampleSet trainingSet, Attribute clusterAttribute) {
-        Iterator<Example> trainingSetIterator = trainingSet.iterator();
-        Iterator<double[]> partitionMatrixIterator = partitionMatrix.iterator();
-        while (trainingSetIterator.hasNext() && partitionMatrixIterator.hasNext()) {
-            double[] partitionMatrixEntry = partitionMatrixIterator.next();
-            Example example = trainingSetIterator.next();
-            double best = -1;
-            int idx = -1;
-            for (int i = 0; i < numberOfPrototypes; i++) {
-                double curValue = partitionMatrixEntry[i];
-                if (curValue > best) {
-                    best = curValue;
-                    idx = i;
-                }
-            }
-            example.setValue(clusterAttribute, idx);
-        }
-    }
+            
+//    /**
+//     * Calculates clustering results based on partition matrix
+//     *
+//     * @param trainingSet - dataset to cluster
+//     * @return index of assigment given example from exampleSet to cluster
+//     */
+//    @Override
+//    public int[] getClusterAssignments(ExampleSet trainingSet) {
+//        updateU(trainingSet);
+//        Iterator<Example> trainingSetIterator = trainingSet.iterator();
+//        Iterator<double[]> partitionMatrixIterator = partitionMatrix.iterator();
+//        int[] results = new int[trainingSet.size()];
+//        int j = 0;
+//        while (trainingSetIterator.hasNext() && partitionMatrixIterator.hasNext()) {
+//            double[] partitionMatrixEntry = partitionMatrixIterator.next();
+//            Example example = trainingSetIterator.next();
+//            double best = -1;
+//            for (int i = 0; i < numberOfPrototypes; i++) {
+//                double curValue = partitionMatrixEntry[i];
+//                if (curValue > best) {
+//                    best = curValue;
+//                    results[j] = i;
+//                }
+//            }
+//            j++;
+//
+//        }
+//        return results;
+//    }
 }

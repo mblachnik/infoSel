@@ -37,6 +37,7 @@ public class PRulesUtil {
      *
      */
     public static final String INSTANCES_WEIGHTS_NAME = "Instances Weights";
+
     /*
      public static ExampleSet SelectedInstancesExampleSetCreator(ExampleSet oryginalSet, boolean[] instancesOnOffIndex) {
     
@@ -93,33 +94,33 @@ public class PRulesUtil {
      */
     public static int[] randomPermutation(int size, Random randomGenerator) {
         int[] idx = new int[size];
-        for (int i=1; i<size; i++){
-            idx[i]=i;
+        for (int i = 1; i < size; i++) {
+            idx[i] = i;
         }
-        for (int i=size; i>1; i--){
+        for (int i = size; i > 1; i--) {
             int k = randomGenerator.nextInt(i);
             int t = idx[k];
-            idx[k] = idx[i-1];               
-            idx[i-1] = t;                                
-        }                
+            idx[k] = idx[i - 1];            
+            idx[i - 1] = t;            
+        }        
         return idx;
     }
 
     /**
      *
      * @param size
-     * @param randomGenerator     
+     * @param randomGenerator
      */
     public static void randomPermutation(int[] tab, Random randomGenerator) {
         int size = tab.length;
-        for (int i=size; i>1; i--){
+        for (int i = size; i > 1; i--) {
             int k = randomGenerator.nextInt(i);
             int t = tab[k];
-            tab[k] = tab[i];               
-            tab[i] = t;                                
-        }                        
+            tab[k] = tab[i];            
+            tab[i] = t;            
+        }        
     }
-    
+
     /**
      *
      * @param size
@@ -130,22 +131,20 @@ public class PRulesUtil {
     public static int[] randomSelection(int size, int numberOfInstancesToSelect, Random randomGenerator) {
         if (size < numberOfInstancesToSelect) {
             throw new IndexOutOfBoundsException();
-        } else {
-            if (size == numberOfInstancesToSelect) {
-                int[] out = new int[size];
-                for (int i = 0; i < size; i++) {
-                    out[i] = i;
-                }
-                return out;
-            } else {
-                int[] idx = randomPermutation(size, randomGenerator);
-                int[] out = new int[numberOfInstancesToSelect];
-                for (int i = 0; i < numberOfInstancesToSelect; i++) {
-                    out[i] = idx[i];
-                }
-                Arrays.sort(out);
-                return out;
+        } else if (size == numberOfInstancesToSelect) {
+            int[] out = new int[size];
+            for (int i = 0; i < size; i++) {
+                out[i] = i;
             }
+            return out;
+        } else {
+            int[] idx = randomPermutation(size, randomGenerator);
+            int[] out = new int[numberOfInstancesToSelect];
+            for (int i = 0; i < numberOfInstancesToSelect; i++) {
+                out[i] = idx[i];
+            }
+            Arrays.sort(out);
+            return out;
         }
     }
 
@@ -200,7 +199,7 @@ public class PRulesUtil {
     public static void extractAttributesAsList(Attributes attributes, List<Attribute> attributesList, List<Attribute> regularAttributesList, Map<Attribute, String> specialAttributes) {
         Iterator<Attribute> attributeIterator;
         attributeIterator = attributes.allAttributes();
-
+        
         while (attributeIterator.hasNext()) {
             Attribute originalAttribute = attributeIterator.next();
             Attribute attribute = AttributeFactory.createAttribute(originalAttribute);
@@ -213,12 +212,10 @@ public class PRulesUtil {
                 if (specialAttributes != null) {
                     specialAttributes.put(attribute, attributeRole.getSpecialName());
                 }
-            } else {
-                if (regularAttributesList != null) {
-                    regularAttributesList.add(attribute);
-                }
+            } else if (regularAttributesList != null) {
+                regularAttributesList.add(attribute);
             }
-
+            
         }
     }
 
@@ -233,15 +230,15 @@ public class PRulesUtil {
         List<Attribute> regularAttributesList = new ArrayList<Attribute>(attributes.size());
         Map<Attribute, String> specialAttributes = new HashMap<Attribute, String>(attributes.allSize() - attributes.size()); //HashMap of Special attributes this map includes a list of attributes and its roles. Data structure for duplicating attributes                
         PRulesUtil.extractAttributesAsList(attributes, attributesList, regularAttributesList, specialAttributes);
-
+        
         ExampleTable outputTable = new MemoryExampleTable(attributesList,
                 new DataRowFactory(DataRowFactory.TYPE_DOUBLE_ARRAY, '.'),
                 inputSet.size());
         ExampleSet outputSet = new SimpleExampleSet(outputTable, regularAttributesList, specialAttributes);
-
+        
         Iterator<Example> inputSetIterator = inputSet.iterator();
         Iterator<Example> outputSetIterator = outputSet.iterator();
-
+        
         while (inputSetIterator.hasNext() && outputSetIterator.hasNext()) {
             Example inputExample = inputSetIterator.next();
             Example outputExample = outputSetIterator.next();
@@ -298,9 +295,9 @@ public class PRulesUtil {
         }
         ExampleTable outputTable = new MemoryExampleTable(attributesList, new DataRowFactory(DataRowFactory.TYPE_DOUBLE_ARRAY, '.'), numberOfSamples);
         ExampleSet outputSet = new SimpleExampleSet(outputTable, regularAttributesList, specialAttributes);
-
+        
         Iterator<Example> outputSetIterator = outputSet.iterator();
-
+        
         for (ExampleSet inputSet : exampleSets) {
             Iterator<Example> inputSetIterator = inputSet.iterator();
             while (inputSetIterator.hasNext()) {
@@ -313,29 +310,33 @@ public class PRulesUtil {
                     outputExample.setValue(outputAttribute, inputExample.getValue(inputAttribute));
                 }
             }
-
+            
         }
-
+        
         return outputSet;
     }
 
-
     /**
-     * This method selects from the input exampleSet sampleSize samples, such that the number of selected samples is proportional to the number of classes. This method does not reorder samples so in case of stratified samples has to be randomized
+     * This method selects from the input exampleSet sampleSize samples, such
+     * that the number of selected samples is proportional to the number of
+     * classes. This method does not reorder samples so in case of stratified
+     * samples has to be randomized
+     *
      * @param exampleSet input exampleSet
      * @param sampleSize number of samples to select
-     * @param randomGenerator randomGenerator (used when it is impossible to divide number of samples proportional to ocurence of the class labels)
+     * @param randomGenerator randomGenerator (used when it is impossible to
+     * divide number of samples proportional to ocurence of the class labels)
      * @return data index
      */
-    public static DataIndex stratifiedSelection(ExampleSet exampleSet, int sampleSize, RandomGenerator randomGenerator) {                        
+    public static DataIndex stratifiedSelection(ExampleSet exampleSet, int sampleSize, RandomGenerator randomGenerator) {        
         int realTrainingSetSize = exampleSet.size();
         Attribute labels = exampleSet.getAttributes().getLabel();
         if (sampleSize > realTrainingSetSize || labels == null || !labels.isNominal()) {
             return null;
         }
-        DataIndex index = new DataIndex(realTrainingSetSize);                
+        DataIndex index = new DataIndex(realTrainingSetSize);        
         index.setAllFalse();
-
+        
         NominalMapping labelsMap = labels.getMapping();
         int[] classesCounter = new int[labelsMap.size()];
         //Because wectors are randomly ordered in the beginig by the abstract InstanceSelectionOperator we just need to select an appropriate subset
@@ -348,7 +349,7 @@ public class PRulesUtil {
         //Haw many samples we should obtain
         int[] classCounterAfterResampling = (int[]) classesCounter.clone();
         for (int i = 0; i < classesCounter.length; i++) {
-            classCounterAfterResampling[i] = (int)(sampleSize * classesCounter[i] / (double)realTrainingSetSize); //Here realTrainingSetSize is double, otherwise we would have  problem when dividing
+            classCounterAfterResampling[i] = (int) (sampleSize * classesCounter[i] / (double) realTrainingSetSize); //Here realTrainingSetSize is double, otherwise we would have  problem when dividing
             sumClassCounterAfterResampling += classCounterAfterResampling[i];
         }
         //If because of rounding finall number of samples is smaller then desired the add one for each missing class
@@ -370,34 +371,39 @@ public class PRulesUtil {
             if (classCounterAfterResampling[currentLabel] > 0) {
                 index.set(i, true);
                 classCounterAfterResampling[currentLabel]--;
-            } else {
-                if (checkFirstAccess[currentLabel]){
-                    checkFirstAccess[currentLabel] = false;
-                    earlyStopCounter--;
-                    if (earlyStopCounter==0) break;
+            } else if (checkFirstAccess[currentLabel]) {
+                checkFirstAccess[currentLabel] = false;
+                earlyStopCounter--;
+                if (earlyStopCounter == 0) {
+                    break;
                 }
             }
             i++;
         }
         return index;
     }
-    
+
     /**
-     * This method selects from the input exampleSet sampleSize samples, such that the number of selected samples is proportional to the number of classes. This method does not reorder samples so in case of stratified samples has to be randomized
+     * This method selects from the input exampleSet sampleSize samples, such
+     * that the number of selected samples is proportional to the number of
+     * classes. This method does not reorder samples so in case of stratified
+     * samples has to be randomized
+     *
      * @param exampleSet input exampleSet
      * @param sampleSize number of samples to select
-     * @param randomGenerator randomGenerator (used when it is impossible to divide number of samples proportional to ocurence of the class labels)
+     * @param randomGenerator randomGenerator (used when it is impossible to
+     * divide number of samples proportional to ocurence of the class labels)
      * @return data index
      */
-    public static DataIndex stratifiedSelection(ExampleSet exampleSet, int sampleSize, int[] order, RandomGenerator randomGenerator) {                        
+    public static DataIndex stratifiedSelection(ExampleSet exampleSet, int sampleSize, int[] order, RandomGenerator randomGenerator) {        
         int realTrainingSetSize = exampleSet.size();
         Attribute labels = exampleSet.getAttributes().getLabel();
         if (sampleSize > realTrainingSetSize || labels == null || !labels.isNominal() || order.length != realTrainingSetSize) {
             return null;
         }
-        DataIndex index = new DataIndex(sampleSize);                
+        DataIndex index = new DataIndex(sampleSize);        
         index.setAllFalse();
-
+        
         NominalMapping labelsMap = labels.getMapping();
         int[] classesCounter = new int[labelsMap.size()];
         //Because wectors are randomly ordered in the beginig by the abstract InstanceSelectionOperator we just need to select an appropriate subset
@@ -433,5 +439,38 @@ public class PRulesUtil {
             i++;
         }
         return index;
+    }
+    
+    /**
+     * Method change the order of attributes to the given by the list of attribute names
+     * First exampleSet is cloned, then the order of attributes is adjusted according to the list
+     * @param exampleSet input example set
+     * @param attributeNames list of attribute names
+     * @return 
+     */
+    public static ExampleSet reorderAttributesByName(ExampleSet exampleSet, List<String> attributeNames) {
+        ExampleSet newExampleSet = (ExampleSet) exampleSet.clone();
+        Attributes originalAttributeNames = exampleSet.getAttributes();
+        Attributes newAttributeNames      = newExampleSet.getAttributes();
+        newAttributeNames.clearRegular();
+        for (String attributeName : attributeNames) {
+            newAttributeNames.addRegular(originalAttributeNames.get(attributeName));
+        }
+        return newExampleSet;
+    }
+    
+        /**
+     * Method changes the order of attributes to the given by the list of attribute names
+     * 
+     * @param attributes list of attributes
+     * @param attributeNames list of attribute names (the order is important)
+     * @return 
+     */
+    public static List<Attribute> reorderAttributesByName(Attributes attributes, List<String> attributeNames) {
+        List<Attribute> listOfAttributes = new ArrayList<>(attributes.size());
+        for (String attributeName : attributeNames){
+            listOfAttributes.add(attributes.get(attributeName));
+        }        
+        return listOfAttributes;
     }
 }

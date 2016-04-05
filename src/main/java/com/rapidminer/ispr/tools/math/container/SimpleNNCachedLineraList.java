@@ -22,6 +22,10 @@
  */
 package com.rapidminer.ispr.tools.math.container;
 
+import com.rapidminer.example.Attribute;
+import com.rapidminer.example.Attributes;
+import com.rapidminer.example.Example;
+import com.rapidminer.example.ExampleSet;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,6 +35,8 @@ import com.rapidminer.ispr.operator.learner.tools.SymetricDoubleMatrix;
 import com.rapidminer.tools.container.Tupel;
 import com.rapidminer.tools.math.container.BoundedPriorityQueue;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class is an implementation of the GeometricDataCollection interface,
@@ -67,6 +73,35 @@ public class SimpleNNCachedLineraList<T extends Serializable> implements ISPRCac
         distanceCache = new SymetricDoubleMatrix(n);
     }
 
+    public SimpleNNCachedLineraList(ExampleSet exampleSet, Attribute storedValuesAttribute, DistanceMeasure distance) {
+        this.distance = distance;
+        initialize(exampleSet, storedValuesAttribute);
+    }
+
+    /**
+     * Initialize data structure
+     *
+     * @param exampleSet
+     * @param storedValuesAttribute     
+     */
+    @Override
+    public final void initialize(ExampleSet exampleSet, Attribute storedValuesAttribute) {
+        int n = exampleSet.size();
+        samples = new ArrayList<double[]>(n);
+        storedValues = new ArrayList<T>(n);
+        Attributes attributes = exampleSet.getAttributes();
+        int valuesSize = attributes.size();
+        for (Example example : exampleSet) {
+            double[] values = new double[valuesSize];
+            int i = 0;
+            for (Attribute attribute : attributes) {
+                values[i] = example.getValue(attribute);
+                i++;
+            }
+            Number labelValue = example.getValue(storedValuesAttribute);
+            this.add(values, (T)labelValue);
+        }
+    }
     /**
      * Add new sample to the nearest neighbor structure
      * @param values
@@ -346,5 +381,19 @@ public class SimpleNNCachedLineraList<T extends Serializable> implements ISPRCac
             distanceCache.set(i, index, dist);
             i++;
         }
+    }
+
+    /**
+     * Count how many unique appears in the storedValue structure
+     *
+     * @return number of unique values
+     */
+    @Override
+    public int numberOfUniquesOfStoredValues() {
+        Set<T> uniqueValues = new HashSet<>();
+        for (T value : storedValues) {
+            uniqueValues.add(value);
+        }
+        return uniqueValues.size();
     }
 }

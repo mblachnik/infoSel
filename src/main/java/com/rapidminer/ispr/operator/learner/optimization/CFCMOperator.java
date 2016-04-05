@@ -3,6 +3,7 @@ package com.rapidminer.ispr.operator.learner.optimization;
 import com.rapidminer.example.Attribute;
 import java.util.List;
 import com.rapidminer.example.ExampleSet;
+import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
@@ -11,8 +12,10 @@ import com.rapidminer.operator.ValueDouble;
 import com.rapidminer.ispr.operator.learner.classifiers.MyKNNClassificationModel;
 import com.rapidminer.ispr.operator.learner.classifiers.PredictionType;
 import com.rapidminer.ispr.operator.learner.classifiers.VotingType;
+import com.rapidminer.ispr.operator.learner.clustering.ISPRPrototypeClusterModel;
 import com.rapidminer.ispr.operator.learner.optimization.clustering.AbstractBatchModel;
 import com.rapidminer.ispr.operator.learner.optimization.clustering.CFCMModel;
+import com.rapidminer.ispr.operator.learner.optimization.clustering.FCMModel;
 import com.rapidminer.ispr.operator.learner.tools.KNNTools;
 import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
 import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
@@ -24,6 +27,9 @@ import com.rapidminer.parameter.UndefinedParameterError;
 import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
 import com.rapidminer.ispr.tools.math.container.PairContainer;
+import com.rapidminer.operator.AbstractModel;
+import com.rapidminer.operator.clustering.clusterer.RMAbstractClusterer;
+import com.rapidminer.parameter.ParameterTypeBoolean;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
@@ -51,12 +57,12 @@ public class CFCMOperator extends AbstractPrototypeOptimizationOperator {
      *
      */
     public static final String PARAMETER_NUMBER_OF_CLUSTERS = "Clusters";
+
     int c; //Number of clusters
     double m; //Fuzzynes values
     DistanceMeasureHelper measureHelper;
     int numberOfIteration;
-    double minGain; //Minimum improvement of optimization process
-    double costFunctionValue;
+    double minGain; //Minimum improvement of optimization process    
 
     /**
      * Constructor of FCM operator
@@ -65,21 +71,11 @@ public class CFCMOperator extends AbstractPrototypeOptimizationOperator {
      */
     public CFCMOperator(OperatorDescription description) {
         super(description, PredictionType.Clustering);
-        addValue(new ValueDouble("CostFunctionValue", "Cost Function Value") {
-
-            @Override
-            public double getDoubleValue() {
-                return costFunctionValue;
-            }
-        });
-        //getTransformer().addPassThroughRule(exampleSetInputPort, exampleSetOutputPort);		
-        //getTransformer().addPassThroughRule(exampleSetInputPort,originalExampleSetOutputPort);
         c = 3; //Number of clusters
         m = 2; //Fuzzynes values
         numberOfIteration = 50;
         minGain = 0.0001;
         measureHelper = new DistanceMeasureHelper(this);
-
     }
 
     /**
@@ -88,12 +84,13 @@ public class CFCMOperator extends AbstractPrototypeOptimizationOperator {
      * nearest neighbor model initialized with cluster centers. If model output
      * port is not connected method model is null
      *
-     * @param trainingSet - training ExampleSet     
-     * @return - pair of elements: cluster centers returned as ExampleSet and kNN model initialized with cluster centers.      
+     * @param trainingSet - training ExampleSet
+     * @return - pair of elements: cluster centers returned as ExampleSet and
+     * kNN model initialized with cluster centers.
      * @throws OperatorException
      */
     @Override
-    public PairContainer<ExampleSet, MyKNNClassificationModel<Number>> optimize(ExampleSet trainingSet) throws OperatorException {
+    public AbstractBatchModel optimize(ExampleSet trainingSet) throws OperatorException {
         //Creating attributes related with partition Matrix
         this.c = getParameterAsInt(PARAMETER_NUMBER_OF_CLUSTERS);
         if (c > trainingSet.size()) {
@@ -101,26 +98,11 @@ public class CFCMOperator extends AbstractPrototypeOptimizationOperator {
         }
         m = getParameterAsDouble(PARAMETER_FUZZYNES);
         minGain = getParameterAsDouble(PARAMETER_MIN_GAIN);
-        numberOfIteration = getParameterAsInt(PARAMETER_ITERATION_NUMBER);
-
-        DistanceMeasure distance = measureHelper.getInitializedMeasure(trainingSet);
-        AbstractBatchModel batchModel = new CFCMModel(distance, m, numberOfIteration, minGain, RandomGenerator.getRandomGenerator(this), c, trainingSet);
-        Collection<Prototype> codebooks = batchModel.train(trainingSet);
-
-        prepareClusterNamesMap(c);
-
-        prepareTrainingExampleSet(trainingSet, batchModel);
-
-        List<Attribute> attributes = new ArrayList<>(trainingSet.getAttributes().size());
-        for (Attribute a : trainingSet.getAttributes()) {
-            attributes.add(a);
-        }
-        ExampleSet codebooksSet = prepareCodebooksExampleSet(codebooks, attributes);
-        MyKNNClassificationModel<Number> model = null;
-        costFunctionValue = batchModel.getCostFunctionValue();
-        ISPRGeometricDataCollection<Number> knn = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, codebooksSet, distance);
-        model = new MyKNNClassificationModel<Number>(codebooksSet, knn, 1, VotingType.MAJORITY, PredictionType.Clustering);
-        return new PairContainer<ExampleSet, MyKNNClassificationModel<Number>>(codebooksSet, model);
+        numberOfIteration = getParameterAsInt(PARAMETER_ITERATION_NUMBER);        
+        DistanceMeasure distance = measureHelper.getInitializedMeasure(trainingSet);        
+        AbstractBatchModel batchModel = new CFCMModel(distance, m, numberOfIteration, minGain, RandomGenerator.getRandomGenerator(this), c);        
+        batchModel.train(trainingSet);
+        return batchModel;
     }
 
     /**
@@ -158,6 +140,9 @@ public class CFCMOperator extends AbstractPrototypeOptimizationOperator {
                 return (measureType == DistanceMeasures.MIXED_MEASURES_TYPE)
                         || (measureType == DistanceMeasures.DIVERGENCES_TYPE)
                         || (measureType == DistanceMeasures.NUMERICAL_MEASURES_TYPE);
+            case WEIGHTED_EXAMPLES:
+            case NO_LABEL:
+                return true;
             default:
                 return false;
         }

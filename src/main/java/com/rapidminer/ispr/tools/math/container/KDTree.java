@@ -22,6 +22,10 @@
  */
 package com.rapidminer.ispr.tools.math.container;
 
+import com.rapidminer.example.Attribute;
+import com.rapidminer.example.Attributes;
+import com.rapidminer.example.Example;
+import com.rapidminer.example.ExampleSet;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,6 +35,8 @@ import java.util.Stack;
 
 import com.rapidminer.tools.math.container.BoundedPriorityQueue;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class is an implementation of a KD-Tree for organizing multidimensional
@@ -54,6 +60,34 @@ public class KDTree<T extends Serializable> implements ISPRGeometricDataCollecti
     public KDTree(DistanceMeasure distance, int numberOfDimensions) {
         this.k = numberOfDimensions;
         this.distance = distance;
+    }
+    
+    public KDTree(ExampleSet exampleSet, Attribute storedValuesAttribute, DistanceMeasure distance) {
+        this.distance = distance;
+        this.k = exampleSet.getAttributes().size();
+        initialize(exampleSet, storedValuesAttribute);
+    }
+
+    /**
+     * Initialize data structure
+     *
+     * @param exampleSet
+     * @param storedValuesAttribute     
+     */
+    @Override
+    public final void initialize(ExampleSet exampleSet, Attribute storedValuesAttribute) {
+        Attributes attributes = exampleSet.getAttributes();
+        int valuesSize = attributes.size();
+        for (Example example : exampleSet) {
+            double[] exampleValues = new double[valuesSize];
+            int i = 0;
+            for (Attribute attribute : attributes) {
+                exampleValues[i] = example.getValue(attribute);
+                i++;
+            }
+            Number labelValue = example.getValue(storedValuesAttribute);
+            this.add(exampleValues,(T)labelValue);
+        }
     }
 
     @Override
@@ -183,5 +217,19 @@ public class KDTree<T extends Serializable> implements ISPRGeometricDataCollecti
     @Override
     public void setSample(int index, double[] sample, T storedValue) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     * Count how many unique appears in the storedValue structure
+     *
+     * @return number of unique values
+     */
+    @Override
+    public int numberOfUniquesOfStoredValues() {
+        Set<T> uniqueValues = new HashSet<>();
+        for (T value : values) {
+            uniqueValues.add(value);
+        }
+        return uniqueValues.size();
     }
 }

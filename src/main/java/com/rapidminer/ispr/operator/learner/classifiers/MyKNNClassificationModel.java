@@ -82,25 +82,23 @@ public class MyKNNClassificationModel<T extends Serializable> extends Prediction
         this.useCovariance = false;
         this.predictionType = predictionType;
     }
-
-    @Override
+    
+    @Override    
     //@SuppressWarnings("unchecked")
     public ExampleSet performPrediction(ExampleSet exampleSet, Attribute predictedLabel) throws OperatorException {
         // building attribute order from trainingset
         Attributes attributes = exampleSet.getAttributes();
         attributesNumber = attributes.size();
         double[] values = new double[attributesNumber];
+        List<Attribute> orderedAttributes = PRulesUtil.reorderAttributesByName(attributes, trainingAttributeNames);
         for (Example example : exampleSet) {
             // reading values
             int i = 0;
-            for (String trainingAttributeName : trainingAttributeNames) {
-                //The following lines are required because we have to assure that both training and test set has the same set of attributes                
-                Attribute attribute = attributes.get(trainingAttributeName);
-                //for (Attribute attribute : attributes) {
+            for (Attribute attribute : orderedAttributes) {                
                 values[i] = example.getValue(attribute);
                 i++;
             }
-            double[] counter = null;
+            double[] counter;
             int mostFrequentIndex;
             switch (predictionType) {
                 case Classification:

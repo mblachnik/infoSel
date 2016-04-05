@@ -1,6 +1,5 @@
 package com.rapidminer.ispr.operator.learner.tools;
 
-
 import java.util.Collection;
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
@@ -18,6 +17,7 @@ import com.rapidminer.ispr.tools.math.container.KDTree;
 import com.rapidminer.ispr.tools.math.container.MyLinearList;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.ispr.tools.math.container.SimpleNNCachedLineraList;
+import com.rapidminer.operator.OperatorException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.ListIterator;
@@ -31,32 +31,18 @@ public class KNNTools {
     public static ISPRGeometricDataCollection<Number> initializeKNearestNeighbourFactory(GeometricCollectionTypes type, ExampleSet exampleSet, DistanceMeasure measure) {
         ISPRGeometricDataCollection<Number> samples = null;
         switch (type) {
-            case LINEAR_SEARCH:            
-                samples = new MyLinearList<Number>(measure, exampleSet.size());
+            case LINEAR_SEARCH:
+                samples = new MyLinearList<Number>(exampleSet, exampleSet.getAttributes().getLabel(), measure);
                 break;
             case CACHED_LINEAR_SEARCH:
-                samples = new SimpleNNCachedLineraList<Number>(measure, exampleSet.size());
+                samples = new SimpleNNCachedLineraList<Number>(exampleSet, exampleSet.getAttributes().getLabel(), measure);
                 break;
             case BALL_TREE_SEARCH:
-                samples = new BallTree<Number>(measure);
+                samples = new BallTree<Number>(exampleSet, exampleSet.getAttributes().getLabel(), measure);
                 break;
             case KD_TREE_SEARCH:
-                samples = new KDTree<Number>(measure, exampleSet.getAttributes().size());
+                samples = new KDTree<Number>(exampleSet, exampleSet.getAttributes().getLabel(), measure);
                 break;
-        }
-        Attributes attributes = exampleSet.getAttributes();
-
-        int valuesSize = attributes.size();
-        for (Example example : exampleSet) {
-            double[] values = new double[valuesSize];
-            int i = 0;
-            for (Attribute attribute : attributes) {
-                values[i] = example.getValue(attribute);
-                i++;
-            }
-            Number labelValue = example.getLabel();
-
-            samples.add(values, labelValue);
         }
         return samples;
     }
@@ -170,8 +156,11 @@ public class KNNTools {
                 Collection<Number> neighbourLabels = samples.getNearestValues(k, values);
                 Iterator<Number> iterator = neighbourLabels.iterator();
                 while (iterator.hasNext()) {
-                    int idx = iterator.next().intValue();
-                    votes[idx] += 1.0 / k;
+                    Number v = iterator.next();
+                    if (v != null) {
+                        int idx = v.intValue();
+                        votes[idx] += 1.0 / k;
+                    }
                 }
                 return;
             case LINEAR:
@@ -184,8 +173,6 @@ public class KNNTools {
                     totalDistance = totalDistance < tupel.getFirst() ? tupel.getFirst() : totalDistance;
                 }
                 totalDistance = 2 * totalDistance;
-
-
 
                 if (totalDistance == 0) {
                     totalDistance = 1;
@@ -204,17 +191,17 @@ public class KNNTools {
 
                         break;
                     case GAUSSIAN:
-                        for (DoubleObjectContainer<Number> tupel : neighbours) {                            
+                        for (DoubleObjectContainer<Number> tupel : neighbours) {
                             int idx = tupel.getSecond().intValue();
                             double res = (tupel.getFirst() / totalDistance);
-                            votes[idx] += Math.exp(- res * res);
+                            votes[idx] += Math.exp(-res * res);
                         }
                         break;
                     case EXPONENTIAL:
                         for (DoubleObjectContainer<Number> tupel : neighbours) {
                             int idx = tupel.getSecond().intValue();
                             double res = (tupel.getFirst() / totalDistance);
-                            votes[idx] += Math.exp(- res);
+                            votes[idx] += Math.exp(-res);
                         }
                         break;
                 }

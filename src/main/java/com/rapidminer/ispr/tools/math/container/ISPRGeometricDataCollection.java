@@ -4,9 +4,12 @@
  */
 package com.rapidminer.ispr.tools.math.container;
 
+import com.rapidminer.example.Attribute;
+import com.rapidminer.example.ExampleSet;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -14,12 +17,20 @@ import java.util.Iterator;
  */
 public interface ISPRGeometricDataCollection<T extends Serializable> extends Serializable {    
     
+
+    
+        /**
+         * Initialize data structure
+         * @param exampleSet
+         * @param storedValues 
+         */
+        public abstract void initialize(ExampleSet exampleSet, Attribute storedValues);
+                
 	/**
 	 * This method has to be called in order to insert new values into the data structure 
 	 * @param values specifies the geometric coordinates in data space
 	 * @param storeValue specifies the value at the given point
-	 */
-	
+	 */	
 	public abstract void add(double[] values, T storeValue);
 
 	/**
@@ -80,5 +91,11 @@ public interface ISPRGeometricDataCollection<T extends Serializable> extends Ser
         public Iterator<T> storedValueIterator();
         
         public Iterator<double[]> samplesIterator();
+        
+        /**
+         * Count how many unique values appears in the storedValue structure
+         * @return number of unique values
+         */
+        public int numberOfUniquesOfStoredValues();               
         
 }

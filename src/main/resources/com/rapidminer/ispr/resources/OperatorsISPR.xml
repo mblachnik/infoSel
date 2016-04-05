@@ -4,21 +4,21 @@
     <group key="">
         <icon>ispr.png</icon>
 
-        <group key="Classifiers">
+        <group key="Classification">
             <operator>
                 <key>my_k_nn</key>
                 <class>com.rapidminer.ispr.operator.learner.classifiers.MyKNNLearner</class>
                 <replaces>MyNearestNeighbors</replaces>
             </operator>
-        </group>
-        <group key="Optimizers">
+<!--        </group>
+        <group key="Select Examples"> -->
             <operator>
                 <key>lvq</key>
                 <class>com.rapidminer.ispr.operator.learner.optimization.LVQOperator</class>
                 <replaces>LVQ</replaces>
             </operator>
         </group>
-        <group key="Selection">
+        <group key="Select Examples">
             <operator>
                 <key>random_sel</key>
                 <class>com.rapidminer.ispr.operator.learner.selection.RandomInstanceSelectionOperator</class>
@@ -115,7 +115,7 @@
                 </operator>
                 -->
             </group>
-            <group key="Meta">
+            <group key="Ensemble IS">
                 <operator>
                     <key>bagging_sel</key>
                     <class>com.rapidminer.ispr.operator.learner.selection.meta.ISMetaBaggingOperator</class>
@@ -180,7 +180,7 @@
             </operator>
             <operator>
                 <key>FlattenClustersByDistance</key>
-                <class>com.rapidminer.ispr.operator.clustering.FlattenByDistanceClusterModel</class>
+                <class>com.rapidminer.ispr.operator.learner.clustering.FlattenByDistanceClusterModel</class>
                 <replaces>FlattenClustersByDistance</replaces>
             </operator>
         </group>
@@ -219,7 +219,7 @@
             -->
         </group>
         
-        <group key="Weighting">
+        <group key="Example Weighting">
             <operator>
                 <key>ENNWeighting</key>
                 <class>com.rapidminer.ispr.operator.learner.weighting.ENNWeightingOperator</class>

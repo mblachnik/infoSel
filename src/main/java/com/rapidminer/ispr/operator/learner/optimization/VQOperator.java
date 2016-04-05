@@ -9,9 +9,9 @@ import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
-import com.rapidminer.ispr.operator.learner.classifiers.MyKNNClassificationModel;
 import com.rapidminer.ispr.operator.learner.classifiers.PredictionType;
-import com.rapidminer.ispr.operator.learner.classifiers.VotingType;
+import com.rapidminer.ispr.operator.learner.clustering.ISPRClusterModelTools;
+import com.rapidminer.ispr.operator.learner.clustering.ISPRPrototypeClusterModel;
 import com.rapidminer.ispr.operator.learner.optimization.clustering.AbstractVQModel;
 import com.rapidminer.ispr.operator.learner.optimization.clustering.VQModel;
 import com.rapidminer.ispr.operator.learner.tools.KNNTools;
@@ -23,10 +23,11 @@ import com.rapidminer.parameter.ParameterTypeDouble;
 import com.rapidminer.parameter.ParameterTypeInt;
 import com.rapidminer.parameter.UndefinedParameterError;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
+import com.rapidminer.operator.clustering.clusterer.RMAbstractClusterer;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
-import java.io.FileReader;
+import java.util.Map;
 
 /**
  * This class provides vector quantization operator. It uses
@@ -71,16 +72,18 @@ public class VQOperator extends AbstractPrototypeOptimizationChain {
      * @throws OperatorException
      */
     @Override
-    public MyKNNClassificationModel<Number> optimize(ExampleSet trainingSet, ExampleSet codebooks) throws OperatorException {
-        this.numberOfIteration = getParameterAsInt(PARAMETER_ITERATION_NUMBER);
+    public ISPRPrototypeClusterModel optimize(ExampleSet trainingSet, ExampleSet codebooks) throws OperatorException {
+        this.numberOfIteration = getParameterAsInt(PARAMETER_ITERATION_NUMBER);        
         DistanceMeasure distance = measureHelper.getInitializedMeasure(codebooks);
         this.updateRate = getParameterAsDouble(PARAMETER_UPDATE_RATE);
         AbstractVQModel vqModel = new VQModel(codebooks, numberOfIteration, distance, updateRate);
         vqModel.run(trainingSet);
-        ISPRGeometricDataCollection<Number> knn = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, codebooks, distance);
-        MyKNNClassificationModel<Number> model = new MyKNNClassificationModel<Number>(codebooks, knn, 1, VotingType.MAJORITY, PredictionType.Clustering);
+        ISPRGeometricDataCollection<Number> knnModel = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, codebooks, distance);
+        boolean addAsLabel = getParameterAsBoolean(RMAbstractClusterer.PARAMETER_ADD_AS_LABEL);
+        boolean addCluster = getParameterAsBoolean(RMAbstractClusterer.PARAMETER_ADD_CLUSTER_ATTRIBUTE);
+        Map<Integer,String> clusterNames = ISPRClusterModelTools.prepareClusterNamesMap(codebooks.size());        
+        ISPRPrototypeClusterModel model = new ISPRPrototypeClusterModel(trainingSet, knnModel, codebooks.size(),clusterNames, addAsLabel, addCluster );        
         return model;
-
     }
 
     /**

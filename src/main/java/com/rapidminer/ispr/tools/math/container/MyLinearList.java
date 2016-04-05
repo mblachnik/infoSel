@@ -22,6 +22,10 @@
  */
 package com.rapidminer.ispr.tools.math.container;
 
+import com.rapidminer.example.Attribute;
+import com.rapidminer.example.Attributes;
+import com.rapidminer.example.Example;
+import com.rapidminer.example.ExampleSet;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,8 +33,10 @@ import java.util.Iterator;
 import java.util.RandomAccess;
 
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import java.util.HashSet;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * This class is an implementation of the GeometricDataCollection interface,
@@ -60,6 +66,37 @@ public class MyLinearList<T extends Serializable> implements ISPRGeometricDataCo
         assert samples.size() == storedValues.size();
         this.samples = samples;
         this.storedValues = storedValues;
+    }
+    
+    public MyLinearList(ExampleSet exampleSet, Attribute storedValuesAttribute, DistanceMeasure distance) {
+        this.distance = distance;        
+        initialize(exampleSet, storedValuesAttribute);
+    }
+
+    /**
+     * Initialize data structure
+     *
+     * @param exampleSet
+     * @param storedValuesAttribute     
+     */
+    @Override
+    public final void initialize(ExampleSet exampleSet, Attribute storedValuesAttribute) {
+        int n = exampleSet.size();
+        samples = new ArrayList<double[]>(n);
+        storedValues = new ArrayList<T>(n);
+        Attributes attributes = exampleSet.getAttributes();
+        int valuesSize = attributes.size();
+        for (Example example : exampleSet) {
+            double[] values = new double[valuesSize];
+            int i = 0;
+            for (Attribute attribute : attributes) {
+                values[i] = example.getValue(attribute);
+                i++;
+            }
+            Number labelValue = example.getValue(storedValuesAttribute);
+            samples.add(values);
+            storedValues.add((T)labelValue);
+        }
     }
 
     @Override
@@ -121,7 +158,7 @@ public class MyLinearList<T extends Serializable> implements ISPRGeometricDataCo
                 container.setFirst(first);
                 container.setSecond(second);
             }
-            queue.add(container);            
+            queue.add(container);
             i++;
         }
         return queue;
@@ -185,6 +222,20 @@ public class MyLinearList<T extends Serializable> implements ISPRGeometricDataCo
     public void setSample(int index, double[] sample, T storedValue) {
         samples.set(index, sample);
         storedValues.set(index, storedValue);
+    }
+
+    /**
+     * Count how many unique appears in the storedValue structure
+     *
+     * @return number of unique values
+     */
+    @Override
+    public int numberOfUniquesOfStoredValues() {
+        Set<T> uniqueValues = new HashSet<>();
+        for (T value : storedValues) {
+            uniqueValues.add(value);
+        }
+        return uniqueValues.size();
     }
 
     private class Itr implements ListIterator<PairContainer<double[], T>> {
