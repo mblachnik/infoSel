@@ -5,15 +5,15 @@ import java.util.List;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.ispr.operator.learner.selection.models.AbstractInstanceSelectorModel;
 import com.rapidminer.ispr.operator.learner.selection.models.RandomInstanceSelectionModel;
-import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.operator.learner.tools.PRulesUtil;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
-import com.rapidminer.operator.UserError;
+import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
+import com.rapidminer.operator.ports.metadata.MDInteger;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeBoolean;
 import com.rapidminer.parameter.ParameterTypeInt;
+import com.rapidminer.parameter.UndefinedParameterError;
 import com.rapidminer.tools.RandomGenerator;
 
 /**
@@ -42,6 +42,17 @@ public class RandomInstanceSelectionOperator extends AbstractInstanceSelectorOpe
         super(description);        
     }
 
+    /**
+     * Returns number of prototypes displayed in the MataData related with prototypeOutput
+     *
+     * @return     
+     * @throws com.rapidminer.parameter.UndefinedParameterError     
+     */    
+    @Override
+    public MDInteger getNumberOfPrototypesMetaData() throws UndefinedParameterError {   
+        sampleSize = getParameterAsInt(INSTANCES_NUMBER);
+        return new MDInteger(sampleSize);
+    }
     /**
      * This operator don;t use distance function to perform instance selection
      *

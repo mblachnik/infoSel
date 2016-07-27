@@ -198,7 +198,7 @@ public class DataIndex implements Iterable<Integer> {
     }
 
     /**
-     * Number of slements indexed by true
+     * Number of elements indexed true
      * @return
      */
     public int getLength() {
@@ -206,7 +206,7 @@ public class DataIndex implements Iterable<Integer> {
     }
 
     /**
-     * 
+     * Returns index of the original base data structure
      * @param i
      * @return
      */
@@ -287,11 +287,19 @@ public class DataIndex implements Iterable<Integer> {
             }
         }
 
+        /**
+         * Returns true if next element appears in the data structure
+         * @return 
+         */
         @Override
         public boolean hasNext() {
             return iteratorState < length - 1;
         }
-
+        
+        /**
+         * Returns index of the next element
+         * @return 
+         */
         @Override
         public Integer next() {
             if (hasNext()) {
@@ -301,6 +309,10 @@ public class DataIndex implements Iterable<Integer> {
             throw new NoSuchElementException();
         }
 
+        /**
+         * Returns index of the prevoius element
+         * @return 
+         */
         @Override
         public Integer previous() {
             if (hasPrevious()) {
@@ -310,11 +322,20 @@ public class DataIndex implements Iterable<Integer> {
             throw new NoSuchElementException();
         }
 
+        /**
+         * Returns true if previous element exist
+         * @return 
+         */
         @Override
         public boolean hasPrevious() {
             return iteratorState > 0;
         }
 
+        /**
+         * Returns index of the next element similar to {@link #next()}, but this
+         * method don't use Integer class returning the primitive int
+         * @return 
+         */
         @Override
         public int nextIndex() {
             if (hasNext()) {
@@ -323,6 +344,11 @@ public class DataIndex implements Iterable<Integer> {
             return length;
         }
 
+        /**
+         * Returns index of the previous element similar to {@link #previous()}, but this
+         * method don't use Integer class returning the primitive int
+         * @return 
+         */
         @Override
         public int previousIndex() {
             if (hasPrevious()) {
@@ -331,16 +357,27 @@ public class DataIndex implements Iterable<Integer> {
             return -1;
         }
 
+        /**
+         * Not implemented
+         * @param e 
+         */
         @Override
         public void set(Integer e) {
             throw new UnsupportedOperationException("Not supported.");
         }
 
+        /**
+         * Not implemented
+         * @param e 
+         */
         @Override
         public void add(Integer e) {
             throw new UnsupportedOperationException("Not supported.");
         }
 
+        /**
+         * Not implemented
+         */
         @Override
         public void remove() {
             throw new UnsupportedOperationException("Not supported.");

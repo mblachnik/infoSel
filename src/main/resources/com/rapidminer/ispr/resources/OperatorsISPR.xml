@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<operators name="ispr" version="6.0" docbundle="com/rapidminer/ispr/resources/i18n/OperatorsDocISPR">
+<operators name="Information_Selection" version="6.0" docbundle="com/rapidminer/ispr/resources/i18n/OperatorsDocISPR">
     <!-- <group key="Information_Selection"> -->
     <group key="">
         <icon>ispr.png</icon>
@@ -7,14 +7,14 @@
         <group key="Classification">
             <operator>
                 <key>my_k_nn</key>
-                <class>com.rapidminer.ispr.operator.learner.classifiers.MyKNNLearner</class>
+                <class>com.rapidminer.ispr.operator.learner.classifiers.IS_KNNLearner</class>
                 <replaces>MyNearestNeighbors</replaces>
             </operator>
 <!--        </group>
         <group key="Select Examples"> -->
             <operator>
                 <key>lvq</key>
-                <class>com.rapidminer.ispr.operator.learner.optimization.LVQOperator</class>
+                <class>com.rapidminer.ispr.operator.learner.classifiers.neuralnet.LVQOperator</class>
                 <replaces>LVQ</replaces>
             </operator>
         </group>
@@ -155,27 +155,29 @@
                 <class>com.rapidminer.ispr.operator.learner.feature.selection.FeatureWeightsTransformerOperator</class>
                 <replaces>FeatureWeightsTransformer</replaces>
             </operator>
-            -->
+            
+            
             <operator>
                 <key>mds_scaling</key>
                 <class>com.rapidminer.ispr.operator.learner.feature.construction.MdsOperator</class>
                 <replaces>MDS Scalling</replaces>
             </operator>
+            -->
         </group>		
         <group key="Clustering">
             <operator>
                 <key>FCM</key>
-                <class>com.rapidminer.ispr.operator.learner.optimization.FCMOperator</class>
+                <class>com.rapidminer.ispr.operator.learner.clustering.FCMOperator</class>
                 <replaces>FCM</replaces>
             </operator>
             <operator>
                 <key>CFCM</key>
-                <class>com.rapidminer.ispr.operator.learner.optimization.CFCMOperator</class>
+                <class>com.rapidminer.ispr.operator.learner.clustering.CFCMOperator</class>
                 <replaces>CFCM</replaces>
             </operator>
             <operator>
                 <key>VQ</key>
-                <class>com.rapidminer.ispr.operator.learner.optimization.VQOperator</class>
+                <class>com.rapidminer.ispr.operator.learner.clustering.VQOperator</class>
                 <replaces>VQ</replaces>
             </operator>
             <operator>
@@ -203,11 +205,11 @@
                 <key>GroupDistance</key>
                 <class>com.rapidminer.ispr.operator.learner.misc.GroupDistanceOperator</class>                
             </operator>   
+            <!--
             <operator>
                 <key>InputID</key>
                 <class>com.rapidminer.ispr.operator.learner.misc.GetIOModelID</class>                
-            </operator>    
-            <!--
+            </operator>                
             <operator>
                 <key>ValueDifference</key>
                 <class>com.rapidminer.ispr.operator.learner.misc.ValueDifferenceOperator</class>                
@@ -219,11 +221,11 @@
             -->
         </group>
         
-        <group key="Example Weighting">
+        <group key="Weight Examples">
             <operator>
                 <key>ENNWeighting</key>
                 <class>com.rapidminer.ispr.operator.learner.weighting.ENNWeightingOperator</class>
-                <replaces>ENN Weighting Operator</replaces>
+                <replaces>Weight Examples (ENN)</replaces>
             </operator>
             <!--
             <operator>

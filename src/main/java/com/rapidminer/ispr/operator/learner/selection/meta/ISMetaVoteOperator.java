@@ -13,7 +13,7 @@ import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.example.set.SortedExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.ispr.operator.learner.AbstractPRulesOperatorChain;
-import com.rapidminer.ispr.operator.learner.classifiers.MyKNNClassificationModel;
+import com.rapidminer.ispr.operator.learner.classifiers.IS_KNNClassificationModel;
 import com.rapidminer.ispr.operator.learner.classifiers.PredictionType;
 import com.rapidminer.ispr.operator.learner.classifiers.VotingType;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
@@ -86,8 +86,8 @@ public class ISMetaVoteOperator extends AbstractPRulesOperatorChain {
         getTransformer().addRule(new SubprocessTransformRule(getSubprocess(0)));
         //prototypeExampleSetOutput.addPrecondition(new SimplePrecondition(predictionModelInputInnerSourcePort, new MetaData(PredictionModel.class)));
         //subprocessOutputExtender.addPrecondition(new ExampleSetPrecondition(prototypeExampleSetOutput));
-        //getTransformer().addRule(new GenerateModelTransformationRule(exampleSetInputPort, modelOutputPort, MyKNNClassificationModel.class));
-        getTransformer().addRule(new GeneratePredictionModelTransformationRule(exampleSetInputPort, modelOutputPort, MyKNNClassificationModel.class));
+        //getTransformer().addRule(new GenerateModelTransformationRule(exampleSetInputPort, modelOutputPort, IS_KNNClassificationModel.class));
+        getTransformer().addRule(new GeneratePredictionModelTransformationRule(exampleSetInputPort, modelOutputPort, IS_KNNClassificationModel.class));
 
         addValue(new ValueDouble("Instances_beafore_selection", "Number Of Examples in the training set") {
 
@@ -187,12 +187,12 @@ public class ISMetaVoteOperator extends AbstractPRulesOperatorChain {
             distance.init(output);
             if (output.getAttributes().getLabel().isNominal()) {
                 ISPRGeometricDataCollection<Number> samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, output, distance);
-                MyKNNClassificationModel<Number> model = new MyKNNClassificationModel<Number>(output, samples, 1, VotingType.MAJORITY, PredictionType.Classification);
+                IS_KNNClassificationModel<Number> model = new IS_KNNClassificationModel<Number>(output, samples, 1, VotingType.MAJORITY, PredictionType.Classification);
                 modelOutputPort.deliver(model);
             } else if (output.getAttributes().getLabel().isNumerical()) {
                 ISPRGeometricDataCollection<IntDoubleContainer> samples = KNNTools.initializeGeneralizedKNearestNeighbour(output, distance);
                 //GeometricDataCollection<Integer> samples = KNNTools.initializeKNearestNeighbour(output, distance);
-                MyKNNClassificationModel<IntDoubleContainer> model = new MyKNNClassificationModel<IntDoubleContainer>(output, samples, 1, VotingType.MAJORITY, PredictionType.Regression);
+                IS_KNNClassificationModel<IntDoubleContainer> model = new IS_KNNClassificationModel<IntDoubleContainer>(output, samples, 1, VotingType.MAJORITY, PredictionType.Regression);
                 modelOutputPort.deliver(model);
             }
         }
@@ -203,10 +203,15 @@ public class ISMetaVoteOperator extends AbstractPRulesOperatorChain {
         return output;
     }
 
+    /**
+     * Returns number of prototypes displayed in the MataData related with prototypeOutput
+     *
+     * @return     
+     * @throws com.rapidminer.parameter.UndefinedParameterError     
+     */    
     @Override
-    protected MDInteger getSampledSize(ExampleSetMetaData emd) throws UndefinedParameterError {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        return new MDInteger(-1);
+    public MDInteger getNumberOfPrototypesMetaData() throws UndefinedParameterError {        
+        return new MDInteger();        
     }
 
     @Override

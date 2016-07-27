@@ -16,11 +16,13 @@ import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.learner.CapabilityProvider;
 import com.rapidminer.ispr.operator.learner.AbstractPRulesOperator;
+import static com.rapidminer.ispr.operator.learner.clustering.CFCMOperator.PARAMETER_NUMBER_OF_CLUSTERS;
 import com.rapidminer.operator.ports.InputPort;
 import com.rapidminer.operator.ports.metadata.CapabilityPrecondition;
 import com.rapidminer.operator.ports.metadata.DistanceMeasurePrecondition;
 import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
 import com.rapidminer.operator.ports.metadata.MDInteger;
+import com.rapidminer.operator.ports.metadata.MetaData;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.UndefinedParameterError;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
@@ -101,6 +103,7 @@ public class ClassAssignerOperator extends AbstractPRulesOperator {
         prototypes.getExampleTable().addAttribute(labelAttribute);
         DistanceMeasure distance = measureHelper.getInitializedMeasure(trainingSet);
         distance.init(trainingAttributes, prototypesAttributes);
+        //If training set has nominal label then
         if (trainingAttributes.getLabel().isNominal()) {
             NominalMapping classMapping = trainingSet.getAttributes().getLabel().getMapping();
             int classNumber = classMapping.size();
@@ -168,11 +171,20 @@ public class ClassAssignerOperator extends AbstractPRulesOperator {
             }
         }
         return prototypes;
-    }
-
+    }   
+    
+     /**
+     * Returns number of prototypes
+     *
+     * @return     
+     */    
     @Override
-    protected MDInteger getSampledSize(ExampleSetMetaData emd) throws UndefinedParameterError {
-        return emd.getNumberOfExamples();
+    public MDInteger getNumberOfPrototypesMetaData()  throws UndefinedParameterError {
+        MetaData md = this.exampleSetInputPort.getMetaData();
+        if (md instanceof ExampleSetMetaData){
+            return ((ExampleSetMetaData) md).getNumberOfExamples();             
+        }
+        return new MDInteger();
     }
 
     @Override

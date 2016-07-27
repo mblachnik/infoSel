@@ -21,7 +21,11 @@ extensionConfig {
 
     // The extension name
     name = 'Information Selection'
-
+    //The namespace
+    namespace = 'prules'
+    //Version id
+    version = '7.0.0'
+    
     /*
      * The artifact group which will be used when publishing the extensions Jar
      * and for package customization when initializing the project repository.
@@ -48,7 +52,7 @@ extensionConfig {
 
 	// define RapidMiner version and extension dependencies
 	dependencies {
-       rapidminer '6.5.0'
+       rapidminer '7.0.0'
 		//extension namespace: 'text', version: '6.1.0'
 	}
 }

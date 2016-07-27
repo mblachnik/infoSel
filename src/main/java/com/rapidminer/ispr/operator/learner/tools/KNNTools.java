@@ -29,19 +29,22 @@ import java.util.ListIterator;
 public class KNNTools {
 
     public static ISPRGeometricDataCollection<Number> initializeKNearestNeighbourFactory(GeometricCollectionTypes type, ExampleSet exampleSet, DistanceMeasure measure) {
+        return initializeKNearestNeighbourFactory(type, exampleSet, exampleSet.getAttributes().getLabel() ,measure);
+    }
+    public static ISPRGeometricDataCollection<Number> initializeKNearestNeighbourFactory(GeometricCollectionTypes type, ExampleSet exampleSet, Attribute labelAttribute, DistanceMeasure measure) {
         ISPRGeometricDataCollection<Number> samples = null;
         switch (type) {
             case LINEAR_SEARCH:
-                samples = new MyLinearList<Number>(exampleSet, exampleSet.getAttributes().getLabel(), measure);
+                samples = new MyLinearList<Number>(exampleSet, labelAttribute, measure);
                 break;
             case CACHED_LINEAR_SEARCH:
-                samples = new SimpleNNCachedLineraList<Number>(exampleSet, exampleSet.getAttributes().getLabel(), measure);
+                samples = new SimpleNNCachedLineraList<Number>(exampleSet, labelAttribute, measure);
                 break;
             case BALL_TREE_SEARCH:
-                samples = new BallTree<Number>(exampleSet, exampleSet.getAttributes().getLabel(), measure);
+                samples = new BallTree<Number>(exampleSet, labelAttribute, measure);
                 break;
             case KD_TREE_SEARCH:
-                samples = new KDTree<Number>(exampleSet, exampleSet.getAttributes().getLabel(), measure);
+                samples = new KDTree<Number>(exampleSet, labelAttribute, measure);
                 break;
         }
         return samples;

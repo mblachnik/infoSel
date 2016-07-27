@@ -16,6 +16,7 @@ import com.rapidminer.operator.ports.OutputPort;
  *
  * @author Marcin
  */
+@Deprecated
 public class GetIOModelID extends Operator {
 
     /**
@@ -45,6 +46,7 @@ public class GetIOModelID extends Operator {
     public void doWork() throws OperatorException {
         IOObject in = inputPort.getAnyDataOrNull();
         //id = in.getObjectID();
+        //No longer supported
         outputPort.deliver(in);
     }
 }

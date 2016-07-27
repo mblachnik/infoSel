@@ -13,6 +13,7 @@ import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
 import com.rapidminer.operator.ports.metadata.MDInteger;
 import com.rapidminer.operator.ports.metadata.MetaData;
 import com.rapidminer.operator.ports.metadata.PassThroughRule;
+import com.rapidminer.operator.ports.metadata.SubprocessTransformRule;
 import com.rapidminer.parameter.UndefinedParameterError;
 
 /**
@@ -49,23 +50,9 @@ public abstract class AbstractPRulesOperatorChain extends OperatorChain implemen
         super(description, subprocessNames);//
         exampleSetInputPort.addPrecondition(new CapabilityPrecondition(this, exampleSetInputPort));
         exampleSetInputPort.addPrecondition(new DistanceMeasurePrecondition(exampleSetInputPort, this));
-        getTransformer().addPassThroughRule(exampleSetInputPort, exampleSetOutputPort);
+        getTransformer().addPassThroughRule(exampleSetInputPort, exampleSetOutputPort);        
         //getTransformer().addPassThroughRule(exampleSetInputPort,originalExampleSetOutputPort);
-        getTransformer().addRule(new PassThroughRule(exampleSetInputPort, prototypesOutputPort, false) {
-
-            @Override
-            public MetaData modifyMetaData(MetaData metaData) {
-                if (metaData instanceof ExampleSetMetaData) {
-                    try {
-                        return AbstractPRulesOperatorChain.this.modifyMetaData((ExampleSetMetaData) metaData);
-                    } catch (UndefinedParameterError ex) {
-                        return metaData;
-                    }
-                } else {
-                    return metaData;
-                }
-            }
-        });
+        addPrototypeTransformationRule();
     }
 
     @Override
@@ -88,14 +75,13 @@ public abstract class AbstractPRulesOperatorChain extends OperatorChain implemen
     public abstract ExampleSet processExamples(ExampleSet trainingSet) throws OperatorException;
 
     /**
-     * subclasses must implement this method for exact size meta data.
+     * It returns number of proptotypes in the ExampleSetMetaData returned by
+     * the prototypeOutput
      *
-     * @param emd
      * @return
      * @throws UndefinedParameterError
      */
-    protected abstract MDInteger getSampledSize(ExampleSetMetaData emd)
-            throws UndefinedParameterError;
+    protected abstract MDInteger getNumberOfPrototypesMetaData() throws UndefinedParameterError;
 
     /**
      * Method to represent preconditions of ExampleSet
@@ -104,12 +90,12 @@ public abstract class AbstractPRulesOperatorChain extends OperatorChain implemen
      * @return
      * @throws UndefinedParameterError
      */
-    protected MetaData modifyMetaData(ExampleSetMetaData metaData)
+    protected MetaData modifyPrototypeOutputMetaData(ExampleSetMetaData metaData)
             throws UndefinedParameterError {
-        try {
-            metaData.setNumberOfExamples(getSampledSize(metaData));
-        } catch (UndefinedParameterError e) {
-            metaData.setNumberOfExamples(new MDInteger(-1));
+        try { 
+            metaData.setNumberOfExamples(getNumberOfPrototypesMetaData());
+        } catch (UndefinedParameterError e){
+            metaData.setNumberOfExamples(new MDInteger());
         }
         return metaData;
     }
@@ -132,4 +118,34 @@ public abstract class AbstractPRulesOperatorChain extends OperatorChain implemen
         return exampleSetOutputPort;
     }
 
+    /**
+     * Returns the handle to the Prototype output port
+     *
+     * @return output port
+     */
+    public OutputPort getProtoOutputPort(){
+        return prototypesOutputPort;
+    }
+    
+    /**
+     * This method should be executed at the end of all other transformation rules. It generates 
+     * PrototypeOutput metadata. This metadata usually depends on the subprocess metadata. In this case
+     * when this method will be executed to early it wouldn't be able to generate metadata values for prototypeOutput
+     */
+    protected void addPrototypeTransformationRule(){
+        getTransformer().addRule(new PassThroughRule(exampleSetInputPort, prototypesOutputPort, true) {
+            @Override
+            public MetaData modifyMetaData(MetaData metaData) {
+                if (metaData instanceof ExampleSetMetaData) {
+                    try {
+                        return AbstractPRulesOperatorChain.this.modifyPrototypeOutputMetaData((ExampleSetMetaData) metaData);
+                    } catch (UndefinedParameterError ex) {
+                        return metaData;
+                    }
+                } else {
+                    return metaData;
+                }
+            }
+        });
+    }
 }

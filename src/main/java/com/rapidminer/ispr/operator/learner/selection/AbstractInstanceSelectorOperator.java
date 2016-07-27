@@ -4,18 +4,16 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.operator.ValueDouble;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.example.set.SortedExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.ispr.operator.learner.AbstractPRulesOperator;
-import com.rapidminer.ispr.operator.learner.classifiers.MyKNNClassificationModel;
+import com.rapidminer.ispr.operator.learner.classifiers.IS_KNNClassificationModel;
 import com.rapidminer.ispr.operator.learner.classifiers.PredictionType;
 import com.rapidminer.ispr.operator.learner.classifiers.VotingType;
 import com.rapidminer.ispr.operator.learner.selection.models.AbstractInstanceSelectorModel;
-import com.rapidminer.ispr.operator.learner.selection.models.CNNInstanceSelectionGeneralModel;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
@@ -63,9 +61,6 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPRulesOpe
     public static final String PARAMETER_ADD_WEIGHTS = "add weight attribute";
     public static final String PARAMETER_INVERSE_SELECTION = "inverse selection";
     int sampleSize = -1;
-    private double numberOfInstancesBeaforeSelection = -1;
-    private double numberOfInstancesAfterSelection = -1;
-    private double compression = -1;
     protected DistanceMeasureHelper measureHelper;
     protected final OutputPort modelOutputPort = getOutputPorts().createPort("model");    
     // private boolean isDistanceBasedMethod;
@@ -87,7 +82,7 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPRulesOpe
     private void init() {        
         //isDistanceBasedMethod = true;
         measureHelper = new DistanceMeasureHelper(this);
-        //getTransformer().addRule(new GenerateModelTransformationRule(exampleSetInputPort, modelOutputPort, MyKNNClassificationModel.class));
+        //getTransformer().addRule(new GenerateModelTransformationRule(exampleSetInputPort, modelOutputPort, IS_KNNClassificationModel.class));
         exampleSetInputPort.addPrecondition(
                 new ParameterConditionedPrecondition(exampleSetInputPort, new ExampleSetPrecondition(exampleSetInputPort, Ontology.ATTRIBUTE_VALUE, Attributes.ID_NAME), this,
                         PARAMETER_ADD_WEIGHTS, "true"));
@@ -121,25 +116,7 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPRulesOpe
         }
         );
 
-        getTransformer().addRule(new GeneratePredictionModelTransformationRule(exampleSetInputPort, modelOutputPort, MyKNNClassificationModel.class));
-        addValue(new ValueDouble("Instances_beafore_selection", "Number Of Examples in the training set") {
-            @Override
-            public double getDoubleValue() {
-                return numberOfInstancesBeaforeSelection;
-            }
-        });
-        addValue(new ValueDouble("Instances_after_selection", "Number Of Examples after selection") {
-            @Override
-            public double getDoubleValue() {
-                return numberOfInstancesAfterSelection;
-            }
-        });
-        addValue(new ValueDouble("Compression", "Compressin = #Instances_after_selection/#Instances_beafore_selection") {
-            @Override
-            public double getDoubleValue() {
-                return compression;
-            }
-        });
+        getTransformer().addRule(new GeneratePredictionModelTransformationRule(exampleSetInputPort, modelOutputPort, IS_KNNClassificationModel.class));        
     }
 
     /**
@@ -188,8 +165,7 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPRulesOpe
             output = new SelectedExampleSet(trainingSet);
             instanceSelectionInput = (SelectedExampleSet) output.clone();
         }
-        DataIndex initialIndex = instanceSelectionInput.getIndex();
-        numberOfInstancesBeaforeSelection = trainingSet.size();        
+        DataIndex initialIndex = instanceSelectionInput.getIndex();             
         AbstractInstanceSelectorModel m = configureInstanceSelectionModel(instanceSelectionInput);
         DataIndex index = m.selectInstances(instanceSelectionInput); 
         if (index==null){
@@ -200,9 +176,7 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPRulesOpe
         if (inverseSelection) {            
             index.negate();
         }
-        output.setIndex(index);
-        numberOfInstancesAfterSelection = output.size();
-        compression = numberOfInstancesAfterSelection / numberOfInstancesBeaforeSelection;
+        output.setIndex(index);        
         if (modelOutputPort.isConnected()) {
             ISPRGeometricDataCollection<Number> samples = m.getModel();
             if (samples == null){                                            
@@ -210,7 +184,7 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPRulesOpe
                 samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, output, distance);
             }
             PredictionType modelType = trainingSet.getAttributes().getLabel().isNominal() ? PredictionType.Classification : PredictionType.Regression;
-            MyKNNClassificationModel<Number> model = new MyKNNClassificationModel<>(output, samples, 1, VotingType.MAJORITY, modelType);
+            IS_KNNClassificationModel<Number> model = new IS_KNNClassificationModel<>(output, samples, 1, VotingType.MAJORITY, modelType);
             modelOutputPort.deliver(model);
         }
         boolean addWeights = getParameterAsBoolean(PARAMETER_ADD_WEIGHTS);
@@ -286,20 +260,15 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPRulesOpe
         return true;
     }
 
-    /**
-     * Used to configure RapidMiner metadata processing
+     /**
+     * Returns number of prototypes displayed in the MataData related with prototypeOutput
      *
-     * @param exampleSetMD
-     * @return
-     * @throws UndefinedParameterError
-     */
+     * @return     
+     * @throws com.rapidminer.parameter.UndefinedParameterError     
+     */    
     @Override
-    protected MDInteger getSampledSize(ExampleSetMetaData exampleSetMD) throws UndefinedParameterError {
-        if (sampleSize == -1) {
-            return new MDInteger();
-        } else {
-            return new MDInteger(sampleSize);
-        }
+    public MDInteger getNumberOfPrototypesMetaData() throws UndefinedParameterError {        
+        return new MDInteger();        
     }
 
     /**

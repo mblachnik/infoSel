@@ -7,7 +7,7 @@ package com.rapidminer.ispr.operator.learner.selection.models;
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.set.SelectedExampleSet;
-import com.rapidminer.ispr.operator.learner.classifiers.MyKNNClassificationModel;
+import com.rapidminer.ispr.operator.learner.classifiers.IS_KNNClassificationModel;
 import com.rapidminer.ispr.operator.learner.classifiers.PredictionType;
 import com.rapidminer.ispr.operator.learner.classifiers.VotingType;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
@@ -34,7 +34,7 @@ public class AllKNNInstanceSelectionGeneralModel extends AbstractInstanceSelecto
     private DistanceMeasure measure; //distance measure
     private int lowerK, upperK; // lower and upper bounds for k value
     private IISDecisionFunction loss; //decision function which is used to determine if certain condition is valid or not. It allows to support both classification and regression tasks    
-    MyKNNClassificationModel<Number> model;
+    IS_KNNClassificationModel<Number> model;
 
     /**
      * Constructor

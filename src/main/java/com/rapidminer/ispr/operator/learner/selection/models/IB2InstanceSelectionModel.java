@@ -56,18 +56,18 @@ public class IB2InstanceSelectionModel extends AbstractInstanceSelectorModel {
         ISPRGeometricDataCollection<Number> nn = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH,selectedSet, distance);
 
         int attributeSize = exampleSet.getAttributes().size();
-        double[] firstValues = new double[attributeSize];
+        double[] values = new double[attributeSize];
 
-        for (Example firstInstance : trainingSet) {
-            KNNTools.extractExampleValues(firstInstance, firstValues);
-            Collection<Number> result = nn.getNearestValues(1, firstValues);
-            double realLabel = firstInstance.getLabel();
+        for (Example currentInstance : trainingSet) {
+            KNNTools.extractExampleValues(currentInstance, values);
+            Collection<Number> result = nn.getNearestValues(1, values);
+            double realLabel = currentInstance.getLabel();
             double predictedLabel = result.iterator().next().doubleValue();
-            if (loss.getValue(realLabel, predictedLabel, firstValues) > 0) {
-                i = ((ISPRExample) firstInstance).getIndex();
+            if (loss.getValue(realLabel, predictedLabel, values) > 0) {
+                i = ((ISPRExample) currentInstance).getIndex();
                 selectedIndex.set(i, true);
                 trainingIndex.set(i, false);
-                nn.add(firstValues.clone(), realLabel);
+                nn.add(values.clone(), realLabel);
             }
         }
         return selectedIndex;        

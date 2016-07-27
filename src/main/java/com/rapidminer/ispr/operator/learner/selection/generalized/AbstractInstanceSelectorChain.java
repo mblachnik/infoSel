@@ -17,7 +17,7 @@ import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.UserError;
 import com.rapidminer.operator.learner.PredictionModel;
 import com.rapidminer.ispr.operator.learner.AbstractPRulesOperatorChain;
-import com.rapidminer.ispr.operator.learner.classifiers.MyKNNClassificationModel;
+import com.rapidminer.ispr.operator.learner.classifiers.IS_KNNClassificationModel;
 import com.rapidminer.ispr.operator.learner.classifiers.PredictionType;
 import com.rapidminer.ispr.operator.learner.classifiers.VotingType;
 import com.rapidminer.ispr.operator.learner.tools.KNNTools;
@@ -109,8 +109,8 @@ public abstract class AbstractInstanceSelectorChain extends AbstractPRulesOperat
         predictedExampleSetInnerSourcePort.addPrecondition(new ExampleSetPrecondition(predictedExampleSetInnerSourcePort));
         getTransformer().addRule(new SubprocessTransformRule(getSubprocess(1)));
 
-        //getTransformer().addRule(new GenerateModelTransformationRule(exampleSetInputPort, modelOutputPort, MyKNNClassificationModel.class));
-        getTransformer().addRule(new GeneratePredictionModelTransformationRule(exampleSetInputPort, modelOutputPort, MyKNNClassificationModel.class));
+        //getTransformer().addRule(new GenerateModelTransformationRule(exampleSetInputPort, modelOutputPort, IS_KNNClassificationModel.class));
+        getTransformer().addRule(new GeneratePredictionModelTransformationRule(exampleSetInputPort, modelOutputPort, IS_KNNClassificationModel.class));
         addValue(new ValueDouble("Instances_beafore_selection", "Number Of Examples in the training set") {
 
             @Override
@@ -182,12 +182,12 @@ public abstract class AbstractInstanceSelectorChain extends AbstractPRulesOperat
             DistanceMeasure distance = measureHelper.getInitializedMeasure(output);
             if (output.getAttributes().getLabel().isNominal()) {
                 ISPRGeometricDataCollection<Number> samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH,output, distance);                
-                MyKNNClassificationModel<Number> model = new MyKNNClassificationModel<Number>(output, samples, 1, VotingType.MAJORITY, PredictionType.Classification);
+                IS_KNNClassificationModel<Number> model = new IS_KNNClassificationModel<Number>(output, samples, 1, VotingType.MAJORITY, PredictionType.Classification);
                 modelOutputPort.deliver(model);
             } else if (output.getAttributes().getLabel().isNumerical()) {
                 ISPRGeometricDataCollection<IntDoubleContainer> samples = KNNTools.initializeGeneralizedKNearestNeighbour(output, distance);
                 //GeometricDataCollection<Integer> samples = KNNTools.initializeKNearestNeighbour(output, distance);                
-                MyKNNClassificationModel<IntDoubleContainer> model = new MyKNNClassificationModel<IntDoubleContainer>(output, samples, 1, VotingType.MAJORITY, PredictionType.Regression);
+                IS_KNNClassificationModel<IntDoubleContainer> model = new IS_KNNClassificationModel<IntDoubleContainer>(output, samples, 1, VotingType.MAJORITY, PredictionType.Regression);
                 modelOutputPort.deliver(model);
             }
 
@@ -222,13 +222,15 @@ public abstract class AbstractInstanceSelectorChain extends AbstractPRulesOperat
         return output;
     }
 
+   /**
+     * Returns number of prototypes displayed in the MataData related with prototypeOutput
+     *
+     * @return     
+     * @throws com.rapidminer.parameter.UndefinedParameterError     
+     */    
     @Override
-    protected MDInteger getSampledSize(ExampleSetMetaData exampleSetMD) throws UndefinedParameterError {
-        if (sampleSize == -1) {
-            return new MDInteger();
-        } else {
-            return new MDInteger(sampleSize);
-        }
+    protected MDInteger getNumberOfPrototypesMetaData() throws UndefinedParameterError {        
+        return new MDInteger();        
     }
 
     /**

@@ -6,7 +6,7 @@ package com.rapidminer.ispr.operator.learner.selection.models;
 
 import com.rapidminer.example.set.EditedExampleSet;
 import com.rapidminer.example.set.SelectedExampleSet;
-import com.rapidminer.ispr.operator.learner.classifiers.MyKNNClassificationModel;
+import com.rapidminer.ispr.operator.learner.classifiers.IS_KNNClassificationModel;
 import com.rapidminer.ispr.operator.learner.classifiers.VotingType;
 import com.rapidminer.ispr.operator.learner.tools.Associates;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
