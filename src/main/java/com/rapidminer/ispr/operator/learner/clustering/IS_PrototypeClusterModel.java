@@ -12,8 +12,12 @@ import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.example.table.NominalMapping;
 import com.rapidminer.example.table.PolynominalMapping;
+import com.rapidminer.ispr.dataset.IStoredValues;
+import com.rapidminer.ispr.dataset.Instance;
+import com.rapidminer.ispr.dataset.InstanceGenerator;
+import com.rapidminer.ispr.dataset.SimpleInstance;
 import com.rapidminer.ispr.operator.learner.classifiers.VotingType;
-import com.rapidminer.ispr.operator.learner.tools.KNNTools;
+import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.operator.learner.tools.PRulesUtil;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
 import com.rapidminer.tools.Ontology;
@@ -31,7 +35,7 @@ public class IS_PrototypeClusterModel extends IS_ClusterModel {
 
     private static final long serialVersionUID = -6292869962412072573L;
     final Map<Integer, String> clusterNamesMap;
-    final ISPRGeometricDataCollection<Number> samples;
+    final ISPRGeometricDataCollection<IStoredValues> samples;
     final VotingType weightedNN;
     final List<String> trainingAttributeNames;
     final int numberOfClusters;
@@ -52,7 +56,7 @@ public class IS_PrototypeClusterModel extends IS_ClusterModel {
      * results will be added. If false the algorithm can be used to identify
      * cluster centers only
      */
-    public IS_PrototypeClusterModel(ExampleSet trainingSet, ISPRGeometricDataCollection<Number> model, int numberOfClusters, Map<Integer, String> clusterNamesMap, boolean addClusterAsLabel, boolean addCluster) {
+    public IS_PrototypeClusterModel(ExampleSet trainingSet, ISPRGeometricDataCollection<IStoredValues> model, int numberOfClusters, Map<Integer, String> clusterNamesMap, boolean addClusterAsLabel, boolean addCluster) {
         super(trainingSet, numberOfClusters, addClusterAsLabel, false);
         samples = model;
         weightedNN = VotingType.MAJORITY;
@@ -138,24 +142,20 @@ public class IS_PrototypeClusterModel extends IS_ClusterModel {
     public int[] getClusterAssignments(ExampleSet exampleSet) {
         int[] predictions = new int[exampleSet.size()];
         Attributes attributes = exampleSet.getAttributes();
-        int attributesNumber = trainingAttributeNames.size();
-        double[] values = new double[attributesNumber];
+        int attributesNumber = trainingAttributeNames.size();        
         int j = 0;
         double[] counter;
         counter = new double[numberOfClusters];
 
         List<Attribute> orderedAttributes = PRulesUtil.reorderAttributesByName(attributes, trainingAttributeNames);
+        Instance instance = InstanceGenerator.generateInstance(new double[exampleSet.getAttributes().size()]);
         for (Example example : exampleSet) {
             // reading values
-            int i = 0;
-            for (Attribute attribute : orderedAttributes) {
-                values[i] = example.getValue(attribute);
-                i++;
-            }
+            instance.setValues(example, orderedAttributes);
             int mostFrequentIndex;
             // counting frequency of labels
             Arrays.fill(counter, 0);
-            KNNTools.doNNVotes(counter, values, samples, 1, weightedNN);
+            KNNTools.doNNVotes(counter,instance, samples, 1, weightedNN);
             // finding most frequent class
             mostFrequentIndex = PRulesUtil.findMostFrequentValue(counter);
             // setting prediction

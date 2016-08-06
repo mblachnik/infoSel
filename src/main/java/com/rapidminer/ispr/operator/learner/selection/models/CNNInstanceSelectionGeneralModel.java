@@ -8,12 +8,14 @@ import com.rapidminer.example.Example;
 import com.rapidminer.example.set.EditedExampleSet;
 import com.rapidminer.example.set.ISPRExample;
 import com.rapidminer.example.set.SelectedExampleSet;
-import com.rapidminer.ispr.operator.learner.classifiers.IS_KNNClassificationModel;
-import com.rapidminer.ispr.operator.learner.classifiers.PredictionType;
-import com.rapidminer.ispr.operator.learner.classifiers.VotingType;
+import com.rapidminer.ispr.dataset.IStoredValues;
+import com.rapidminer.ispr.dataset.Instance;
+import com.rapidminer.ispr.dataset.InstanceGenerator;
+import com.rapidminer.ispr.dataset.StoredValuesHelper;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.operator.learner.tools.KNNTools;
+import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
+import com.rapidminer.ispr.operator.learner.selection.models.tools.InstanceModifier;
 import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
@@ -28,13 +30,14 @@ public class CNNInstanceSelectionGeneralModel extends AbstractInstanceSelectorMo
 
     private final DistanceMeasure distance;
     private final IISDecisionFunction loss;
-    private ISPRGeometricDataCollection<Number> model;
+    private ISPRGeometricDataCollection<IStoredValues> model;
+    private InstanceModifier modifier;
 
     /**
      * Constructor of Condensed NN instance selection algorithms
      *
      * @param distance - distance function
-     * @param loss - loss function
+     * @param loss - loss function     
      */
     public CNNInstanceSelectionGeneralModel(DistanceMeasure distance, IISDecisionFunction loss) {
         this.distance = distance;
@@ -60,23 +63,23 @@ public class CNNInstanceSelectionGeneralModel extends AbstractInstanceSelectorMo
         int i = 0;
         selectedIndex.set(i, true);
         trainingIndex.set(i, false);
-        ISPRGeometricDataCollection<Number> nn = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, selectedSet, distance);
+        ISPRGeometricDataCollection<IStoredValues> nn = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, selectedSet, distance);
         boolean isModiffied = true;
         int attributeSize = exampleSet.getAttributes().size();
-        double[] firstValues = new double[attributeSize];
+        Instance instance = InstanceGenerator.generateInstance(trainingSet);
 
         while (isModiffied) {
             isModiffied = false;
             for (Example firstInstance : trainingSet) {
-                KNNTools.extractExampleValues(firstInstance, firstValues);
-                Collection<Number> result = nn.getNearestValues(1, firstValues);
+                instance.setValues(firstInstance);                
+                Collection<IStoredValues> result = nn.getNearestValues(1, instance);
                 double realLabel = firstInstance.getLabel();
-                double predictedLabel = result.iterator().next().doubleValue();
-                if (loss.getValue(realLabel, predictedLabel, firstValues) > 0) {
+                double predictedLabel = result.iterator().next().getLabel();
+                if (loss.getValue(realLabel, predictedLabel, instance) > 0) {
                     i = ((ISPRExample) firstInstance).getIndex();
                     selectedIndex.set(i, true);
                     trainingIndex.set(i, false);
-                    nn.add(firstValues.clone(), realLabel);
+                    nn.add((Instance)instance.clone(), StoredValuesHelper.createStoredValue(firstInstance));
                     isModiffied = true;
                 }
             }
@@ -86,7 +89,7 @@ public class CNNInstanceSelectionGeneralModel extends AbstractInstanceSelectorMo
     }
 
     @Override
-    public ISPRGeometricDataCollection<Number> getModel() {
+    public ISPRGeometricDataCollection<IStoredValues> getModel() {
         return model;
     }       
 }

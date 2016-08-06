@@ -7,9 +7,13 @@ package com.rapidminer.ispr.operator.learner.selection.models;
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.set.SelectedExampleSet;
+import com.rapidminer.ispr.dataset.IStoredValues;
+import com.rapidminer.ispr.dataset.Instance;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.operator.learner.tools.KNNTools;
+import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
+import com.rapidminer.ispr.operator.learner.selection.models.tools.EmptyInstanceModifier;
+import com.rapidminer.ispr.operator.learner.selection.models.tools.InstanceModifier;
 import com.rapidminer.ispr.operator.learner.tools.PRulesUtil;
 import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
@@ -20,6 +24,7 @@ import java.util.Iterator;
 
 /**
  * Class implements ENN Instance selection algorithm
+ *
  * @author Marcin
  */
 public class ENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
@@ -31,37 +36,51 @@ public class ENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
     private final GeometricCollectionTypes knnType = GeometricCollectionTypes.LINEAR_SEARCH;
     private final IISDecisionFunction loss;
     private double[] classWeight;
+    private final InstanceModifier modifier;
 
-/**
+    /**
      * Constructor for ENN instance selection model.
+     *
      * @param measure - distance measure
      * @param k - number of nearest neighbors
-     * @param loss - decision function     
+     * @param loss - decision function
      */
     public ENNInstanceSelectionModel(DistanceMeasure measure, int k, IISDecisionFunction loss) {
         this.measure = measure;
         this.k = k;
         this.loss = loss;
         this.classWeight = null;
+        this.modifier = new EmptyInstanceModifier();
     }
 
     /**
-     * Constructor for ENN instance selection model. Also supports class weight matrix for inbalanced problems
+     * Constructor for ENN instance selection model. Also supports class weight
+     * matrix for inbalanced problems
+     *
      * @param measure - distance measure
      * @param k - number of nearest neighbors
      * @param loss - decision function
-     * @param classWeight - class weights matrix - table of doubles which represents importance of each class
+     * @param classWeight - class weights matrix - table of doubles which
+     * represents importance of each class
+     * @param modifier element of InstanceModifier class which allows to modify processed instance on the fly. Used for example for noise modifier
      */
-    public ENNInstanceSelectionModel(DistanceMeasure measure, int k, IISDecisionFunction loss, double[] classWeight) {
+    public ENNInstanceSelectionModel(DistanceMeasure measure, int k, IISDecisionFunction loss, double[] classWeight, InstanceModifier modifier) {
         this.measure = measure;
         this.k = k;
         this.loss = loss;
-        this.classWeight = classWeight;
+        this.classWeight = classWeight;        
+        if (modifier == null){
+            this.modifier = new EmptyInstanceModifier();
+        } else {
+            this.modifier = modifier;
+        }
     }
 
     /**
      * Performs instance selection
-     * @param exampleSet - example set for which instance selection will be performed
+     *
+     * @param exampleSet - example set for which instance selection will be
+     * performed
      * @return - index of selected examples
      */
     @Override
@@ -72,20 +91,20 @@ public class ENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
 
         int sampleSize = exampleSet.size();
         //DATA STRUCTURE PREPARATION        
-        ISPRGeometricDataCollection<Number> samples;
+        ISPRGeometricDataCollection<IStoredValues> samples;
         samples = KNNTools.initializeKNearestNeighbourFactory(knnType, exampleSet, measure);
         loss.init(samples);
         if (storeConfidence) {
             confidence = new double[sampleSize];
         }
         //ENN EDITTING
-        double[] values;
+        Instance values;
         double realLabel;
         double predictedLabel = 0;
 
         int instanceIndex = 0;
-        Iterator<double[]> sampleIterator = samples.samplesIterator();
-        Iterator<Number> labelIterator = samples.storedValueIterator();
+        Iterator<Instance> sampleIterator = samples.samplesIterator();
+        Iterator<IStoredValues> labelIterator = samples.storedValueIterator();
         if (label.isNominal()) {
             if (this.classWeight == null) {
                 this.classWeight = new double[label.getMapping().size()];
@@ -97,22 +116,23 @@ public class ENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
             double[] counter = new double[numberOfClasses];
             while (sampleIterator.hasNext() && labelIterator.hasNext()) {
                 Arrays.fill(counter, 0);
-                Collection<Number> res;
-                values = sampleIterator.next();
-                realLabel = labelIterator.next().doubleValue();
+                Collection<IStoredValues> res;
+                values = modifier.modify(sampleIterator.next());                
+                realLabel = labelIterator.next().getLabel();
                 res = samples.getNearestValues(k + 1, values);
                 double sum = 0;
-                for (Number i : res) {
-                    counter[i.intValue()] += classWeight[i.intValue()];
-                    sum += classWeight[i.intValue()];
+                for (IStoredValues i : res) {
+                    int idx = (int)i.getLabel();
+                    counter[idx] += classWeight[idx];
+                    sum += classWeight[idx];
                 }
                 counter[(int) realLabel] -= classWeight[(int) realLabel]; //here we have to subtract distanceRate because we took k+1 neighbours 					            
                 sum -= classWeight[(int) realLabel]; //here we have to subtract because nearest neighbors includ itself, see line above
                 predictedLabel = PRulesUtil.findMostFrequentValue(counter);
                 if (storeConfidence) {
                     confidence[instanceIndex] = counter[(int) predictedLabel] / sum;
-                }                           
-                if (loss.getValue(realLabel,predictedLabel,values)> 0) {
+                }
+                if (loss.getValue(realLabel, predictedLabel, values) > 0) {
                     index.set(instanceIndex, false);
                 }
                 instanceIndex++;
@@ -120,19 +140,19 @@ public class ENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
         } else if (label.isNumerical()) {
             while (sampleIterator.hasNext() && labelIterator.hasNext()) {
                 predictedLabel = 0;
-                Collection<Number> res;
-                values = sampleIterator.next();
-                realLabel = labelIterator.next().doubleValue();
+                Collection<IStoredValues> res;
+                values = modifier.modify(sampleIterator.next());
+                realLabel = labelIterator.next().getLabel();
                 res = samples.getNearestValues(k + 1, values);
                 double sum = 0;
-                for (Number i : res) {
-                    predictedLabel += i.doubleValue();
+                for (IStoredValues i : res) {
+                    predictedLabel += i.getLabel();
                     sum++;
                 }
                 predictedLabel -= realLabel;  //here we have to subtract distanceRate because we took k+1 neighbours 					            
                 sum--; //here we have to subtract because nearest neighbors includ itself, see line above                
                 predictedLabel /= sum;
-                if (loss.getValue(realLabel,predictedLabel,values)> 0) {
+                if (loss.getValue(realLabel, predictedLabel, values) > 0) {
                     index.set(instanceIndex, false);
                 }
                 instanceIndex++;

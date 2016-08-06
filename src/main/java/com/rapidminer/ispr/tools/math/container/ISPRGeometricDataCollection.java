@@ -6,96 +6,135 @@ package com.rapidminer.ispr.tools.math.container;
 
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.ExampleSet;
+import com.rapidminer.ispr.dataset.Instance;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author Marcin
+ * @param <T>
  */
-public interface ISPRGeometricDataCollection<T extends Serializable> extends Serializable {    
-    
+public interface ISPRGeometricDataCollection<T extends Serializable> extends Serializable {
+    /**
+     * Initialize data structure
+     *
+     * @param exampleSet
+     * @param storedValues
+     */
+    void initialize(ExampleSet exampleSet, Map<Attribute,String> storedValues);
+    /**
+     * This method has to be called in order to insert new values into the data
+     * structure
+     *
+     * @param values specifies the geometric coordinates in data space
+     * @param storeValue specifies the value at the given point
+     */
+    public  void add(Instance values, T storeValue);
 
-    
-        /**
-         * Initialize data structure
-         * @param exampleSet
-         * @param storedValues 
-         */
-        public abstract void initialize(ExampleSet exampleSet, Attribute storedValues);
-                
-	/**
-	 * This method has to be called in order to insert new values into the data structure 
-	 * @param values specifies the geometric coordinates in data space
-	 * @param storeValue specifies the value at the given point
-	 */	
-	public abstract void add(double[] values, T storeValue);
+    /**
+     * This method returns a collection of the stored data values from the k
+     * nearest sample points.
+     *
+     * @param k the number of neighbours
+     * @param values the coordinate of the querry point in the sample dimension
+     * @return
+     */
+    public  Collection<T> getNearestValues(int k, Instance values);
 
-	/**
-	 * This method returns a collection of the stored data values from the k nearest sample points.
-	 * @param k   the number of neighbours
-	 * @param values the coordinate of the querry point in the sample dimension
-	 */
-	public abstract Collection<T> getNearestValues(int k, double[] values);
-	
-	/**
-	 * This method returns a collection of data from the k nearest sample points.
-	 * This collection consists of Tupels containing the distance from querrypoint
-	 * to the samplepoint and in the second component the contained value of the sample
-	 * point.
-	 * @param k   the number of neighbours
-	 * @param values the coordinate of the querry point in the sample dimension
-	 */
-	public abstract Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, double[] values);
+    /**
+     * This method returns a collection of data from the k nearest sample
+     * points. This collection consists of Tupels containing the distance from
+     * querrypoint to the samplepoint and in the second component the contained
+     * value of the sample point.
+     *
+     * @param k the number of neighbours
+     * @param values the coordinate of the querry point in the sample dimension
+     * @return collection of stored values with associated distances
+     */
+    public  Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, Instance values);
 
-	
-	/**
-	 * This method returns a collection of data from all sample points inside the specified distance.
-	 * This collection consists of Tupels containing the distance from querrypoint
-	 * to the samplepoint and in the second component the contained value of the sample
-	 * point.
-	 * 
-	 * @param values the coordinate of the querry point in the sample dimension
-	 */
-	public abstract Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, double[] values);
-	
-	/**
-	 * This method returns a collection of data from all sample points inside the specified distance but at least
-	 * k points. So the distance might be enlarged if density is to low.
-	 * This collection consists of Tupels containing the distance from querrypoint
-	 * to the samplepoint and in the second component the contained value of the sample
-	 * point.
-	 * 
-	 * @param values the coordinate of the querry point in the sample dimension
-	 */
-	public abstract Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, double[] values);
+    /**
+     * This method returns a collection of data from all sample points inside
+     * the specified distance. This collection consists of Tupels containing the
+     * distance from querrypoint to the samplepoint and in the second component
+     * the contained value of the sample point.
+     *
+     * @param withinDistance minimum distance
+     * @param values the coordinate of the querry point in the sample dimension
+     * @return ccollection of stored values with associated distances
+     */
+    public  Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, Instance values);
 
-	/**
-	 * This method has to return the number of stored data points.
-	 */
-	public abstract int size();
+    /**
+     * This method returns a collection of data from all sample points inside
+     * the specified distance but at least k points. So the distance might be
+     * enlarged if density is to low. This collection consists of Tupels
+     * containing the distance from querrypoint to the samplepoint and in the
+     * second component the contained value of the sample point.
+     *
+     * @param withinDistance - max distance range
+     * @param butAtLeastK - minimum number of nearest neighbors
+     * @param values the coordinate of the querry point in the sample dimension
+     * @return collection of stored values with associated distances
+     */
+    public  Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, Instance values);
 
-	/**
-	 * This returns the index-th value added to this collection.
-	 */
-	public abstract T getStoredValue(int index);
-                        
-        public abstract void setSample(int index, double[] sample, T storedValue);
-        
-        public abstract double[] getSample(int index);
-        
-        public abstract void remove(int index);
-        
-        public Iterator<T> storedValueIterator();
-        
-        public Iterator<double[]> samplesIterator();
-        
-        /**
-         * Count how many unique values appears in the storedValue structure
-         * @return number of unique values
-         */
-        public int numberOfUniquesOfStoredValues();               
-        
+    /**
+     * This method has to return the number of stored data points.
+     *
+     * @return number of elements
+     */
+    public  int size();
+
+    /**
+     * This returns the index-th value added to this collection.
+     *
+     * @param index
+     * @return stored values
+     */
+    public  T getStoredValue(int index);
+
+    /**
+     * Set new sample value
+     * @param index
+     * @param sample
+     * @param storedValue 
+     */
+    public  void setSample(int index, Instance sample, T storedValue);
+
+    /**
+     * Returns sample of given index
+     * @param index
+     * @return 
+     */
+    public  Instance getSample(int index);
+
+    /**
+     * remove sample of given index
+     * @param index 
+     */
+    public  void remove(int index);
+
+    /**
+     * Iterator over stored values
+     * @return 
+     */
+    public Iterator<T> storedValueIterator();
+
+    /**
+     * Iterator over samples
+     * @return 
+     */
+    public Iterator<Instance> samplesIterator();
+
+    /**
+     * Count how many unique values appears in the storedValue structure
+     *
+     * @return number of unique values
+     */
+    public int numberOfUniquesOfStoredValues();
+
 }

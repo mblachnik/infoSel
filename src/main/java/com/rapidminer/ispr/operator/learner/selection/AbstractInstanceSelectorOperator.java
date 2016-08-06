@@ -7,6 +7,7 @@ import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.example.set.SortedExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
+import com.rapidminer.ispr.dataset.IStoredValues;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.ispr.operator.learner.AbstractPRulesOperator;
@@ -17,7 +18,7 @@ import com.rapidminer.ispr.operator.learner.selection.models.AbstractInstanceSel
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.operator.learner.tools.KNNTools;
+import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
 import com.rapidminer.operator.ports.OutputPort;
 import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
@@ -178,13 +179,13 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPRulesOpe
         }
         output.setIndex(index);        
         if (modelOutputPort.isConnected()) {
-            ISPRGeometricDataCollection<Number> samples = m.getModel();
+            ISPRGeometricDataCollection<IStoredValues> samples = m.getModel();
             if (samples == null){                                            
                 DistanceMeasure distance = measureHelper.getInitializedMeasure(output);
                 samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, output, distance);
             }
             PredictionType modelType = trainingSet.getAttributes().getLabel().isNominal() ? PredictionType.Classification : PredictionType.Regression;
-            IS_KNNClassificationModel<Number> model = new IS_KNNClassificationModel<>(output, samples, 1, VotingType.MAJORITY, modelType);
+            IS_KNNClassificationModel<IStoredValues> model = new IS_KNNClassificationModel<>(output, samples, 1, VotingType.MAJORITY, modelType);
             modelOutputPort.deliver(model);
         }
         boolean addWeights = getParameterAsBoolean(PARAMETER_ADD_WEIGHTS);
@@ -232,7 +233,7 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPRulesOpe
      *
      * @return
      */
-    boolean isSampleRandomize() {
+    public boolean isSampleRandomize() {
         return true;
     }
 

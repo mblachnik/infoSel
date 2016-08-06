@@ -7,8 +7,10 @@ package com.rapidminer.ispr.operator.learner.selection.models;
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.set.SelectedExampleSet;
+import com.rapidminer.ispr.dataset.IStoredValues;
+import com.rapidminer.ispr.dataset.Instance;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.operator.learner.tools.KNNTools;
+import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import com.rapidminer.ispr.operator.learner.tools.PRulesUtil;
 import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
@@ -72,16 +74,16 @@ public class ICFInstanceSelectionModel extends AbstractInstanceSelectorModel {
 
         int sampleSize = exampleSet.size();
         //DATA STRUCTURE PREPARATION        
-        ISPRGeometricDataCollection<Number> samples;
+        ISPRGeometricDataCollection<IStoredValues> samples;
         samples = KNNTools.initializeKNearestNeighbourFactory(knnType, exampleSet, measure);
         loss.init(samples);        
-        double[] values;
+        Instance values;
         double realLabel;
         double predictedLabel = 0;
 
         int instanceIndex = 0;
-        Iterator<double[]> sampleIterator = samples.samplesIterator();
-        Iterator<Number> labelIterator = samples.storedValueIterator();
+        Iterator<Instance> sampleIterator = samples.samplesIterator();
+        Iterator<IStoredValues> labelIterator = samples.storedValueIterator();
         if (label.isNominal()) {
             if (this.classWeight == null) {
                 this.classWeight = new double[label.getMapping().size()];
@@ -93,14 +95,15 @@ public class ICFInstanceSelectionModel extends AbstractInstanceSelectorModel {
             double[] counter = new double[numberOfClasses];
             while (sampleIterator.hasNext() && labelIterator.hasNext()) {
                 Arrays.fill(counter, 0);
-                Collection<Number> res;
+                Collection<IStoredValues> res;
                 values = sampleIterator.next();
-                realLabel = labelIterator.next().doubleValue();
+                realLabel = labelIterator.next().getLabel();
                 res = samples.getNearestValues(k + 1, values);
                 double sum = 0;
-                for (Number i : res) {
-                    counter[i.intValue()] += classWeight[i.intValue()];
-                    sum += classWeight[i.intValue()];
+                for (IStoredValues i : res) {
+                    int idx = (int)i.getLabel();
+                    counter[idx] += classWeight[idx];
+                    sum += classWeight[idx];
                 }
                 counter[(int) realLabel] -= classWeight[(int) realLabel]; //here we have to subtract distanceRate because we took k+1 neighbours 					            
                 sum -= classWeight[(int) realLabel]; //here we have to subtract because nearest neighbors includ itself, see line above
@@ -119,13 +122,13 @@ public class ICFInstanceSelectionModel extends AbstractInstanceSelectorModel {
         } else if (label.isNumerical()) {
             while (sampleIterator.hasNext() && labelIterator.hasNext()) {
                 predictedLabel = 0;
-                Collection<Number> res;
+                Collection<IStoredValues> res;
                 values = sampleIterator.next();
-                realLabel = labelIterator.next().doubleValue();
+                realLabel = labelIterator.next().getLabel();
                 res = samples.getNearestValues(k + 1, values);
                 double sum = 0;
-                for (Number i : res) {
-                    predictedLabel += i.doubleValue();
+                for (IStoredValues i : res) {
+                    predictedLabel += i.getLabel();
                     sum++;
                 }
                 predictedLabel -= realLabel;  //here we have to subtract distanceRate because we took k+1 neighbours 					            

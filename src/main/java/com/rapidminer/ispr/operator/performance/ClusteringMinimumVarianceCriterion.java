@@ -9,7 +9,11 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.ispr.operator.learner.tools.KNNTools;
+import com.rapidminer.ispr.dataset.IStoredValues;
+import com.rapidminer.ispr.dataset.Instance;
+import com.rapidminer.ispr.dataset.InstanceGenerator;
+import com.rapidminer.ispr.dataset.SimpleInstance;
+import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.tools.math.container.DoubleObjectContainer;
 import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
@@ -61,19 +65,15 @@ public class ClusteringMinimumVarianceCriterion extends AbstractExampleSetEvalua
     
     private void count(ExampleSet prototypes, ExampleSet exampleSet) throws OperatorException{
         DistanceMeasure distance = measureHelper.getInitializedMeasure(prototypes);
-        ISPRGeometricDataCollection<Number> knn = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH,prototypes, distance);
+        ISPRGeometricDataCollection knn = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH,prototypes, distance);
         //MyKNNClassificationModel<Number> model = new MyKNNClassificationModel<Number>(prototypes, knn, 1, VotingType.MAJORITY, false);
         Attributes attributes = prototypes.getAttributes();
         int n = attributes.size();
-        double[] values = new double[n];
+        Instance values = InstanceGenerator.generateInstance(exampleSet);
         interClusterDistance = 0;
         for (Example example : exampleSet){
-            int i = 0;
-            for(Attribute attribute : attributes){
-                values[i] = example.getValue(attribute);
-                i++;
-            }
-            Collection<DoubleObjectContainer<Number>> collDist = knn.getNearestValueDistances(1, values);
+            values.setValues(example);
+            Collection<DoubleObjectContainer<IStoredValues>> collDist = knn.getNearestValueDistances(1, values);
             double dist = collDist.iterator().next().getFirst();
             interClusterDistance += dist*dist;
         }        

@@ -6,8 +6,12 @@ package com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions;
 
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
+import com.rapidminer.ispr.dataset.IStoredValues;
+import com.rapidminer.ispr.dataset.Instance;
+import com.rapidminer.ispr.dataset.InstanceGenerator;
+import com.rapidminer.ispr.dataset.StoredValuesHelper;
 import com.rapidminer.ispr.operator.learner.tools.BasicMath;
-import com.rapidminer.ispr.operator.learner.tools.KNNTools;
+import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
 import com.rapidminer.operator.OperatorCapability;
@@ -25,11 +29,13 @@ public class ISLocalThresholdLinearDecisionFunction implements IISThresholdDecis
     
     private double threshold = 0;
     private int k = 3;
-    private ISPRGeometricDataCollection<Number> samples;
-    private boolean blockInit = false;    
+    private ISPRGeometricDataCollection<IStoredValues> samples;
+    private boolean blockInit = false;   
+    private transient Instance values;
 
 
     public ISLocalThresholdLinearDecisionFunction() {
+        
     }
     
     @Override
@@ -46,27 +52,26 @@ public class ISLocalThresholdLinearDecisionFunction implements IISThresholdDecis
     public void init(ExampleSet exampleSet, DistanceMeasure distance) {
         if (!blockInit)
             samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, exampleSet, distance);
+        values = InstanceGenerator.generateInstance(exampleSet);
     }
 
     @Override
-    public void init(ISPRGeometricDataCollection<Number> samples){        
+    public void init(ISPRGeometricDataCollection<IStoredValues> samples){        
         if (!blockInit)
             this.samples = samples;
     }
             
     @Override
-    public double getValue(double real, double predicted, double[] values) {
-        Collection<Number> nn = samples.getNearestValues(k, values);
-        double std = BasicMath.mean(nn);
+    public double getValue(double real, double predicted, Instance values) {
+        Collection<IStoredValues> nn = samples.getNearestValues(k, values);
+        double std = BasicMath.mean(nn, StoredValuesHelper.LABEL);
         double value = Math.abs(real - predicted) / std > threshold ? 1 : 0;
         return value;
     }
     
     @Override
-    public double getValue(double real, double predicted, Example example){
-        double[] values = new double[example.getAttributes().size()];
-        KNNTools.extractExampleValues(example, values);
-        return getValue(real, predicted, values);
+    public double getValue(double[] predicted, Example example){        
+        return getValue(example.getLabel(),predicted[0], values);
     }
         
     @Override

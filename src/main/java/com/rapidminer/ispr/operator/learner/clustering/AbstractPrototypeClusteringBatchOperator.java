@@ -7,14 +7,11 @@ package com.rapidminer.ispr.operator.learner.clustering;
 //import history.OldAbstractPRulesOperator;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.Tools;
+import com.rapidminer.ispr.dataset.Instance;
 import com.rapidminer.ispr.operator.learner.AbstractPRulesOperator;
-import com.rapidminer.ispr.operator.learner.clustering.IS_ClusterModel;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.clustering.clusterer.RMAbstractClusterer;
-import com.rapidminer.ispr.operator.learner.clustering.IS_ClusterModelTools;
-import com.rapidminer.ispr.operator.learner.clustering.IS_PrototypeBatchClusterModel;
-import com.rapidminer.ispr.dataset.SimpleInstance;
 import com.rapidminer.ispr.operator.learner.clustering.models.AbstractBatchModel;
 import com.rapidminer.operator.ValueDouble;
 import com.rapidminer.operator.ports.OutputPort;
@@ -70,7 +67,7 @@ public abstract class AbstractPrototypeClusteringBatchOperator extends AbstractP
     @Override
     public ExampleSet processExamples(ExampleSet trainingSet) throws OperatorException {        
         AbstractBatchModel trainModel = optimize(trainingSet);
-        Collection<SimpleInstance> prototypes = trainModel.getPrototypes();
+        Collection<Instance> prototypes = trainModel.getPrototypes();
         costFunctionValue = trainModel.getCostFunctionValue();
         clusterNames = IS_ClusterModelTools.prepareClusterNamesMap(prototypes.size());
         boolean addCluster = getParameterAsBoolean(RMAbstractClusterer.PARAMETER_ADD_CLUSTER_ATTRIBUTE);

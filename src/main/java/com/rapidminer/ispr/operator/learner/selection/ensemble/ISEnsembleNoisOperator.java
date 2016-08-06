@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package com.rapidminer.ispr.operator.learner.selection.meta;
+package com.rapidminer.ispr.operator.learner.selection.ensemble;
 
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
@@ -22,11 +22,11 @@ import java.util.List;
  *
  * @author Marcin
  */
-public class ISMetaNoisOperator extends AbstractISMetaOperator{
+public class ISEnsembleNoisOperator extends AbstractISEnsembleOperator{
     
     public static final String PARAMETER_NOISE_LEVEL = "Noise level";
 
-    public ISMetaNoisOperator(OperatorDescription description) {
+    public ISEnsembleNoisOperator(OperatorDescription description) {
         super(description);
     }
     

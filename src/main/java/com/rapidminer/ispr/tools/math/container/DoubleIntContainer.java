@@ -4,15 +4,16 @@
  */
 package com.rapidminer.ispr.tools.math.container;
 
+import com.rapidminer.tools.container.Tupel;
 import java.io.Serializable;
 
 /**
- *Container which allows to store int double values as primitive types. Not that it implements comparable interface. COmparison is made according to the first element
+ *
  * @param <N>
  * @param <M>
  * @author Marcin
  */
-public class IntDoubleContainer implements Comparable<IntDoubleContainer>, Serializable {
+public class DoubleIntContainer implements Comparable<DoubleIntContainer>, Serializable {
 
     /**
      *
@@ -21,27 +22,27 @@ public class IntDoubleContainer implements Comparable<IntDoubleContainer>, Seria
     /**
      *
      */
-    public int first;
+    public double first;
     /**
      *
      */
-    public double second;
+    public int second;
 
     /**
      *
      * @param valueA
      * @param valueB
      */
-    public IntDoubleContainer(int valueA, double valueB) {
+    public DoubleIntContainer(double valueA, int valueB) {
         this.first = valueA;
         this.second = valueB;
     }
 
-    public int getFirst() {
+    public double getFirst() {
         return first;
     }
 
-    public void setFirst(int valueA) {
+    public void setFirst(double valueA) {
         this.first = valueA;
     }
 
@@ -49,12 +50,12 @@ public class IntDoubleContainer implements Comparable<IntDoubleContainer>, Seria
         return second;
     }
 
-    public void setSecond(double valueB) {
+    public void setSecond(int valueB) {
         this.second = valueB;
     }
 
     @Override
-    public String toString() {
+    public String toString() {        
         return first + " : " + second;
     }
 
@@ -62,7 +63,7 @@ public class IntDoubleContainer implements Comparable<IntDoubleContainer>, Seria
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = (int) (prime * first) + (int) (prime * second);
+        result = (int)(prime * first) + (int)(prime*second);        
         return result;
     }
 
@@ -77,26 +78,24 @@ public class IntDoubleContainer implements Comparable<IntDoubleContainer>, Seria
         if (getClass() != obj.getClass()) {
             return false;
         }
-        IntDoubleContainer other = (IntDoubleContainer) obj;
-        if (first != other.first) {
-            return false;
-        }
+        DoubleDoubleContainer other = (DoubleDoubleContainer) obj;
+        if (first != other.first) {            
+                return false;
+            }        
         if (second != other.second) {
-
-            return false;
-        }
+            
+                return false;            
+        } 
         return true;
     }
 
     @Override
-    public int compareTo(IntDoubleContainer o) {
-        int result = first - o.first;
-        if (result == 0) {
+    public int compareTo(DoubleIntContainer o) {
+        //double result = first-o.first;
+        if (first == o.first)
             return 0;
-        }
-        if (result > 0) {
+        if (first > o.first)
             return 1;
-        }
         return -1;
     }
 }

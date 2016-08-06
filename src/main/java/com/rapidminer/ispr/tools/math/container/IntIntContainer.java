@@ -7,12 +7,12 @@ package com.rapidminer.ispr.tools.math.container;
 import java.io.Serializable;
 
 /**
- *Container which allows to store int double values as primitive types. Not that it implements comparable interface. COmparison is made according to the first element
+ * Container for storing two int double values. It sotres values as primitives for performance reasons. It also implements @{see Comparable} interface, and the comparison is mad according to first value
  * @param <N>
  * @param <M>
  * @author Marcin
  */
-public class IntDoubleContainer implements Comparable<IntDoubleContainer>, Serializable {
+public class IntIntContainer implements Comparable<IntDoubleContainer>, Serializable {
 
     /**
      *
@@ -25,14 +25,14 @@ public class IntDoubleContainer implements Comparable<IntDoubleContainer>, Seria
     /**
      *
      */
-    public double second;
+    public int second;
 
     /**
-     *
-     * @param valueA
+     * Input values
+     * @param valueA also used for ordering calues
      * @param valueB
      */
-    public IntDoubleContainer(int valueA, double valueB) {
+    public IntIntContainer(int valueA, int valueB) {
         this.first = valueA;
         this.second = valueB;
     }
@@ -45,11 +45,11 @@ public class IntDoubleContainer implements Comparable<IntDoubleContainer>, Seria
         this.first = valueA;
     }
 
-    public double getSecond() {
+    public int getSecond() {
         return second;
     }
 
-    public void setSecond(double valueB) {
+    public void setSecond(int valueB) {
         this.second = valueB;
     }
 

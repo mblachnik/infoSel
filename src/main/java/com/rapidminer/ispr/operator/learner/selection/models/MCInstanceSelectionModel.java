@@ -8,9 +8,12 @@ import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.set.EditedExampleSet;
 import com.rapidminer.example.set.SelectedExampleSet;
+import com.rapidminer.ispr.dataset.IStoredValues;
+import com.rapidminer.ispr.dataset.Instance;
+import com.rapidminer.ispr.dataset.InstanceGenerator;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.operator.learner.tools.KNNTools;
+import com.rapidminer.ispr.tools.math.container.KNNTools;
 //import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.ispr.operator.learner.tools.genetic.RandomGenerator;
@@ -72,8 +75,7 @@ public class MCInstanceSelectionModel extends AbstractInstanceSelectorModel {
         EditedExampleSet workingSet = new EditedExampleSet(exampleSet);
         DataIndex indexWorking = workingSet.getIndex();
 
-        Attributes attributes = exampleSet.getAttributes();
-        double[] values = new double[attributes.size()];
+        Attributes attributes = exampleSet.getAttributes();        
         double errorRateBest = Double.MAX_VALUE;
         DataIndex bestIndex = null;
         for (int i = 0; i < iterations; i++) {
@@ -84,14 +86,12 @@ public class MCInstanceSelectionModel extends AbstractInstanceSelectorModel {
             }
 
             double errorRate = 0;
-            ISPRGeometricDataCollection<Number> kNN = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, workingSet, measure);
-            //GeometricDataCollection<Integer> kNN = KNNTools.initializeKNearestNeighbour(workingSet, measure);
+            ISPRGeometricDataCollection<IStoredValues> kNN = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, workingSet, measure);
+            Instance values = InstanceGenerator.generateInstance(exampleSet);
             for (Example ex : exampleSet) {
-                KNNTools.extractExampleValues(ex, values);
-                //loss.setPredictedLabel(KNNTools.predictOneNearestNeighbor(exampleSet, values, measure));
-                double predictedLabel = KNNTools.predictOneNearestNeighbor(ex, kNN);
-                double realLabel = ex.getLabel();
-                errorRate += loss.getValue(realLabel, predictedLabel, ex);
+                values.setValues(ex);                
+                double predictedLabel = KNNTools.predictOneNearestNeighbor(values, kNN);                
+                errorRate += loss.getValue(new double[]{predictedLabel}, ex);
                 //acc += KNNTools.predictOneNearestNeighbor(exampleSet, values, measure) == ex.getLabel() ? 1 : 0;
                 //acc += KNNTools.predictNearestNeighbor(exampleSet, values, ex.getLabel(), measure) ? 1 : 0;
             }

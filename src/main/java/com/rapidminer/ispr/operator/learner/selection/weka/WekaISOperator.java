@@ -280,7 +280,7 @@ public class WekaISOperator extends AbstractInstanceSelectorOperator {
      *
      * @return
      */
-    boolean isSampleRandomize() {
+    public boolean isSampleRandomize() {
         return true;
     }
 

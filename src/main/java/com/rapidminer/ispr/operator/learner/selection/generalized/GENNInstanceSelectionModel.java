@@ -11,9 +11,14 @@ import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.set.EditedExampleSet;
 import com.rapidminer.example.set.ISPRExample;
 import com.rapidminer.example.set.SelectedExampleSet;
+import com.rapidminer.ispr.dataset.IStoredValues;
+import com.rapidminer.ispr.dataset.Instance;
+import com.rapidminer.ispr.dataset.InstanceGenerator;
+import com.rapidminer.ispr.dataset.StoredValuesHelper;
 import com.rapidminer.ispr.operator.learner.PRulesModel;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.operator.learner.tools.KNNTools;
+import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
+import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
 import com.rapidminer.ispr.tools.math.container.IntDoubleContainer;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
@@ -50,7 +55,7 @@ public class GENNInstanceSelectionModel implements PRulesModel<ExampleSet> {
         } else {
             exampleSet = new SelectedExampleSet(inputExampleSet);
         }
-        ISPRGeometricDataCollection<IntDoubleContainer> nearestNeighbors = KNNTools.initializeGeneralizedKNearestNeighbour(inputExampleSet, measure);
+        ISPRGeometricDataCollection<IStoredValues> nearestNeighbors = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, inputExampleSet, measure);
         DataIndex index = exampleSet.getIndex();
         index.setAllTrue();
 
@@ -71,34 +76,29 @@ public class GENNInstanceSelectionModel implements PRulesModel<ExampleSet> {
         boolean numericalLabel = attributes.getLabel().isNumerical();
         boolean nominalLabel = attributes.getLabel().isNominal();
 
-        double[] values = new double[attributes.size()];
+        Instance values = InstanceGenerator.generateInstance(inputExampleSet);
 
         ExampleSet resultExample;
         for (Example example : exampleSet) {
             double predictedLabel;
             ISPRExample te = (ISPRExample) example;
             instanceIndex = te.getIndex();
-            
-            int i = 0;
-            for (Attribute attribute : attributes) {
-                values[i] = example.getValue(attribute);
-                i++;
-            }
-            Collection<IntDoubleContainer> nearest = nearestNeighbors.getNearestValues(k, values);
+            values.setValues(example);            
+            Collection<IStoredValues> nearest = nearestNeighbors.getNearestValues(k, values);
             if (numericalLabel) {
-                for (IntDoubleContainer a : nearest) {
-                    mean += a.getSecond();
+                for (IStoredValues a : nearest) {
+                    mean += a.getLabel();
                 }
                 mean = (nearest.isEmpty()) ? Double.NaN : mean / nearest.size();
-                for (IntDoubleContainer a : nearest) {
-                    variance += (a.getSecond() - mean) * (a.getSecond() - mean);
+                for (IStoredValues a : nearest) {
+                    variance += (a.getLabel()- mean) * (a.getLabel()- mean);
                 }
                 variance /= nearest.size();
             }
             if (trainOnSubset){
                 trainingIndex.setAllFalse();
-                for (IntDoubleContainer a : nearest) {
-                    trainingIndex.set(a.getFirst(),true);
+                for (IStoredValues a : nearest) {
+                    trainingIndex.set((int)a.getValue(StoredValuesHelper.INDEX),true);
                 }
             } 
             try {

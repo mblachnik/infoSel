@@ -57,6 +57,11 @@ extensionConfig {
 	}
 }
 
+eclipse {
+    classpath {
+        downloadJavadoc = true
+    }
+}
 // Define third party library dependencies
 dependencies {
 	//compile 'com.google.guava:guava:18.0'

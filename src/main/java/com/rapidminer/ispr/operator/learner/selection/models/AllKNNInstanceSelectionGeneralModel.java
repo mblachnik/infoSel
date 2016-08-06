@@ -7,17 +7,16 @@ package com.rapidminer.ispr.operator.learner.selection.models;
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.set.SelectedExampleSet;
+import com.rapidminer.ispr.dataset.IStoredValues;
+import com.rapidminer.ispr.dataset.Instance;
 import com.rapidminer.ispr.operator.learner.classifiers.IS_KNNClassificationModel;
-import com.rapidminer.ispr.operator.learner.classifiers.PredictionType;
-import com.rapidminer.ispr.operator.learner.classifiers.VotingType;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.operator.learner.tools.KNNTools;
+import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.operator.learner.tools.PRulesUtil;
 import com.rapidminer.ispr.tools.math.container.DoubleObjectContainer;
 import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
-import com.rapidminer.ispr.tools.math.container.PairContainer;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,16 +30,17 @@ import java.util.Iterator;
 public class AllKNNInstanceSelectionGeneralModel extends AbstractInstanceSelectorModel {
 
     
-    private DistanceMeasure measure; //distance measure
-    private int lowerK, upperK; // lower and upper bounds for k value
-    private IISDecisionFunction loss; //decision function which is used to determine if certain condition is valid or not. It allows to support both classification and regression tasks    
-    IS_KNNClassificationModel<Number> model;
+    private final DistanceMeasure measure; //distance measure
+    private final int lowerK, upperK; // lower and upper bounds for k value
+    private final IISDecisionFunction loss; //decision function which is used to determine if certain condition is valid or not. It allows to support both classification and regression tasks    
+    IS_KNNClassificationModel<IStoredValues> model;
 
     /**
      * Constructor
      * @param measure - distance measure
      * @param lowerK - lower bound for k
      * @param upperK - upper bound for k
+     * @param loss
      */
     public AllKNNInstanceSelectionGeneralModel(DistanceMeasure measure, int lowerK, int upperK, IISDecisionFunction loss) {
         this.measure = measure;
@@ -51,7 +51,6 @@ public class AllKNNInstanceSelectionGeneralModel extends AbstractInstanceSelecto
 
     /**
      * Performs instance selection
-     * @param inputExampleSet - example set for which instance selection will be performed
      * @return - index of selected examples
      */
     @Override
@@ -61,31 +60,33 @@ public class AllKNNInstanceSelectionGeneralModel extends AbstractInstanceSelecto
         Attribute label = attributes.getLabel();
 
         //DATA STRUCTURE PREPARATION
-        ISPRGeometricDataCollection<Number> samples;
+        ISPRGeometricDataCollection<IStoredValues> samples;
         samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, exampleSet, measure);
         //All - kNN EDITTING
         loss.init(samples);
         
         if (label.isNominal()) {
-            int[] counter;
+            double[] counter;
             int instanceIndex = 0;
             double predictedLabel;
-            counter = new int[label.getMapping().size()];
-            Iterator<double[]> samplesIterator = samples.samplesIterator();
-            Iterator<Number> labelsIterator = samples.storedValueIterator();
+            counter = new double[label.getMapping().size()];
+            Iterator<Instance> samplesIterator = samples.samplesIterator();
+            Iterator<IStoredValues> labelsIterator = samples.storedValueIterator();
+            double performanceStep = 1/upperK;
             while (samplesIterator.hasNext() && labelsIterator.hasNext()) {
-                double realLabel = labelsIterator.next().doubleValue();
-                double[] values = samplesIterator.next();
+                double realLabel = labelsIterator.next().getLabel();
+                Instance values = samplesIterator.next();
                 Arrays.fill(counter, 0);
-                Collection<DoubleObjectContainer<Number>> res = samples.getNearestValueDistances(upperK, values);
-                int k = 0;
-                for (DoubleObjectContainer<Number> it : res) {
-                    int i = it.getSecond().intValue();
-                    counter[i]++;
+                Collection<DoubleObjectContainer<IStoredValues>> res = samples.getNearestValueDistances(upperK, values);
+                int k = 0;                
+                for (DoubleObjectContainer<IStoredValues> it : res) {
+                    int i = (int)it.getSecond().getLabel();
+                    counter[i]+= performanceStep;
                     if (k > lowerK) {
                         predictedLabel = PRulesUtil.findMostFrequentValue(counter);                        
                         if (loss.getValue(realLabel,predictedLabel,values) > 0) {
                             index.set(instanceIndex, false);
+                            break;
                         }
                     }
                     k++;
@@ -96,16 +97,16 @@ public class AllKNNInstanceSelectionGeneralModel extends AbstractInstanceSelecto
             int instanceIndex = 0;
             double predictedLabel;
             double sum;
-            Iterator<double[]> samplesIterator = samples.samplesIterator();
-            Iterator<Number> labelsIterator = samples.storedValueIterator();
+            Iterator<Instance> samplesIterator = samples.samplesIterator();
+            Iterator<IStoredValues> labelsIterator = samples.storedValueIterator();
             while (samplesIterator.hasNext() && labelsIterator.hasNext()) {
-                double realLabel = labelsIterator.next().doubleValue();
-                double[] values = samplesIterator.next();
+                double realLabel = labelsIterator.next().getLabel();
+                Instance values = samplesIterator.next();
                 sum = 0;
-                Collection<DoubleObjectContainer<Number>> res = samples.getNearestValueDistances(upperK, values);
+                Collection<DoubleObjectContainer<IStoredValues>> res = samples.getNearestValueDistances(upperK, values);
                 int k = 0;
-                for (DoubleObjectContainer<Number> it : res) {
-                    sum += it.getSecond().doubleValue();
+                for (DoubleObjectContainer<IStoredValues> it : res) {
+                    sum += it.getSecond().getLabel();                            
                     if (k > lowerK) {
                         predictedLabel = sum / k;                        
                         if (loss.getValue(realLabel,predictedLabel,values) > 0) {

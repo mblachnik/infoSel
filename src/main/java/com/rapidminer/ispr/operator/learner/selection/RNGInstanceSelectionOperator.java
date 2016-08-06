@@ -81,7 +81,7 @@ public class RNGInstanceSelectionOperator extends AbstractInstanceSelectorOperat
      * @return 
      */
     @Override
-    boolean isSampleRandomize() {
+    public boolean isSampleRandomize() {
         return false;
     }
 

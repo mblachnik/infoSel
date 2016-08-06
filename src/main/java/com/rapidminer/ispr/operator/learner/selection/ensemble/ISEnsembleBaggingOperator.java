@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rapidminer.ispr.operator.learner.selection.meta;
+package com.rapidminer.ispr.operator.learner.selection.ensemble;
 
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.set.SplittedExampleSet;
@@ -11,6 +11,7 @@ import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import static com.rapidminer.operator.validation.RandomSplitValidationChain.PARAMETER_SAMPLING_TYPE;
 import com.rapidminer.parameter.ParameterType;
+import com.rapidminer.parameter.ParameterTypeBoolean;
 import com.rapidminer.parameter.ParameterTypeCategory;
 import com.rapidminer.tools.RandomGenerator;
 import java.util.List;
@@ -19,11 +20,12 @@ import java.util.List;
  *
  * @author Marcin
  */
-public class ISMetaBaggingOperator extends AbstractISMetaOperator {
-    
+public class ISEnsembleBaggingOperator extends AbstractISEnsembleOperator {
+
+    public static final String PARAMETER_USE_ENTRY_EXAMPLESET = "Use entry set";
     SplittedExampleSet dataSet;
 
-    public ISMetaBaggingOperator(OperatorDescription description) {
+    public ISEnsembleBaggingOperator(OperatorDescription description) {
         super(description);
     }
 
@@ -37,13 +39,18 @@ public class ISMetaBaggingOperator extends AbstractISMetaOperator {
     }
 
     @Override
-    ExampleSet prepareExampleSet(ExampleSet trainingSet) throws OperatorException {         
-        dataSet.selectAllSubsetsBut(this.getIteration());
+    ExampleSet prepareExampleSet(ExampleSet trainingSet) throws OperatorException {
+        boolean chk = getParameterAsBoolean(PARAMETER_USE_ENTRY_EXAMPLESET);
+        if (chk) {
+            dataSet.selectAllSubsets();
+        } else {
+            dataSet.selectAllSubsetsBut(this.getIteration());
+        }
         return dataSet;
     }
 
     /**
-     * 
+     *
      */
     @Override
     public void finalizeProcessExamples() {
@@ -52,11 +59,15 @@ public class ISMetaBaggingOperator extends AbstractISMetaOperator {
 
     @Override
     public List<ParameterType> getParameterTypes() {
-        List<ParameterType> types = super.getParameterTypes(); 
-        		types.add(new ParameterTypeCategory(
-				PARAMETER_SAMPLING_TYPE,
-				"Defines the sampling type of the cross validation (linear = consecutive subsets, shuffled = random subsets, stratified = random subsets with class distribution kept constant)",
-				SplittedExampleSet.SAMPLING_NAMES, SplittedExampleSet.STRATIFIED_SAMPLING));
+
+        List<ParameterType> types = super.getParameterTypes();
+        ParameterType type;
+        type = new ParameterTypeBoolean(PARAMETER_USE_ENTRY_EXAMPLESET, "Use entry exampleSet for each iteration", false, true);
+        types.add(type);
+        types.add(new ParameterTypeCategory(
+                PARAMETER_SAMPLING_TYPE,
+                "Defines the sampling type of the cross validation (linear = consecutive subsets, shuffled = random subsets, stratified = random subsets with class distribution kept constant)",
+                SplittedExampleSet.SAMPLING_NAMES, SplittedExampleSet.STRATIFIED_SAMPLING));
         types.addAll(RandomGenerator.getRandomGeneratorParameters(this));
         return types;
     }

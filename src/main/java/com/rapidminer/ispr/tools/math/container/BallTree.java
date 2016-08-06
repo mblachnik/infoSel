@@ -22,7 +22,6 @@
  */
 package com.rapidminer.ispr.tools.math.container;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -36,10 +35,16 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
+import com.rapidminer.ispr.dataset.IStoredValues;
+import com.rapidminer.ispr.dataset.Instance;
+import com.rapidminer.ispr.dataset.InstanceGenerator;
+import com.rapidminer.ispr.dataset.SimpleInstance;
+import com.rapidminer.ispr.dataset.StoredValuesHelper;
 import com.rapidminer.tools.math.container.BoundedPriorityQueue;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -54,7 +59,7 @@ import java.util.Set;
  *
  * @author Sebastian Land
  */
-public class BallTree<T extends Serializable> implements ISPRGeometricDataCollection<T> {
+public class BallTree<T extends IStoredValues> implements ISPRGeometricDataCollection<T> {
 
     private static final long serialVersionUID = 2954882147712365506L;
     private BallTreeNode<T> root;
@@ -62,14 +67,15 @@ public class BallTree<T extends Serializable> implements ISPRGeometricDataCollec
     private double dimensionFactor;
     private DistanceMeasure distance;
     private int size = 0;
-    private ArrayList<T> values = new ArrayList<T>();
+    private List<T> values = new ArrayList<>();
+    private long index = 0;
 
     public BallTree(DistanceMeasure distance) {
         this.distance = distance;
     }
 
-    public BallTree(ExampleSet exampleSet, Attribute storedValuesAttribute, DistanceMeasure distance) {
-        this.distance = distance;
+    public BallTree(ExampleSet exampleSet, Map<Attribute, String> storedValuesAttribute, DistanceMeasure distance) {
+        this(distance);
         initialize(exampleSet, storedValuesAttribute);
     }
 
@@ -77,10 +83,10 @@ public class BallTree<T extends Serializable> implements ISPRGeometricDataCollec
      * Initialize data structure
      *
      * @param exampleSet
-     * @param storedValuesAttribute     
+     * @param storedValuesAttribute
      */
     @Override
-    public final void initialize(ExampleSet exampleSet, Attribute storedValuesAttribute) {
+    public final void initialize(ExampleSet exampleSet, Map<Attribute, String> storedValuesAttribute) {
         Attributes attributes = exampleSet.getAttributes();
         int valuesSize = attributes.size();
         for (Example example : exampleSet) {
@@ -90,20 +96,21 @@ public class BallTree<T extends Serializable> implements ISPRGeometricDataCollec
                 exampleValues[i] = example.getValue(attribute);
                 i++;
             }
-            Number labelValue = example.getValue(storedValuesAttribute);
-            this.add(exampleValues, (T)labelValue);
+            IStoredValues labelValue = StoredValuesHelper.createStoredValue(example, storedValuesAttribute);
+            this.add(InstanceGenerator.generateInstance(exampleValues), (T)labelValue);
         }
     }
-    
+
     @Override
-    public void add(double[] values, T storeValue) {
+    public void add(Instance values, T storeValue) {
+        storeValue.setValue(StoredValuesHelper.INDEX, index);
         this.size++;
         this.values.add(storeValue);
         if (root == null) {
-            root = new BallTreeNode<T>(values, 0, storeValue);
+            root = new BallTreeNode<T>(values.getValues(), 0, storeValue);
 
             // setting dimension
-            k = values.length;
+            k = values.getValues().length;
             dimensionFactor = Math.sqrt(Math.PI) / Math.pow(gammaFunction(k / 2), 1d / k);
         } else {
             double totalAncestorIncrease = 0;
@@ -115,12 +122,12 @@ public class BallTree<T extends Serializable> implements ISPRGeometricDataCollec
             LinkedList<BallTreeNode<T>> ancestorList = new LinkedList<BallTreeNode<T>>();
             while (true) {
                 // calculate ancestor increase if added to this current node
-                double deltaAncestorIncrease = getVolumeIncludingPoint(currentNode, values) - getVolume(currentNode);
+                double deltaAncestorIncrease = getVolumeIncludingPoint(currentNode, values.getValues()) - getVolume(currentNode);
                 totalAncestorIncrease += deltaAncestorIncrease;
 
                 // calculate new Volume if added as left or right child of current
-                double leftVolume = getNewVolume(currentNode, currentNode.getLeftChild(), values);
-                double rightVolume = getNewVolume(currentNode, currentNode.getRightChild(), values);
+                double leftVolume = getNewVolume(currentNode, currentNode.getLeftChild(), values.getValues());
+                double rightVolume = getNewVolume(currentNode, currentNode.getRightChild(), values.getValues());
                 // check if adding as left node is best position till now
                 double minVolume = Math.min(leftVolume, rightVolume);
                 if (minVolume + totalAncestorIncrease < bestVolumeIncrease) {
@@ -138,13 +145,12 @@ public class BallTree<T extends Serializable> implements ISPRGeometricDataCollec
                     break;
                 }
 
-
                 // search for better child
                 if (currentNode.hasTwoChilds()) {
                     BallTreeNode<T> leftChild = currentNode.getLeftChild();
-                    double deltaVLeft = getVolumeIncludingPoint(leftChild, values) - getVolume(leftChild);
+                    double deltaVLeft = getVolumeIncludingPoint(leftChild, values.getValues()) - getVolume(leftChild);
                     BallTreeNode<T> rightChild = currentNode.getRightChild();
-                    double deltaVRight = getVolumeIncludingPoint(rightChild, values) - getVolume(rightChild);
+                    double deltaVRight = getVolumeIncludingPoint(rightChild, values.getValues()) - getVolume(rightChild);
                     BallTreeNode<T> betterChild = (deltaVLeft < deltaVRight) ? leftChild : rightChild;
                     currentNode = betterChild;
                 } else {
@@ -154,7 +160,7 @@ public class BallTree<T extends Serializable> implements ISPRGeometricDataCollec
             }
 
             // now adding as specified child from bestFather
-            BallTreeNode<T> newNode = new BallTreeNode<T>(values, 0, storeValue);
+            BallTreeNode<T> newNode = new BallTreeNode<T>(values.getValues(), 0, storeValue);
             if (bestSide < 0) {
                 newNode.setChild(bestNode.getLeftChild());
                 bestNode.setLeftChild(newNode);
@@ -165,7 +171,7 @@ public class BallTree<T extends Serializable> implements ISPRGeometricDataCollec
 
             // setting radius of new node
             if (!newNode.isLeaf()) {
-                newNode.setRadius(distance.calculateDistance(values, newNode.getChild().getCenter()) + newNode.getChild().getRadius());
+                newNode.setRadius(distance.calculateDistance(values.getValues(), newNode.getChild().getCenter()) + newNode.getChild().getRadius());
             }
 
             // correcting radius of all ancestors
@@ -198,9 +204,9 @@ public class BallTree<T extends Serializable> implements ISPRGeometricDataCollec
     }
 
     @Override
-    public Collection<T> getNearestValues(int k, double[] values) {
-        BoundedPriorityQueue<DoubleObjectContainer<BallTreeNode<T>>> priorityQueue = getNearestNodes(k, values);
-        LinkedList<T> neighboursList = new LinkedList<T>();
+    public Collection<T> getNearestValues(int k, Instance values) {
+        BoundedPriorityQueue<DoubleObjectContainer<BallTreeNode<T>>> priorityQueue = getNearestNodes(k, values.getValues());
+        LinkedList<T> neighboursList = new LinkedList<>();
         for (DoubleObjectContainer<BallTreeNode<T>> tupel : priorityQueue) {
             neighboursList.add((tupel.getSecond()).getStoreValue());
         }
@@ -208,30 +214,30 @@ public class BallTree<T extends Serializable> implements ISPRGeometricDataCollec
     }
 
     @Override
-    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, double[] values) {
-        BoundedPriorityQueue<DoubleObjectContainer<BallTreeNode<T>>> priorityQueue = getNearestNodes(k, values);
-        LinkedList<DoubleObjectContainer<T>> neighboursList = new LinkedList<DoubleObjectContainer<T>>();
+    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, Instance values) {
+        BoundedPriorityQueue<DoubleObjectContainer<BallTreeNode<T>>> priorityQueue = getNearestNodes(k, values.getValues());
+        LinkedList<DoubleObjectContainer<T>> neighboursList = new LinkedList<>();
         for (DoubleObjectContainer<BallTreeNode<T>> tupel : priorityQueue) {
-            neighboursList.add(new DoubleObjectContainer<T>(tupel.getFirst(), tupel.getSecond().getStoreValue()));
+            boolean add = neighboursList.add(new DoubleObjectContainer<T>(tupel.getFirst(), tupel.getSecond().getStoreValue()));
         }
         return neighboursList;
 
     }
 
     private BoundedPriorityQueue<DoubleObjectContainer<BallTreeNode<T>>> getNearestNodes(int k, double[] values) {
-        Stack<BallTreeNode<T>> nodeStack = new Stack<BallTreeNode<T>>();
-        Stack<Integer> sideStack = new Stack<Integer>();
+        Stack<BallTreeNode<T>> nodeStack = new Stack<>();
+        Stack<Integer> sideStack = new Stack<>();
         // first doing initial search for nearest Node
         traverseTree(nodeStack, sideStack, root, values);
         // creating data structure for finding k nearest values
-        BoundedPriorityQueue<DoubleObjectContainer<BallTreeNode<T>>> priorityQueue = new BoundedPriorityQueue<DoubleObjectContainer<BallTreeNode<T>>>(k);
+        BoundedPriorityQueue<DoubleObjectContainer<BallTreeNode<T>>> priorityQueue = new BoundedPriorityQueue<>(k);
 
         // now work on stack
         while (!nodeStack.isEmpty()) {
             // put top element into priorityQueue
             BallTreeNode<T> currentNode = nodeStack.pop();
             Integer currentSide = sideStack.pop();
-            DoubleObjectContainer<BallTreeNode<T>> currentTupel = new DoubleObjectContainer<BallTreeNode<T>>(distance.calculateDistance(currentNode.getCenter(), values), currentNode);
+            DoubleObjectContainer<BallTreeNode<T>> currentTupel = new DoubleObjectContainer<>(distance.calculateDistance(currentNode.getCenter(), values), currentNode);
             priorityQueue.add(currentTupel);
             // now check if far children has to be regarded
             if (currentNode.hasTwoChilds()) {
@@ -299,12 +305,12 @@ public class BallTree<T extends Serializable> implements ISPRGeometricDataCollec
     }
 
     @Override
-    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, double[] values) {
+    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, Instance values) {
         throw new RuntimeException("Not supported method");
     }
 
     @Override
-    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, double[] values) {
+    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, Instance values) {
         throw new RuntimeException("Not supported method");
     }
 
@@ -319,27 +325,27 @@ public class BallTree<T extends Serializable> implements ISPRGeometricDataCollec
     }
 
     @Override
-    public double[] getSample(int index) {
+    public Instance getSample(int index) {
         throw new UnsupportedOperationException("Not supported.");
     }
 
     @Override
     public void remove(int index) {
         throw new UnsupportedOperationException("Not supported.");
-    }    
-    
+    }
+
     @Override
-    public Iterator<T> storedValueIterator(){
+    public Iterator<T> storedValueIterator() {
         return values.iterator();
     }
-        
+
     @Override
-    public Iterator<double[]> samplesIterator(){
+    public Iterator<Instance> samplesIterator() {
         throw new UnsupportedOperationException("Not supported.");
     }
 
     @Override
-    public void setSample(int index, double[] sample, T storedValue) {
+    public void setSample(int index, Instance sample, T storedValue) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -356,5 +362,5 @@ public class BallTree<T extends Serializable> implements ISPRGeometricDataCollec
         }
         return uniqueValues.size();
     }
-    
+
 }

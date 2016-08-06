@@ -6,7 +6,10 @@ package com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions;
 
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.ispr.operator.learner.tools.KNNTools;
+import com.rapidminer.ispr.dataset.IStoredValues;
+import com.rapidminer.ispr.dataset.Instance;
+import com.rapidminer.ispr.dataset.InstanceGenerator;
+import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
@@ -41,19 +44,17 @@ public class ISThresholdRelativeLinearDecisionFunction implements IISThresholdDe
     }
 
     @Override
-    public void init(ISPRGeometricDataCollection<Number> samples){                
+    public void init(ISPRGeometricDataCollection<IStoredValues> samples){                
     }
     
     @Override
-    public double getValue(double real, double predicted, double[] values){
+    public double getValue(double real, double predicted, Instance values){
         return Math.abs(real - predicted) / Math.abs(real) > threshold ? 1 : 0;
     }
     
     @Override
-    public double getValue(double real, double predicted, Example example){
-        double[] values = new double[example.getAttributes().size()];
-        KNNTools.extractExampleValues(example, values);
-        return getValue(real, predicted, values);
+    public double getValue(double[] predicted, Example example){
+        return getValue(example.getLabel(), predicted[0], InstanceGenerator.generateInstance(example));
     }
        
     @Override

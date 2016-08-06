@@ -4,7 +4,7 @@
  */
 package com.rapidminer.ispr.operator.learner.tools;
 
-import java.nio.file.FileVisitResult;
+import com.rapidminer.ispr.dataset.IStoredValues;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -127,6 +127,28 @@ public class BasicMath {
     }
     
     /**
+     * Calculate arythmetic mean value of elements in X between start and end index
+     * @param X
+     * @param start - first element in X
+     * @param end - last element in X
+     * @param name - name of stored value
+     * @return
+     */
+    public static double mean(Collection<IStoredValues> X, int start, int end, String name){
+        double mean = 0;
+        Iterator<IStoredValues> iter = X.iterator();        
+        int i = 0;
+        while (iter.hasNext()){
+            if (i < start) continue;
+            if (i > end) break;                        
+            mean += iter.next().getValue(name);
+            i++;
+        }            
+        mean /= end-start+1;
+        return mean;
+    }
+    
+    /**
      * 
      * Mean value of all elements in X
      * @param X
@@ -134,6 +156,17 @@ public class BasicMath {
      */
     public static double mean(Collection<Number> X){
         return mean(X,0,X.size()-1);
+    }
+    
+    /**
+     * 
+     * Mean value of all elements in X
+     * @param X
+     * @param name - name of stored value
+     * @return
+     */
+    public static double mean(Collection<IStoredValues> X, String name){
+        return mean(X,0,X.size()-1, name);
     }
 
     /**     
@@ -159,6 +192,20 @@ public class BasicMath {
         double var = 0;
         for (Number x : X)
             var += (x.doubleValue() - mean)*(x.doubleValue() - mean);
+        return var;
+    }
+    
+    /**
+     * Square error of elements in collection
+     * @param X
+     * @param mean
+     * @param name - name of stored value
+     * @return
+     */
+    public static double simpleVariance(Collection<IStoredValues> X, double mean, String name){
+        double var = 0;
+        for (IStoredValues x : X)
+            var += (x.getValue(name) - mean)*(x.getValue(name) - mean);
         return var;
     }
 
@@ -226,6 +273,32 @@ public class BasicMath {
         var = Math.sqrt(var);
         return var;
     }
+    
+    /**
+     * Calculate standard deviation of elements in X
+     * @param X - input collection
+     * @param mean - mean value
+     * @param start - index of first element in collection taken into account
+     * @param end - index of last element in collection taken into account
+     * @param name - name of stored value
+     * @return value of standard deviation
+     */
+    public static double std(Collection<IStoredValues> X, double mean, int start, int end, String name){
+        double var = 0;                
+        Iterator<IStoredValues> iter = X.iterator();        
+        int i = 0;
+        while (iter.hasNext()){
+            if (i < start) continue;
+            if (i > end) break;            
+            double x = iter.next().getValue(name);
+            var += (x - mean)*(x - mean);
+            i++;
+        }        
+        //if (start != end)
+        var /= end-start+1;
+        var = Math.sqrt(var);
+        return var;
+    }
 
     /**
      * Calculate standard deviation of elements in X
@@ -238,6 +311,20 @@ public class BasicMath {
         double m = mean(X,start,end);
         return BasicMath.std(X, m, start, end);
     }
+ 
+    
+    /**
+     * Calculate standard deviation of elements in X
+     * @param X - input collection    
+     * @param start - index of first element in collection taken into account
+     * @param end - index of last element in collection taken into account
+     * @param name - name of stored property
+     * @return value of standard deviation
+     */
+    public static double std(Collection<IStoredValues> X, int start, int end, String name){
+        double m = mean(X,start,end, name);
+        return BasicMath.std(X, m, start, end, name);
+    }
 
     /**
      * Calculate standard deviation of elements in X
@@ -246,6 +333,16 @@ public class BasicMath {
      */
     public static double std(Collection<Number> X){
         return BasicMath.std(X,0,X.size()-1);
+    }
+    
+    /**
+     * Calculate standard deviation of elements in X for value type
+     * @param X - input collection     
+     * @param type  - name of stored value property    
+     * @return value of standard deviation
+     */
+    public static double std(Collection<IStoredValues> X, String type){
+        return BasicMath.std(X,0,X.size()-1, type);
     }
 
     /**

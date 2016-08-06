@@ -104,7 +104,7 @@ public class RMHCInstanceSelectionOperator extends AbstractInstanceSelectorOpera
      * @return
      */
     @Override
-    boolean isSampleRandomize() {
+    public boolean isSampleRandomize() {
         return true;
     }
 

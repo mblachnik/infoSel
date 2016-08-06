@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rapidminer.ispr.operator.learner.selection.meta;
+package com.rapidminer.ispr.operator.learner.selection.ensemble;
 
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
@@ -31,11 +31,11 @@ import java.util.List;
  *
  * @author Marcin
  */
-public class ISMetaRndFeatureOperator extends AbstractISMetaOperator {
+public class ISEnsembleRndFeatureOperator extends AbstractISEnsembleOperator {
 
     public static final String PARAMETER_RATIO = "Sampling ratio";
 
-    public ISMetaRndFeatureOperator(OperatorDescription description) {
+    public ISEnsembleRndFeatureOperator(OperatorDescription description) {
         super(description);
     }
 

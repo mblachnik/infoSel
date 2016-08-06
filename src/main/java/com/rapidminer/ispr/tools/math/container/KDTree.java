@@ -26,7 +26,10 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import java.io.Serializable;
+import com.rapidminer.ispr.dataset.IStoredValues;
+import com.rapidminer.ispr.dataset.Instance;
+import com.rapidminer.ispr.dataset.InstanceGenerator;
+import com.rapidminer.ispr.dataset.StoredValuesHelper;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -36,6 +39,7 @@ import java.util.Stack;
 import com.rapidminer.tools.math.container.BoundedPriorityQueue;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -48,7 +52,7 @@ import java.util.Set;
  * @param <T> This is the type of value with is stored with the points and
  * retrieved on nearest neighbour search
  */
-public class KDTree<T extends Serializable> implements ISPRGeometricDataCollection<T> {
+public class KDTree<T extends IStoredValues> implements ISPRGeometricDataCollection<T> {
 
     private static final long serialVersionUID = -8531805333989991725L;
     private KDTreeNode<T> root;
@@ -56,18 +60,18 @@ public class KDTree<T extends Serializable> implements ISPRGeometricDataCollecti
     private DistanceMeasure distance;
     private int size = 0;
     private ArrayList<T> values = new ArrayList<T>();
+    long index = 0;
 
     public KDTree(DistanceMeasure distance, int numberOfDimensions) {
         this.k = numberOfDimensions;
         this.distance = distance;
     }
-    
-    public KDTree(ExampleSet exampleSet, Attribute storedValuesAttribute, DistanceMeasure distance) {
-        this.distance = distance;
-        this.k = exampleSet.getAttributes().size();
+
+    public KDTree(ExampleSet exampleSet, Map<Attribute,String> storedValuesAttribute, DistanceMeasure distance) {
+        this(distance,exampleSet.size());
         initialize(exampleSet, storedValuesAttribute);
     }
-
+     
     /**
      * Initialize data structure
      *
@@ -75,7 +79,7 @@ public class KDTree<T extends Serializable> implements ISPRGeometricDataCollecti
      * @param storedValuesAttribute     
      */
     @Override
-    public final void initialize(ExampleSet exampleSet, Attribute storedValuesAttribute) {
+    public final void initialize(ExampleSet exampleSet, Map<Attribute,String> storedValuesAttribute) {
         Attributes attributes = exampleSet.getAttributes();
         int valuesSize = attributes.size();
         for (Example example : exampleSet) {
@@ -85,17 +89,18 @@ public class KDTree<T extends Serializable> implements ISPRGeometricDataCollecti
                 exampleValues[i] = example.getValue(attribute);
                 i++;
             }
-            Number labelValue = example.getValue(storedValuesAttribute);
-            this.add(exampleValues,(T)labelValue);
+            IStoredValues labelValue = StoredValuesHelper.createStoredValue(example,storedValuesAttribute);
+            this.add(InstanceGenerator.generateInstance(exampleValues),(T)labelValue);
         }
     }
-
+    
     @Override
-    public void add(double[] values, T storeValue) {
+    public void add(Instance values, T storeValue) {
+        storeValue.setValue(StoredValuesHelper.INDEX, index++);
         this.size++;
         this.values.add(storeValue);
         if (root == null) {
-            this.root = new KDTreeNode<T>(values, storeValue, 0);
+            this.root = new KDTreeNode<T>(values.getValues(), storeValue, 0);
         } else {
             int currentDimension = 0;
             int depth = 0;
@@ -103,7 +108,7 @@ public class KDTree<T extends Serializable> implements ISPRGeometricDataCollecti
             KDTreeNode<T> childNode;
             // running through tree until empty leaf found: Add new node with given values
             while (true) {
-                childNode = currentNode.getNearChild(values);
+                childNode = currentNode.getNearChild(values.getValues());
                 if (childNode == null) {
                     break;
                 } else {
@@ -112,13 +117,13 @@ public class KDTree<T extends Serializable> implements ISPRGeometricDataCollecti
                     currentDimension = depth % k;
                 }
             }
-            currentNode.setChild(new KDTreeNode<T>(values, storeValue, currentDimension));
+            currentNode.setChild(new KDTreeNode<T>(values.getValues(), storeValue, currentDimension));
         }
     }
 
     @Override
-    public Collection<T> getNearestValues(int k, double[] values) {
-        BoundedPriorityQueue<DoubleObjectContainer<KDTreeNode<T>>> priorityQueue = getNearestNodes(k, values);
+    public Collection<T> getNearestValues(int k, Instance values) {
+        BoundedPriorityQueue<DoubleObjectContainer<KDTreeNode<T>>> priorityQueue = getNearestNodes(k, values.getValues());
         LinkedList<T> neighboursList = new LinkedList<T>();
         for (DoubleObjectContainer<KDTreeNode<T>> tupel : priorityQueue) {
             neighboursList.add(tupel.getSecond().getStoreValue());
@@ -127,8 +132,8 @@ public class KDTree<T extends Serializable> implements ISPRGeometricDataCollecti
     }
 
     @Override
-    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, double[] values) {
-        BoundedPriorityQueue<DoubleObjectContainer<KDTreeNode<T>>> priorityQueue = getNearestNodes(k, values);
+    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, Instance values) {
+        BoundedPriorityQueue<DoubleObjectContainer<KDTreeNode<T>>> priorityQueue = getNearestNodes(k, values.getValues());
         LinkedList<DoubleObjectContainer<T>> neighboursList = new LinkedList<DoubleObjectContainer<T>>();
         for (DoubleObjectContainer<KDTreeNode<T>> tupel : priorityQueue) {
             neighboursList.add(new DoubleObjectContainer<T>(tupel.getFirst(), tupel.getSecond().getStoreValue()));
@@ -175,12 +180,12 @@ public class KDTree<T extends Serializable> implements ISPRGeometricDataCollecti
     }
 
     @Override
-    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, double[] values) {
+    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, Instance values) {
         throw new RuntimeException("Not supported method");
     }
 
     @Override
-    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, double[] values) {
+    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, Instance values) {
         throw new RuntimeException("Not supported method");
     }
 
@@ -200,7 +205,7 @@ public class KDTree<T extends Serializable> implements ISPRGeometricDataCollecti
     }
 
     @Override
-    public double[] getSample(int index) {
+    public Instance getSample(int index) {
         throw new UnsupportedOperationException("Not supported.");
     }    
     
@@ -210,12 +215,12 @@ public class KDTree<T extends Serializable> implements ISPRGeometricDataCollecti
     }
         
     @Override
-    public Iterator<double[]> samplesIterator(){
+    public Iterator<Instance> samplesIterator(){
         throw new UnsupportedOperationException("Not supported.");
     }
 
     @Override
-    public void setSample(int index, double[] sample, T storedValue) {
+    public void setSample(int index, Instance sample, T storedValue) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

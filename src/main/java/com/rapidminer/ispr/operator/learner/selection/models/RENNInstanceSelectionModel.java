@@ -8,9 +8,12 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.set.SelectedExampleSet;
+import com.rapidminer.ispr.dataset.IStoredValues;
+import com.rapidminer.ispr.dataset.Instance;
+import com.rapidminer.ispr.dataset.InstanceGenerator;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.operator.learner.tools.KNNTools;
+import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.operator.learner.tools.PRulesUtil;
 import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
@@ -55,11 +58,11 @@ public class RENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
         Attributes attributes = exampleSet.getAttributes();
         Attribute label = attributes.getLabel();
         //DATA STRUCTURE PREPARATION        
-        ISPRGeometricDataCollection<Number> samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, exampleSet, measure);
+        ISPRGeometricDataCollection<IStoredValues> samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, exampleSet, measure);
         loss.init(samples);
         int numberOfClasses = label.getMapping().size();
         //ENN EDITTING
-        double[] values = new double[attributes.size()];
+        Instance values = InstanceGenerator.generateInstance(exampleSet);
         int[] counter = new int[numberOfClasses];
         DataIndex mainIndex = exampleSet.getIndex();
         while (true) {
@@ -67,12 +70,12 @@ public class RENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
             DataIndex index = exampleSet.getIndex();
             for (Example example : exampleSet) {
                 Arrays.fill(counter, 0);
-                Collection<Number> res;
-                KNNTools.extractExampleValues(example, values); //Reads attribute values from Example example to double array                    
+                Collection<IStoredValues> res;
+                values.setValues(example);
                 res = samples.getNearestValues(k + 1, values);
                 double sum = 0;
-                for (Number i : res) {
-                    counter[i.intValue()]++;
+                for (IStoredValues i : res) {
+                    counter[(int)i.getLabel()]++;
                     sum++;
                 }
                 counter[(int) example.getLabel()] -= 1; //here we have to subtract distanceRate because we took k+1 neighbours 					            

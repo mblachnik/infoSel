@@ -5,11 +5,13 @@
 package com.rapidminer.ispr.operator.learner.selection.models;
 
 import com.rapidminer.example.set.SelectedExampleSet;
+import com.rapidminer.ispr.dataset.IStoredValues;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.operator.learner.tools.KNNTools;
+import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
+import com.rapidminer.ispr.tools.math.similarity.DistanceEvaluator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 
 /**
@@ -42,7 +44,7 @@ public class EditedDistanceGraphModel extends AbstractInstanceSelectorModel {
     @Override
     public DataIndex selectInstances(SelectedExampleSet exampleSet) {
         int size = exampleSet.size();
-        ISPRGeometricDataCollection<Number> samples;
+        ISPRGeometricDataCollection<IStoredValues> samples;
         samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, exampleSet, distance);
 //        ArrayList<double[]> samples = new ArrayList<double[]>(exampleSet.size());
 //        ArrayList<Number> labels = new ArrayList<Number>(exampleSet.size());
@@ -59,15 +61,15 @@ public class EditedDistanceGraphModel extends AbstractInstanceSelectorModel {
         for (int iA = 0; iA < size; iA++) {
             for (int iB = 0; iB < size; iB++) {
                 if (iB == iA) continue;
-                double labelA = samples.getStoredValue(iA).doubleValue();
-                double labelB = samples.getStoredValue(iB).doubleValue();
+                double labelA = samples.getStoredValue(iA).getLabel();
+                double labelB = samples.getStoredValue(iB).getLabel();
                 if (loss.getValue(labelA,labelB,samples.getSample(iB)) > 0) {
                     boolean chk = true;
-                    double dAB = distance.calculateDistance(samples.getSample(iA), samples.getSample(iB));
+                    double dAB = DistanceEvaluator.evaluateDistance(distance,samples.getSample(iA), samples.getSample(iB));
                     for (int iC = 0; iC < size; iC++) {
                         if (iC == iA || iC == iB) continue;
-                        double dAC = distance.calculateDistance(samples.getSample(iA), samples.getSample(iC));
-                        double dBC = distance.calculateDistance(samples.getSample(iB), samples.getSample(iC));
+                        double dAC = DistanceEvaluator.evaluateDistance(distance,samples.getSample(iA), samples.getSample(iC));
+                        double dBC = DistanceEvaluator.evaluateDistance(distance,samples.getSample(iB), samples.getSample(iC));
                         if (criteria.evaluate(dAB, dAC, dBC)) {
                             chk = false;
                             break;

@@ -26,24 +26,31 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import java.io.Serializable;
+import com.rapidminer.ispr.dataset.IStoredValues;
+import com.rapidminer.ispr.dataset.Instance;
+import com.rapidminer.ispr.dataset.InstanceGenerator;
+import com.rapidminer.ispr.dataset.SimpleInstance;
+import com.rapidminer.ispr.dataset.StoredValuesHelper;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.RandomAccess;
 import com.rapidminer.ispr.operator.learner.tools.SymetricDoubleMatrix;
+import com.rapidminer.ispr.tools.math.similarity.DistanceEvaluator;
 import com.rapidminer.tools.container.Tupel;
 import com.rapidminer.tools.math.container.BoundedPriorityQueue;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
- * This class is an implementation of the GeometricDataCollection interface,
- * It implements nearest neighbor algorithm with an internal cache, such that 
- * if given distance between points was first calculated its value is stored in 
- * the internal cache, so next time it doesn't have to recalculate all of the distances.
- * The distance ceche is recalculated each time new sample is added
+ * This class is an implementation of the GeometricDataCollection interface, It
+ * implements nearest neighbor algorithm with an internal cache, such that if
+ * given distance between points was first calculated its value is stored in the
+ * internal cache, so next time it doesn't have to recalculate all of the
+ * distances. The distance ceche is recalculated each time new sample is added
  * It use simple linear search algorithm
  *
  * @author Marcin Blachnik
@@ -51,30 +58,31 @@ import java.util.Set;
  * @param <T> This is the type of value with is stored with the points and
  * retrieved on nearest neighbour search
  */
-public class SimpleNNCachedLineraList<T extends Serializable> implements ISPRCachedGeometricDataCollection<T>, RandomAccess {
+public class SimpleNNCachedLineraList<T extends IStoredValues> implements ISPRCachedGeometricDataCollection<T>, RandomAccess {
 
     private static final long serialVersionUID = -746048910140779285L;
     DistanceMeasure distance;
-    ArrayList<double[]> samples;
-    ArrayList<T> storedValues;
+    List<Instance> samples;
+    List<T> storedValues;
     SymetricDoubleMatrix distanceCache; //Structure which holds symetrix matrix
-    int index = -1;
+    private int index = -1;
 
     /**
      * Constructor of the class
+     *
      * @param distance - distance measure (it is assumed that it is symetric)
-     * @param n - size of internal data structures and cache size 
+     * @param n - size of internal data structures and cache size
      */
     public SimpleNNCachedLineraList(DistanceMeasure distance, int n) {
         this.distance = distance;
-        samples = new ArrayList<double[]>(n);
-        storedValues = new ArrayList<T>(n);
+        samples = new ArrayList<>(n);
+        storedValues = new ArrayList<>(n);
         //int cacheSize  = (n*n + n)/2;                
         distanceCache = new SymetricDoubleMatrix(n);
     }
 
-    public SimpleNNCachedLineraList(ExampleSet exampleSet, Attribute storedValuesAttribute, DistanceMeasure distance) {
-        this.distance = distance;
+    public SimpleNNCachedLineraList(ExampleSet exampleSet, Map<Attribute, String> storedValuesAttribute, DistanceMeasure distance) {
+        this(distance, exampleSet.size());
         initialize(exampleSet, storedValuesAttribute);
     }
 
@@ -82,15 +90,13 @@ public class SimpleNNCachedLineraList<T extends Serializable> implements ISPRCac
      * Initialize data structure
      *
      * @param exampleSet
-     * @param storedValuesAttribute     
+     * @param storedValuesAttribute
      */
     @Override
-    public final void initialize(ExampleSet exampleSet, Attribute storedValuesAttribute) {
+    public final void initialize(ExampleSet exampleSet, Map<Attribute, String> storedValuesAttribute) {
         int n = exampleSet.size();
-        samples = new ArrayList<double[]>(n);
-        storedValues = new ArrayList<T>(n);
         Attributes attributes = exampleSet.getAttributes();
-        int valuesSize = attributes.size();
+        int valuesSize = attributes.size();        
         for (Example example : exampleSet) {
             double[] values = new double[valuesSize];
             int i = 0;
@@ -98,43 +104,48 @@ public class SimpleNNCachedLineraList<T extends Serializable> implements ISPRCac
                 values[i] = example.getValue(attribute);
                 i++;
             }
-            Number labelValue = example.getValue(storedValuesAttribute);
-            this.add(values, (T)labelValue);
+            IStoredValues storedValue = StoredValuesHelper.createStoredValue(example, storedValuesAttribute);                        
+            this.add(InstanceGenerator.generateInstance(values), (T)storedValue);
         }
     }
+
     /**
      * Add new sample to the nearest neighbor structure
+     *
      * @param values
-     * @param storeValue 
+     * @param storeValue
      */
     @Override
-    public void add(double[] values, T storeValue) {
+    public void add(Instance values, T storeValue) {
         index++;
         this.samples.add(values);
+        storeValue.setValue(StoredValuesHelper.INDEX, index);
         this.storedValues.add(storeValue);
         int i = 0;
-        for (double[] sample : samples) {
-            double dist = distance.calculateDistance(sample, values);
-            distanceCache.set(i, index, dist);
+        for (Instance sample : samples) {
+            double dist = DistanceEvaluator.evaluateDistance(distance, sample, values);
+            distanceCache.set(i, (int)index, dist);
             i++;
         }
     }
 
     /**
-     * Returns a collection of values associated with k nearest samples to the input sample
+     * Returns a collection of values associated with k nearest samples to the
+     * input sample
+     *
      * @param k - number of nearest neighbors
      * @param values - coordinates of input sample
-     * @return 
+     * @return
      */
     @Override
-    public Collection<T> getNearestValues(int k, double[] values) {
-        Collection<T> result = new ArrayList<T>(k);
+    public Collection<T> getNearestValues(int k, Instance values) {
+        Collection<T> result = new ArrayList<>(k);
         if (k > 1) {
-            BoundedPriorityQueue<Tupel<Double, T>> queue = new BoundedPriorityQueue<Tupel<Double, T>>(k);
+            BoundedPriorityQueue<Tupel<Double, T>> queue = new BoundedPriorityQueue<>(k);
             int i = 0;
-            for (double[] sample : this.samples) {
-                double dist = distance.calculateDistance(sample, values);
-                queue.add(new Tupel<Double, T>(dist, storedValues.get(i)));
+            for (Instance sample : this.samples) {
+                double dist = DistanceEvaluator.evaluateDistance(distance, sample, values);
+                queue.add(new Tupel<>(dist, storedValues.get(i)));
                 i++;
             }
             for (Tupel<Double, T> tupel : queue) {
@@ -144,8 +155,8 @@ public class SimpleNNCachedLineraList<T extends Serializable> implements ISPRCac
             int i = 0;
             double minDist = Double.MAX_VALUE;
             T subResult = null;
-            for (double[] sample : this.samples) {
-                double dist = distance.calculateDistance(sample, values);
+            for (Instance sample : this.samples) {
+                double dist = DistanceEvaluator.evaluateDistance(distance, sample, values);
                 if (dist < minDist) {
                     minDist = dist;
                     subResult = storedValues.get(i);
@@ -158,53 +169,59 @@ public class SimpleNNCachedLineraList<T extends Serializable> implements ISPRCac
     }
 
     /**
-     * Returns a collection of pairs including distance value and value associated with k nearest samples to the input sample
+     * Returns a collection of pairs including distance value and value
+     * associated with k nearest samples to the input sample
+     *
      * @param k - number of nearest neighbors
      * @param values - coordinates of input sample
-     * @return 
+     * @return
      */
     @Override
-    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, double[] values) {
-        BoundedPriorityQueue<DoubleObjectContainer<T>> queue = new BoundedPriorityQueue<DoubleObjectContainer<T>>(k);
+    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, Instance values) {
+        BoundedPriorityQueue<DoubleObjectContainer<T>> queue = new BoundedPriorityQueue<>(k);
         int i = 0;
-        for (double[] sample : this.samples) {
-            double dist = distance.calculateDistance(sample, values);
-            queue.add(new DoubleObjectContainer<T>(dist, storedValues.get(i)));
+        for (Instance sample : this.samples) {
+            double dist = DistanceEvaluator.evaluateDistance(distance, sample, values);
+            queue.add(new DoubleObjectContainer<>(dist, storedValues.get(i)));
             i++;
         }
         return queue;
     }
 
-    /**     
-     * Returns a collection values associated with nearest samples that fall into a hyper-sphere of radius withinDistance     
+    /**
+     * Returns a collection values associated with nearest samples that fall
+     * into a hyper-sphere of radius withinDistance
+     *
      * @param withinDistance - size of radius
      * @param values - input sample coordinates
-     * @return 
+     * @return
      */
     @Override
-    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, double[] values) {
-        ArrayList<DoubleObjectContainer<T>> queue = new ArrayList<DoubleObjectContainer<T>>();
+    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, Instance values) {
+        ArrayList<DoubleObjectContainer<T>> queue = new ArrayList<>();
         int i = 0;
-        for (double[] sample : this.samples) {
-            double currentDistance = distance.calculateDistance(sample, values);
+        for (Instance sample : this.samples) {
+            double currentDistance = DistanceEvaluator.evaluateDistance(distance, sample, values);
             if (currentDistance <= withinDistance) {
-                queue.add(new DoubleObjectContainer<T>(currentDistance, storedValues.get(i)));
+                queue.add(new DoubleObjectContainer<>(currentDistance, storedValues.get(i)));
             }
             i++;
         }
         return queue;
     }
-   
-    /**     
-     * Returns a collection values associated with nearest samples that fall into a hyper-sphere of radius withinDistance,
-     * but if the number of samples is less then  butAtLeastK, then at least k values are returned    
+
+    /**
+     * Returns a collection values associated with nearest samples that fall
+     * into a hyper-sphere of radius withinDistance, but if the number of
+     * samples is less then butAtLeastK, then at least k values are returned
+     *
      * @param withinDistance - size of radius
-     * @param butAtLeastK - 
-     * @param values - input sample coordinates     
-     * @return 
+     * @param butAtLeastK -
+     * @param values - input sample coordinates
+     * @return
      */
     @Override
-    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, double[] values) {
+    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, Instance values) {
         Collection<DoubleObjectContainer<T>> result = getNearestValueDistances(withinDistance, values);
         if (result.size() < butAtLeastK) {
             return getNearestValueDistances(butAtLeastK, values);
@@ -212,22 +229,25 @@ public class SimpleNNCachedLineraList<T extends Serializable> implements ISPRCac
         return result;
     }
 
-            /**
-     * Returns a collection of values associated with k nearest samples to the input sample which is already an element of input data.
-     * For that purpose this algorithm uses internal cache. This method is very useful for instance selection.
+    /**
+     * Returns a collection of values associated with k nearest samples to the
+     * input sample which is already an element of input data. For that purpose
+     * this algorithm uses internal cache. This method is very useful for
+     * instance selection.
+     *
      * @param k - number of nearest neighbors
-     * @param values - coordinates of input sample
-     * @return 
+     * @param idx
+     * @return
      */
     @Override
-    public Collection<T> getNearestValues(int k, int index) {
-        Collection<T> result = new ArrayList<T>(k);
+    public Collection<T> getNearestValues(int k, int idx) {
+        Collection<T> result = new ArrayList<>(k);
         if (k > 1) {
-            BoundedPriorityQueue<DoubleObjectContainer<T>> queue = new BoundedPriorityQueue<DoubleObjectContainer<T>>(k);
+            BoundedPriorityQueue<DoubleObjectContainer<T>> queue = new BoundedPriorityQueue<>(k);
             int i = 0;
-            for (double[] sample : this.samples) {
-                double dist = distanceCache.get(index, i);
-                queue.add(new DoubleObjectContainer<T>(dist, storedValues.get(i)));
+            for (Instance sample : this.samples) {
+                double dist = distanceCache.get(idx, i);
+                queue.add(new DoubleObjectContainer<>(dist, storedValues.get(i)));
                 i++;
             }
             for (DoubleObjectContainer<T> tupel : queue) {
@@ -237,8 +257,8 @@ public class SimpleNNCachedLineraList<T extends Serializable> implements ISPRCac
             int i = 0;
             double minDist = Double.MAX_VALUE;
             T subResult = null;
-            for (double[] sample : this.samples) {
-                double dist = distanceCache.get(index, i);
+            for (Instance sample : this.samples) {
+                double dist = distanceCache.get(idx, i);
                 if (dist < minDist) {
                     minDist = dist;
                     subResult = storedValues.get(i);
@@ -250,55 +270,68 @@ public class SimpleNNCachedLineraList<T extends Serializable> implements ISPRCac
         return result;
     }
 
-        /**
-     * Returns a collection of pairs including distance value and value associated with k nearest samples to the input sample which is already an element of input data.
-     * For that purpose this algorithm uses internal cache. This method is very useful for instance selection.
-     * which is a member of the dataset 
+    /**
+     * Returns a collection of pairs including distance value and value
+     * associated with k nearest samples to the input sample which is already an
+     * element of input data. For that purpose this algorithm uses internal
+     * cache. This method is very useful for instance selection. which is a
+     * member of the dataset
+     *
      * @param k - number of nearest neighbors
-     * @param values - coordinates of input sample
-     * @return 
-     */   
+     * @param idx
+     * @return
+     */
     @Override
-    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, int index) {
-        BoundedPriorityQueue<DoubleObjectContainer<T>> queue = new BoundedPriorityQueue<DoubleObjectContainer<T>>(k);
+    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, int idx) {
+        BoundedPriorityQueue<DoubleObjectContainer<T>> queue = new BoundedPriorityQueue<>(k);
         int i = 0;
-        for (double[] sample : this.samples) {
-            double dist = distanceCache.get(index, i);
-            queue.add(new DoubleObjectContainer<T>(dist, storedValues.get(i)));
+        for (Instance sample : this.samples) {
+            double dist = distanceCache.get(idx, i);
+            queue.add(new DoubleObjectContainer<>(dist, storedValues.get(i)));
             i++;
         }
         return queue;
     }
 
-     /**     
-     * Returns a collection values associated with nearest samples that fall into a hyper-sphere of radius withinDistance. It is assumed that the input sample  already is an element of input data.
-     * For that purpose this algorithm uses internal cache. This method is very useful for instance selection. 
+    /**
+     * Returns a collection values associated with nearest samples that fall
+     * into a hyper-sphere of radius withinDistance. It is assumed that the
+     * input sample already is an element of input data. For that purpose this
+     * algorithm uses internal cache. This method is very useful for instance
+     * selection.
+     *
      * @param withinDistance - size of radius
-     * @param index - index of the input sample. It should be an element of the input data added by the addSample method
-     * @return 
+     * @param index - index of the input sample. It should be an element of the
+     * input data added by the addSample method
+     * @return
      */
     @Override
     public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int index) {
-        ArrayList<DoubleObjectContainer<T>> queue = new ArrayList<DoubleObjectContainer<T>>();
+        ArrayList<DoubleObjectContainer<T>> queue = new ArrayList<>();
         int i = 0;
-        for (double[] sample : this.samples) {
+        for (Instance sample : this.samples) {
             double currentDistance = distanceCache.get(index, i);
             if (currentDistance <= withinDistance) {
-                queue.add(new DoubleObjectContainer<T>(currentDistance, storedValues.get(i)));
+                queue.add(new DoubleObjectContainer<>(currentDistance, storedValues.get(i)));
             }
             i++;
         }
         return queue;
     }
 
-        /**     
-     * Returns a collection values associated with nearest samples that fall into a hyper-sphere of radius withinDistance,
-     * but if the number of samples is less then  butAtLeastK, then at least k values are returned. It is assumed that the input sample  already is an element of input data.
-     * For that purpose this algorithm uses internal cache. This method is very useful for instance selection.   
+    /**
+     * Returns a collection values associated with nearest samples that fall
+     * into a hyper-sphere of radius withinDistance, but if the number of
+     * samples is less then butAtLeastK, then at least k values are returned. It
+     * is assumed that the input sample already is an element of input data. For
+     * that purpose this algorithm uses internal cache. This method is very
+     * useful for instance selection.
+     *
      * @param withinDistance - size of radius
      * @param butAtLeastK - number of nearest neighbors
-     * @param index - index of the input sample. It should be an element of the input data added by the addSample method
-     * @return 
+     * @param index - index of the input sample. It should be an element of the
+     * input data added by the addSample method
+     * @return
      */
     @Override
     public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, int index) {
@@ -311,7 +344,8 @@ public class SimpleNNCachedLineraList<T extends Serializable> implements ISPRCac
 
     /**
      * Number of samples stored in the internal collection
-     * @return 
+     *
+     * @return
      */
     @Override
     public int size() {
@@ -319,9 +353,11 @@ public class SimpleNNCachedLineraList<T extends Serializable> implements ISPRCac
     }
 
     /**
-     * Method allows to retrieve value associated with the input sample of given index
+     * Method allows to retrieve value associated with the input sample of given
+     * index
+     *
      * @param index
-     * @return 
+     * @return
      */
     @Override
     public T getStoredValue(int index) {
@@ -330,17 +366,19 @@ public class SimpleNNCachedLineraList<T extends Serializable> implements ISPRCac
 
     /**
      * Method allows to retrieve the input sample of given index
+     *
      * @param index
-     * @return 
+     * @return
      */
     @Override
-    public double[] getSample(int index) {
+    public Instance getSample(int index) {
         return samples.get(index);
     }
 
     /**
      * Not implemented
-     * @param n 
+     *
+     * @param n
      */
     @Override
     public void remove(int n) {
@@ -349,7 +387,8 @@ public class SimpleNNCachedLineraList<T extends Serializable> implements ISPRCac
 
     /**
      * Returns iterator over values associated with input samples
-     * @return 
+     *
+     * @return
      */
     @Override
     public Iterator<T> storedValueIterator() {
@@ -358,26 +397,28 @@ public class SimpleNNCachedLineraList<T extends Serializable> implements ISPRCac
 
     /**
      * Returns iterator over input data
-     * @return 
+     *
+     * @return
      */
     @Override
-    public Iterator<double[]> samplesIterator() {
+    public Iterator<Instance> samplesIterator() {
         return this.samples.iterator();
     }
 
     /**
      * THis method allows to modify values associated with input data
+     *
      * @param index - index of input data to modify
      * @param sample - coordinated of the input data
      * @param storedValue - new value associated with the input data
      */
     @Override
-    public void setSample(int index, double[] sample, T storedValue) {
+    public void setSample(int index, Instance sample, T storedValue) {
         samples.set(index, sample);
         storedValues.set(index, storedValue);
-        int i=0;
-        for (double[] values : samples) {
-            double dist = distance.calculateDistance(values, sample);
+        int i = 0;
+        for (Instance values : samples) {
+            double dist = DistanceEvaluator.evaluateDistance(distance, values, sample);
             distanceCache.set(i, index, dist);
             i++;
         }

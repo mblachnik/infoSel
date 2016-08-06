@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rapidminer.ispr.operator.learner.selection.meta;
+package com.rapidminer.ispr.operator.learner.selection.ensemble;
 
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
@@ -12,12 +12,13 @@ import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.example.set.SortedExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
+import com.rapidminer.ispr.dataset.IStoredValues;
 import com.rapidminer.ispr.operator.learner.AbstractPRulesOperatorChain;
 import com.rapidminer.ispr.operator.learner.classifiers.IS_KNNClassificationModel;
 import com.rapidminer.ispr.operator.learner.classifiers.PredictionType;
 import com.rapidminer.ispr.operator.learner.classifiers.VotingType;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.operator.learner.tools.KNNTools;
+import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
 import com.rapidminer.ispr.tools.math.container.IntDoubleContainer;
@@ -49,7 +50,7 @@ import java.util.List;
  *
  * @author Marcin
  */
-public class ISMetaVoteOperator extends AbstractPRulesOperatorChain {
+public class ISEnsembleVoteOperator extends AbstractPRulesOperatorChain {
 
     public static final String PARAMETER_THRESHOLD = "Acceptance threshold";
     public static final String PARAMETER_ADD_WEIGHTS = "Add weight attribute";
@@ -69,7 +70,7 @@ public class ISMetaVoteOperator extends AbstractPRulesOperatorChain {
     private int compression;
     protected DistanceMeasureHelper measureHelper;
 
-    public ISMetaVoteOperator(OperatorDescription description) {
+    public ISEnsembleVoteOperator(OperatorDescription description) {
         super(description, "Selection");
         measureHelper = new DistanceMeasureHelper(this);
         init();
@@ -185,16 +186,16 @@ public class ISMetaVoteOperator extends AbstractPRulesOperatorChain {
         if (modelOutputPort.isConnected()) {
             DistanceMeasure distance = new MixedEuclideanDistance();
             distance.init(output);
-            if (output.getAttributes().getLabel().isNominal()) {
-                ISPRGeometricDataCollection<Number> samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, output, distance);
-                IS_KNNClassificationModel<Number> model = new IS_KNNClassificationModel<Number>(output, samples, 1, VotingType.MAJORITY, PredictionType.Classification);
+            //if (output.getAttributes().getLabel().isNominal()) {
+                ISPRGeometricDataCollection<IStoredValues> samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, output, distance);
+                IS_KNNClassificationModel<IStoredValues> model = new IS_KNNClassificationModel<>(output, samples, 1, VotingType.MAJORITY, PredictionType.Classification);
                 modelOutputPort.deliver(model);
-            } else if (output.getAttributes().getLabel().isNumerical()) {
-                ISPRGeometricDataCollection<IntDoubleContainer> samples = KNNTools.initializeGeneralizedKNearestNeighbour(output, distance);
-                //GeometricDataCollection<Integer> samples = KNNTools.initializeKNearestNeighbour(output, distance);
-                IS_KNNClassificationModel<IntDoubleContainer> model = new IS_KNNClassificationModel<IntDoubleContainer>(output, samples, 1, VotingType.MAJORITY, PredictionType.Regression);
-                modelOutputPort.deliver(model);
-            }
+            //} else if (output.getAttributes().getLabel().isNumerical()) {
+            //    ISPRGeometricDataCollection<IntDoubleContainer> samples = KNNTools.initializeGeneralizedKNearestNeighbour(output, distance);
+            //    //GeometricDataCollection<Integer> samples = KNNTools.initializeKNearestNeighbour(output, distance);
+            //    IS_KNNClassificationModel<IntDoubleContainer> model = new IS_KNNClassificationModel<IntDoubleContainer>(output, samples, 1, VotingType.MAJORITY, PredictionType.Regression);
+            //    modelOutputPort.deliver(model);
+            //}
         }
         //IS selection statistics
         numberOfInstancesBeaforeSelection = trainingSet.size();

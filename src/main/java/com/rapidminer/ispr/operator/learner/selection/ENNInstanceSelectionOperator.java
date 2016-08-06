@@ -6,6 +6,9 @@ import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.ispr.operator.learner.selection.models.AbstractInstanceSelectorModel;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
+import com.rapidminer.ispr.operator.learner.selection.models.tools.InstanceModifier;
+import com.rapidminer.ispr.operator.learner.selection.models.tools.InstanceModifierHelper;
+import com.rapidminer.ispr.operator.learner.selection.models.tools.InstanceModifierTypes;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
@@ -66,7 +69,8 @@ public class ENNInstanceSelectionOperator extends AbstractInstanceSelectorOperat
         int k = getParameterAsInt(PARAMETER_K);
         Attribute labelAttribute = exampleSet.getAttributes().getLabel();
         double[] classWeight = null;
-        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this);
+        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this);        
+        InstanceModifier instanceModifier = InstanceModifierHelper.getConfiguredInstanceModifier(this);
         if (labelAttribute.isNominal()) {
             classWeight = new double[labelAttribute.getMapping().size()];
             for (int i = 0; i < classWeight.length; i++) {
@@ -86,7 +90,7 @@ public class ENNInstanceSelectionOperator extends AbstractInstanceSelectorOperat
                 }
             }
         }
-        return new ENNInstanceSelectionModel(measure, k, loss, classWeight);
+        return new ENNInstanceSelectionModel(measure, k, loss, classWeight, instanceModifier);
     }
 
     /**
@@ -137,7 +141,7 @@ public class ENNInstanceSelectionOperator extends AbstractInstanceSelectorOperat
      * @return
      */
     @Override
-    boolean isSampleRandomize() {
+    public boolean isSampleRandomize() {
         return false;
     }
 
@@ -156,6 +160,8 @@ public class ENNInstanceSelectionOperator extends AbstractInstanceSelectorOperat
 
         types.add(new ParameterTypeList(PARAMETER_CLASS_WEIGHTS, "The weights w for all classes (first column: class name, second column: weight), i.e. set the parameters C of each class w * C (empty: using 1 for all classes where the weight was not defined).", new ParameterTypeString("class_name", "The class name."), new ParameterTypeDouble("weight",
                 "The weight for this class.", 0.0d, Double.POSITIVE_INFINITY, 1.0d)));
+        
+        types.addAll(InstanceModifierHelper.getParameterTypes(this));
         return types;
     }
 }

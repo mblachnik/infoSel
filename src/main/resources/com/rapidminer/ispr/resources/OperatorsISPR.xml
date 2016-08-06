@@ -118,21 +118,21 @@
             <group key="Ensemble IS">
                 <operator>
                     <key>bagging_sel</key>
-                    <class>com.rapidminer.ispr.operator.learner.selection.meta.ISMetaBaggingOperator</class>
+                    <class>com.rapidminer.ispr.operator.learner.selection.ensemble.ISEnsembleBaggingOperator</class>
                     <replaces>BaggingInstanceSelection</replaces>
                 </operator>
                 <operator>
                     <key>vote_sel</key>
-                    <class>com.rapidminer.ispr.operator.learner.selection.meta.ISMetaVoteOperator</class>
+                    <class>com.rapidminer.ispr.operator.learner.selection.ensemble.ISEnsembleVoteOperator</class>
                     <replaces>VoteInstanceSelection</replaces>
                 </operator>
                 <operator>
                     <key>RndFeature_sel</key>        
-                    <class>com.rapidminer.ispr.operator.learner.selection.meta.ISMetaRndFeatureOperator</class>
+                    <class>com.rapidminer.ispr.operator.learner.selection.ensemble.ISEnsembleRndFeatureOperator</class>
                 </operator>   
                 <operator>
                     <key>meta_noise_sel</key>
-                    <class>com.rapidminer.ispr.operator.learner.selection.meta.ISMetaNoisOperator</class>
+                    <class>com.rapidminer.ispr.operator.learner.selection.ensemble.ISEnsembleNoisOperator</class>
                 </operator>  
             </group>
         </group>

@@ -26,9 +26,13 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
+import com.rapidminer.ispr.dataset.IStoredValues;
+import com.rapidminer.ispr.dataset.Instance;
+import com.rapidminer.ispr.dataset.InstanceGenerator;
+import com.rapidminer.ispr.dataset.SimpleInstance;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.learner.PredictionModel;
-import com.rapidminer.ispr.operator.learner.tools.KNNTools;
+import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.operator.learner.tools.PRulesUtil;
 import com.rapidminer.tools.Tools;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
@@ -88,23 +92,19 @@ public class IS_KNNClassificationModel<T extends Serializable> extends Predictio
     public ExampleSet performPrediction(ExampleSet exampleSet, Attribute predictedLabel) throws OperatorException {
         // building attribute order from trainingset
         Attributes attributes = exampleSet.getAttributes();
-        attributesNumber = attributes.size();
-        double[] values = new double[attributesNumber];
+        attributesNumber = attributes.size();        
         List<Attribute> orderedAttributes = PRulesUtil.reorderAttributesByName(attributes, trainingAttributeNames);
+        Instance instance = InstanceGenerator.generateInstance(exampleSet.getExample(0));
         for (Example example : exampleSet) {
             // reading values
-            int i = 0;
-            for (Attribute attribute : orderedAttributes) {                
-                values[i] = example.getValue(attribute);
-                i++;
-            }
+            instance.setValues(example);
             double[] counter;
             int mostFrequentIndex;
             switch (predictionType) {
                 case Classification:
                     // counting frequency of labels
                     counter = new double[predictedLabel.getMapping().size()];
-                    KNNTools.doNNVotes(counter, values, (ISPRGeometricDataCollection<Number>) samples, k, weightedNN);
+                    KNNTools.doNNVotes(counter, instance, (ISPRGeometricDataCollection<IStoredValues>) samples, k, weightedNN);
 
                     // finding most frequent class
                     mostFrequentIndex = PRulesUtil.findMostFrequentValue(counter);
@@ -118,7 +118,7 @@ public class IS_KNNClassificationModel<T extends Serializable> extends Predictio
                 case Clustering:
                     // counting frequency of labels
                     counter = new double[predictedLabel.getMapping().size()];
-                    KNNTools.doNNVotes(counter, values, (ISPRGeometricDataCollection<Number>) samples, k, weightedNN);
+                    KNNTools.doNNVotes(counter, instance, (ISPRGeometricDataCollection<IStoredValues>) samples, k, weightedNN);
 
                     // finding most frequent class
                     mostFrequentIndex = PRulesUtil.findMostFrequentValue(counter);
@@ -126,7 +126,7 @@ public class IS_KNNClassificationModel<T extends Serializable> extends Predictio
                     example.setValue(predictedLabel, mostFrequentIndex);                                        
                     break;
                 case Regression:
-                    double predictedValue = KNNTools.getRegVotes(values, (ISPRGeometricDataCollection<Number>) samples, k, weightedNN);
+                    double predictedValue = KNNTools.getRegVotes(instance, (ISPRGeometricDataCollection<IStoredValues>) samples, k, weightedNN);
                     // setting prediction
                     example.setValue(predictedLabel, predictedValue);
                     break;

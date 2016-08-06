@@ -8,9 +8,13 @@ import com.rapidminer.operator.OperatorException;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
 import com.rapidminer.ispr.operator.learner.selection.models.AbstractInstanceSelectorModel;
+import com.rapidminer.ispr.operator.learner.selection.models.tools.InstanceModifier;
+import com.rapidminer.ispr.operator.learner.selection.models.tools.InstanceModifierHelper;
+import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import java.util.List;
 
 /**
  * This class is used to provide IB2 instance selection operator It use
@@ -42,7 +46,8 @@ public class IB2InstanceSelectionOperator extends AbstractInstanceSelectorOperat
         DistanceMeasure distance = measureHelper.getInitializedMeasure(exampleSet);
         RandomGenerator randomGenerator = RandomGenerator.getRandomGenerator(this);
         IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this);
-        return new IB2InstanceSelectionModel(distance, loss);
+        InstanceModifier instanceModifier = InstanceModifierHelper.getConfiguredInstanceModifier(this);
+        return new IB2InstanceSelectionModel(distance, loss, instanceModifier);
     }
 
     /**
@@ -76,6 +81,19 @@ public class IB2InstanceSelectionOperator extends AbstractInstanceSelectorOperat
             default:
                 return false;
         }
+    }
+    
+    /**
+     * Setting GUI parameters of this operator
+     *
+     * @return
+     */
+    @Override
+    public List<ParameterType> getParameterTypes() {
+        List<ParameterType> types = super.getParameterTypes();
+        
+        types.addAll(InstanceModifierHelper.getParameterTypes(this));
+        return types;
     }
 
 }

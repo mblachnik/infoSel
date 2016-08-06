@@ -5,21 +5,33 @@
  */
 package com.rapidminer.ispr.dataset;
 
-import com.rapidminer.example.Attributes;
+import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Example;
+import java.util.List;
 
 /**
  *
- * @author Marcin
+ * @author Marcin 
  */
-public interface Instance {
+public interface Instance extends Cloneable {
 
-    double[] getValues();
-
-    void setValues(double[] prototypeValues);
-
-    void setValues(Example example, Attributes attributes);
-
-    void setValues(Example example);
+    double[] getValues();            
     
+    void setValues(Example example, List<Attribute> attributes);
+    
+    void setValues(Example example, Attribute[] attributes);
+
+    void setValues(Example example);   
+    
+    int size();
+    
+    void setValue(int i, double value);
+    
+    double getValue(int i);
+    
+    boolean isSparse();
+    
+    int[] getNonEmptyIndex();
+
+    public Object clone();
 }

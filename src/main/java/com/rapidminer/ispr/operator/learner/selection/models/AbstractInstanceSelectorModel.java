@@ -6,16 +6,18 @@ package com.rapidminer.ispr.operator.learner.selection.models;
 
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.set.SelectedExampleSet;
+import com.rapidminer.ispr.dataset.IStoredValues;
 import com.rapidminer.ispr.operator.learner.PRulesModel;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
+import com.rapidminer.tools.RandomGenerator;
 
 /**
  * Abstract class which simplifies implementation of Instance selection algorithms
  * @author Marcin
  */
 public abstract class AbstractInstanceSelectorModel implements PRulesModel<ExampleSet> {
-
+        
     /**
      * Method inherited from PRulesModel. Initialize model execution - wraps 
      * ExampleSet by SelectedExampleSet class which allows for instance 
@@ -25,7 +27,7 @@ public abstract class AbstractInstanceSelectorModel implements PRulesModel<Examp
      * @return
      */
     @Override
-    public ExampleSet run(ExampleSet inputExampleSet) {
+    public ExampleSet run(ExampleSet inputExampleSet) {        
         SelectedExampleSet exampleSet;
         if (inputExampleSet instanceof SelectedExampleSet) {
             exampleSet = (SelectedExampleSet) inputExampleSet.clone();
@@ -57,7 +59,7 @@ public abstract class AbstractInstanceSelectorModel implements PRulesModel<Examp
      * and computational footprint.
      * @return 
      */
-    public ISPRGeometricDataCollection<Number> getModel(){
+    public ISPRGeometricDataCollection<IStoredValues> getModel(){
         return null;
     }
 }

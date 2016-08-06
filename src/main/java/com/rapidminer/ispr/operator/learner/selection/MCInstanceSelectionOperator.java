@@ -103,7 +103,7 @@ public class MCInstanceSelectionOperator extends AbstractInstanceSelectorOperato
      * @return
      */
     @Override
-    boolean isSampleRandomize() {
+    public boolean isSampleRandomize() {
         return false;
     }
 

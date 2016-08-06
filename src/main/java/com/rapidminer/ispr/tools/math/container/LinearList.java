@@ -26,16 +26,23 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import java.io.Serializable;
+import com.rapidminer.ispr.dataset.IStoredValues;
+import com.rapidminer.ispr.dataset.Instance;
+import com.rapidminer.ispr.dataset.InstanceGenerator;
+import com.rapidminer.ispr.dataset.SimpleInstance;
+import com.rapidminer.ispr.dataset.StoredValuesHelper;
+import com.rapidminer.ispr.tools.math.similarity.DistanceEvaluator;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.RandomAccess;
 
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.RandomAccess;
 import java.util.Set;
 
 /**
@@ -44,32 +51,35 @@ import java.util.Set;
  * computations are required for this operation.
  *
  * @author Sebastian Land
- *
- * @param <T> This is the type of value with is stored with the points and
- * retrieved on nearest neighbour search
+ * @param <T>
  */
-public class MyLinearList<T extends Serializable> implements ISPRGeometricDataCollection<T>, RandomAccess {
+public class LinearList<T extends IStoredValues> implements ISPRGeometricDataCollection<T>, RandomAccess {
 
     private static final long serialVersionUID = -746048910140779285L;
     DistanceMeasure distance;
-    ArrayList<double[]> samples;
-    ArrayList<T> storedValues;
+    List<Instance> samples;
+    List<T> storedValues;       
+    private long index = 0;
 
-    public MyLinearList(DistanceMeasure distance, int n) {
+    public LinearList(DistanceMeasure distance, int n) {
         this.distance = distance;
-        samples = new ArrayList<double[]>(n);
-        storedValues = new ArrayList<T>(n);
+        samples = new ArrayList<>(n);
+        storedValues = new ArrayList<>(n);                
     }
 
-    public MyLinearList(ArrayList<double[]> samples, ArrayList<T> storedValues, DistanceMeasure distance) {
+    public LinearList(List<Instance> samples, List<T> storedValues, DistanceMeasure distance) {
         this.distance = distance;
         assert samples.size() == storedValues.size();
         this.samples = samples;
         this.storedValues = storedValues;
+        for (int i=0; i<storedValues.size(); i++){
+            storedValues.get(i).setValue(StoredValuesHelper.INDEX, index);
+            index++;
+        }
     }
     
-    public MyLinearList(ExampleSet exampleSet, Attribute storedValuesAttribute, DistanceMeasure distance) {
-        this.distance = distance;        
+    public LinearList(ExampleSet exampleSet, Map<Attribute,String> storedValuesAttribute, DistanceMeasure distance) {        
+        this(distance,exampleSet.size());
         initialize(exampleSet, storedValuesAttribute);
     }
 
@@ -77,46 +87,41 @@ public class MyLinearList<T extends Serializable> implements ISPRGeometricDataCo
      * Initialize data structure
      *
      * @param exampleSet
-     * @param storedValuesAttribute     
+     * @param storedAttributes     
      */
     @Override
-    public final void initialize(ExampleSet exampleSet, Attribute storedValuesAttribute) {
-        int n = exampleSet.size();
-        samples = new ArrayList<double[]>(n);
-        storedValues = new ArrayList<T>(n);
+    public final void initialize(ExampleSet exampleSet, Map<Attribute,String> storedAttributes) {
+        int n = exampleSet.size();       
         Attributes attributes = exampleSet.getAttributes();
-        int valuesSize = attributes.size();
-        for (Example example : exampleSet) {
-            double[] values = new double[valuesSize];
-            int i = 0;
-            for (Attribute attribute : attributes) {
-                values[i] = example.getValue(attribute);
-                i++;
-            }
-            Number labelValue = example.getValue(storedValuesAttribute);
-            samples.add(values);
-            storedValues.add((T)labelValue);
+        int valuesSize = attributes.size();        
+        for (Example example : exampleSet) {            
+            IStoredValues storedValue = StoredValuesHelper.createStoredValue(example, storedAttributes);
+            storedValue.setValue(StoredValuesHelper.INDEX, index);
+            samples.add(InstanceGenerator.generateInstance(example));
+            storedValues.add((T)storedValue);            
+            index++;
         }
     }
-
+    
     @Override
-    public void add(double[] values, T storeValue) {
+    public void add(Instance values, T storeValue) {
         this.samples.add(values);
+        storeValue.setValue(StoredValuesHelper.INDEX, index++);
         this.storedValues.add(storeValue);
     }
 
     @Override
-    public Collection<T> getNearestValues(int k, double[] values) {
-        Collection<T> result = new ArrayList<T>(k);
+    public Collection<T> getNearestValues(int k, Instance values) {
+        Collection<T> result = new ArrayList<>(k);
         if (k > 1) {
             BoundedPriorityQueue<DoubleObjectContainer<T>> queue = new BoundedPriorityQueue<DoubleObjectContainer<T>>(k);
             int i = 0;
-            for (double[] sample : this.samples) {
+            for (Instance currentInstance : this.samples) {                
                 T second = storedValues.get(i);
-                double first = distance.calculateDistance(sample, values);
+                double first = DistanceEvaluator.evaluateDistance(distance,currentInstance, values);
                 DoubleObjectContainer<T> container = queue.getEmptyContainer();
                 if (container == null) {
-                    container = new DoubleObjectContainer<T>(first, second);
+                    container = new DoubleObjectContainer<>(first, second);
                 } else {
                     container.setFirst(first);
                     container.setSecond(second);
@@ -131,8 +136,8 @@ public class MyLinearList<T extends Serializable> implements ISPRGeometricDataCo
             int i = 0;
             double minDist = Double.MAX_VALUE;
             T subResult = null;
-            for (double[] sample : this.samples) {
-                double dist = distance.calculateDistance(sample, values);
+            for (Instance currentInstance : this.samples) {                
+                double dist = DistanceEvaluator.evaluateDistance(distance,currentInstance, values);
                 if (dist < minDist) {
                     minDist = dist;
                     subResult = storedValues.get(i);
@@ -145,15 +150,15 @@ public class MyLinearList<T extends Serializable> implements ISPRGeometricDataCo
     }
 
     @Override
-    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, double[] values) {
-        BoundedPriorityQueue<DoubleObjectContainer<T>> queue = new BoundedPriorityQueue<DoubleObjectContainer<T>>(k);
+    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, Instance values) {
+        BoundedPriorityQueue<DoubleObjectContainer<T>> queue = new BoundedPriorityQueue<>(k);
         int i = 0;
-        for (double[] sample : this.samples) {
+        for (Instance currentInstance : this.samples) {            
             T second = storedValues.get(i);
-            double first = distance.calculateDistance(sample, values);
+            double first = DistanceEvaluator.evaluateDistance(distance, currentInstance, values);
             DoubleObjectContainer<T> container = queue.getEmptyContainer();
             if (container == null) {
-                container = new DoubleObjectContainer<T>(first, second);
+                container = new DoubleObjectContainer<>(first, second);
             } else {
                 container.setFirst(first);
                 container.setSecond(second);
@@ -165,11 +170,11 @@ public class MyLinearList<T extends Serializable> implements ISPRGeometricDataCo
     }
 
     @Override
-    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, double[] values) {
+    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, Instance values) {
         ArrayList<DoubleObjectContainer<T>> queue = new ArrayList<DoubleObjectContainer<T>>();
         int i = 0;
-        for (double[] sample : this.samples) {
-            double currentDistance = distance.calculateDistance(sample, values);
+        for (Instance currentInstance : this.samples) {            
+            double currentDistance = DistanceEvaluator.evaluateDistance(distance, currentInstance, values);
             if (currentDistance <= withinDistance) {
                 queue.add(new DoubleObjectContainer<T>(currentDistance, storedValues.get(i)));
             }
@@ -179,7 +184,7 @@ public class MyLinearList<T extends Serializable> implements ISPRGeometricDataCo
     }
 
     @Override
-    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, double[] values) {
+    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, Instance values) {
         Collection<DoubleObjectContainer<T>> result = getNearestValueDistances(withinDistance, values);
         if (result.size() < butAtLeastK) {
             return getNearestValueDistances(butAtLeastK, values);
@@ -198,7 +203,7 @@ public class MyLinearList<T extends Serializable> implements ISPRGeometricDataCo
     }
 
     @Override
-    public double[] getSample(int index) {
+    public Instance getSample(int index) {
         return samples.get(index);
     }
 
@@ -214,12 +219,12 @@ public class MyLinearList<T extends Serializable> implements ISPRGeometricDataCo
     }
 
     @Override
-    public Iterator<double[]> samplesIterator() {
+    public Iterator<Instance> samplesIterator() {
         return samples.iterator();
     }
 
     @Override
-    public void setSample(int index, double[] sample, T storedValue) {
+    public void setSample(int index, Instance sample, T storedValue) {
         samples.set(index, sample);
         storedValues.set(index, storedValue);
     }
@@ -236,9 +241,9 @@ public class MyLinearList<T extends Serializable> implements ISPRGeometricDataCo
             uniqueValues.add(value);
         }
         return uniqueValues.size();
-    }
+    }      
 
-    private class Itr implements ListIterator<PairContainer<double[], T>> {
+    private class Itr implements ListIterator<PairContainer<Instance, T>> {
 
         int iteratorState;
         int length = samples.size();
@@ -257,19 +262,19 @@ public class MyLinearList<T extends Serializable> implements ISPRGeometricDataCo
         }
 
         @Override
-        public PairContainer<double[], T> next() {
+        public PairContainer<Instance, T> next() {
             if (hasNext()) {
                 iteratorState++;
-                return new PairContainer<double[], T>(samples.get(iteratorState), storedValues.get(iteratorState));
+                return new PairContainer<Instance, T>(samples.get(iteratorState), storedValues.get(iteratorState));
             }
             throw new NoSuchElementException();
         }
 
         @Override
-        public PairContainer<double[], T> previous() {
+        public PairContainer<Instance, T> previous() {
             if (hasPrevious()) {
                 iteratorState--;
-                return new PairContainer<double[], T>(samples.get(iteratorState), storedValues.get(iteratorState));
+                return new PairContainer<Instance, T>(samples.get(iteratorState), storedValues.get(iteratorState));
             }
             throw new NoSuchElementException();
         }
@@ -296,13 +301,13 @@ public class MyLinearList<T extends Serializable> implements ISPRGeometricDataCo
         }
 
         @Override
-        public void set(PairContainer<double[], T> e) {
+        public void set(PairContainer<Instance, T> e) {
             samples.set(iteratorState, e.getFirst());
             storedValues.set(iteratorState, e.getSecond());
         }
 
         @Override
-        public void add(PairContainer<double[], T> e) {
+        public void add(PairContainer<Instance, T> e) {
             samples.add(iteratorState, e.getFirst());
             storedValues.add(iteratorState, e.getSecond());
         }

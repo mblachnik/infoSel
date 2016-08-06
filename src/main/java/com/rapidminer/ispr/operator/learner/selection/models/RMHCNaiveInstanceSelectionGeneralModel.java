@@ -9,9 +9,13 @@ import com.rapidminer.example.Example;
 import com.rapidminer.example.set.EditedExampleSet;
 import com.rapidminer.example.set.ISPRExample;
 import com.rapidminer.example.set.SelectedExampleSet;
+import com.rapidminer.ispr.dataset.IStoredValues;
+import com.rapidminer.ispr.dataset.Instance;
+import com.rapidminer.ispr.dataset.InstanceGenerator;
+import com.rapidminer.ispr.dataset.StoredValuesHelper;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.operator.learner.tools.KNNTools;
+import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
 import com.rapidminer.tools.RandomGenerator;
@@ -82,8 +86,7 @@ public class RMHCNaiveInstanceSelectionGeneralModel extends AbstractInstanceSele
         //TODO Update the code, because now it repeates the iterations if selected instance is out of range (based on bit enciding) and this may not be good. Moreover it may happen that certain instance is selected more then once, so the final number of samples mey not be equalt to the number of prototypes which should be selected 
         //initialization
         loss.init(exampleSet, measure);
-        int[] bestSelectedInstances;
-        double[] values;
+        int[] bestSelectedInstances;        
         DataIndex index = exampleSet.getIndex();
         EditedExampleSet workingSet = new EditedExampleSet(exampleSet);
         DataIndex indexWorking = workingSet.getIndex();
@@ -91,7 +94,7 @@ public class RMHCNaiveInstanceSelectionGeneralModel extends AbstractInstanceSele
 
         //choosing initial set of prototypes
         int[] selectedInstances = new int[this.numberOfPrototypes];
-        TreeSet<Integer> usedValues = new TreeSet<Integer>();
+        TreeSet<Integer> usedValues = new TreeSet<>();
         int instanceId;
         for (int i = 0; i < numberOfPrototypes; i++) {
             do {
@@ -109,21 +112,24 @@ public class RMHCNaiveInstanceSelectionGeneralModel extends AbstractInstanceSele
         for (int j = 0; j < selectedInstances.length; j++) {
             indexWorking.set(selectedInstances[j], true);
         }
-        ISPRGeometricDataCollection<Number> kNN = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, workingSet, measure);
+        ISPRGeometricDataCollection<IStoredValues> kNN = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, workingSet, measure);
         loss.init(kNN);
         double errorRateBest = Double.MAX_VALUE;
         int prototypeToChangeId = 0;
         int curentInstanceId = selectedInstances[prototypeToChangeId];
         int newInstanceId = selectedInstances[prototypeToChangeId];
         Example example;
+        Instance values = InstanceGenerator.generateInstance(exampleSet);
         for (int i = 0; i < iterations; i++) {
             double errorRate = 0;
             for (Example testExample : exampleSet) {
-                double predictedLabel = KNNTools.predictOneNearestNeighbor(testExample, kNN);
+                values.setValues(testExample);
+                //double predictedLabel = KNNTools.predictOneNearestNeighbor(testExample, kNN);
+                double predictedLabel = KNNTools.predictOneNearestNeighbor(values, kNN);
                 double realLabel = testExample.getLabel();
-                errorRate += loss.getValue(realLabel, predictedLabel, testExample);
+                errorRate += loss.getValue(realLabel, predictedLabel, values);
             }
-            System.out.println("ER=" + errorRate);
+            //System.out.println("ER=" + errorRate);
             if (errorRate < errorRateBest) {
                 errorRateBest = errorRate;
                 //Set the new values of 
@@ -133,9 +139,8 @@ public class RMHCNaiveInstanceSelectionGeneralModel extends AbstractInstanceSele
                 //If the previous change was unseccesfull then restore values from before mutatio
                 //Restore values of kNN
                 values = kNN.getSample(prototypeToChangeId);
-                example = exampleSet.getExample(curentInstanceId);
-                KNNTools.extractExampleValues(example, values);
-                kNN.setSample(prototypeToChangeId, values, example.getLabel());
+                example = exampleSet.getExample(curentInstanceId);                
+                kNN.setSample(prototypeToChangeId, values, StoredValuesHelper.createStoredValue(example));
                 //Restore values of selectedInstances
                 selectedInstances[prototypeToChangeId] = curentInstanceId;
             }
@@ -150,9 +155,8 @@ public class RMHCNaiveInstanceSelectionGeneralModel extends AbstractInstanceSele
             selectedInstances[prototypeToChangeId] = newInstanceId;
             //Update information in kNN
             values = kNN.getSample(prototypeToChangeId);
-            example = exampleSet.getExample(newInstanceId);
-            KNNTools.extractExampleValues(example, values);
-            kNN.setSample(prototypeToChangeId, values, example.getLabel());
+            example = exampleSet.getExample(newInstanceId);            
+            kNN.setSample(prototypeToChangeId, values, StoredValuesHelper.createStoredValue(example));
 
             //disp(kNN, selectedInstances, exampleSet);
         }
@@ -165,10 +169,11 @@ public class RMHCNaiveInstanceSelectionGeneralModel extends AbstractInstanceSele
 
     private void disp(ISPRGeometricDataCollection<Number> kNN, int[] si, SelectedExampleSet es) {
         for (int i = 0; i < si.length; i++) {
-            double[] values = kNN.getSample(i);
+            double[] values = kNN.getSample(i).getValues();
             int in = si[i];
             System.out.println("Indeks = " + in);
             System.out.print(" [");
+            
             for (int j = 0; j < values.length; j++) {
                 System.out.print(values[j] + " ; ");
             }

@@ -10,9 +10,11 @@ import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.set.EditedExampleSet;
 import com.rapidminer.example.set.ISPRExample;
 import com.rapidminer.example.set.SelectedExampleSet;
+import com.rapidminer.ispr.dataset.IStoredValues;
 import com.rapidminer.ispr.operator.learner.PRulesModel;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.operator.learner.tools.KNNTools;
+import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
+import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
 import com.rapidminer.ispr.tools.math.container.IntDoubleContainer;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
@@ -62,7 +64,7 @@ public class GCNNInstanceSelectionModel implements PRulesModel<ExampleSet> {
         } else {
             exampleSet = new SelectedExampleSet(inputExampleSet);
         }
-        ISPRGeometricDataCollection<IntDoubleContainer> samples = KNNTools.initializeGeneralizedKNearestNeighbour(exampleSet, distance);
+        ISPRGeometricDataCollection<IStoredValues> samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, inputExampleSet, distance);
         EditedExampleSet testSet = new EditedExampleSet(exampleSet);
         EditedExampleSet selectedSet = new EditedExampleSet(exampleSet);
         EditedExampleSet examplesLeftSet = new EditedExampleSet(exampleSet);
@@ -106,24 +108,24 @@ public class GCNNInstanceSelectionModel implements PRulesModel<ExampleSet> {
                 if (numericalLabel) {
                     double dif = Math.abs(realY - predictedY);
                     if (!relativeError) {
-                        update = dif > maxError ? true : false;
+                        update = dif > maxError;
                     } else {
                         double var = 0;
                         double mean = 0;
-                        Collection<IntDoubleContainer> nearestNeighbors = KNNTools.returnKNearestNeighbors(example, samples, k);
-                        for (IntDoubleContainer x : nearestNeighbors) {
-                            mean += x.getSecond();
+                        Collection<IStoredValues> nearestNeighbors = KNNTools.returnKNearestNeighbors(example, samples, k);
+                        for (IStoredValues x : nearestNeighbors) {
+                            mean += x.getLabel();
                         }
                         mean /= nearestNeighbors.size(); //Warning here is size() instead of k because there may be less samples then k
-                        for (IntDoubleContainer x : nearestNeighbors) {
-                            var += (x.getSecond() - mean) * (x.getSecond() - mean);
+                        for (IStoredValues x : nearestNeighbors) {
+                            var += (x.getLabel()- mean) * (x.getLabel()- mean);
                         }
                         var /= nearestNeighbors.size();
                         double vdY = maxError * Math.sqrt(var);
-                        update = dif > vdY ? true : false;
+                        update = dif > vdY;
                     }
                 } else if (nominalLabel){
-                    update = predictedY != realY ? true : false;
+                    update = predictedY != realY;
                 } else {
                     exception = new Exception("Unsupportet label type");
                 }
