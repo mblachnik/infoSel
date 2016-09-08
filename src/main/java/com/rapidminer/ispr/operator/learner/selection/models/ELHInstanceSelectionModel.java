@@ -8,7 +8,6 @@ import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.set.EditedExampleSet;
 import com.rapidminer.example.set.SelectedExampleSet;
-import com.rapidminer.ispr.dataset.IStoredValues;
 import com.rapidminer.ispr.operator.learner.PRulesModel;
 import com.rapidminer.ispr.operator.learner.selection.models.tools.EmptyInstanceModifier;
 import com.rapidminer.ispr.operator.learner.selection.models.tools.InstanceModifier;
@@ -18,6 +17,7 @@ import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 
 /**
  * Class implements ELH instance selection algorithm
@@ -59,7 +59,7 @@ public class ELHInstanceSelectionModel extends AbstractInstanceSelectorModel {
         //DataIndex index = exampleSet.getIndex();        
 
         //DATA STRUCTURE PREPARATION
-        ISPRGeometricDataCollection<IStoredValues> samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH,exampleSet, measure);
+        ISPRGeometricDataCollection<IValuesStoreLabels> samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH,exampleSet, measure);
         int numberOfExamples = exampleSet.size();
         int m = selectedSet.size(); //Number of instances in training set
         int labels = exampleSet.getAttributes().getLabel().getMapping().size();

@@ -25,7 +25,6 @@ package com.rapidminer.ispr.operator.learner.classifiers;
 import java.util.List;
 
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.ispr.dataset.IStoredValues;
 import com.rapidminer.operator.Model;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
@@ -43,6 +42,7 @@ import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 
 /**
  * A k nearest neighbor implementation.
@@ -92,11 +92,11 @@ public class IS_KNNLearner extends AbstractLearner {
         GeometricCollectionTypes nnSearchType = GeometricCollectionTypes.valueOfFriendlyName(NN_SEARCH_TYPES[nnSearchNum]);
         
         if (exampleSet.getAttributes().getLabel().isNominal()) {
-            ISPRGeometricDataCollection<IStoredValues> samples = KNNTools.initializeKNearestNeighbourFactory(nnSearchType,exampleSet, measure);            
+            ISPRGeometricDataCollection<IValuesStoreLabels> samples = KNNTools.initializeKNearestNeighbourFactory(nnSearchType,exampleSet, measure);            
             return new IS_KNNClassificationModel<>(exampleSet, samples, getParameterAsInt(PARAMETER_K), weightingType, PredictionType.Classification);
         }
         if (exampleSet.getAttributes().getLabel().isNumerical()) {
-            ISPRGeometricDataCollection<IStoredValues> samples = KNNTools.initializeKNearestNeighbourFactory(nnSearchType, exampleSet, measure);
+            ISPRGeometricDataCollection<IValuesStoreLabels> samples = KNNTools.initializeKNearestNeighbourFactory(nnSearchType, exampleSet, measure);
             return new IS_KNNClassificationModel<>(exampleSet, samples, getParameterAsInt(PARAMETER_K), weightingType, PredictionType.Regression);
         }
         throw new OperatorException("Unknown output type. Class label should be numeric or symbolic");

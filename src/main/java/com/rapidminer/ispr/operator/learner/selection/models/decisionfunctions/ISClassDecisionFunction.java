@@ -6,12 +6,13 @@ package com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions;
 
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.ispr.dataset.IStoredValues;
-import com.rapidminer.ispr.dataset.Instance;
+import com.rapidminer.ispr.dataset.IValuesStoreInstance;
 import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
+import com.rapidminer.ispr.dataset.IVector;
 
 /**
  * ClassDecisionFunction is an implementation of IISDecisionFunction. It represents
@@ -37,19 +38,16 @@ public class ISClassDecisionFunction implements IISDecisionFunction {
     }
     
     @Override
-    public void init(ISPRGeometricDataCollection<IStoredValues> samples) {
+    public void init(ISPRGeometricDataCollection<IValuesStoreLabels> samples) {
         
     }
     
     @Override
-    public double getValue(double real, double predicted, Instance values){
+    public double getValue(IValuesStoreInstance instance){        
+        double real = instance.getLabels().getLabel();
+        double predicted = instance.getPrediction().getLabel();
         return  real == predicted ? 0 : 1;
-    }
-    
-    @Override
-    public double getValue(double predicted[], Example example){            
-        return getValue(example.getLabel(), predicted[0], null);
-    }
+    }    
     
     @Override
     public String name() {

@@ -11,10 +11,8 @@ import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.set.EditedExampleSet;
 import com.rapidminer.example.set.ISPRExample;
 import com.rapidminer.example.set.SelectedExampleSet;
-import com.rapidminer.ispr.dataset.IStoredValues;
-import com.rapidminer.ispr.dataset.Instance;
-import com.rapidminer.ispr.dataset.InstanceGenerator;
-import com.rapidminer.ispr.dataset.StoredValuesHelper;
+import com.rapidminer.ispr.dataset.ValuesStoreFactory;
+import com.rapidminer.ispr.dataset.Const;
 import com.rapidminer.ispr.operator.learner.PRulesModel;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
 import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
@@ -23,6 +21,8 @@ import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
 import com.rapidminer.ispr.tools.math.container.IntDoubleContainer;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.Collection;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
+import com.rapidminer.ispr.dataset.IVector;
 
 /**
  *
@@ -55,7 +55,7 @@ public class GENNInstanceSelectionModel implements PRulesModel<ExampleSet> {
         } else {
             exampleSet = new SelectedExampleSet(inputExampleSet);
         }
-        ISPRGeometricDataCollection<IStoredValues> nearestNeighbors = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, inputExampleSet, measure);
+        ISPRGeometricDataCollection<IValuesStoreLabels> nearestNeighbors = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, inputExampleSet, measure);
         DataIndex index = exampleSet.getIndex();
         index.setAllTrue();
 
@@ -76,7 +76,7 @@ public class GENNInstanceSelectionModel implements PRulesModel<ExampleSet> {
         boolean numericalLabel = attributes.getLabel().isNumerical();
         boolean nominalLabel = attributes.getLabel().isNominal();
 
-        Instance values = InstanceGenerator.generateInstance(inputExampleSet);
+        IVector values = ValuesStoreFactory.createVector(inputExampleSet);
 
         ExampleSet resultExample;
         for (Example example : exampleSet) {
@@ -84,21 +84,21 @@ public class GENNInstanceSelectionModel implements PRulesModel<ExampleSet> {
             ISPRExample te = (ISPRExample) example;
             instanceIndex = te.getIndex();
             values.setValues(example);            
-            Collection<IStoredValues> nearest = nearestNeighbors.getNearestValues(k, values);
+            Collection<IValuesStoreLabels> nearest = nearestNeighbors.getNearestValues(k, values);
             if (numericalLabel) {
-                for (IStoredValues a : nearest) {
+                for (IValuesStoreLabels a : nearest) {
                     mean += a.getLabel();
                 }
                 mean = (nearest.isEmpty()) ? Double.NaN : mean / nearest.size();
-                for (IStoredValues a : nearest) {
+                for (IValuesStoreLabels a : nearest) {
                     variance += (a.getLabel()- mean) * (a.getLabel()- mean);
                 }
                 variance /= nearest.size();
             }
             if (trainOnSubset){
                 trainingIndex.setAllFalse();
-                for (IStoredValues a : nearest) {
-                    trainingIndex.set((int)a.getValue(StoredValuesHelper.INDEX),true);
+                for (IValuesStoreLabels a : nearest) {
+                    trainingIndex.set((int)a.getValueAsLong(Const.INDEX_CONTAINER),true);
                 }
             } 
             try {

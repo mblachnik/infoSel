@@ -26,11 +26,9 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.ispr.dataset.IStoredValues;
-import com.rapidminer.ispr.dataset.Instance;
-import com.rapidminer.ispr.dataset.InstanceGenerator;
-import com.rapidminer.ispr.dataset.SimpleInstance;
-import com.rapidminer.ispr.dataset.StoredValuesHelper;
+import com.rapidminer.ispr.dataset.ValuesStoreFactory;
+import com.rapidminer.ispr.dataset.VectorDense;
+import com.rapidminer.ispr.dataset.Const;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -44,6 +42,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import com.rapidminer.ispr.dataset.ValuesStoreFactory;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
+import com.rapidminer.ispr.dataset.IVector;
 
 /**
  * This class is an implementation of the GeometricDataCollection interface, It
@@ -58,11 +59,11 @@ import java.util.Set;
  * @param <T> This is the type of value with is stored with the points and
  * retrieved on nearest neighbour search
  */
-public class SimpleNNCachedLineraList<T extends IStoredValues> implements ISPRCachedGeometricDataCollection<T>, RandomAccess {
+public class SimpleNNCachedLineraList<T extends IValuesStoreLabels> implements ISPRCachedGeometricDataCollection<T>, RandomAccess {
 
     private static final long serialVersionUID = -746048910140779285L;
     DistanceMeasure distance;
-    List<Instance> samples;
+    List<IVector> samples;
     List<T> storedValues;
     SymetricDoubleMatrix distanceCache; //Structure which holds symetrix matrix
     private int index = -1;
@@ -104,8 +105,8 @@ public class SimpleNNCachedLineraList<T extends IStoredValues> implements ISPRCa
                 values[i] = example.getValue(attribute);
                 i++;
             }
-            IStoredValues storedValue = StoredValuesHelper.createStoredValue(example, storedValuesAttribute);                        
-            this.add(InstanceGenerator.generateInstance(values), (T)storedValue);
+            IValuesStoreLabels storedValue = ValuesStoreFactory.createValuesStoreLabels(example, storedValuesAttribute);                        
+            this.add(ValuesStoreFactory.createVector(values), (T)storedValue);
         }
     }
 
@@ -116,13 +117,13 @@ public class SimpleNNCachedLineraList<T extends IStoredValues> implements ISPRCa
      * @param storeValue
      */
     @Override
-    public void add(Instance values, T storeValue) {
+    public void add(IVector values, T storeValue) {
         index++;
         this.samples.add(values);
-        storeValue.setValue(StoredValuesHelper.INDEX, index);
+        storeValue.put(Const.INDEX_CONTAINER, index);
         this.storedValues.add(storeValue);
         int i = 0;
-        for (Instance sample : samples) {
+        for (IVector sample : samples) {
             double dist = DistanceEvaluator.evaluateDistance(distance, sample, values);
             distanceCache.set(i, (int)index, dist);
             i++;
@@ -138,12 +139,12 @@ public class SimpleNNCachedLineraList<T extends IStoredValues> implements ISPRCa
      * @return
      */
     @Override
-    public Collection<T> getNearestValues(int k, Instance values) {
+    public Collection<T> getNearestValues(int k, IVector values) {
         Collection<T> result = new ArrayList<>(k);
         if (k > 1) {
             BoundedPriorityQueue<Tupel<Double, T>> queue = new BoundedPriorityQueue<>(k);
             int i = 0;
-            for (Instance sample : this.samples) {
+            for (IVector sample : this.samples) {
                 double dist = DistanceEvaluator.evaluateDistance(distance, sample, values);
                 queue.add(new Tupel<>(dist, storedValues.get(i)));
                 i++;
@@ -155,7 +156,7 @@ public class SimpleNNCachedLineraList<T extends IStoredValues> implements ISPRCa
             int i = 0;
             double minDist = Double.MAX_VALUE;
             T subResult = null;
-            for (Instance sample : this.samples) {
+            for (IVector sample : this.samples) {
                 double dist = DistanceEvaluator.evaluateDistance(distance, sample, values);
                 if (dist < minDist) {
                     minDist = dist;
@@ -177,10 +178,10 @@ public class SimpleNNCachedLineraList<T extends IStoredValues> implements ISPRCa
      * @return
      */
     @Override
-    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, Instance values) {
+    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, IVector values) {
         BoundedPriorityQueue<DoubleObjectContainer<T>> queue = new BoundedPriorityQueue<>(k);
         int i = 0;
-        for (Instance sample : this.samples) {
+        for (IVector sample : this.samples) {
             double dist = DistanceEvaluator.evaluateDistance(distance, sample, values);
             queue.add(new DoubleObjectContainer<>(dist, storedValues.get(i)));
             i++;
@@ -197,10 +198,10 @@ public class SimpleNNCachedLineraList<T extends IStoredValues> implements ISPRCa
      * @return
      */
     @Override
-    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, Instance values) {
+    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, IVector values) {
         ArrayList<DoubleObjectContainer<T>> queue = new ArrayList<>();
         int i = 0;
-        for (Instance sample : this.samples) {
+        for (IVector sample : this.samples) {
             double currentDistance = DistanceEvaluator.evaluateDistance(distance, sample, values);
             if (currentDistance <= withinDistance) {
                 queue.add(new DoubleObjectContainer<>(currentDistance, storedValues.get(i)));
@@ -221,7 +222,7 @@ public class SimpleNNCachedLineraList<T extends IStoredValues> implements ISPRCa
      * @return
      */
     @Override
-    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, Instance values) {
+    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, IVector values) {
         Collection<DoubleObjectContainer<T>> result = getNearestValueDistances(withinDistance, values);
         if (result.size() < butAtLeastK) {
             return getNearestValueDistances(butAtLeastK, values);
@@ -245,7 +246,7 @@ public class SimpleNNCachedLineraList<T extends IStoredValues> implements ISPRCa
         if (k > 1) {
             BoundedPriorityQueue<DoubleObjectContainer<T>> queue = new BoundedPriorityQueue<>(k);
             int i = 0;
-            for (Instance sample : this.samples) {
+            for (IVector sample : this.samples) {
                 double dist = distanceCache.get(idx, i);
                 queue.add(new DoubleObjectContainer<>(dist, storedValues.get(i)));
                 i++;
@@ -257,7 +258,7 @@ public class SimpleNNCachedLineraList<T extends IStoredValues> implements ISPRCa
             int i = 0;
             double minDist = Double.MAX_VALUE;
             T subResult = null;
-            for (Instance sample : this.samples) {
+            for (IVector sample : this.samples) {
                 double dist = distanceCache.get(idx, i);
                 if (dist < minDist) {
                     minDist = dist;
@@ -285,7 +286,7 @@ public class SimpleNNCachedLineraList<T extends IStoredValues> implements ISPRCa
     public Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, int idx) {
         BoundedPriorityQueue<DoubleObjectContainer<T>> queue = new BoundedPriorityQueue<>(k);
         int i = 0;
-        for (Instance sample : this.samples) {
+        for (IVector sample : this.samples) {
             double dist = distanceCache.get(idx, i);
             queue.add(new DoubleObjectContainer<>(dist, storedValues.get(i)));
             i++;
@@ -309,7 +310,7 @@ public class SimpleNNCachedLineraList<T extends IStoredValues> implements ISPRCa
     public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int index) {
         ArrayList<DoubleObjectContainer<T>> queue = new ArrayList<>();
         int i = 0;
-        for (Instance sample : this.samples) {
+        for (IVector sample : this.samples) {
             double currentDistance = distanceCache.get(index, i);
             if (currentDistance <= withinDistance) {
                 queue.add(new DoubleObjectContainer<>(currentDistance, storedValues.get(i)));
@@ -371,7 +372,7 @@ public class SimpleNNCachedLineraList<T extends IStoredValues> implements ISPRCa
      * @return
      */
     @Override
-    public Instance getSample(int index) {
+    public IVector getSample(int index) {
         return samples.get(index);
     }
 
@@ -401,7 +402,7 @@ public class SimpleNNCachedLineraList<T extends IStoredValues> implements ISPRCa
      * @return
      */
     @Override
-    public Iterator<Instance> samplesIterator() {
+    public Iterator<IVector> samplesIterator() {
         return this.samples.iterator();
     }
 
@@ -413,11 +414,11 @@ public class SimpleNNCachedLineraList<T extends IStoredValues> implements ISPRCa
      * @param storedValue - new value associated with the input data
      */
     @Override
-    public void setSample(int index, Instance sample, T storedValue) {
+    public void setSample(int index, IVector sample, T storedValue) {
         samples.set(index, sample);
         storedValues.set(index, storedValue);
         int i = 0;
-        for (Instance values : samples) {
+        for (IVector values : samples) {
             double dist = DistanceEvaluator.evaluateDistance(distance, values, sample);
             distanceCache.set(i, index, dist);
             i++;

@@ -12,7 +12,6 @@ import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.example.set.SortedExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
-import com.rapidminer.ispr.dataset.IStoredValues;
 import com.rapidminer.ispr.operator.learner.AbstractPRulesOperatorChain;
 import com.rapidminer.ispr.operator.learner.classifiers.IS_KNNClassificationModel;
 import com.rapidminer.ispr.operator.learner.classifiers.PredictionType;
@@ -45,6 +44,7 @@ import com.rapidminer.tools.math.similarity.DistanceMeasures;
 import com.rapidminer.tools.math.similarity.mixed.MixedEuclideanDistance;
 import java.util.HashMap;
 import java.util.List;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 
 /**
  *
@@ -187,8 +187,8 @@ public class ISEnsembleVoteOperator extends AbstractPRulesOperatorChain {
             DistanceMeasure distance = new MixedEuclideanDistance();
             distance.init(output);
             //if (output.getAttributes().getLabel().isNominal()) {
-                ISPRGeometricDataCollection<IStoredValues> samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, output, distance);
-                IS_KNNClassificationModel<IStoredValues> model = new IS_KNNClassificationModel<>(output, samples, 1, VotingType.MAJORITY, PredictionType.Classification);
+                ISPRGeometricDataCollection<IValuesStoreLabels> samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, output, distance);
+                IS_KNNClassificationModel<IValuesStoreLabels> model = new IS_KNNClassificationModel<>(output, samples, 1, VotingType.MAJORITY, PredictionType.Classification);
                 modelOutputPort.deliver(model);
             //} else if (output.getAttributes().getLabel().isNumerical()) {
             //    ISPRGeometricDataCollection<IntDoubleContainer> samples = KNNTools.initializeGeneralizedKNearestNeighbour(output, distance);

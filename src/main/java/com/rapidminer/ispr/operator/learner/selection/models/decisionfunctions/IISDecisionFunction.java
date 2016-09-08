@@ -4,13 +4,12 @@
  */
 package com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions;
 
-import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.ispr.dataset.IStoredValues;
-import com.rapidminer.ispr.dataset.Instance;
+import com.rapidminer.ispr.dataset.IValuesStoreInstance;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 
 /**
  * IISAcceptanceFunction is an interface for an DecisionFunction which is used 
@@ -20,9 +19,8 @@ import com.rapidminer.tools.math.similarity.DistanceMeasure;
  */
 public interface IISDecisionFunction extends Cloneable{
     public void init(ExampleSet exampleSet, DistanceMeasure distance); 
-    public void init(ISPRGeometricDataCollection<IStoredValues> samples);
-    public double getValue(double real, double predicted, Instance instance);
-    public double getValue(double[] predicted, Example values);
+    public void init(ISPRGeometricDataCollection<IValuesStoreLabels> samples);
+    public double getValue(IValuesStoreInstance instance);    
     public String name();
     public String description();
     public void setBlockInit(boolean block);

@@ -4,9 +4,9 @@
  */
 package com.rapidminer.ispr.operator.learner.tools;
 
-import com.rapidminer.ispr.dataset.IStoredValues;
 import java.util.Collection;
 import java.util.Iterator;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 
 
 /**
@@ -134,14 +134,14 @@ public class BasicMath {
      * @param name - name of stored value
      * @return
      */
-    public static double mean(Collection<IStoredValues> X, int start, int end, String name){
+    public static double mean(Collection<IValuesStoreLabels> X, int start, int end, String name){
         double mean = 0;
-        Iterator<IStoredValues> iter = X.iterator();        
+        Iterator<IValuesStoreLabels> iter = X.iterator();        
         int i = 0;
         while (iter.hasNext()){
             if (i < start) continue;
             if (i > end) break;                        
-            mean += iter.next().getValue(name);
+            mean += iter.next().getValueAsDouble(name);
             i++;
         }            
         mean /= end-start+1;
@@ -165,7 +165,7 @@ public class BasicMath {
      * @param name - name of stored value
      * @return
      */
-    public static double mean(Collection<IStoredValues> X, String name){
+    public static double mean(Collection<IValuesStoreLabels> X, String name){
         return mean(X,0,X.size()-1, name);
     }
 
@@ -202,10 +202,10 @@ public class BasicMath {
      * @param name - name of stored value
      * @return
      */
-    public static double simpleVariance(Collection<IStoredValues> X, double mean, String name){
+    public static double simpleVariance(Collection<IValuesStoreLabels> X, double mean, String name){
         double var = 0;
-        for (IStoredValues x : X)
-            var += (x.getValue(name) - mean)*(x.getValue(name) - mean);
+        for (IValuesStoreLabels x : X)
+            var += (x.getValueAsDouble(name) - mean)*(x.getValueAsDouble(name) - mean);
         return var;
     }
 
@@ -283,14 +283,14 @@ public class BasicMath {
      * @param name - name of stored value
      * @return value of standard deviation
      */
-    public static double std(Collection<IStoredValues> X, double mean, int start, int end, String name){
+    public static double std(Collection<IValuesStoreLabels> X, double mean, int start, int end, String name){
         double var = 0;                
-        Iterator<IStoredValues> iter = X.iterator();        
+        Iterator<IValuesStoreLabels> iter = X.iterator();        
         int i = 0;
         while (iter.hasNext()){
             if (i < start) continue;
             if (i > end) break;            
-            double x = iter.next().getValue(name);
+            double x = iter.next().getValueAsDouble(name);
             var += (x - mean)*(x - mean);
             i++;
         }        
@@ -321,7 +321,7 @@ public class BasicMath {
      * @param name - name of stored property
      * @return value of standard deviation
      */
-    public static double std(Collection<IStoredValues> X, int start, int end, String name){
+    public static double std(Collection<IValuesStoreLabels> X, int start, int end, String name){
         double m = mean(X,start,end, name);
         return BasicMath.std(X, m, start, end, name);
     }
@@ -341,7 +341,7 @@ public class BasicMath {
      * @param type  - name of stored value property    
      * @return value of standard deviation
      */
-    public static double std(Collection<IStoredValues> X, String type){
+    public static double std(Collection<IValuesStoreLabels> X, String type){
         return BasicMath.std(X,0,X.size()-1, type);
     }
 

@@ -5,12 +5,11 @@ import java.util.Iterator;
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.ispr.dataset.Instance;
-import com.rapidminer.ispr.dataset.InstanceGenerator;
-import com.rapidminer.ispr.dataset.InstanceType;
+import com.rapidminer.ispr.dataset.ValuesStoreFactory;
 import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.ArrayList;
+import com.rapidminer.ispr.dataset.IVector;
 
 /**
  *
@@ -57,7 +56,7 @@ public class CFCMModel extends AbstractBatchModel {
     @Override
     public void updatePrototypes(ExampleSet trainingSet) {
         int prototypeIndex = 0;
-        for (Instance prototype : prototypes) {
+        for (IVector prototype : prototypes) {
             Iterator<Attribute> trainingAttributesIterator = trainingSet.getAttributes().iterator();
             int attribute = 0;
             while (trainingAttributesIterator.hasNext()) {
@@ -87,7 +86,7 @@ public class CFCMModel extends AbstractBatchModel {
         double objFun = 0;
         int prototypeIndex = 0;
         double exp = -2.0 / (m - 1.0);
-        for (Instance prototype : prototypes) {
+        for (IVector prototype : prototypes) {
             Iterator<Example> trainingSetIterator = trainingSet.iterator();
             Iterator<double[]> partitionMatrixIterator = partitionMatrix.iterator();
             while (trainingSetIterator.hasNext() && partitionMatrixIterator.hasNext()) {
@@ -144,7 +143,7 @@ public class CFCMModel extends AbstractBatchModel {
         int numberOfAttributes = trainingSet.getAttributes().size();
         prototypes = new ArrayList<>(numberOfPrototypes);
         for (int i = 0; i < numberOfPrototypes; i++) {
-            prototypes.add(InstanceGenerator.generateInstance(new double[numberOfAttributes]));
+            prototypes.add(ValuesStoreFactory.createVector(new double[numberOfAttributes]));
         } 
         resetPartitionMatrix(trainingSet);
         int i;

@@ -133,7 +133,7 @@ public class MCInstanceSelectionOperator extends AbstractInstanceSelectorOperato
         type = new ParameterTypeInt(PARAMETER_ITERATION_NUMBER, "The number of iterations", 1, Integer.MAX_VALUE, 100);
         type.setExpert(false);
         types.add(type);
-
+        types.addAll(RandomGenerator.getRandomGeneratorParameters(this));
         return types;
     }
 }

@@ -12,10 +12,8 @@ import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.example.table.NominalMapping;
 import com.rapidminer.example.table.PolynominalMapping;
-import com.rapidminer.ispr.dataset.IStoredValues;
-import com.rapidminer.ispr.dataset.Instance;
-import com.rapidminer.ispr.dataset.InstanceGenerator;
-import com.rapidminer.ispr.dataset.SimpleInstance;
+import com.rapidminer.ispr.dataset.ValuesStoreFactory;
+import com.rapidminer.ispr.dataset.VectorDense;
 import com.rapidminer.ispr.operator.learner.classifiers.VotingType;
 import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.operator.learner.tools.PRulesUtil;
@@ -26,6 +24,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
+import com.rapidminer.ispr.dataset.IVector;
 
 /**
  * Information Selection IOObject used for cluster assigment for all type of clustering algorithms based on prototypes
@@ -35,7 +35,7 @@ public class IS_PrototypeClusterModel extends IS_ClusterModel {
 
     private static final long serialVersionUID = -6292869962412072573L;
     final Map<Integer, String> clusterNamesMap;
-    final ISPRGeometricDataCollection<IStoredValues> samples;
+    final ISPRGeometricDataCollection<IValuesStoreLabels> samples;
     final VotingType weightedNN;
     final List<String> trainingAttributeNames;
     final int numberOfClusters;
@@ -56,7 +56,7 @@ public class IS_PrototypeClusterModel extends IS_ClusterModel {
      * results will be added. If false the algorithm can be used to identify
      * cluster centers only
      */
-    public IS_PrototypeClusterModel(ExampleSet trainingSet, ISPRGeometricDataCollection<IStoredValues> model, int numberOfClusters, Map<Integer, String> clusterNamesMap, boolean addClusterAsLabel, boolean addCluster) {
+    public IS_PrototypeClusterModel(ExampleSet trainingSet, ISPRGeometricDataCollection<IValuesStoreLabels> model, int numberOfClusters, Map<Integer, String> clusterNamesMap, boolean addClusterAsLabel, boolean addCluster) {
         super(trainingSet, numberOfClusters, addClusterAsLabel, false);
         samples = model;
         weightedNN = VotingType.MAJORITY;
@@ -148,7 +148,7 @@ public class IS_PrototypeClusterModel extends IS_ClusterModel {
         counter = new double[numberOfClusters];
 
         List<Attribute> orderedAttributes = PRulesUtil.reorderAttributesByName(attributes, trainingAttributeNames);
-        Instance instance = InstanceGenerator.generateInstance(new double[exampleSet.getAttributes().size()]);
+        IVector instance = ValuesStoreFactory.createVector(new double[exampleSet.getAttributes().size()]);
         for (Example example : exampleSet) {
             // reading values
             instance.setValues(example, orderedAttributes);

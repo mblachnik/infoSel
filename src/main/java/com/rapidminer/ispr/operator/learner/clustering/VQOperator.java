@@ -6,8 +6,7 @@ package com.rapidminer.ispr.operator.learner.clustering;
 
 import java.util.List;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.ispr.dataset.IStoredValues;
-import com.rapidminer.ispr.dataset.StoredValuesHelper;
+import com.rapidminer.ispr.dataset.Const;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
@@ -27,6 +26,7 @@ import com.rapidminer.operator.ports.metadata.MetaData;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 
 /**
  * This class provides vector quantization operator. It uses
@@ -81,11 +81,11 @@ public class VQOperator extends AbstractPrototypeClusteringOnlineOperator {
         vqModel.run(trainingSet);        
         boolean addAsLabel = getParameterAsBoolean(RMAbstractClusterer.PARAMETER_ADD_AS_LABEL);
         boolean addCluster = getParameterAsBoolean(RMAbstractClusterer.PARAMETER_ADD_CLUSTER_ATTRIBUTE);        
-        ISPRGeometricDataCollection<IStoredValues> knnModel;
+        ISPRGeometricDataCollection<IValuesStoreLabels> knnModel;
         if (addAsLabel){
-            knnModel = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, codebooks, codebooks.getAttributes().getLabel(),StoredValuesHelper.LABEL, distance);
+            knnModel = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, codebooks, codebooks.getAttributes().getLabel(),Const.LABEL, distance);
         } else {
-            knnModel = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, codebooks, codebooks.getAttributes().getCluster(),StoredValuesHelper.LABEL  ,distance);
+            knnModel = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, codebooks, codebooks.getAttributes().getCluster(),Const.LABEL  ,distance);
         }
         IS_PrototypeClusterModel model = new IS_PrototypeClusterModel(trainingSet, knnModel, codebooks.size(), clusterNames, addAsLabel, addCluster);
         return model;

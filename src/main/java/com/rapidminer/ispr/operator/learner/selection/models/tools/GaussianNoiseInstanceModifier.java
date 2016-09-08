@@ -5,8 +5,8 @@
  */
 package com.rapidminer.ispr.operator.learner.selection.models.tools;
 
-import com.rapidminer.ispr.dataset.Instance;
 import com.rapidminer.tools.RandomGenerator;
+import com.rapidminer.ispr.dataset.IVector;
 
 /**
  * This class allows to modify instance by adding Gaussian noise to it.
@@ -31,8 +31,8 @@ public class GaussianNoiseInstanceModifier implements InstanceModifier {
     }
 
     @Override
-    public Instance modify(Instance values) {  
-        values = (Instance)values.clone();
+    public IVector modify(IVector values) {  
+        values = (IVector)values.clone();
         if (values.isSparse()){
             int[] idx = values.getNonEmptyIndex();
             for(int i : idx){

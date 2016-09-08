@@ -5,7 +5,7 @@
  */
 package com.rapidminer.ispr.operator.learner.selection.models.tools;
 
-import com.rapidminer.ispr.dataset.Instance;
+import com.rapidminer.ispr.dataset.IVector;
 
 /**
  *
@@ -14,7 +14,7 @@ import com.rapidminer.ispr.dataset.Instance;
 public class EmptyInstanceModifier implements InstanceModifier{
 
     @Override
-    public Instance modify(Instance instance) {
+    public IVector modify(IVector instance) {
         return instance;
     }        
 }

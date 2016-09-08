@@ -8,9 +8,9 @@ import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.set.EditedExampleSet;
 import com.rapidminer.example.set.SelectedExampleSet;
-import com.rapidminer.ispr.dataset.IStoredValues;
-import com.rapidminer.ispr.dataset.Instance;
-import com.rapidminer.ispr.dataset.InstanceGenerator;
+import com.rapidminer.ispr.dataset.Const;
+import com.rapidminer.ispr.dataset.IValuesStoreInstance;
+import com.rapidminer.ispr.dataset.ValuesStoreFactory;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
 import com.rapidminer.ispr.tools.math.container.KNNTools;
@@ -19,6 +19,9 @@ import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.ispr.operator.learner.tools.genetic.RandomGenerator;
 import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
+import com.rapidminer.ispr.dataset.IValuesStorePrediction;
+import com.rapidminer.ispr.dataset.IVector;
 
 /**
  * Class implements MonteCarlo instance selection. It simply randomly selects a
@@ -78,6 +81,12 @@ public class MCInstanceSelectionModel extends AbstractInstanceSelectorModel {
         Attributes attributes = exampleSet.getAttributes();        
         double errorRateBest = Double.MAX_VALUE;
         DataIndex bestIndex = null;
+        
+        IVector vector = ValuesStoreFactory.createVector(inputExampleSet);
+        IValuesStorePrediction prediction = ValuesStoreFactory.createPrediction(Double.NaN, null);
+        IValuesStoreInstance instance = ValuesStoreFactory.createEmptyValuesStoreInstance();
+        IValuesStoreLabels label = ValuesStoreFactory.createEmptyValuesStoreLabels();
+        
         for (int i = 0; i < iterations; i++) {
             indexWorking.setAllFalse();
             for (int j = 0; j < numberOfPrototypes; j++) {
@@ -86,12 +95,16 @@ public class MCInstanceSelectionModel extends AbstractInstanceSelectorModel {
             }
 
             double errorRate = 0;
-            ISPRGeometricDataCollection<IStoredValues> kNN = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, workingSet, measure);
-            Instance values = InstanceGenerator.generateInstance(exampleSet);
+            ISPRGeometricDataCollection<IValuesStoreLabels> kNN = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, workingSet, measure);            
             for (Example ex : exampleSet) {
-                values.setValues(ex);                
-                double predictedLabel = KNNTools.predictOneNearestNeighbor(values, kNN);                
-                errorRate += loss.getValue(new double[]{predictedLabel}, ex);
+                vector.setValues(ex);                
+                double predictedLabel = KNNTools.predictOneNearestNeighbor(vector, kNN);     
+                prediction.setLabel(predictedLabel);
+                label.set(ex);
+                instance.put(Const.VECTOR, vector);
+                instance.put(Const.LABELS, label);
+                instance.put(Const.PREDICTION, prediction);
+                errorRate += loss.getValue(instance);
                 //acc += KNNTools.predictOneNearestNeighbor(exampleSet, values, measure) == ex.getLabel() ? 1 : 0;
                 //acc += KNNTools.predictNearestNeighbor(exampleSet, values, ex.getLabel(), measure) ? 1 : 0;
             }

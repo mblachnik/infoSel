@@ -7,7 +7,6 @@ package com.rapidminer.ispr.operator.learner.clustering;
 //import history.OldAbstractPRulesOperator;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.Tools;
-import com.rapidminer.ispr.dataset.Instance;
 import com.rapidminer.ispr.operator.learner.AbstractPRulesOperator;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
@@ -21,6 +20,7 @@ import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeBoolean;
 
 import java.util.*;
+import com.rapidminer.ispr.dataset.IVector;
 
 /**
  * This is an abstract class for all prototype based clustering operators which use batch based update method.
@@ -67,7 +67,7 @@ public abstract class AbstractPrototypeClusteringBatchOperator extends AbstractP
     @Override
     public ExampleSet processExamples(ExampleSet trainingSet) throws OperatorException {        
         AbstractBatchModel trainModel = optimize(trainingSet);
-        Collection<Instance> prototypes = trainModel.getPrototypes();
+        Collection<IVector> prototypes = trainModel.getPrototypes();
         costFunctionValue = trainModel.getCostFunctionValue();
         clusterNames = IS_ClusterModelTools.prepareClusterNamesMap(prototypes.size());
         boolean addCluster = getParameterAsBoolean(RMAbstractClusterer.PARAMETER_ADD_CLUSTER_ATTRIBUTE);

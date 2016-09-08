@@ -5,23 +5,24 @@
  */
 package com.rapidminer.ispr.dataset;
 
+import com.rapidminer.example.Example;
 import java.io.Serializable;
 
 /**
  *
  * @author Marcin
  */
-public interface IStoredValues extends Serializable {
+public interface IValuesStoreLabels extends IValuesStore {
 
-    double getId();
+    int getId();
 
     double getLabel();   
     
     double getWeight();
 
-    double getCluster();   
+    double getCluster();           
 
-    void setId(double id);
+    void setId(int id);
 
     void setLabel(double label);    
     
@@ -29,8 +30,6 @@ public interface IStoredValues extends Serializable {
 
     void setCluster(double cluster);   
     
-    double getValue(String s);  
-    
-    void setValue(String s, double value);  
+    void set(Example example);
                         
 }

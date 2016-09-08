@@ -7,8 +7,8 @@ package com.rapidminer.ispr.operator.learner.selection.models;
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.set.SelectedExampleSet;
-import com.rapidminer.ispr.dataset.IStoredValues;
-import com.rapidminer.ispr.dataset.Instance;
+import com.rapidminer.ispr.dataset.Const;
+import com.rapidminer.ispr.dataset.IValuesStoreInstance;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
 import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
@@ -21,9 +21,13 @@ import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
+import com.rapidminer.ispr.dataset.IValuesStorePrediction;
+import com.rapidminer.ispr.dataset.IVector;
+import com.rapidminer.ispr.dataset.ValuesStoreFactory;
 
 /**
- * Class implements ENN Instance selection algorithm
+ * Class implements ENN Vector selection algorithm
  *
  * @author Marcin
  */
@@ -87,72 +91,90 @@ public class ENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
     public DataIndex selectInstances(SelectedExampleSet exampleSet) {
         Attributes attributes = exampleSet.getAttributes();
         DataIndex index = exampleSet.getIndex();
-        Attribute label = attributes.getLabel();
+        Attribute labelAttribute = attributes.getLabel();
 
         int sampleSize = exampleSet.size();
         //DATA STRUCTURE PREPARATION        
-        ISPRGeometricDataCollection<IStoredValues> samples;
+        ISPRGeometricDataCollection<IValuesStoreLabels> samples;
         samples = KNNTools.initializeKNearestNeighbourFactory(knnType, exampleSet, measure);
         loss.init(samples);
         if (storeConfidence) {
             confidence = new double[sampleSize];
         }
         //ENN EDITTING
-        Instance values;
+        IVector vector;
         double realLabel;
         double predictedLabel = 0;
 
         int instanceIndex = 0;
-        Iterator<Instance> sampleIterator = samples.samplesIterator();
-        Iterator<IStoredValues> labelIterator = samples.storedValueIterator();
-        if (label.isNominal()) {
+        Iterator<IVector> sampleIterator = samples.samplesIterator();
+        Iterator<IValuesStoreLabels> labelIterator = samples.storedValueIterator();
+        IValuesStorePrediction prediction = ValuesStoreFactory.createPrediction(Double.NaN, null);
+        IValuesStoreInstance instance = ValuesStoreFactory.createEmptyValuesStoreInstance();
+        IValuesStoreLabels label;
+        
+        if (labelAttribute.isNominal()) {
             if (this.classWeight == null) {
-                this.classWeight = new double[label.getMapping().size()];
+                this.classWeight = new double[labelAttribute.getMapping().size()];
                 for (int i = 0; i < classWeight.length; i++) {
                     classWeight[i] = 1.0d;
                 }
             }
-            int numberOfClasses = label.getMapping().size();
-            double[] counter = new double[numberOfClasses];
+            int numberOfClasses = labelAttribute.getMapping().size();
+            double[] counter = new double[numberOfClasses];            
             while (sampleIterator.hasNext() && labelIterator.hasNext()) {
                 Arrays.fill(counter, 0);
-                Collection<IStoredValues> res;
-                values = modifier.modify(sampleIterator.next());                
-                realLabel = labelIterator.next().getLabel();
-                res = samples.getNearestValues(k + 1, values);
-                double sum = 0;
-                for (IStoredValues i : res) {
+                Collection<IValuesStoreLabels> res;
+                vector = modifier.modify(sampleIterator.next());                
+                label = labelIterator.next();
+                realLabel = label.getLabel();
+                res = samples.getNearestValues(k + 1, vector);                
+                int sum = 0;
+                for (IValuesStoreLabels i : res) {
                     int idx = (int)i.getLabel();
-                    counter[idx] += classWeight[idx];
-                    sum += classWeight[idx];
+                    counter[idx] ++;                     
+                    sum ++;
                 }
-                counter[(int) realLabel] -= classWeight[(int) realLabel]; //here we have to subtract distanceRate because we took k+1 neighbours 					            
-                sum -= classWeight[(int) realLabel]; //here we have to subtract because nearest neighbors includ itself, see line above
+                counter[(int) realLabel] --; //here we have to subtract distanceRate because we took k+1 neighbours 					                            
+                sum--;   //as above              
+                for(int i = 0; i<counter.length; i++){
+                    counter[i] *= classWeight[i] / sum;
+                }
                 predictedLabel = PRulesUtil.findMostFrequentValue(counter);
                 if (storeConfidence) {
-                    confidence[instanceIndex] = counter[(int) predictedLabel] / sum;
-                }
-                if (loss.getValue(realLabel, predictedLabel, values) > 0) {
+                    confidence[instanceIndex] = counter[(int) predictedLabel];
+                }                
+                prediction.setLabel(predictedLabel);
+                prediction.setConfidence(counter);
+                instance.put(Const.VECTOR, vector);
+                instance.put(Const.LABELS, label);
+                instance.put(Const.PREDICTION, prediction);
+                if (loss.getValue(instance) > 0) {
                     index.set(instanceIndex, false);
                 }
                 instanceIndex++;
             }
-        } else if (label.isNumerical()) {
+        } else if (labelAttribute.isNumerical()) {
             while (sampleIterator.hasNext() && labelIterator.hasNext()) {
                 predictedLabel = 0;
-                Collection<IStoredValues> res;
-                values = modifier.modify(sampleIterator.next());
-                realLabel = labelIterator.next().getLabel();
-                res = samples.getNearestValues(k + 1, values);
+                Collection<IValuesStoreLabels> res;
+                vector = modifier.modify(sampleIterator.next());
+                label = labelIterator.next();
+                realLabel = label.getLabel();
+                res = samples.getNearestValues(k + 1, vector);
                 double sum = 0;
-                for (IStoredValues i : res) {
+                for (IValuesStoreLabels i : res) {
                     predictedLabel += i.getLabel();
                     sum++;
                 }
                 predictedLabel -= realLabel;  //here we have to subtract distanceRate because we took k+1 neighbours 					            
                 sum--; //here we have to subtract because nearest neighbors includ itself, see line above                
                 predictedLabel /= sum;
-                if (loss.getValue(realLabel, predictedLabel, values) > 0) {
+                prediction.setLabel(predictedLabel);
+                instance.put(Const.VECTOR, vector);
+                instance.put(Const.LABELS, label);
+                instance.put(Const.PREDICTION, prediction);
+                if (loss.getValue(instance) > 0) {
                     index.set(instanceIndex, false);
                 }
                 instanceIndex++;

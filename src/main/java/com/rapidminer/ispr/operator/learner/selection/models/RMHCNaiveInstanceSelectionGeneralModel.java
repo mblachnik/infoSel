@@ -9,10 +9,8 @@ import com.rapidminer.example.Example;
 import com.rapidminer.example.set.EditedExampleSet;
 import com.rapidminer.example.set.ISPRExample;
 import com.rapidminer.example.set.SelectedExampleSet;
-import com.rapidminer.ispr.dataset.IStoredValues;
-import com.rapidminer.ispr.dataset.Instance;
-import com.rapidminer.ispr.dataset.InstanceGenerator;
-import com.rapidminer.ispr.dataset.StoredValuesHelper;
+import com.rapidminer.ispr.dataset.Const;
+import com.rapidminer.ispr.dataset.IValuesStoreInstance;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
 import com.rapidminer.ispr.tools.math.container.KNNTools;
@@ -22,6 +20,11 @@ import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.Iterator;
 import java.util.TreeSet;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
+import com.rapidminer.ispr.dataset.IValuesStorePrediction;
+import com.rapidminer.ispr.dataset.ValuesStoreFactory;
+import com.rapidminer.ispr.dataset.IVector;
+import java.util.Set;
 
 /**
  * Naive implementation of RMHC algorithm. Here instead of binary coding of
@@ -93,15 +96,15 @@ public class RMHCNaiveInstanceSelectionGeneralModel extends AbstractInstanceSele
         int size = exampleSet.size();
 
         //choosing initial set of prototypes
-        int[] selectedInstances = new int[this.numberOfPrototypes];
-        TreeSet<Integer> usedValues = new TreeSet<>();
+        int[] selectedInstances = new int[this.numberOfPrototypes]; //Array contains indexes of slected instances
+        Set<Integer> setOfWorkingSetIdx = new TreeSet<>();
         int instanceId;
         for (int i = 0; i < numberOfPrototypes; i++) {
             do {
                 instanceId = randomGenerator.nextInt(size);
-            } while (usedValues.contains(instanceId));
+            } while (setOfWorkingSetIdx.contains(instanceId));
             selectedInstances[i] = instanceId;
-            usedValues.add(instanceId);
+            setOfWorkingSetIdx.add(instanceId);
         }
 
         //Building kNN with initial set of prototypes        
@@ -112,51 +115,66 @@ public class RMHCNaiveInstanceSelectionGeneralModel extends AbstractInstanceSele
         for (int j = 0; j < selectedInstances.length; j++) {
             indexWorking.set(selectedInstances[j], true);
         }
-        ISPRGeometricDataCollection<IStoredValues> kNN = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, workingSet, measure);
+        ISPRGeometricDataCollection<IValuesStoreLabels> kNN = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, workingSet, measure);
         loss.init(kNN);
         double errorRateBest = Double.MAX_VALUE;
-        int prototypeToChangeId = 0;
-        int curentInstanceId = selectedInstances[prototypeToChangeId];
-        int newInstanceId = selectedInstances[prototypeToChangeId];
-        Example example;
-        Instance values = InstanceGenerator.generateInstance(exampleSet);
+        int selectedInstanceToChangeId = 0; //a value in range 0-selectedInstances.length-1. It is index of element of selectedInstances array which we are going to change
+        int kNNinstanceIdCurrent = selectedInstances[selectedInstanceToChangeId]; //index of example in traiing set - recent value
+        int kNNinstanceIdCandidate = selectedInstances[selectedInstanceToChangeId]; //index of example in traiing set - which we evaluate if it will be better then instanceIdCurrent        
+        IVector kNNInstanceValues = kNN.getSample(selectedInstanceToChangeId);        
+        IValuesStoreLabels kNNInstanceLabel = kNN.getStoredValue(selectedInstanceToChangeId);        
+        IVector vector = ValuesStoreFactory.createVector(exampleSet);                
+        IValuesStorePrediction prediction = ValuesStoreFactory.createPrediction(Double.NaN, null);
+        IValuesStoreInstance instance = ValuesStoreFactory.createEmptyValuesStoreInstance();
+        IValuesStoreLabels label = ValuesStoreFactory.createEmptyValuesStoreLabels();
+        
         for (int i = 0; i < iterations; i++) {
             double errorRate = 0;
+            int q=0;
             for (Example testExample : exampleSet) {
-                values.setValues(testExample);
-                //double predictedLabel = KNNTools.predictOneNearestNeighbor(testExample, kNN);
-                double predictedLabel = KNNTools.predictOneNearestNeighbor(values, kNN);
-                double realLabel = testExample.getLabel();
-                errorRate += loss.getValue(realLabel, predictedLabel, values);
-            }
-            //System.out.println("ER=" + errorRate);
+                vector.setValues(testExample);
+                label.set(testExample);
+                //double predictedLabel = KNNTools.predictOneNearestNeighbor(testExample, kNN);                
+                double predictedLabel = KNNTools.predictOneNearestNeighbor(vector, kNN);
+                prediction.setLabel(predictedLabel);
+                instance.put(Const.VECTOR, vector);
+                instance.put(Const.LABELS, label);
+                instance.put(Const.PREDICTION, prediction);    
+                double lossVal = loss.getValue(instance);
+                if (lossVal > 0){
+                    System.out.println(i+" "+q + " " + selectedInstances[0] + " " + selectedInstances[1] + " " + selectedInstances[2]);                    
+                }
+                q ++;
+                errorRate += lossVal;
+            }            
             if (errorRate < errorRateBest) {
                 errorRateBest = errorRate;
-                //Set the new values of 
-                bestSelectedInstances[prototypeToChangeId] = newInstanceId;
+                //kNN is upToDate so we dont need to do anything
+                bestSelectedInstances[selectedInstanceToChangeId] = kNNinstanceIdCandidate;            
                 //System.arraycopy(selectedInstances, 0, bestSelectedInstances, 0, numberOfPrototypes);
-            } else {
-                //If the previous change was unseccesfull then restore values from before mutatio
+            } else { //We have to restore old current Vector and Label in place of candidate
+                //If the previous change was unseccesfull then restore values from before mutation
                 //Restore values of kNN
-                values = kNN.getSample(prototypeToChangeId);
-                example = exampleSet.getExample(curentInstanceId);                
-                kNN.setSample(prototypeToChangeId, values, StoredValuesHelper.createStoredValue(example));
-                //Restore values of selectedInstances
-                selectedInstances[prototypeToChangeId] = curentInstanceId;
+                //IVector vectorToChange = kNN.getSample(selectedInstanceToChangeId);
+                kNN.setSample(selectedInstanceToChangeId, kNNInstanceValues, kNNInstanceLabel);
+                selectedInstances[selectedInstanceToChangeId] = kNNinstanceIdCurrent;                                      
+                //Restore values of selectedInstances                
             }
             //Choose which prototype to change            
-            prototypeToChangeId = randomGenerator.nextInt(numberOfPrototypes);
+            selectedInstanceToChangeId = randomGenerator.nextInt(numberOfPrototypes);
             //Get new prototype id and assure that the value is different from the previous one
-            curentInstanceId = selectedInstances[prototypeToChangeId];
+            kNNinstanceIdCurrent = selectedInstances[selectedInstanceToChangeId];
+            kNNInstanceValues = kNN.getSample(selectedInstanceToChangeId);
+            kNNInstanceLabel  = kNN.getStoredValue(selectedInstanceToChangeId);
             do {
-                newInstanceId = randomGenerator.nextInt(size);
-            } while (newInstanceId == curentInstanceId);
+                kNNinstanceIdCandidate = randomGenerator.nextInt(size);
+            } while (kNNinstanceIdCandidate == kNNinstanceIdCurrent);
             //Update information in selectedInstances
-            selectedInstances[prototypeToChangeId] = newInstanceId;
-            //Update information in kNN
-            values = kNN.getSample(prototypeToChangeId);
-            example = exampleSet.getExample(newInstanceId);            
-            kNN.setSample(prototypeToChangeId, values, StoredValuesHelper.createStoredValue(example));
+            selectedInstances[selectedInstanceToChangeId] = kNNinstanceIdCandidate;
+            Example example = exampleSet.getExample(kNNinstanceIdCandidate);            
+            IVector vectorCandidate = ValuesStoreFactory.createVector(example);
+            IValuesStoreLabels labelCandidate = ValuesStoreFactory.createValuesStoreLabels(example);                       
+            kNN.setSample(selectedInstanceToChangeId, vectorCandidate, labelCandidate);
 
             //disp(kNN, selectedInstances, exampleSet);
         }
@@ -199,4 +217,5 @@ public class RMHCNaiveInstanceSelectionGeneralModel extends AbstractInstanceSele
         System.out.println("------------------------------------------------");
     }
 
+    
 }

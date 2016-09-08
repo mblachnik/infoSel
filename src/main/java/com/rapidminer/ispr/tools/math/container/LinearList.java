@@ -26,11 +26,9 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.ispr.dataset.IStoredValues;
-import com.rapidminer.ispr.dataset.Instance;
-import com.rapidminer.ispr.dataset.InstanceGenerator;
-import com.rapidminer.ispr.dataset.SimpleInstance;
-import com.rapidminer.ispr.dataset.StoredValuesHelper;
+import com.rapidminer.ispr.dataset.ValuesStoreFactory;
+import com.rapidminer.ispr.dataset.VectorDense;
+import com.rapidminer.ispr.dataset.Const;
 import com.rapidminer.ispr.tools.math.similarity.DistanceEvaluator;
 import java.util.ArrayList;
 
@@ -44,6 +42,9 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.RandomAccess;
 import java.util.Set;
+import com.rapidminer.ispr.dataset.ValuesStoreFactory;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
+import com.rapidminer.ispr.dataset.IVector;
 
 /**
  * This class is an implementation of the GeometricDataCollection interface,
@@ -53,11 +54,11 @@ import java.util.Set;
  * @author Sebastian Land
  * @param <T>
  */
-public class LinearList<T extends IStoredValues> implements ISPRGeometricDataCollection<T>, RandomAccess {
+public class LinearList<T extends IValuesStoreLabels> implements ISPRGeometricDataCollection<T>, RandomAccess {
 
     private static final long serialVersionUID = -746048910140779285L;
     DistanceMeasure distance;
-    List<Instance> samples;
+    List<IVector> samples;
     List<T> storedValues;       
     private long index = 0;
 
@@ -67,13 +68,13 @@ public class LinearList<T extends IStoredValues> implements ISPRGeometricDataCol
         storedValues = new ArrayList<>(n);                
     }
 
-    public LinearList(List<Instance> samples, List<T> storedValues, DistanceMeasure distance) {
+    public LinearList(List<IVector> samples, List<T> storedValues, DistanceMeasure distance) {
         this.distance = distance;
         assert samples.size() == storedValues.size();
         this.samples = samples;
         this.storedValues = storedValues;
         for (int i=0; i<storedValues.size(); i++){
-            storedValues.get(i).setValue(StoredValuesHelper.INDEX, index);
+            storedValues.get(i).put(Const.INDEX_CONTAINER, index);
             index++;
         }
     }
@@ -95,28 +96,28 @@ public class LinearList<T extends IStoredValues> implements ISPRGeometricDataCol
         Attributes attributes = exampleSet.getAttributes();
         int valuesSize = attributes.size();        
         for (Example example : exampleSet) {            
-            IStoredValues storedValue = StoredValuesHelper.createStoredValue(example, storedAttributes);
-            storedValue.setValue(StoredValuesHelper.INDEX, index);
-            samples.add(InstanceGenerator.generateInstance(example));
+            IValuesStoreLabels storedValue = ValuesStoreFactory.createValuesStoreLabels(example, storedAttributes);
+            storedValue.put(Const.INDEX_CONTAINER, index);
+            samples.add(ValuesStoreFactory.createVector(example));
             storedValues.add((T)storedValue);            
             index++;
         }
     }
     
     @Override
-    public void add(Instance values, T storeValue) {
+    public void add(IVector values, T storeValue) {
         this.samples.add(values);
-        storeValue.setValue(StoredValuesHelper.INDEX, index++);
+        storeValue.put(Const.INDEX_CONTAINER, index++);
         this.storedValues.add(storeValue);
     }
 
     @Override
-    public Collection<T> getNearestValues(int k, Instance values) {
+    public Collection<T> getNearestValues(int k, IVector values) {
         Collection<T> result = new ArrayList<>(k);
         if (k > 1) {
-            BoundedPriorityQueue<DoubleObjectContainer<T>> queue = new BoundedPriorityQueue<DoubleObjectContainer<T>>(k);
+            BoundedPriorityQueue<DoubleObjectContainer<T>> queue = new BoundedPriorityQueue<>(k);
             int i = 0;
-            for (Instance currentInstance : this.samples) {                
+            for (IVector currentInstance : this.samples) {                
                 T second = storedValues.get(i);
                 double first = DistanceEvaluator.evaluateDistance(distance,currentInstance, values);
                 DoubleObjectContainer<T> container = queue.getEmptyContainer();
@@ -136,7 +137,7 @@ public class LinearList<T extends IStoredValues> implements ISPRGeometricDataCol
             int i = 0;
             double minDist = Double.MAX_VALUE;
             T subResult = null;
-            for (Instance currentInstance : this.samples) {                
+            for (IVector currentInstance : this.samples) {                
                 double dist = DistanceEvaluator.evaluateDistance(distance,currentInstance, values);
                 if (dist < minDist) {
                     minDist = dist;
@@ -150,10 +151,10 @@ public class LinearList<T extends IStoredValues> implements ISPRGeometricDataCol
     }
 
     @Override
-    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, Instance values) {
+    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, IVector values) {
         BoundedPriorityQueue<DoubleObjectContainer<T>> queue = new BoundedPriorityQueue<>(k);
         int i = 0;
-        for (Instance currentInstance : this.samples) {            
+        for (IVector currentInstance : this.samples) {            
             T second = storedValues.get(i);
             double first = DistanceEvaluator.evaluateDistance(distance, currentInstance, values);
             DoubleObjectContainer<T> container = queue.getEmptyContainer();
@@ -170,10 +171,10 @@ public class LinearList<T extends IStoredValues> implements ISPRGeometricDataCol
     }
 
     @Override
-    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, Instance values) {
+    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, IVector values) {
         ArrayList<DoubleObjectContainer<T>> queue = new ArrayList<DoubleObjectContainer<T>>();
         int i = 0;
-        for (Instance currentInstance : this.samples) {            
+        for (IVector currentInstance : this.samples) {            
             double currentDistance = DistanceEvaluator.evaluateDistance(distance, currentInstance, values);
             if (currentDistance <= withinDistance) {
                 queue.add(new DoubleObjectContainer<T>(currentDistance, storedValues.get(i)));
@@ -184,7 +185,7 @@ public class LinearList<T extends IStoredValues> implements ISPRGeometricDataCol
     }
 
     @Override
-    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, Instance values) {
+    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, IVector values) {
         Collection<DoubleObjectContainer<T>> result = getNearestValueDistances(withinDistance, values);
         if (result.size() < butAtLeastK) {
             return getNearestValueDistances(butAtLeastK, values);
@@ -203,7 +204,7 @@ public class LinearList<T extends IStoredValues> implements ISPRGeometricDataCol
     }
 
     @Override
-    public Instance getSample(int index) {
+    public IVector getSample(int index) {
         return samples.get(index);
     }
 
@@ -219,12 +220,12 @@ public class LinearList<T extends IStoredValues> implements ISPRGeometricDataCol
     }
 
     @Override
-    public Iterator<Instance> samplesIterator() {
+    public Iterator<IVector> samplesIterator() {
         return samples.iterator();
     }
 
     @Override
-    public void setSample(int index, Instance sample, T storedValue) {
+    public void setSample(int index, IVector sample, T storedValue) {
         samples.set(index, sample);
         storedValues.set(index, storedValue);
     }
@@ -243,7 +244,7 @@ public class LinearList<T extends IStoredValues> implements ISPRGeometricDataCol
         return uniqueValues.size();
     }      
 
-    private class Itr implements ListIterator<PairContainer<Instance, T>> {
+    private class Itr implements ListIterator<PairContainer<IVector, T>> {
 
         int iteratorState;
         int length = samples.size();
@@ -262,19 +263,19 @@ public class LinearList<T extends IStoredValues> implements ISPRGeometricDataCol
         }
 
         @Override
-        public PairContainer<Instance, T> next() {
+        public PairContainer<IVector, T> next() {
             if (hasNext()) {
                 iteratorState++;
-                return new PairContainer<Instance, T>(samples.get(iteratorState), storedValues.get(iteratorState));
+                return new PairContainer<IVector, T>(samples.get(iteratorState), storedValues.get(iteratorState));
             }
             throw new NoSuchElementException();
         }
 
         @Override
-        public PairContainer<Instance, T> previous() {
+        public PairContainer<IVector, T> previous() {
             if (hasPrevious()) {
                 iteratorState--;
-                return new PairContainer<Instance, T>(samples.get(iteratorState), storedValues.get(iteratorState));
+                return new PairContainer<IVector, T>(samples.get(iteratorState), storedValues.get(iteratorState));
             }
             throw new NoSuchElementException();
         }
@@ -301,13 +302,13 @@ public class LinearList<T extends IStoredValues> implements ISPRGeometricDataCol
         }
 
         @Override
-        public void set(PairContainer<Instance, T> e) {
+        public void set(PairContainer<IVector, T> e) {
             samples.set(iteratorState, e.getFirst());
             storedValues.set(iteratorState, e.getSecond());
         }
 
         @Override
-        public void add(PairContainer<Instance, T> e) {
+        public void add(PairContainer<IVector, T> e) {
             samples.add(iteratorState, e.getFirst());
             storedValues.add(iteratorState, e.getSecond());
         }

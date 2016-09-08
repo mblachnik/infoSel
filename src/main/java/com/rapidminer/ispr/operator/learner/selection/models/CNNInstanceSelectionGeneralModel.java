@@ -8,10 +8,9 @@ import com.rapidminer.example.Example;
 import com.rapidminer.example.set.EditedExampleSet;
 import com.rapidminer.example.set.ISPRExample;
 import com.rapidminer.example.set.SelectedExampleSet;
-import com.rapidminer.ispr.dataset.IStoredValues;
-import com.rapidminer.ispr.dataset.Instance;
-import com.rapidminer.ispr.dataset.InstanceGenerator;
-import com.rapidminer.ispr.dataset.StoredValuesHelper;
+import com.rapidminer.ispr.dataset.ValuesStoreFactory;
+import com.rapidminer.ispr.dataset.Const;
+import com.rapidminer.ispr.dataset.IValuesStoreInstance;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
 import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
@@ -20,6 +19,10 @@ import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.Collection;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
+import com.rapidminer.ispr.dataset.IValuesStorePrediction;
+import com.rapidminer.ispr.dataset.ValuesStoreFactory;
+import com.rapidminer.ispr.dataset.IVector;
 
 /**
  * Class implements Condenced NN instance selection algorithm.
@@ -30,14 +33,14 @@ public class CNNInstanceSelectionGeneralModel extends AbstractInstanceSelectorMo
 
     private final DistanceMeasure distance;
     private final IISDecisionFunction loss;
-    private ISPRGeometricDataCollection<IStoredValues> model;
+    private ISPRGeometricDataCollection<IValuesStoreLabels> model;
     private InstanceModifier modifier;
 
     /**
      * Constructor of Condensed NN instance selection algorithms
      *
      * @param distance - distance function
-     * @param loss - loss function     
+     * @param loss - loss function
      */
     public CNNInstanceSelectionGeneralModel(DistanceMeasure distance, IISDecisionFunction loss) {
         this.distance = distance;
@@ -63,23 +66,30 @@ public class CNNInstanceSelectionGeneralModel extends AbstractInstanceSelectorMo
         int i = 0;
         selectedIndex.set(i, true);
         trainingIndex.set(i, false);
-        ISPRGeometricDataCollection<IStoredValues> nn = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, selectedSet, distance);
+        ISPRGeometricDataCollection<IValuesStoreLabels> nn = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, selectedSet, distance);
         boolean isModiffied = true;
         int attributeSize = exampleSet.getAttributes().size();
-        Instance instance = InstanceGenerator.generateInstance(trainingSet);
+        IVector vector = ValuesStoreFactory.createVector(trainingSet);
+        IValuesStorePrediction prediction = ValuesStoreFactory.createPrediction(Double.NaN, null);
+        IValuesStoreInstance instance = ValuesStoreFactory.createEmptyValuesStoreInstance();
+        IValuesStoreLabels label = ValuesStoreFactory.createEmptyValuesStoreLabels();
 
         while (isModiffied) {
             isModiffied = false;
             for (Example firstInstance : trainingSet) {
-                instance.setValues(firstInstance);                
-                Collection<IStoredValues> result = nn.getNearestValues(1, instance);
-                double realLabel = firstInstance.getLabel();
+                vector.setValues(firstInstance);
+                Collection<IValuesStoreLabels> result = nn.getNearestValues(1, vector);
                 double predictedLabel = result.iterator().next().getLabel();
-                if (loss.getValue(realLabel, predictedLabel, instance) > 0) {
+                label.set(firstInstance);
+                prediction.setLabel(predictedLabel);
+                instance.put(Const.VECTOR, vector);
+                instance.put(Const.LABELS, label);
+                instance.put(Const.PREDICTION, prediction);
+                if (loss.getValue(instance) > 0) {
                     i = ((ISPRExample) firstInstance).getIndex();
                     selectedIndex.set(i, true);
                     trainingIndex.set(i, false);
-                    nn.add((Instance)instance.clone(), StoredValuesHelper.createStoredValue(firstInstance));
+                    nn.add((IVector) vector.clone(), ValuesStoreFactory.createValuesStoreLabels(firstInstance));
                     isModiffied = true;
                 }
             }
@@ -89,7 +99,7 @@ public class CNNInstanceSelectionGeneralModel extends AbstractInstanceSelectorMo
     }
 
     @Override
-    public ISPRGeometricDataCollection<IStoredValues> getModel() {
+    public ISPRGeometricDataCollection<IValuesStoreLabels> getModel() {
         return model;
-    }       
+    }
 }

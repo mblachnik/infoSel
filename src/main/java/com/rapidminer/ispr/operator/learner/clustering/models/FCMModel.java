@@ -5,13 +5,12 @@ import java.util.Iterator;
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.ispr.dataset.Instance;
-import com.rapidminer.ispr.dataset.InstanceGenerator;
-import com.rapidminer.ispr.dataset.InstanceType;
+import com.rapidminer.ispr.dataset.ValuesStoreFactory;
 import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.ArrayList;
+import com.rapidminer.ispr.dataset.IVector;
 
 /**
  *
@@ -61,7 +60,7 @@ public class FCMModel extends AbstractBatchModel {
     @Override
     public void updatePrototypes(ExampleSet trainingSet) {
         int prototypeIndex = 0;
-        for (Instance prototype : prototypes) {
+        for (IVector prototype : prototypes) {
             Iterator<Attribute> trainingAttributesIterator = trainingSet.getAttributes().iterator();
             int attribute = 0;
             while (trainingAttributesIterator.hasNext()) {
@@ -104,7 +103,7 @@ public class FCMModel extends AbstractBatchModel {
             double[] partitionMatrixEntry = partitionMatrixIterator.next();
             int prototypeIndex = 0;
             double sum = 0;
-            for (Instance prototype : prototypes) {
+            for (IVector prototype : prototypes) {
                 double d = distance.calculateDistance(exampleValues, prototype.getValues());
                 double v;
                 if (d != 0) {
@@ -141,7 +140,7 @@ public class FCMModel extends AbstractBatchModel {
         int numberOfAttributes = trainingSet.getAttributes().size();
         prototypes = new ArrayList<>(numberOfPrototypes);
         for (int i = 0; i < numberOfPrototypes; i++) {
-            prototypes.add(InstanceGenerator.generateInstance(new double[numberOfAttributes]));
+            prototypes.add(ValuesStoreFactory.createVector(new double[numberOfAttributes]));
         }  
         resetPartitionMatrix(trainingSet);
         int i;

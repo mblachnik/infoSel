@@ -5,10 +5,10 @@
  */
 package com.rapidminer.ispr.operator.learner.selection.models.tools;
 
-import com.rapidminer.ispr.dataset.Instance;
+import com.rapidminer.ispr.dataset.IVector;
 
 /**
- * An interface for all @{see Instance} modifier, it is used to modify instance values on the fly
+ * An interface for all @{see Vector} modifier, it is used to modify instance values on the fly
  * @author Marcin
  */
 public interface InstanceModifier {
@@ -19,6 +19,6 @@ public interface InstanceModifier {
      * @param instance
      * @return 
      */
-    Instance modify(Instance instance);
+    IVector modify(IVector instance);
     
 }

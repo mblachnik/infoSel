@@ -10,7 +10,6 @@ import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.set.EditedExampleSet;
 import com.rapidminer.example.set.ISPRExample;
 import com.rapidminer.example.set.SelectedExampleSet;
-import com.rapidminer.ispr.dataset.IStoredValues;
 import com.rapidminer.ispr.operator.learner.PRulesModel;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
 import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
@@ -19,6 +18,7 @@ import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
 import com.rapidminer.ispr.tools.math.container.IntDoubleContainer;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.Collection;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 
 /**
  *
@@ -64,7 +64,7 @@ public class GCNNInstanceSelectionModel implements PRulesModel<ExampleSet> {
         } else {
             exampleSet = new SelectedExampleSet(inputExampleSet);
         }
-        ISPRGeometricDataCollection<IStoredValues> samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, inputExampleSet, distance);
+        ISPRGeometricDataCollection<IValuesStoreLabels> samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, inputExampleSet, distance);
         EditedExampleSet testSet = new EditedExampleSet(exampleSet);
         EditedExampleSet selectedSet = new EditedExampleSet(exampleSet);
         EditedExampleSet examplesLeftSet = new EditedExampleSet(exampleSet);
@@ -112,12 +112,12 @@ public class GCNNInstanceSelectionModel implements PRulesModel<ExampleSet> {
                     } else {
                         double var = 0;
                         double mean = 0;
-                        Collection<IStoredValues> nearestNeighbors = KNNTools.returnKNearestNeighbors(example, samples, k);
-                        for (IStoredValues x : nearestNeighbors) {
+                        Collection<IValuesStoreLabels> nearestNeighbors = KNNTools.returnKNearestNeighbors(example, samples, k);
+                        for (IValuesStoreLabels x : nearestNeighbors) {
                             mean += x.getLabel();
                         }
                         mean /= nearestNeighbors.size(); //Warning here is size() instead of k because there may be less samples then k
-                        for (IStoredValues x : nearestNeighbors) {
+                        for (IValuesStoreLabels x : nearestNeighbors) {
                             var += (x.getLabel()- mean) * (x.getLabel()- mean);
                         }
                         var /= nearestNeighbors.size();

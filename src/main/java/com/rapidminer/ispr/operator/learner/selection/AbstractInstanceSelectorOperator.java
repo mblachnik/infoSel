@@ -7,7 +7,6 @@ import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.example.set.SortedExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
-import com.rapidminer.ispr.dataset.IStoredValues;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.ispr.operator.learner.AbstractPRulesOperator;
@@ -46,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 
 /**
  * Abstract class which should be used as a base for any instance selection
@@ -179,13 +179,13 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPRulesOpe
         }
         output.setIndex(index);        
         if (modelOutputPort.isConnected()) {
-            ISPRGeometricDataCollection<IStoredValues> samples = m.getModel();
+            ISPRGeometricDataCollection<IValuesStoreLabels> samples = m.getModel();
             if (samples == null){                                            
                 DistanceMeasure distance = measureHelper.getInitializedMeasure(output);
                 samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, output, distance);
             }
             PredictionType modelType = trainingSet.getAttributes().getLabel().isNominal() ? PredictionType.Classification : PredictionType.Regression;
-            IS_KNNClassificationModel<IStoredValues> model = new IS_KNNClassificationModel<>(output, samples, 1, VotingType.MAJORITY, modelType);
+            IS_KNNClassificationModel<IValuesStoreLabels> model = new IS_KNNClassificationModel<>(output, samples, 1, VotingType.MAJORITY, modelType);
             modelOutputPort.deliver(model);
         }
         boolean addWeights = getParameterAsBoolean(PARAMETER_ADD_WEIGHTS);

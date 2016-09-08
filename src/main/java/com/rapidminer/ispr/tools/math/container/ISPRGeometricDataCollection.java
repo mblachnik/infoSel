@@ -6,11 +6,11 @@ package com.rapidminer.ispr.tools.math.container;
 
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.ispr.dataset.Instance;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import com.rapidminer.ispr.dataset.IVector;
 
 /**
  *
@@ -32,7 +32,7 @@ public interface ISPRGeometricDataCollection<T extends Serializable> extends Ser
      * @param values specifies the geometric coordinates in data space
      * @param storeValue specifies the value at the given point
      */
-    public  void add(Instance values, T storeValue);
+    public  void add(IVector values, T storeValue);
 
     /**
      * This method returns a collection of the stored data values from the k
@@ -42,7 +42,7 @@ public interface ISPRGeometricDataCollection<T extends Serializable> extends Ser
      * @param values the coordinate of the querry point in the sample dimension
      * @return
      */
-    public  Collection<T> getNearestValues(int k, Instance values);
+    public  Collection<T> getNearestValues(int k, IVector values);
 
     /**
      * This method returns a collection of data from the k nearest sample
@@ -54,7 +54,7 @@ public interface ISPRGeometricDataCollection<T extends Serializable> extends Ser
      * @param values the coordinate of the querry point in the sample dimension
      * @return collection of stored values with associated distances
      */
-    public  Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, Instance values);
+    public  Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, IVector values);
 
     /**
      * This method returns a collection of data from all sample points inside
@@ -66,7 +66,7 @@ public interface ISPRGeometricDataCollection<T extends Serializable> extends Ser
      * @param values the coordinate of the querry point in the sample dimension
      * @return ccollection of stored values with associated distances
      */
-    public  Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, Instance values);
+    public  Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, IVector values);
 
     /**
      * This method returns a collection of data from all sample points inside
@@ -80,7 +80,7 @@ public interface ISPRGeometricDataCollection<T extends Serializable> extends Ser
      * @param values the coordinate of the querry point in the sample dimension
      * @return collection of stored values with associated distances
      */
-    public  Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, Instance values);
+    public  Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, IVector values);
 
     /**
      * This method has to return the number of stored data points.
@@ -103,14 +103,14 @@ public interface ISPRGeometricDataCollection<T extends Serializable> extends Ser
      * @param sample
      * @param storedValue 
      */
-    public  void setSample(int index, Instance sample, T storedValue);
+    public  void setSample(int index, IVector sample, T storedValue);
 
     /**
      * Returns sample of given index
      * @param index
      * @return 
      */
-    public  Instance getSample(int index);
+    public  IVector getSample(int index);
 
     /**
      * remove sample of given index
@@ -128,7 +128,7 @@ public interface ISPRGeometricDataCollection<T extends Serializable> extends Ser
      * Iterator over samples
      * @return 
      */
-    public Iterator<Instance> samplesIterator();
+    public Iterator<IVector> samplesIterator();
 
     /**
      * Count how many unique values appears in the storedValue structure

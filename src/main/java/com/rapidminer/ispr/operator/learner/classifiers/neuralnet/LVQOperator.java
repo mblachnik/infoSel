@@ -10,7 +10,6 @@ import com.rapidminer.ispr.operator.learner.classifiers.neuralnet.models.OLVQMod
 import com.rapidminer.ispr.operator.learner.classifiers.neuralnet.models.WLVQModel;
 import java.util.List;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.ispr.dataset.IStoredValues;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
@@ -41,6 +40,7 @@ import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 
 /**
  * LVQ Operator which provides a set of LVQ neuralNetwork 
@@ -125,7 +125,7 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
      * @throws OperatorException
      */
     @Override
-    public IS_KNNClassificationModel<IStoredValues> optimize(ExampleSet trainingSet, ExampleSet codebooks) throws OperatorException {
+    public IS_KNNClassificationModel<IValuesStoreLabels> optimize(ExampleSet trainingSet, ExampleSet codebooks) throws OperatorException {
         this.numberOfIteration = getParameterAsInt(PARAMETER_ITERATION_NUMBER);        
         DistanceMeasure distance = measureHelper.getInitializedMeasure(trainingSet);
         distance.init(codebooks.getAttributes(), trainingSet.getAttributes());
@@ -191,8 +191,8 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
         }
         lvqModel.run(trainingSet);
         if (this.modelOutputPort.isConnected()) {
-            ISPRGeometricDataCollection<IStoredValues> knn = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, codebooks, distance);
-            IS_KNNClassificationModel<IStoredValues> model = new IS_KNNClassificationModel<>(codebooks, knn, 1, VotingType.MAJORITY, PredictionType.Classification);
+            ISPRGeometricDataCollection<IValuesStoreLabels> knn = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, codebooks, distance);
+            IS_KNNClassificationModel<IValuesStoreLabels> model = new IS_KNNClassificationModel<>(codebooks, knn, 1, VotingType.MAJORITY, PredictionType.Classification);
             return model;
         }
         return null;

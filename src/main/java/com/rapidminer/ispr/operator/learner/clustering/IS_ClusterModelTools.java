@@ -16,7 +16,6 @@ import com.rapidminer.example.table.ExampleTable;
 import com.rapidminer.example.table.MemoryExampleTable;
 import com.rapidminer.example.table.NominalMapping;
 import com.rapidminer.example.table.PolynominalMapping;
-import com.rapidminer.ispr.dataset.Instance;
 import com.rapidminer.tools.Ontology;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import com.rapidminer.ispr.dataset.IVector;
 
 /**
  * A set of static method used for clustering algorithms
@@ -48,21 +48,21 @@ public class IS_ClusterModelTools {
     }
 
     /**
-     * This method creates ExampleSet from a collection of {@link Instance} used to represent codebooks posiotions.
+     * This method creates ExampleSet from a collection of {@link IVector} used to represent codebooks posiotions.
      * Example usage - Fuzzy C-means
      *
      * @param clusterNames a map which maps prototype id on its name (label)
-     * @see Instance} objects. It is used to convert cluster centers into
+     * @see IVector} objects. It is used to convert cluster centers into
      * ExampleSet, because prototypes are represented as double[] they have to
      * be mapped into appropriate attribute names, so a list of attributes is
      * required.
      * @param codebooks - collection of {
-     * @see Instance}
+     * @see IVector}
      * @param referenceAttributes - list of attributes mapping appropriate
      * attribute names and types on prototypes exampleSet
      * @return - exampleSet containing prototypes
      */
-    public static ExampleSet prepareCodebooksExampleSet(Collection<Instance> codebooks, Map<Integer, String> clusterNames, Attributes referenceAttributes) {
+    public static ExampleSet prepareCodebooksExampleSet(Collection<IVector> codebooks, Map<Integer, String> clusterNames, Attributes referenceAttributes) {
         List<Attribute> attributes = new ArrayList<>(referenceAttributes.size());
         for (Attribute a : referenceAttributes) {
             a = AttributeFactory.createAttribute(a);
@@ -75,13 +75,13 @@ public class IS_ClusterModelTools {
         ExampleTable codebooksTable = new MemoryExampleTable(attributes, new DataRowFactory(DataRowFactory.TYPE_DOUBLE_ARRAY, '.'), codebooks.size());
         ExampleSet codebooksSet = new SimpleExampleSet(codebooksTable, attributes);
         codebooksSet.getAttributes().setLabel(codebookLabels);
-        Iterator<Instance> codebookIterator = codebooks.iterator();
+        Iterator<IVector> codebookIterator = codebooks.iterator();
         Iterator<Example> codebookExampleIterator = codebooksSet.iterator();
         //Rewrite codebooks to codebooks ExampleSet
         Attributes codebookAttributes = codebooksSet.getAttributes();
         int codebookIndex = 0;
         while (codebookIterator.hasNext()) {
-            Instance codebook = codebookIterator.next();
+            IVector codebook = codebookIterator.next();
             Example codebookExample = codebookExampleIterator.next();
             int i = 0;
             for (Attribute a : codebookAttributes) {

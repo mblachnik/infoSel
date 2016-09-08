@@ -9,6 +9,12 @@ package com.rapidminer.ispr.dataset;
  *
  * @author Marcin
  */
-public enum InstanceType {
-    AUTO,SIMPLE,SPARSE
+public interface IValuesStorePrediction extends IValuesStore {
+    double getLabel();
+    
+    void setLabel(double value);
+    
+    double[] getConfidence();
+    
+    void setConfidence(double[] confidence);
 }

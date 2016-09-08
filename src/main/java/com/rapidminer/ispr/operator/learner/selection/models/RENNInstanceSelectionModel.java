@@ -8,9 +8,7 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.set.SelectedExampleSet;
-import com.rapidminer.ispr.dataset.IStoredValues;
-import com.rapidminer.ispr.dataset.Instance;
-import com.rapidminer.ispr.dataset.InstanceGenerator;
+import com.rapidminer.ispr.dataset.ValuesStoreFactory;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
 import com.rapidminer.ispr.tools.math.container.KNNTools;
@@ -20,6 +18,8 @@ import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.Arrays;
 import java.util.Collection;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
+import com.rapidminer.ispr.dataset.IVector;
 
 /**
  * Class implements repeated ENN algorithm (RENN). It repeats ENN algorithm
@@ -58,11 +58,11 @@ public class RENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
         Attributes attributes = exampleSet.getAttributes();
         Attribute label = attributes.getLabel();
         //DATA STRUCTURE PREPARATION        
-        ISPRGeometricDataCollection<IStoredValues> samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, exampleSet, measure);
+        ISPRGeometricDataCollection<IValuesStoreLabels> samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, exampleSet, measure);
         loss.init(samples);
         int numberOfClasses = label.getMapping().size();
         //ENN EDITTING
-        Instance values = InstanceGenerator.generateInstance(exampleSet);
+        IVector values = ValuesStoreFactory.createVector(exampleSet);
         int[] counter = new int[numberOfClasses];
         DataIndex mainIndex = exampleSet.getIndex();
         while (true) {
@@ -70,15 +70,15 @@ public class RENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
             DataIndex index = exampleSet.getIndex();
             for (Example example : exampleSet) {
                 Arrays.fill(counter, 0);
-                Collection<IStoredValues> res;
+                Collection<IValuesStoreLabels> res;
                 values.setValues(example);
                 res = samples.getNearestValues(k + 1, values);
                 double sum = 0;
-                for (IStoredValues i : res) {
+                for (IValuesStoreLabels i : res) {
                     counter[(int)i.getLabel()]++;
                     sum++;
                 }
-                counter[(int) example.getLabel()] -= 1; //here we have to subtract distanceRate because we took k+1 neighbours 					            
+                counter[(int) example.getLabel()] --; //here we have to subtract distanceRate because we took k+1 neighbours 					            
                 sum--; //here we have to subtract because nearest neighbors includ itself, see line above
                 int mostFrequent = PRulesUtil.findMostFrequentValue(counter);
                 if (example.getLabel() != mostFrequent) {

@@ -9,10 +9,8 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.ispr.dataset.IStoredValues;
-import com.rapidminer.ispr.dataset.Instance;
-import com.rapidminer.ispr.dataset.InstanceGenerator;
-import com.rapidminer.ispr.dataset.SimpleInstance;
+import com.rapidminer.ispr.dataset.ValuesStoreFactory;
+import com.rapidminer.ispr.dataset.VectorDense;
 import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.tools.math.container.DoubleObjectContainer;
 import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
@@ -30,6 +28,8 @@ import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
 import java.util.Collection;
 import java.util.List;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
+import com.rapidminer.ispr.dataset.IVector;
 
 /**
  *
@@ -69,11 +69,11 @@ public class ClusteringMinimumVarianceCriterion extends AbstractExampleSetEvalua
         //MyKNNClassificationModel<Number> model = new MyKNNClassificationModel<Number>(prototypes, knn, 1, VotingType.MAJORITY, false);
         Attributes attributes = prototypes.getAttributes();
         int n = attributes.size();
-        Instance values = InstanceGenerator.generateInstance(exampleSet);
+        IVector values = ValuesStoreFactory.createVector(exampleSet);
         interClusterDistance = 0;
         for (Example example : exampleSet){
             values.setValues(example);
-            Collection<DoubleObjectContainer<IStoredValues>> collDist = knn.getNearestValueDistances(1, values);
+            Collection<DoubleObjectContainer<IValuesStoreLabels>> collDist = knn.getNearestValueDistances(1, values);
             double dist = collDist.iterator().next().getFirst();
             interClusterDistance += dist*dist;
         }        

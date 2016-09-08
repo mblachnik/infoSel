@@ -5,15 +5,15 @@
  */
 package com.rapidminer.ispr.tools.math.similarity;
 
-import com.rapidminer.ispr.dataset.Instance;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import com.rapidminer.ispr.dataset.IVector;
 
 /**
  *
  * @author Marcin
  */
 public class DistanceEvaluator {
-    public static double evaluateDistance(DistanceMeasure distance, Instance values1, Instance values2){
+    public static double evaluateDistance(DistanceMeasure distance, IVector values1, IVector values2){
         return distance.calculateDistance(values1.getValues(), values2.getValues());
     }
 }

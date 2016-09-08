@@ -6,81 +6,79 @@ package com.rapidminer.ispr.dataset;
 
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Example;
+import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 
 /**
  * Class representing single prototype such as cluster center or single instance
+ *
  * @author Marcin
  */
-public class SimpleInstance implements Instance {    
-    private double[] values;    
-    private double   label;
+public class VectorDense implements IVector {
 
-    SimpleInstance(int n) {
+    private double[] values;
+
+    VectorDense(int n) {
         this.values = new double[n];
     }
-    
-    SimpleInstance(double[] values) {
+
+    VectorDense(double[] values) {
         this.values = values;
     }
-    
-    SimpleInstance(Example example, List<Attribute> attributes) {
+
+    VectorDense(Example example, List<Attribute> attributes) {
         this(attributes.size());
         setValues(example, attributes);
     }
-    
-    SimpleInstance(Example example, Attribute[] attributes) {
+
+    VectorDense(Example example, Attribute[] attributes) {
         this(attributes.length);
         setValues(example, attributes);
     }
-    
-    SimpleInstance(Example example) {
+
+    VectorDense(Example example) {
         this(example.getAttributes().size());
         setValues(example);
     }
-    
+
     @Override
     public double[] getValues() {
         return values;
-    }        
-    
+    }
+
     @Override
     public final void setValues(Example example, List<Attribute> attributes) {
-        int i = 0;        
-        for (Attribute a : attributes){            
+        int i = 0;
+        for (Attribute a : attributes) {
             this.values[i] = example.getValue(a);
             i++;
         }
     }
-    
+
     @Override
     public final void setValues(Example example, Attribute[] attributes) {
-        int i = 0;        
-        for (Attribute a : attributes){            
+        int i = 0;
+        for (Attribute a : attributes) {
             this.values[i] = example.getValue(a);
             i++;
         }
     }
-    
+
     @Override
     public final void setValues(Example example) {
-       setValues(example,example.getAttributes().createRegularAttributeArray());
-    } 
+        setValues(example, example.getAttributes().createRegularAttributeArray());
+    }
 
     @Override
     public Object clone() {
-        
+
         try {
-            SimpleInstance instance = (SimpleInstance)super.clone();
-            instance.label = this.label;
-            instance.values = this.values.clone();        
+            VectorDense instance = (VectorDense) super.clone();            
+            instance.values = this.values.clone();
             return instance;
         } catch (CloneNotSupportedException ex) {
             throw new RuntimeException("Problem performing clone operation");
-        }        
+        }
     }
 
     @Override
@@ -97,17 +95,43 @@ public class SimpleInstance implements Instance {
     public double getValue(int i) {
         return values[i];
     }
-    
+
     @Override
-    public boolean isSparse(){
+    public boolean isSparse() {
         return false;
     }
-    
+
     @Override
-    public int[] getNonEmptyIndex(){
+    public int[] getNonEmptyIndex() {
         int idx[] = new int[values.length];
-        for(int i=0; i<values.length; i++)
+        for (int i = 0; i < values.length; i++) {
             idx[i] = i;
+        }
         return idx;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 73 * hash + Arrays.hashCode(this.values);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final VectorDense other = (VectorDense) obj;
+        if (!Arrays.equals(this.values, other.values)) {
+            return false;
+        }
+        return true;
     }
 }

@@ -4,10 +4,10 @@
  */
 package com.rapidminer.ispr.tools.math.container;
 
-import com.rapidminer.ispr.dataset.IStoredValues;
 import com.rapidminer.tools.container.Tupel;
 import java.io.Serializable;
 import java.util.Collection;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 
 /**
  *

@@ -1,11 +1,11 @@
 package com.rapidminer.ispr.operator.learner.clustering.models;
 
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.ispr.dataset.Instance;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import com.rapidminer.ispr.dataset.IVector;
 
 /**
  *
@@ -13,7 +13,7 @@ import java.util.List;
  */
 public abstract class AbstractBatchModel {
 
-    List<Instance> prototypes;
+    List<IVector> prototypes;
     DistanceMeasure distance;
     double costFunctionValue = Double.MAX_VALUE;
     Collection<double[]> partitionMatrix;
@@ -38,7 +38,7 @@ public abstract class AbstractBatchModel {
      * @param trainingSet
      * @return
      */
-    public Collection<Instance> train(ExampleSet trainingSet) {
+    public Collection<IVector> train(ExampleSet trainingSet) {
         int numberOfAttributes = trainingSet.getAttributes().size();
         int numberOfTrainingExamples = trainingSet.size();
         initialize(trainingSet);
@@ -145,7 +145,7 @@ public abstract class AbstractBatchModel {
      *
      * @return
      */
-    public Collection<Instance> getPrototypes() {
+    public Collection<IVector> getPrototypes() {
         return prototypes;
     }
 

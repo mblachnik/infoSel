@@ -35,17 +35,18 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.ispr.dataset.IStoredValues;
-import com.rapidminer.ispr.dataset.Instance;
-import com.rapidminer.ispr.dataset.InstanceGenerator;
-import com.rapidminer.ispr.dataset.SimpleInstance;
-import com.rapidminer.ispr.dataset.StoredValuesHelper;
+import com.rapidminer.ispr.dataset.ValuesStoreFactory;
+import com.rapidminer.ispr.dataset.VectorDense;
+import com.rapidminer.ispr.dataset.Const;
 import com.rapidminer.tools.math.container.BoundedPriorityQueue;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import com.rapidminer.ispr.dataset.ValuesStoreFactory;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
+import com.rapidminer.ispr.dataset.IVector;
 
 /**
  * This class is an implementation of a Ball-Tree for organizing
@@ -59,7 +60,7 @@ import java.util.Set;
  *
  * @author Sebastian Land
  */
-public class BallTree<T extends IStoredValues> implements ISPRGeometricDataCollection<T> {
+public class BallTree<T extends IValuesStoreLabels> implements ISPRGeometricDataCollection<T> {
 
     private static final long serialVersionUID = 2954882147712365506L;
     private BallTreeNode<T> root;
@@ -96,14 +97,14 @@ public class BallTree<T extends IStoredValues> implements ISPRGeometricDataColle
                 exampleValues[i] = example.getValue(attribute);
                 i++;
             }
-            IStoredValues labelValue = StoredValuesHelper.createStoredValue(example, storedValuesAttribute);
-            this.add(InstanceGenerator.generateInstance(exampleValues), (T)labelValue);
+            IValuesStoreLabels labelValue = ValuesStoreFactory.createValuesStoreLabels(example, storedValuesAttribute);
+            this.add(ValuesStoreFactory.createVector(exampleValues), (T)labelValue);
         }
     }
 
     @Override
-    public void add(Instance values, T storeValue) {
-        storeValue.setValue(StoredValuesHelper.INDEX, index);
+    public void add(IVector values, T storeValue) {
+        storeValue.put(Const.INDEX_CONTAINER, index);
         this.size++;
         this.values.add(storeValue);
         if (root == null) {
@@ -204,7 +205,7 @@ public class BallTree<T extends IStoredValues> implements ISPRGeometricDataColle
     }
 
     @Override
-    public Collection<T> getNearestValues(int k, Instance values) {
+    public Collection<T> getNearestValues(int k, IVector values) {
         BoundedPriorityQueue<DoubleObjectContainer<BallTreeNode<T>>> priorityQueue = getNearestNodes(k, values.getValues());
         LinkedList<T> neighboursList = new LinkedList<>();
         for (DoubleObjectContainer<BallTreeNode<T>> tupel : priorityQueue) {
@@ -214,7 +215,7 @@ public class BallTree<T extends IStoredValues> implements ISPRGeometricDataColle
     }
 
     @Override
-    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, Instance values) {
+    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, IVector values) {
         BoundedPriorityQueue<DoubleObjectContainer<BallTreeNode<T>>> priorityQueue = getNearestNodes(k, values.getValues());
         LinkedList<DoubleObjectContainer<T>> neighboursList = new LinkedList<>();
         for (DoubleObjectContainer<BallTreeNode<T>> tupel : priorityQueue) {
@@ -305,12 +306,12 @@ public class BallTree<T extends IStoredValues> implements ISPRGeometricDataColle
     }
 
     @Override
-    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, Instance values) {
+    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, IVector values) {
         throw new RuntimeException("Not supported method");
     }
 
     @Override
-    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, Instance values) {
+    public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, IVector values) {
         throw new RuntimeException("Not supported method");
     }
 
@@ -325,7 +326,7 @@ public class BallTree<T extends IStoredValues> implements ISPRGeometricDataColle
     }
 
     @Override
-    public Instance getSample(int index) {
+    public IVector getSample(int index) {
         throw new UnsupportedOperationException("Not supported.");
     }
 
@@ -340,12 +341,12 @@ public class BallTree<T extends IStoredValues> implements ISPRGeometricDataColle
     }
 
     @Override
-    public Iterator<Instance> samplesIterator() {
+    public Iterator<IVector> samplesIterator() {
         throw new UnsupportedOperationException("Not supported.");
     }
 
     @Override
-    public void setSample(int index, Instance sample, T storedValue) {
+    public void setSample(int index, IVector sample, T storedValue) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

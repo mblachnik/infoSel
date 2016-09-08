@@ -5,11 +5,9 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.ispr.dataset.IStoredValues;
-import com.rapidminer.ispr.dataset.Instance;
-import com.rapidminer.ispr.dataset.InstanceGenerator;
-import com.rapidminer.ispr.dataset.SimpleInstance;
-import com.rapidminer.ispr.dataset.StoredValuesHelper;
+import com.rapidminer.ispr.dataset.ValuesStoreFactory;
+import com.rapidminer.ispr.dataset.VectorDense;
+import com.rapidminer.ispr.dataset.Const;
 import com.rapidminer.ispr.operator.learner.classifiers.VotingType;
 import com.rapidminer.ispr.operator.learner.tools.Associates;
 import static com.rapidminer.ispr.operator.learner.classifiers.VotingType.EXPONENTIAL;
@@ -19,6 +17,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
+import com.rapidminer.ispr.dataset.IVector;
 
 /**
  *
@@ -26,12 +26,12 @@ import java.util.Map;
  */
 public class KNNTools {
 
-    public static ISPRGeometricDataCollection<IStoredValues> initializeKNearestNeighbourFactory(GeometricCollectionTypes type, ExampleSet exampleSet, DistanceMeasure measure) {
+    public static ISPRGeometricDataCollection<IValuesStoreLabels> initializeKNearestNeighbourFactory(GeometricCollectionTypes type, ExampleSet exampleSet, DistanceMeasure measure) {
         Map<Attribute, String> storedAttributes = new HashMap<>();
-        storedAttributes.put(exampleSet.getAttributes().getLabel(), StoredValuesHelper.LABEL);
-        storedAttributes.put(exampleSet.getAttributes().getId(), StoredValuesHelper.ID);
-        storedAttributes.put(exampleSet.getAttributes().getCluster(), StoredValuesHelper.CLUSTER);
-        storedAttributes.put(exampleSet.getAttributes().getWeight(), StoredValuesHelper.WEIGHT);
+        storedAttributes.put(exampleSet.getAttributes().getLabel(), Const.LABEL);
+        storedAttributes.put(exampleSet.getAttributes().getId(), Const.ID);
+        storedAttributes.put(exampleSet.getAttributes().getCluster(), Const.CLUSTER);
+        storedAttributes.put(exampleSet.getAttributes().getWeight(), Const.WEIGHT);
         return initializeKNearestNeighbourFactory(type, exampleSet, storedAttributes, measure);
     }
 
@@ -44,7 +44,7 @@ public class KNNTools {
      * @param measure - distance measure
      * @return
      */
-    public static ISPRGeometricDataCollection<IStoredValues> initializeKNearestNeighbourFactory(GeometricCollectionTypes type, ExampleSet exampleSet, Map<Attribute, String> storedAttributes, DistanceMeasure measure) {
+    public static ISPRGeometricDataCollection<IValuesStoreLabels> initializeKNearestNeighbourFactory(GeometricCollectionTypes type, ExampleSet exampleSet, Map<Attribute, String> storedAttributes, DistanceMeasure measure) {
         ISPRGeometricDataCollection samples = null;
         switch (type) {
             case LINEAR_SEARCH:
@@ -73,23 +73,23 @@ public class KNNTools {
      * @param measure - distance measure
      * @return
      */
-    public static ISPRGeometricDataCollection<IStoredValues> initializeKNearestNeighbourFactory(GeometricCollectionTypes type, ExampleSet exampleSet, Attribute attribute, String storedValueName, DistanceMeasure measure) {
+    public static ISPRGeometricDataCollection<IValuesStoreLabels> initializeKNearestNeighbourFactory(GeometricCollectionTypes type, ExampleSet exampleSet, Attribute attribute, String storedValueName, DistanceMeasure measure) {
         Map<Attribute, String> map = new HashMap<>();
         map.put(attribute, storedValueName);
         return initializeKNearestNeighbourFactory(type, exampleSet, map, measure);
     }
 
-    public static Associates findAssociatedInstances(ExampleSet exampleSet, ISPRGeometricDataCollection<IStoredValues> knn, int k) {
+    public static Associates findAssociatedInstances(ExampleSet exampleSet, ISPRGeometricDataCollection<IValuesStoreLabels> knn, int k) {
         int numExamples = exampleSet.size();
         Associates nearestAssociates = new Associates(numExamples, k); //store nearest associates for each vector (list of vectors for which I am the nearest neighbor)
         Attributes attributes = exampleSet.getAttributes();
-        Instance instance = InstanceGenerator.generateInstance(new double[attributes.size()]);
+        IVector instance = ValuesStoreFactory.createVector(new double[attributes.size()]);
         int i = 0;
         for (Example example : exampleSet) {
             instance.setValues(example);
-            Collection<IStoredValues> nearestNeighbors = knn.getNearestValues(k, instance);
-            for (IStoredValues neighbor : nearestNeighbors) {
-                nearestAssociates.add((int) neighbor.getValue(StoredValuesHelper.INDEX), i);
+            Collection<IValuesStoreLabels> nearestNeighbors = knn.getNearestValues(k, instance);
+            for (IValuesStoreLabels neighbor : nearestNeighbors) {
+                nearestAssociates.add((int) neighbor.getValueAsDouble(Const.INDEX_CONTAINER), i);
             }
             i++;
         }
@@ -104,8 +104,8 @@ public class KNNTools {
      * @param k - number of nearest neighbors
      * @return
      */
-    public static Collection<IStoredValues> returnKNearestNeighbors(Example example, ISPRGeometricDataCollection<IStoredValues> samples, int k) {
-        return samples.getNearestValues(k, InstanceGenerator.generateInstance(example));
+    public static Collection<IValuesStoreLabels> returnKNearestNeighbors(Example example, ISPRGeometricDataCollection<IValuesStoreLabels> samples, int k) {
+        return samples.getNearestValues(k, ValuesStoreFactory.createVector(example));
     }
 
     /**
@@ -116,8 +116,8 @@ public class KNNTools {
      * @return
      */
     @Deprecated
-    public static double predictOneNearestNeighbor(Example example, ISPRGeometricDataCollection<IStoredValues> colection) {
-        Collection<IStoredValues> resultSet = colection.getNearestValues(1, InstanceGenerator.generateInstance(example));
+    public static double predictOneNearestNeighbor(Example example, ISPRGeometricDataCollection<IValuesStoreLabels> colection) {
+        Collection<IValuesStoreLabels> resultSet = colection.getNearestValues(1, ValuesStoreFactory.createVector(example));
         return resultSet.iterator().next().getLabel();
     }
 
@@ -128,8 +128,8 @@ public class KNNTools {
      * @param colection NearestNeighbor structure
      * @return
      */
-    public static double predictOneNearestNeighbor(Instance values, ISPRGeometricDataCollection<IStoredValues> colection) {
-        Collection<IStoredValues> resultSet = colection.getNearestValues(1, values);
+    public static double predictOneNearestNeighbor(IVector values, ISPRGeometricDataCollection<IValuesStoreLabels> colection) {
+        Collection<IValuesStoreLabels> resultSet = colection.getNearestValues(1, values);
         return resultSet.iterator().next().getLabel();
     }
 
@@ -163,17 +163,17 @@ public class KNNTools {
      * @param k - number of nearest neighbors
      * @param voting - type of voting
      */
-    public static void doNNVotes(double[] votes, Instance values, ISPRGeometricDataCollection<IStoredValues> samples, int k, VotingType voting) {
+    public static void doNNVotes(double[] votes, IVector values, ISPRGeometricDataCollection<IValuesStoreLabels> samples, int k, VotingType voting) {
         Arrays.fill(votes, 0);
         double totalDistance, totalSimilarity;;
-        Collection<DoubleObjectContainer<IStoredValues>> neighbours;
+        Collection<DoubleObjectContainer<IValuesStoreLabels>> neighbours;
         switch (voting) {
             default:
             case MAJORITY:
-                Collection<IStoredValues> neighbourLabels = samples.getNearestValues(k, values);
-                Iterator<IStoredValues> iterator = neighbourLabels.iterator();
+                Collection<IValuesStoreLabels> neighbourLabels = samples.getNearestValues(k, values);
+                Iterator<IValuesStoreLabels> iterator = neighbourLabels.iterator();
                 while (iterator.hasNext()) {
-                    IStoredValues v = iterator.next();
+                    IValuesStoreLabels v = iterator.next();
                     if (v != null) {
                         int idx = (int) v.getLabel();
                         votes[idx] += 1.0 / k;
@@ -185,7 +185,7 @@ public class KNNTools {
             case GAUSSIAN:
                 totalDistance = 0;
                 neighbours = samples.getNearestValueDistances(k, values);
-                for (DoubleObjectContainer<IStoredValues> tupel : neighbours) {
+                for (DoubleObjectContainer<IValuesStoreLabels> tupel : neighbours) {
                     //totalDistance += tupel.getFirst();
                     totalDistance = totalDistance < tupel.getFirst() ? tupel.getFirst() : totalDistance;
                 }
@@ -201,21 +201,21 @@ public class KNNTools {
                 switch (voting) {
                     default:
                     case LINEAR:
-                        for (DoubleObjectContainer<IStoredValues> tupel : neighbours) {
+                        for (DoubleObjectContainer<IValuesStoreLabels> tupel : neighbours) {
                             int idx = (int) tupel.getSecond().getLabel();
                             votes[idx] += (totalDistance - tupel.getFirst()) / totalDistance;
                         }
 
                         break;
                     case GAUSSIAN:
-                        for (DoubleObjectContainer<IStoredValues> tupel : neighbours) {
+                        for (DoubleObjectContainer<IValuesStoreLabels> tupel : neighbours) {
                             int idx = (int) tupel.getSecond().getLabel();
                             double res = (tupel.getFirst() / totalDistance);
                             votes[idx] += Math.exp(-res * res);
                         }
                         break;
                     case EXPONENTIAL:
-                        for (DoubleObjectContainer<IStoredValues> tupel : neighbours) {
+                        for (DoubleObjectContainer<IValuesStoreLabels> tupel : neighbours) {
                             int idx = (int) tupel.getSecond().getLabel();
                             double res = (tupel.getFirst() / totalDistance);
                             votes[idx] += Math.exp(-res);
@@ -241,16 +241,16 @@ public class KNNTools {
      * @param weighting - type of weighting
      * @return prediction
      */
-    public static double getRegVotes(Instance values, ISPRGeometricDataCollection<IStoredValues> samples, int k, VotingType weighting) {
+    public static double getRegVotes(IVector values, ISPRGeometricDataCollection<IValuesStoreLabels> samples, int k, VotingType weighting) {
         double predictedValue = 0;
         switch (weighting) {
             default:
             case MAJORITY:
                 // finding next k neighbours
-                Collection<IStoredValues> neighbourLabels = samples.getNearestValues(k, values);
+                Collection<IValuesStoreLabels> neighbourLabels = samples.getNearestValues(k, values);
                 // distance is 1 for complete neighbourhood                        
                 // counting frequency of labels
-                Iterator<IStoredValues> iterator = neighbourLabels.iterator();
+                Iterator<IValuesStoreLabels> iterator = neighbourLabels.iterator();
                 while (iterator.hasNext()) {
                     double nearestOutput = iterator.next().getLabel();
                     predictedValue += nearestOutput;
@@ -262,9 +262,9 @@ public class KNNTools {
             case EXPONENTIAL:
                 //TODO: Implement other weighting types
                 // finding next k neighbours and their distances
-                Collection<DoubleObjectContainer<IStoredValues>> neighbours = samples.getNearestValueDistances(k, values);
+                Collection<DoubleObjectContainer<IValuesStoreLabels>> neighbours = samples.getNearestValueDistances(k, values);
                 double totalSimilarity = 0.0;
-                for (DoubleObjectContainer<IStoredValues> tupel : neighbours) {
+                for (DoubleObjectContainer<IValuesStoreLabels> tupel : neighbours) {
                     double nearestOutput = tupel.getSecond().getLabel();
                     double distance = tupel.getFirst();
                     if (distance == 0) {

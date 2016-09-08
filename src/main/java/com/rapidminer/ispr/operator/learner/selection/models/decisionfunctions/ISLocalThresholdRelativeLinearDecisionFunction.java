@@ -6,10 +6,9 @@ package com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions;
 
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.ispr.dataset.IStoredValues;
-import com.rapidminer.ispr.dataset.Instance;
-import com.rapidminer.ispr.dataset.InstanceGenerator;
-import com.rapidminer.ispr.dataset.StoredValuesHelper;
+import com.rapidminer.ispr.dataset.ValuesStoreFactory;
+import com.rapidminer.ispr.dataset.Const;
+import com.rapidminer.ispr.dataset.IValuesStoreInstance;
 import com.rapidminer.ispr.operator.learner.tools.BasicMath;
 import com.rapidminer.ispr.tools.math.container.KNNTools;
 import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
@@ -17,6 +16,8 @@ import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.Collection;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
+import com.rapidminer.ispr.dataset.IVector;
 
 /**
  * ISLocalThresholdRelativeLinearDecisionFunction is an implementation of IISThresholdDecisionFunction. It represents
@@ -29,7 +30,7 @@ public class ISLocalThresholdRelativeLinearDecisionFunction implements IISThresh
     
     private double threshold = 0;
     private int k = 3;
-    private ISPRGeometricDataCollection<IStoredValues> samples;
+    private ISPRGeometricDataCollection<IValuesStoreLabels> samples;
     private boolean blockInit = false;    
 
 
@@ -54,24 +55,22 @@ public class ISLocalThresholdRelativeLinearDecisionFunction implements IISThresh
     }
 
     @Override
-    public void init(ISPRGeometricDataCollection<IStoredValues> samples){        
+    public void init(ISPRGeometricDataCollection<IValuesStoreLabels> samples){        
         if (!blockInit){
             this.samples = samples;
         }
     }
     
-    @Override
-    public double getValue(double real, double predicted, Instance values){
-        Collection<IStoredValues> nn = samples.getNearestValues(k, values);
-        double std = BasicMath.mean(nn, StoredValuesHelper.LABEL);
-        return Math.abs(real - predicted) / Math.abs(real) > std * threshold ? 1 : 0;
-    }
-    
-    @Override
-    public double getValue(double[] predicted, Example example){        
-        return getValue(example.getLabel(), predicted[0], InstanceGenerator.generateInstance(example));
-    }
        
+    @Override
+    public double getValue(IValuesStoreInstance instance){      
+        Collection<IValuesStoreLabels> nn = samples.getNearestValues(k, instance.getVector());
+        double real = instance.getLabels().getLabel();
+        double predicted = instance.getPrediction().getLabel();
+        double std = BasicMath.mean(nn, Const.LABEL);
+        return Math.abs(real - predicted) / Math.abs(real) > std * threshold ? 1 : 0;        
+    }      
+    
     @Override
     public void setThreshold(double threshold){
         this.threshold = threshold;

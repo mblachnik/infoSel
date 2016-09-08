@@ -6,8 +6,7 @@ package com.rapidminer.ispr.operator.learner.selection.models;
 
 import com.rapidminer.example.set.EditedExampleSet;
 import com.rapidminer.example.set.SelectedExampleSet;
-import com.rapidminer.ispr.dataset.IStoredValues;
-import com.rapidminer.ispr.dataset.InstanceGenerator;
+import com.rapidminer.ispr.dataset.ValuesStoreFactory;
 import com.rapidminer.ispr.operator.learner.classifiers.VotingType;
 import com.rapidminer.ispr.operator.learner.tools.Associates;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
@@ -16,6 +15,7 @@ import com.rapidminer.ispr.operator.learner.tools.PRulesUtil;
 import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
 import com.rapidminer.ispr.tools.math.container.IntDoubleContainer;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 
 /**
  *
@@ -48,7 +48,7 @@ public class Drop1InstanceSelectionModel extends AbstractInstanceSelectorModel {
         EditedExampleSet trainingSet = new EditedExampleSet(exampleSet);
         classNum = trainingSet.getAttributes().getLabel().getMapping().size();
 
-        ISPRGeometricDataCollection<IStoredValues> knn = null;// = KNNTools.initializeGeneralizedKNearestNeighbour(exampleSet, distance);
+        ISPRGeometricDataCollection<IValuesStoreLabels> knn = null;// = KNNTools.initializeGeneralizedKNearestNeighbour(exampleSet, distance);
         Associates associates = KNNTools.findAssociatedInstances(exampleSet, knn, k);
 
         DataIndex trainingIndex = trainingSet.getIndex();
@@ -57,7 +57,7 @@ public class Drop1InstanceSelectionModel extends AbstractInstanceSelectorModel {
         return selectedIndex;        
     }
 
-    private int Improvement(double[] values, double label, DataIndex p, int[] as, boolean includePruned, ISPRGeometricDataCollection<IStoredValues> samples, int k) {
+    private int Improvement(double[] values, double label, DataIndex p, int[] as, boolean includePruned, ISPRGeometricDataCollection<IValuesStoreLabels> samples, int k) {
         /*  Returns the number of additional associates of 'p'
          that would be classified correctly (by the instances in the subset)
          if 'p' were removed.  If 'includePruned' is true, then we count
@@ -88,12 +88,12 @@ public class Drop1InstanceSelectionModel extends AbstractInstanceSelectorModel {
         double[] votes = new double[classNum];
         while((j = a[i])>=0 && i<a.length){            
             if (p.get(j) || includePruned){
-                KNNTools.doNNVotes(votes, InstanceGenerator.generateInstance(values), samples, k, VotingType.MAJORITY);
+                KNNTools.doNNVotes(votes, ValuesStoreFactory.createVector(values), samples, k, VotingType.MAJORITY);
                 double newLabelA = PRulesUtil.findMostFrequentValue(votes);
                 if(label == newLabelA){
                     correctWith++;
                 }
-                KNNTools.doNNVotes(votes, InstanceGenerator.generateInstance(values), samples, k, VotingType.MAJORITY);
+                KNNTools.doNNVotes(votes, ValuesStoreFactory.createVector(values), samples, k, VotingType.MAJORITY);
                 double newLabelB = PRulesUtil.findMostFrequentValue(votes);
                 if(label == newLabelB){
                     correctWithout++;
