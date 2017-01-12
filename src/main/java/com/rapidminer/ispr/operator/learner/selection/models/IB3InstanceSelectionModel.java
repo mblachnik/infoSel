@@ -12,7 +12,7 @@ import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.example.table.NominalMapping;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.tools.math.container.KNNTools;
+import com.rapidminer.ispr.tools.math.container.knn.KNNTools;
 import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.container.Tupel;
 import com.rapidminer.tools.math.container.BoundedPriorityQueue;

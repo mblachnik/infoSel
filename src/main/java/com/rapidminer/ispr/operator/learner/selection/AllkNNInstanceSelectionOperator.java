@@ -62,7 +62,7 @@ public class AllkNNInstanceSelectionOperator extends AbstractInstanceSelectorOpe
         }
         IISDecisionFunction loss = null;
         Attribute labelAttribute = exampleSet.getAttributes().getLabel();
-        loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this);
+        loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);
         return new AllKNNInstanceSelectionGeneralModel(measure, k1, k2, loss);
     }
 

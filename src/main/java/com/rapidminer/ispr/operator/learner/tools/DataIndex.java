@@ -4,6 +4,7 @@
  */
 package com.rapidminer.ispr.operator.learner.tools;
 
+import com.rapidminer.ispr.tools.math.BasicMath;
 import java.util.Arrays;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;

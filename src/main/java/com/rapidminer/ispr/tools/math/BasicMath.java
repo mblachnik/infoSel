@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rapidminer.ispr.operator.learner.tools;
+package com.rapidminer.ispr.tools.math;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -449,7 +449,7 @@ public class BasicMath {
         acc /= y1.getRowsNumber();
         return acc;
     }
- */
+ */    
     public static void main(String[] args){
         for (double i = -1; i < 1; i+=0.01) {
             System.out.println(sigmoid(i));

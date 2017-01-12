@@ -15,14 +15,15 @@ import com.rapidminer.ispr.dataset.ValuesStoreFactory;
 import com.rapidminer.ispr.dataset.Const;
 import com.rapidminer.ispr.operator.learner.PRulesModel;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
-import com.rapidminer.ispr.tools.math.container.KNNTools;
-import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
+import com.rapidminer.ispr.tools.math.container.knn.GeometricCollectionTypes;
+import com.rapidminer.ispr.tools.math.container.knn.KNNTools;
+import com.rapidminer.ispr.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.ispr.tools.math.container.IntDoubleContainer;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.Collection;
 import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 import com.rapidminer.ispr.dataset.IVector;
+import com.rapidminer.ispr.tools.math.container.knn.KNNFactory;
 
 /**
  *
@@ -55,7 +56,7 @@ public class GENNInstanceSelectionModel implements PRulesModel<ExampleSet> {
         } else {
             exampleSet = new SelectedExampleSet(inputExampleSet);
         }
-        ISPRGeometricDataCollection<IValuesStoreLabels> nearestNeighbors = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, inputExampleSet, measure);
+        ISPRGeometricDataCollection<IValuesStoreLabels> nearestNeighbors = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, inputExampleSet, measure);
         DataIndex index = exampleSet.getIndex();
         index.setAllTrue();
 

@@ -15,7 +15,7 @@ import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.learner.CapabilityProvider;
-import com.rapidminer.ispr.operator.learner.AbstractPRulesOperator;
+import com.rapidminer.ispr.operator.AbstractPrototypeBasedOperator;
 import static com.rapidminer.ispr.operator.learner.clustering.CFCMOperator.PARAMETER_NUMBER_OF_CLUSTERS;
 import com.rapidminer.operator.ports.InputPort;
 import com.rapidminer.operator.ports.metadata.CapabilityPrecondition;
@@ -34,7 +34,7 @@ import java.util.List;
  *
  * @author Marcin
  */
-public class ClassAssignerOperator extends AbstractPRulesOperator {
+public class ClassAssignerOperator extends AbstractPrototypeBasedOperator {
 
     /**
      * 

@@ -11,15 +11,16 @@ import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.ispr.dataset.ValuesStoreFactory;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.tools.math.container.KNNTools;
+import com.rapidminer.ispr.tools.math.container.knn.KNNTools;
 import com.rapidminer.ispr.operator.learner.tools.PRulesUtil;
-import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
-import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
+import com.rapidminer.ispr.tools.math.container.knn.GeometricCollectionTypes;
+import com.rapidminer.ispr.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.Arrays;
 import java.util.Collection;
 import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 import com.rapidminer.ispr.dataset.IVector;
+import com.rapidminer.ispr.tools.math.container.knn.KNNFactory;
 
 /**
  * Class implements repeated ENN algorithm (RENN). It repeats ENN algorithm
@@ -58,7 +59,7 @@ public class RENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
         Attributes attributes = exampleSet.getAttributes();
         Attribute label = attributes.getLabel();
         //DATA STRUCTURE PREPARATION        
-        ISPRGeometricDataCollection<IValuesStoreLabels> samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, exampleSet, measure);
+        ISPRGeometricDataCollection<IValuesStoreLabels> samples = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, exampleSet, measure);
         loss.init(samples);
         int numberOfClasses = label.getMapping().size();
         //ENN EDITTING

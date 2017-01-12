@@ -7,14 +7,15 @@ package com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.ispr.dataset.Const;
 import com.rapidminer.ispr.dataset.IValuesStoreInstance;
-import com.rapidminer.ispr.operator.learner.tools.BasicMath;
-import com.rapidminer.ispr.tools.math.container.KNNTools;
-import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
-import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
+import com.rapidminer.ispr.tools.math.BasicMath;
+import com.rapidminer.ispr.tools.math.container.knn.KNNTools;
+import com.rapidminer.ispr.tools.math.container.knn.GeometricCollectionTypes;
+import com.rapidminer.ispr.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.Collection;
 import com.rapidminer.ispr.dataset.IValuesStoreLabels;
+import com.rapidminer.ispr.tools.math.container.knn.KNNFactory;
 
 /**
  * ISLocalThresholdLinearDecisionFunction is an implementation of IISThresholdDecisionFunction. It represents
@@ -23,7 +24,7 @@ import com.rapidminer.ispr.dataset.IValuesStoreLabels;
  * output values multiply be the threshold. If so returns 1 
  * @author Marcin
  */
-public class ISLocalThresholdLinearDecisionFunction implements IISThresholdDecisionFunction, IISLocalDecisionFunction {
+public class ISLocalThresholdLinearDecisionFunction extends AbstractISDecisionFunction  implements IISThresholdDecisionFunction, IISLocalDecisionFunction {
     
     private double threshold = 0;
     private int k = 3;
@@ -48,7 +49,7 @@ public class ISLocalThresholdLinearDecisionFunction implements IISThresholdDecis
     @Override
     public void init(ExampleSet exampleSet, DistanceMeasure distance) {
         if (!blockInit)
-            samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, exampleSet, distance);        
+            samples = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, exampleSet, distance);        
     }
 
     @Override
@@ -62,7 +63,7 @@ public class ISLocalThresholdLinearDecisionFunction implements IISThresholdDecis
         Collection<IValuesStoreLabels> nn = samples.getNearestValues(k, instance.getVector());
         double real = instance.getLabels().getLabel();
         double predicted = instance.getPrediction().getLabel();
-        double std = BasicMath.mean(nn, Const.LABEL);
+        double std = BasicMath.std(nn, Const.LABEL);
         double value = Math.abs(real - predicted) / std > threshold ? 1 : 0;
         return value;
     }   

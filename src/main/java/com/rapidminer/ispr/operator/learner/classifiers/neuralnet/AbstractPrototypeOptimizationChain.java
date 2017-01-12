@@ -10,7 +10,7 @@ import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.learner.CapabilityProvider;
-import com.rapidminer.ispr.operator.learner.AbstractPRulesOperatorChain;
+import com.rapidminer.ispr.operator.AbstractPrototypeBasedOperatorChain;
 import com.rapidminer.ispr.operator.learner.classifiers.IS_KNNClassificationModel;
 import com.rapidminer.ispr.operator.learner.classifiers.PredictionType;
 import com.rapidminer.ispr.operator.learner.selection.models.AbstractInstanceSelectorModel;
@@ -42,7 +42,7 @@ import java.util.List;
  *
  * @author Marcin
  */
-public abstract class AbstractPrototypeOptimizationChain extends AbstractPRulesOperatorChain {
+public abstract class AbstractPrototypeOptimizationChain extends AbstractPrototypeBasedOperatorChain {
 
     private static final long serialVersionUID = 21;
 

@@ -4,6 +4,8 @@
  */
 package com.rapidminer.ispr.operator.learner.tools;
 
+import com.rapidminer.ispr.tools.math.BasicMath;
+
 /**
  *
  * @author Marcin

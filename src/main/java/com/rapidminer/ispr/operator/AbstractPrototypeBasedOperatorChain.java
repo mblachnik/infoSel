@@ -1,4 +1,4 @@
-package com.rapidminer.ispr.operator.learner;
+package com.rapidminer.ispr.operator;
 
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorChain;
@@ -24,7 +24,7 @@ import com.rapidminer.parameter.UndefinedParameterError;
  *
  * @author Marcin
  */
-public abstract class AbstractPRulesOperatorChain extends OperatorChain implements CapabilityProvider {
+public abstract class AbstractPrototypeBasedOperatorChain extends OperatorChain implements CapabilityProvider {
 
     /**
      * Input port which delivers training ExampleSet
@@ -46,7 +46,7 @@ public abstract class AbstractPRulesOperatorChain extends OperatorChain implemen
      * @param description
      * @param subprocessNames
      */
-    public AbstractPRulesOperatorChain(OperatorDescription description, String... subprocessNames) {
+    public AbstractPrototypeBasedOperatorChain(OperatorDescription description, String... subprocessNames) {
         super(description, subprocessNames);//
         exampleSetInputPort.addPrecondition(new CapabilityPrecondition(this, exampleSetInputPort));
         exampleSetInputPort.addPrecondition(new DistanceMeasurePrecondition(exampleSetInputPort, this));
@@ -138,7 +138,7 @@ public abstract class AbstractPRulesOperatorChain extends OperatorChain implemen
             public MetaData modifyMetaData(MetaData metaData) {
                 if (metaData instanceof ExampleSetMetaData) {
                     try {
-                        return AbstractPRulesOperatorChain.this.modifyPrototypeOutputMetaData((ExampleSetMetaData) metaData);
+                        return AbstractPrototypeBasedOperatorChain.this.modifyPrototypeOutputMetaData((ExampleSetMetaData) metaData);
                     } catch (UndefinedParameterError ex) {
                         return metaData;
                     }

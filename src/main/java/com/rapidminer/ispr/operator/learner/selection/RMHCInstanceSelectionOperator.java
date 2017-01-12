@@ -61,7 +61,7 @@ public class RMHCInstanceSelectionOperator extends AbstractInstanceSelectorOpera
         int numberOfPrototypes = getParameterAsInt(PARAMETER_PROTOTYPES_NUMBER);
         int numberOfIterations = getParameterAsInt(PARAMETER_ITERATION_NUMBER);
         RandomGenerator randomGenerator = RandomGenerator.getRandomGenerator(this);
-        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this);
+        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);
         return new RMHCNaiveInstanceSelectionGeneralModel(measure, numberOfPrototypes, numberOfIterations, randomGenerator, loss);
         
     }

@@ -20,7 +20,7 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-package com.rapidminer.ispr.tools.math.container;
+package com.rapidminer.ispr.tools.math.container.knn;
 
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.RandomAccess;
-import com.rapidminer.ispr.operator.learner.tools.SymetricDoubleMatrix;
 import com.rapidminer.ispr.tools.math.similarity.DistanceEvaluator;
 import com.rapidminer.tools.container.Tupel;
 import com.rapidminer.tools.math.container.BoundedPriorityQueue;
@@ -45,6 +44,8 @@ import java.util.Set;
 import com.rapidminer.ispr.dataset.ValuesStoreFactory;
 import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 import com.rapidminer.ispr.dataset.IVector;
+import com.rapidminer.ispr.tools.math.container.DoubleObjectContainer;
+import com.rapidminer.ispr.tools.math.container.SymetricDoubleMatrix;
 
 /**
  * This class is an implementation of the GeometricDataCollection interface, It

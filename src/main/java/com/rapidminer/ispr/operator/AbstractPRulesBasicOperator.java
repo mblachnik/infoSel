@@ -1,4 +1,4 @@
-package com.rapidminer.ispr.operator.learner;
+package com.rapidminer.ispr.operator;
 
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.Operator;
@@ -22,7 +22,7 @@ public abstract class AbstractPRulesBasicOperator extends Operator implements Ca
     /**
      * Output port which returns an initial ExampleSet
      */
-    protected final OutputPort exampleSetOutputPort = getOutputPorts().createPassThroughPort("exampleSet");    
+    protected final OutputPort exampleSetOutputPort = getOutputPorts().createPassThroughPort("original");    
 
     /**
      * Creates AbstractPRulesBasicOperator class
@@ -36,11 +36,8 @@ public abstract class AbstractPRulesBasicOperator extends Operator implements Ca
 
     @Override
     public void doWork() throws OperatorException {
-        ExampleSet trainingSet = exampleSetInputPort.getData(ExampleSet.class);
-                
-        executeOperator(trainingSet);
-        
-        exampleSetOutputPort.deliver(trainingSet);        
+        ExampleSet trainingSet = exampleSetInputPort.getData(ExampleSet.class);                
+        executeOperator(trainingSet);           
     }
     
     /**

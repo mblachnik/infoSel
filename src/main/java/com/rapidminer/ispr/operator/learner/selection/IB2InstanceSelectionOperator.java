@@ -45,7 +45,7 @@ public class IB2InstanceSelectionOperator extends AbstractInstanceSelectorOperat
     public AbstractInstanceSelectorModel configureInstanceSelectionModel(SelectedExampleSet exampleSet) throws OperatorException {
         DistanceMeasure distance = measureHelper.getInitializedMeasure(exampleSet);
         RandomGenerator randomGenerator = RandomGenerator.getRandomGenerator(this);
-        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this);
+        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);
         InstanceModifier instanceModifier = InstanceModifierHelper.getConfiguredInstanceModifier(this);
         return new IB2InstanceSelectionModel(distance, loss, instanceModifier);
     }

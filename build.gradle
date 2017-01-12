@@ -18,7 +18,8 @@ configurations {
  }
  
 extensionConfig {
-
+    //
+    
     // The extension name
     name = 'Information Selection'
     //The namespace

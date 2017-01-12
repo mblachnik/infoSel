@@ -49,7 +49,7 @@ import com.rapidminer.parameter.ParameterTypeCategory;
  * 
  * @author Ingo Mierswa
  */
-public class InstanceSSelectionPerformance extends Operator {
+public class InstanceSelectionPerformance extends Operator {
 
 	/** The parameter name for &quot;Indicates if the fitness should for maximal or minimal number of features.&quot; */
 	public static final String PARAMETER_OPTIMIZATION_DIRECTION = "optimization_direction";
@@ -66,7 +66,7 @@ public class InstanceSSelectionPerformance extends Operator {
         private OutputPort exampleSet2Output = getOutputPorts().createPort("exampleSet2");
 	private OutputPort performanceOutput = getOutputPorts().createPort("performance vector");
 
-	public InstanceSSelectionPerformance(OperatorDescription description) {
+	public InstanceSelectionPerformance(OperatorDescription description) {
 		super(description);
 
 		getTransformer().addGenerationRule(performanceOutput, PerformanceVector.class);

@@ -12,17 +12,18 @@ import com.rapidminer.ispr.dataset.ValuesStoreFactory;
 import com.rapidminer.ispr.dataset.Const;
 import com.rapidminer.ispr.dataset.IValuesStoreInstance;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.tools.math.container.KNNTools;
+import com.rapidminer.ispr.tools.math.container.knn.KNNTools;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import com.rapidminer.ispr.operator.learner.selection.models.tools.InstanceModifier;
-import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
-import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
+import com.rapidminer.ispr.tools.math.container.knn.GeometricCollectionTypes;
+import com.rapidminer.ispr.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.Collection;
 import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 import com.rapidminer.ispr.dataset.IValuesStorePrediction;
 import com.rapidminer.ispr.dataset.ValuesStoreFactory;
 import com.rapidminer.ispr.dataset.IVector;
+import com.rapidminer.ispr.tools.math.container.knn.KNNFactory;
 
 /**
  * Class implements Condenced NN instance selection algorithm.
@@ -66,7 +67,7 @@ public class CNNInstanceSelectionGeneralModel extends AbstractInstanceSelectorMo
         int i = 0;
         selectedIndex.set(i, true);
         trainingIndex.set(i, false);
-        ISPRGeometricDataCollection<IValuesStoreLabels> nn = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, selectedSet, distance);
+        ISPRGeometricDataCollection<IValuesStoreLabels> nn = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, selectedSet, distance);
         boolean isModiffied = true;
         int attributeSize = exampleSet.getAttributes().size();
         IVector vector = ValuesStoreFactory.createVector(trainingSet);

@@ -8,8 +8,8 @@ import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.ispr.dataset.IValuesStoreInstance;
 import com.rapidminer.ispr.dataset.ValuesStoreFactory;
-import com.rapidminer.ispr.tools.math.container.KNNTools;
-import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
+import com.rapidminer.ispr.tools.math.container.knn.KNNTools;
+import com.rapidminer.ispr.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.ispr.dataset.IValuesStoreLabels;
@@ -21,7 +21,7 @@ import com.rapidminer.ispr.dataset.IVector;
  * calculates relative error (R-P)/R then checks if the error is greater then threshold. If so returns 1
  * @author Marcin
  */
-public class ISThresholdRelativeLinearDecisionFunction implements IISThresholdDecisionFunction {
+public class ISThresholdRelativeLinearDecisionFunction extends AbstractISDecisionFunction  implements IISThresholdDecisionFunction {
     
     private double threshold = 0;    
     private boolean blockInit = false;    

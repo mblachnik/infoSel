@@ -16,12 +16,12 @@ import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.UserError;
 import com.rapidminer.operator.learner.PredictionModel;
-import com.rapidminer.ispr.operator.learner.AbstractPRulesOperatorChain;
+import com.rapidminer.ispr.operator.AbstractPrototypeBasedOperatorChain;
 import com.rapidminer.ispr.operator.learner.classifiers.IS_KNNClassificationModel;
 import com.rapidminer.ispr.operator.learner.classifiers.PredictionType;
 import com.rapidminer.ispr.operator.learner.classifiers.VotingType;
-import com.rapidminer.ispr.tools.math.container.KNNTools;
-import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
+import com.rapidminer.ispr.tools.math.container.knn.KNNTools;
+import com.rapidminer.ispr.tools.math.container.knn.GeometricCollectionTypes;
 import com.rapidminer.operator.ports.InputPort;
 import com.rapidminer.operator.ports.OutputPort;
 import com.rapidminer.operator.ports.metadata.*;
@@ -29,7 +29,7 @@ import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeBoolean;
 import com.rapidminer.parameter.UndefinedParameterError;
 import com.rapidminer.tools.RandomGenerator;
-import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
+import com.rapidminer.ispr.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.ispr.tools.math.container.IntDoubleContainer;
 import com.rapidminer.tools.Ontology;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
@@ -40,12 +40,13 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import com.rapidminer.ispr.dataset.IValuesStoreLabels;
+import com.rapidminer.ispr.tools.math.container.knn.KNNFactory;
 
 /**
  *
  * @author Marcin
  */
-public abstract class AbstractInstanceSelectorChain extends AbstractPRulesOperatorChain {
+public abstract class AbstractInstanceSelectorChain extends AbstractPrototypeBasedOperatorChain {
 
     public static final String PARAMETER_RANDOMIZE_EXAMPLES = "randomize_examples";
     public static final String PARAMETER_ADD_WEIGHTS = "add weight attribute";
@@ -182,7 +183,7 @@ public abstract class AbstractInstanceSelectorChain extends AbstractPRulesOperat
         if (modelOutputPort.isConnected()) {
             DistanceMeasure distance = measureHelper.getInitializedMeasure(output);
             //if (output.getAttributes().getLabel().isNominal()) {
-                ISPRGeometricDataCollection<IValuesStoreLabels> samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH,output, distance);                
+                ISPRGeometricDataCollection<IValuesStoreLabels> samples = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH,output, distance);                
                 IS_KNNClassificationModel<IValuesStoreLabels> model = new IS_KNNClassificationModel<>(output, samples, 1, VotingType.MAJORITY, PredictionType.Classification);
                 modelOutputPort.deliver(model);
             //} else if (output.getAttributes().getLabel().isNumerical()) {

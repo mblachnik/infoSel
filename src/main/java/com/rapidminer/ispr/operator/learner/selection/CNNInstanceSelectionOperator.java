@@ -44,7 +44,7 @@ public class CNNInstanceSelectionOperator extends AbstractInstanceSelectorOperat
         DistanceMeasure distance = measureHelper.getInitializedMeasure(exampleSet);
         IISDecisionFunction loss = null;
         Attribute labelAttribute = exampleSet.getAttributes().getLabel();
-        loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this);
+        loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);
         return new CNNInstanceSelectionGeneralModel(distance, loss);
     }
 

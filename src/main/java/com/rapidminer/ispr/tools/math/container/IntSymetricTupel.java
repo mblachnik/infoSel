@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rapidminer.ispr.operator.learner.tools;
+package com.rapidminer.ispr.tools.math.container;
 
 import java.io.Serializable;
 
@@ -45,10 +45,10 @@ public class IntSymetricTupel implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof com.rapidminer.ispr.operator.learner.tools.IntSymetricTupel)) {
+        if (!(o instanceof com.rapidminer.ispr.tools.math.container.IntSymetricTupel)) {
             return false;
         }
-        com.rapidminer.ispr.operator.learner.tools.IntSymetricTupel a = (com.rapidminer.ispr.operator.learner.tools.IntSymetricTupel) o;
+        com.rapidminer.ispr.tools.math.container.IntSymetricTupel a = (com.rapidminer.ispr.tools.math.container.IntSymetricTupel) o;
         if (this.t1 == a.t1 && this.t2 == a.t2) {
             return false;
         }

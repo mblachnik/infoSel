@@ -41,7 +41,7 @@ public class RNGInstanceSelectionOperator extends AbstractInstanceSelectorOperat
     @Override
     public AbstractInstanceSelectorModel configureInstanceSelectionModel(SelectedExampleSet exampleSet) throws OperatorException {
         DistanceMeasure distance = measureHelper.getInitializedMeasure(exampleSet);
-        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this);
+        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);
         return new RNGInstanceSelectionModel(distance, loss);        
     }
 

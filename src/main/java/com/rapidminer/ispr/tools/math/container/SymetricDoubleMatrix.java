@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rapidminer.ispr.operator.learner.tools;
+package com.rapidminer.ispr.tools.math.container;
 
 /**
  *

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rapidminer.ispr.tools.math.container;
+package com.rapidminer.ispr.tools.math.container.knn;
 
 import com.rapidminer.ispr.operator.learner.tools.TaskType;
 import java.util.ArrayList;

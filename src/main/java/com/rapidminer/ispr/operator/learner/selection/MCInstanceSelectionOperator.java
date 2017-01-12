@@ -62,7 +62,7 @@ public class MCInstanceSelectionOperator extends AbstractInstanceSelectorOperato
         int p = getParameterAsInt(PARAMETER_PROTOTYPES_NUMBER);
         int s = getParameterAsInt(PARAMETER_ITERATION_NUMBER);
         RandomGenerator randomGenerator = RandomGenerator.getRandomGenerator(this);
-        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this);
+        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);
         return new MCInstanceSelectionModel(measure, p, s, new RMRandomGenerator(randomGenerator), loss);        
     }
 

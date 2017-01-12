@@ -1,7 +1,7 @@
 package com.rapidminer.ispr.operator.learner.classifiers.neuralnet.models;
 
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.ispr.operator.learner.tools.BasicMath;
+import com.rapidminer.ispr.tools.math.BasicMath;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 

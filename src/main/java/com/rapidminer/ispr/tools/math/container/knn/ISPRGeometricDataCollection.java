@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rapidminer.ispr.tools.math.container;
+package com.rapidminer.ispr.tools.math.container.knn;
 
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.ExampleSet;
@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import com.rapidminer.ispr.dataset.IVector;
+import com.rapidminer.ispr.tools.math.container.DoubleObjectContainer;
 
 /**
  *

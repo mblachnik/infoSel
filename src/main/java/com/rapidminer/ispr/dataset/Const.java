@@ -5,6 +5,8 @@
  */
 package com.rapidminer.ispr.dataset;
 
+import com.rapidminer.ispr.operator.learner.weighting.Ontology;
+
 /**
  *
  * @author Marcin
@@ -24,11 +26,15 @@ public class Const {
     public static final String WEIGHT = "weight";
     /**
      * Used for naming element which stores example id. Type int
-     */
+     */    
     public static final String ID = "id";
     /**
-     * Used for naming element which stores distance values. Type double
+     * Used for naming element which store noise level for given example. Type double
      */
+    public static final String NOISE = Ontology.ATTRIBUTE_NOISE;
+    /**
+     * Used for naming element which stores distance values. Type double
+     */    
     public static final String DISTANCE = "distance";
     /**
      * Used for naming element which stores internal index of parent data structure. Type long
@@ -45,7 +51,7 @@ public class Const {
     /**
      * Used for naming element which stores example prediction confidence. Type double[]
      */
-    public static final String CONFIDENCE = "confidence";
+    public static final String CONFIDENCE = "confidence";    
     /**
      * Used for naming element which stores example vector values. Type {@see IVector}
      */

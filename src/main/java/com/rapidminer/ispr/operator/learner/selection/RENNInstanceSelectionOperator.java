@@ -51,7 +51,7 @@ public class RENNInstanceSelectionOperator extends AbstractInstanceSelectorOpera
         //INITIALIZATION
         DistanceMeasure measure = measureHelper.getInitializedMeasure(exampleSet);
         int k = getParameterAsInt(PARAMETER_K);
-        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this);
+        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);
         return new RENNInstanceSelectionModel(measure, k, loss);        
     }
 

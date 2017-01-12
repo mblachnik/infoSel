@@ -9,7 +9,7 @@ import com.rapidminer.example.set.SortedExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
-import com.rapidminer.ispr.operator.learner.AbstractPRulesOperator;
+import com.rapidminer.ispr.operator.AbstractPrototypeBasedOperator;
 import com.rapidminer.ispr.operator.learner.classifiers.IS_KNNClassificationModel;
 import com.rapidminer.ispr.operator.learner.classifiers.PredictionType;
 import com.rapidminer.ispr.operator.learner.classifiers.VotingType;
@@ -17,8 +17,8 @@ import com.rapidminer.ispr.operator.learner.selection.models.AbstractInstanceSel
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.tools.math.container.KNNTools;
-import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
+import com.rapidminer.ispr.tools.math.container.knn.KNNTools;
+import com.rapidminer.ispr.tools.math.container.knn.GeometricCollectionTypes;
 import com.rapidminer.operator.ports.OutputPort;
 import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
 import com.rapidminer.operator.ports.metadata.GeneratePredictionModelTransformationRule;
@@ -27,7 +27,7 @@ import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeBoolean;
 import com.rapidminer.parameter.UndefinedParameterError;
 import com.rapidminer.tools.RandomGenerator;
-import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
+import com.rapidminer.ispr.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.ProcessSetupError;
 import com.rapidminer.operator.UserError;
@@ -46,24 +46,28 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import com.rapidminer.ispr.dataset.IValuesStoreLabels;
+import com.rapidminer.ispr.tools.math.container.knn.KNNFactory;
+import com.rapidminer.operator.ProcessSetupError.Severity;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Abstract class which should be used as a base for any instance selection
- * algorithm. It runs {@link #configureInstanceSelectionModel} method to execute instance
- * selection algorithm. The configuration parameters are set by overriding
- * configuration methods such as
+ * algorithm. It runs {@link #configureInstanceSelectionModel} method to execute
+ * instance selection algorithm. The configuration parameters are set by
+ * overriding configuration methods such as
  * {@link #isDistanceBased()},{@link #isSampleRandomize() }, {@link #useDecisionFunction()}.
  *
  * @author Marcin
  */
-public abstract class AbstractInstanceSelectorOperator extends AbstractPRulesOperator {
+public abstract class AbstractInstanceSelectorOperator extends AbstractPrototypeBasedOperator {
 
     public static final String PARAMETER_RANDOMIZE_EXAMPLES = "randomize_examples";
     public static final String PARAMETER_ADD_WEIGHTS = "add weight attribute";
     public static final String PARAMETER_INVERSE_SELECTION = "inverse selection";
     int sampleSize = -1;
     protected DistanceMeasureHelper measureHelper;
-    protected final OutputPort modelOutputPort = getOutputPorts().createPort("model");    
+    protected final OutputPort modelOutputPort = getOutputPorts().createPort("model");
     // private boolean isDistanceBasedMethod;
 
     /**
@@ -80,7 +84,7 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPRulesOpe
      * Method called from constructor to initialize this operator. It sets and
      * configures metadata etc.
      */
-    private void init() {        
+    private void init() {
         //isDistanceBasedMethod = true;
         measureHelper = new DistanceMeasureHelper(this);
         //getTransformer().addRule(new GenerateModelTransformationRule(exampleSetInputPort, modelOutputPort, IS_KNNClassificationModel.class));
@@ -101,14 +105,21 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPRulesOpe
                             return;
                         case YES:
                             if (useDecisionFunction()) {
-                                IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(currentOperator);
-                                AttributeMetaData label = emd.getLabelMetaData();
-                                if (label.isNominal() && !loss.supportedLabelTypes(OperatorCapability.POLYNOMINAL_LABEL)) {
-                                    exampleSetInputPort.addError(new SimpleMetaDataError(ProcessSetupError.Severity.ERROR, exampleSetInputPort, "parameters.cannot_handle", OperatorCapability.POLYNOMINAL_LABEL, ISDecisionFunctionHelper.PARAMETER_DECISION_FUNCTION, loss.name()));
-                                }
-                                if (label.isNumerical() && !loss.supportedLabelTypes(OperatorCapability.NUMERICAL_LABEL)) {
-                                    exampleSetInputPort.addError(new SimpleMetaDataError(ProcessSetupError.Severity.ERROR, exampleSetInputPort, "parameters.cannot_handle", OperatorCapability.NUMERICAL_LABEL, ISDecisionFunctionHelper.PARAMETER_DECISION_FUNCTION, loss.name()));
-
+                                IISDecisionFunction loss;
+                                try {
+                                    loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(currentOperator, null);
+                                    List<List<String>> errors = loss.makeAdditionalChecks(emd);
+                                    for (List<String> error : errors){  
+                                        String errorType = error.get(0);                                        
+                                        String errorI18nKey = error.get(1);
+                                        error.remove(0);
+                                        error.remove(0);
+                                        Object[] params = error.toArray();
+                                        Severity severity = ProcessSetupError.Severity.valueOf(errorType);                                        
+                                        exampleSetInputPort.addError(new SimpleMetaDataError(severity , exampleSetInputPort, errorI18nKey, params));
+                                    }
+                                } catch (OperatorException ex) {
+                                    currentOperator.getLog().logWarning("Exception in loss functin configuration.");
                                 }
                             }
                     }
@@ -117,15 +128,17 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPRulesOpe
         }
         );
 
-        getTransformer().addRule(new GeneratePredictionModelTransformationRule(exampleSetInputPort, modelOutputPort, IS_KNNClassificationModel.class));        
+        getTransformer().addRule(new GeneratePredictionModelTransformationRule(exampleSetInputPort, modelOutputPort, IS_KNNClassificationModel.class));
     }
 
     /**
      * Implements basic functionality of this operator. It is implementation of
-     * the {@link com.rapidminer.ispr.operator.learner.AbstractPRulesOperator}
-     * abstract method. The input dataset is delivered as {@link com.rapidminer.example.set.SelectedExampleSet}
-     * class, so it has special methods to extract DataIndex from it, what makes 
-     * easier implementation of instance selection   
+     * the {@link com.rapidminer.ispr.operator.AbstractPrototypeBasedOperator}
+     * abstract method. The input dataset is delivered as
+     * {@link com.rapidminer.example.set.SelectedExampleSet} class, so it has
+     * special methods to extract DataIndex from it, what makes easier
+     * implementation of instance selection
+     *
      * @param trainingSet dataset on which we want to perform instance selection
      * @return - results of instance selection
      * @throws OperatorException
@@ -166,23 +179,23 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPRulesOpe
             output = new SelectedExampleSet(trainingSet);
             instanceSelectionInput = (SelectedExampleSet) output.clone();
         }
-        DataIndex initialIndex = instanceSelectionInput.getIndex();             
+        DataIndex initialIndex = instanceSelectionInput.getIndex();
         AbstractInstanceSelectorModel m = configureInstanceSelectionModel(instanceSelectionInput);
-        DataIndex index = m.selectInstances(instanceSelectionInput); 
-        if (index==null){
+        DataIndex index = m.selectInstances(instanceSelectionInput);
+        if (index == null) {
             throw new UserError(this, 0);
         }
-        sampleSize = index.getLength();        
+        sampleSize = index.getLength();
         boolean inverseSelection = getParameterAsBoolean(PARAMETER_INVERSE_SELECTION);
-        if (inverseSelection) {            
+        if (inverseSelection) {
             index.negate();
         }
-        output.setIndex(index);        
+        output.setIndex(index);
         if (modelOutputPort.isConnected()) {
             ISPRGeometricDataCollection<IValuesStoreLabels> samples = m.getModel();
-            if (samples == null){                                            
+            if (samples == null) {
                 DistanceMeasure distance = measureHelper.getInitializedMeasure(output);
-                samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, output, distance);
+                samples = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, output, distance);
             }
             PredictionType modelType = trainingSet.getAttributes().getLabel().isNominal() ? PredictionType.Classification : PredictionType.Regression;
             IS_KNNClassificationModel<IValuesStoreLabels> model = new IS_KNNClassificationModel<>(output, samples, 1, VotingType.MAJORITY, modelType);
@@ -261,29 +274,44 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPRulesOpe
         return true;
     }
 
-     /**
-     * Returns number of prototypes displayed in the MataData related with prototypeOutput
+    /**
+     * Returns number of prototypes displayed in the MataData related with
+     * prototypeOutput
      *
-     * @return     
-     * @throws com.rapidminer.parameter.UndefinedParameterError     
-     */    
+     * @return
+     * @throws com.rapidminer.parameter.UndefinedParameterError
+     */
     @Override
-    public MDInteger getNumberOfPrototypesMetaData() throws UndefinedParameterError {        
-        return new MDInteger();        
+    public MDInteger getNumberOfPrototypesMetaData() throws UndefinedParameterError {
+        return new MDInteger();
     }
 
     /**
      * Whenever ones would like to implement self instance selection algorithm
      * should override this method. It takes as input exampleSet on which we
      * would like to perform instance selection and returns an instance of
-     * {@link AbstractInstanceSelectorModel} class which implements 
-     * instance selection algorithm which is farther executed by {@link #processExampleswhich} 
+     * {@link AbstractInstanceSelectorModel} class which implements instance
+     * selection algorithm which is farther executed by
+     * {@link #processExampleswhich}
      *
      * @param trainingSet
      * @return
      * @throws OperatorException
      */
-    public abstract AbstractInstanceSelectorModel configureInstanceSelectionModel(SelectedExampleSet trainingSet) throws OperatorException;    
+    public abstract AbstractInstanceSelectorModel configureInstanceSelectionModel(SelectedExampleSet trainingSet) throws OperatorException;
+
+    /**
+     * Return reference to distance measure helper, which is used to configure
+     * distance function of given operator
+     *
+     * @return
+     */
+    public DistanceMeasureHelper getDistanceMeasureHelper() {
+        if (isDistanceBased()) {
+            return measureHelper;
+        }
+        return null;
+    }
 
     /**
      * Setting and configuring operator parameters

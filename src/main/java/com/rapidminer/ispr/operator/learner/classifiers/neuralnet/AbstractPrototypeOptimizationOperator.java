@@ -10,7 +10,7 @@ import com.rapidminer.operator.ValueDouble;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
-import com.rapidminer.ispr.operator.learner.AbstractPRulesOperator;
+import com.rapidminer.ispr.operator.AbstractPrototypeBasedOperator;
 import com.rapidminer.ispr.operator.learner.classifiers.IS_KNNClassificationModel;
 import com.rapidminer.ispr.operator.learner.classifiers.PredictionType;
 import static com.rapidminer.ispr.operator.learner.classifiers.neuralnet.LVQOperator.PARAMETER_NUMBER_OF_NEURONS;
@@ -49,7 +49,7 @@ import java.util.List;
  *
  * @author Marcin
  */
-public abstract class AbstractPrototypeOptimizationOperator extends AbstractPRulesOperator {
+public abstract class AbstractPrototypeOptimizationOperator extends AbstractPrototypeBasedOperator {
 
     /**
      * Number of neurons (prototypes)

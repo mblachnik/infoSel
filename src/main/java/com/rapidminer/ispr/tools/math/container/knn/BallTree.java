@@ -20,7 +20,7 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-package com.rapidminer.ispr.tools.math.container;
+package com.rapidminer.ispr.tools.math.container.knn;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,6 +47,7 @@ import java.util.Set;
 import com.rapidminer.ispr.dataset.ValuesStoreFactory;
 import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 import com.rapidminer.ispr.dataset.IVector;
+import com.rapidminer.ispr.tools.math.container.DoubleObjectContainer;
 
 /**
  * This class is an implementation of a Ball-Tree for organizing

@@ -69,7 +69,7 @@ public class ENNInstanceSelectionOperator extends AbstractInstanceSelectorOperat
         int k = getParameterAsInt(PARAMETER_K);
         Attribute labelAttribute = exampleSet.getAttributes().getLabel();
         double[] classWeight = null;
-        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this);        
+        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);        
         InstanceModifier instanceModifier = InstanceModifierHelper.getConfiguredInstanceModifier(this);
         if (labelAttribute.isNominal()) {
             classWeight = new double[labelAttribute.getMapping().size()];

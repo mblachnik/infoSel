@@ -10,11 +10,11 @@ import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.ispr.dataset.Const;
 import com.rapidminer.ispr.dataset.IValuesStoreInstance;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.tools.math.container.KNNTools;
+import com.rapidminer.ispr.tools.math.container.knn.KNNTools;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import com.rapidminer.ispr.operator.learner.tools.PRulesUtil;
-import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
-import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
+import com.rapidminer.ispr.tools.math.container.knn.GeometricCollectionTypes;
+import com.rapidminer.ispr.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,6 +23,7 @@ import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 import com.rapidminer.ispr.dataset.IValuesStorePrediction;
 import com.rapidminer.ispr.dataset.IVector;
 import com.rapidminer.ispr.dataset.ValuesStoreFactory;
+import com.rapidminer.ispr.tools.math.container.knn.KNNFactory;
 
 /**
  * Class implements ENN Vector selection algorithm
@@ -79,7 +80,7 @@ public class ICFInstanceSelectionModel extends AbstractInstanceSelectorModel {
         int sampleSize = exampleSet.size();
         //DATA STRUCTURE PREPARATION        
         ISPRGeometricDataCollection<IValuesStoreLabels> samples;
-        samples = KNNTools.initializeKNearestNeighbourFactory(knnType, exampleSet, measure);
+        samples = KNNFactory.initializeKNearestNeighbourFactory(knnType, exampleSet, measure);
         loss.init(samples);        
         IVector vector;
         double realLabel;

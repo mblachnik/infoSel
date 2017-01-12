@@ -7,7 +7,7 @@ package com.rapidminer.ispr.operator.learner.clustering;
 //import history.OldAbstractPRulesOperator;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.Tools;
-import com.rapidminer.ispr.operator.learner.AbstractPRulesOperator;
+import com.rapidminer.ispr.operator.AbstractPrototypeBasedOperator;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.clustering.clusterer.RMAbstractClusterer;
@@ -27,7 +27,7 @@ import com.rapidminer.ispr.dataset.IVector;
  * In fact it requires that the clustering algorithm will be implemented based on the {@link  com.rapidminer.ispr.operator.learner.clustering.models.AbstractBatchModel} 
  * @author Marcin
  */
-public abstract class AbstractPrototypeClusteringBatchOperator extends AbstractPRulesOperator {
+public abstract class AbstractPrototypeClusteringBatchOperator extends AbstractPrototypeBasedOperator {
 
     public static final String PARAMETER_ADD_PARTITION_MATRIX = "Add partition matrix";
     private static final long serialVersionUID = 21;

@@ -13,7 +13,7 @@ import com.rapidminer.example.Tools;
 import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.example.table.NominalMapping;
 import com.rapidminer.example.table.PolynominalMapping;
-import com.rapidminer.ispr.operator.learner.AbstractPRulesOperatorChain;
+import com.rapidminer.ispr.operator.AbstractPrototypeBasedOperatorChain;
 import com.rapidminer.ispr.operator.learner.classifiers.IS_KNNClassificationModel;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
@@ -61,7 +61,7 @@ import java.util.Map;
  *
  * @author Marcin
  */
-public abstract class AbstractPrototypeClusteringOnlineOperator extends AbstractPRulesOperatorChain {
+public abstract class AbstractPrototypeClusteringOnlineOperator extends AbstractPrototypeBasedOperatorChain {
 
     private static final long serialVersionUID = 21;
     public static final String PARAMETER_NUMBER_OF_NEURONS = "Number of neurons";

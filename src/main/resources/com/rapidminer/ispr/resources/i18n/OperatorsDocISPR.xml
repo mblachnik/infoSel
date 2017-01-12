@@ -65,7 +65,51 @@
         <icon>ispr.png</icon>
         
     </operator>
-    
+    <operator>
+        <key>NNE_by_D_test</key>
+        <name>Performance D-test</name>
+        <synopsis>Nonparametric Residual Noise Estimation Delta-test</synopsis>
+        <help>
+            
+        </help> 
+        <icon>ispr.png</icon>
+    </operator>
+    <operator>
+        <key>NNE_by_G_test</key>
+        <name>Performance G-test</name>
+        <synopsis>Nonparametric Residual Noise Estimation Gamma-test</synopsis>
+        <help>
+            
+        </help>         
+        <icon>ispr.png</icon>
+    </operator>
+    <operator>
+        <key>weightBy_NNE_D_test</key>
+        <name>Estimate Noise D-test</name>
+        <synopsis>Nonparametric Residual Noise Estimation per example using Delta-test</synopsis>
+        <help>
+            
+        </help>         
+        <icon>ispr.png</icon>
+    </operator>
+    <operator>
+        <key>weightBy_NNE_G_test</key>
+        <name>Estimate Noise (G-test)</name>
+        <synopsis>Nonparametric Residual Noise Estimation per example using Gamma-test</synopsis>
+        <help>
+            
+        </help>         
+        <icon>ispr.png</icon>
+    </operator>
+    <operator>
+        <key>weightBy_LocalVariance_test</key>
+        <name>Estimate Noise (Local Var.)</name>
+        <synopsis>Nonparametric Residual Noise Estimation per example using local variance</synopsis>
+        <help>
+            
+        </help>         
+        <icon>ispr.png</icon>
+    </operator>
     <operator>
         <name>Flatten Clustering by Distance</name>
         <key>FlattenClustersByDistance</key>
@@ -412,10 +456,11 @@
 
     <operator>
         <name>Assign Labels</name>
-        <synopsis>Assigns appropriate class label for a set of prototype instances.</synopsis>
-        <help>This operator determine class label for each instance delivered to the Prototypes input based 
+        <synopsis>Label examples in prototype input based on labeled exampleset.</synopsis>
+        <help>This operator determine class label for each example delivered to the Prototypes input based 
             on the frequency of class labels of the nearest instances from the ExampleSet input. 
             &lt;br/&gt;
+            When clustering labeled data we often need label also the cluster centers, such that the prototypes could be used for example in classification problems. This operator labels cluster centers based on the data delivered to its ExampleSet input.
             It creates a Voronoi diagram for the dataset delivered to the prototype input, 
             then calculates some statistics for each cell based on data delivered 
             to the exampleSet input (examples of both prototapes and exampleSet must have common attribute space)

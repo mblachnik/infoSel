@@ -4,13 +4,18 @@
  */
 package com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions;
 
+import com.rapidminer.example.ExampleSet;
+import com.rapidminer.ispr.operator.learner.selection.AbstractInstanceSelectorOperator;
 import com.rapidminer.operator.Operator;
+import com.rapidminer.operator.OperatorException;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeCategory;
 import com.rapidminer.parameter.ParameterTypeDouble;
 import com.rapidminer.parameter.ParameterTypeInt;
 import com.rapidminer.parameter.UndefinedParameterError;
 import com.rapidminer.parameter.conditions.EqualTypeCondition;
+import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +26,7 @@ import java.util.List;
  */
 public class ISDecisionFunctionHelper {
 
-    static final IISDecisionFunction[] decisionFunctionList = {new ISClassDecisionFunction(), new ISThresholdLinearDecisionFunction(), new ISThresholdRelativeLinearDecisionFunction(), new ISLocalThresholdLinearDecisionFunction(), new ISLocalThresholdRelativeLinearDecisionFunction()};
+    static final IISDecisionFunction[] decisionFunctionList = {new ISClassDecisionFunction(), new ISThresholdLinearDecisionFunction(), new ISThresholdRelativeLinearDecisionFunction(), new ISNNEThresholdLinearDecisionFunction(), new ISLocalThresholdLinearDecisionFunction(), new ISLocalThresholdRelativeLinearDecisionFunction()};
     static final String[] decisionFunctionNames = new String[decisionFunctionList.length];
     public static final String PARAMETER_THRESHOLD = "Threshold";
     public static final String PARAMETER_NOISE_ESTIMATION = "Noise estimation";
@@ -96,9 +101,10 @@ public class ISDecisionFunctionHelper {
      * Returns configured instance selection decision function. Configuration of 
      * the decision function is obtained form the operator
      * @param operator
+     * @param exampleSet
      * @return 
      */
-    public static IISDecisionFunction getConfiguredISDecisionFunction(Operator operator) {
+    public static IISDecisionFunction getConfiguredISDecisionFunction(AbstractInstanceSelectorOperator operator, ExampleSet exampleSet) throws OperatorException {
         int lossId;
         IISDecisionFunction loss = null;
         try {
@@ -113,11 +119,24 @@ public class ISDecisionFunctionHelper {
                 int k = operator.getParameterAsInt(PARAMETER_NOISE_ESTIMATION);                
                 ((IISLocalDecisionFunction)loss).setK(k);
             }  
+            if (!loss.isBlockInit() && exampleSet != null){
+                DistanceMeasure distance = operator.getDistanceMeasureHelper().getInitializedMeasure(exampleSet);
+                loss.init(exampleSet, distance);
+            }
         } catch (UndefinedParameterError e) {
+            if (operator != null){
+                operator.getLog().logError("Error in loss function: UndefinedParameterError");
+            }
             throw new RuntimeException("Error in loss function: UndefinedParameterError");
         } catch (InstantiationException e) {
+            if (operator != null){
+                operator.getLog().logError("Error in loss function: InstantiationException");
+            }
             throw new RuntimeException("Error in loss function: InstantiationException");
         } catch (IllegalAccessException e) {
+            if (operator != null){
+                operator.getLog().logError("Error in loss function: IllegalAccessException");
+            }
             throw new RuntimeException("Error in loss function: IllegalAccessException");
         }
         return loss;

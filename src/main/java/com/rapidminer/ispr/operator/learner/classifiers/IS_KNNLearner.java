@@ -31,18 +31,19 @@ import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.learner.AbstractLearner;
 import com.rapidminer.operator.learner.PredictionModel;
-import com.rapidminer.ispr.tools.math.container.KNNTools;
+import com.rapidminer.ispr.tools.math.container.knn.KNNTools;
 import com.rapidminer.ispr.operator.learner.tools.TaskType;
-import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
+import com.rapidminer.ispr.tools.math.container.knn.GeometricCollectionTypes;
 import com.rapidminer.operator.ports.metadata.DistanceMeasurePrecondition;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeCategory;
 import com.rapidminer.parameter.ParameterTypeInt;
-import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
+import com.rapidminer.ispr.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
 import com.rapidminer.ispr.dataset.IValuesStoreLabels;
+import com.rapidminer.ispr.tools.math.container.knn.KNNFactory;
 
 /**
  * A k nearest neighbor implementation.
@@ -92,11 +93,11 @@ public class IS_KNNLearner extends AbstractLearner {
         GeometricCollectionTypes nnSearchType = GeometricCollectionTypes.valueOfFriendlyName(NN_SEARCH_TYPES[nnSearchNum]);
         
         if (exampleSet.getAttributes().getLabel().isNominal()) {
-            ISPRGeometricDataCollection<IValuesStoreLabels> samples = KNNTools.initializeKNearestNeighbourFactory(nnSearchType,exampleSet, measure);            
+            ISPRGeometricDataCollection<IValuesStoreLabels> samples = KNNFactory.initializeKNearestNeighbourFactory(nnSearchType,exampleSet, measure);            
             return new IS_KNNClassificationModel<>(exampleSet, samples, getParameterAsInt(PARAMETER_K), weightingType, PredictionType.Classification);
         }
         if (exampleSet.getAttributes().getLabel().isNumerical()) {
-            ISPRGeometricDataCollection<IValuesStoreLabels> samples = KNNTools.initializeKNearestNeighbourFactory(nnSearchType, exampleSet, measure);
+            ISPRGeometricDataCollection<IValuesStoreLabels> samples = KNNFactory.initializeKNearestNeighbourFactory(nnSearchType, exampleSet, measure);
             return new IS_KNNClassificationModel<>(exampleSet, samples, getParameterAsInt(PARAMETER_K), weightingType, PredictionType.Regression);
         }
         throw new OperatorException("Unknown output type. Class label should be numeric or symbolic");

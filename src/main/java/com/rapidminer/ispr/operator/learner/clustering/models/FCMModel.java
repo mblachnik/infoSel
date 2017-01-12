@@ -6,7 +6,7 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.ispr.dataset.ValuesStoreFactory;
-import com.rapidminer.ispr.tools.math.container.KNNTools;
+import com.rapidminer.ispr.tools.math.container.knn.KNNTools;
 import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.ArrayList;

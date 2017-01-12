@@ -10,7 +10,7 @@ import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.Operator;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
-import com.rapidminer.ispr.operator.learner.AbstractPRulesBasicOperator;
+import com.rapidminer.ispr.operator.AbstractPRulesBasicOperator;
 import com.rapidminer.operator.ports.InputPort;
 import com.rapidminer.operator.ports.OutputPort;
 import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;

@@ -26,8 +26,8 @@ import com.rapidminer.ispr.operator.learner.classifiers.neuralnet.models.LVQNeig
 import com.rapidminer.ispr.operator.learner.classifiers.neuralnet.models.LVQTypes;
 import com.rapidminer.ispr.operator.learner.classifiers.neuralnet.models.SNGModel;
 import com.rapidminer.ispr.operator.learner.classifiers.neuralnet.models.WTMLVQModel;
-import com.rapidminer.ispr.tools.math.container.KNNTools;
-import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
+import com.rapidminer.ispr.tools.math.container.knn.KNNTools;
+import com.rapidminer.ispr.tools.math.container.knn.GeometricCollectionTypes;
 import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
 import com.rapidminer.operator.ports.metadata.MDInteger;
 import com.rapidminer.parameter.ParameterType;
@@ -36,11 +36,12 @@ import com.rapidminer.parameter.ParameterTypeDouble;
 import com.rapidminer.parameter.ParameterTypeInt;
 import com.rapidminer.parameter.UndefinedParameterError;
 import com.rapidminer.parameter.conditions.EqualTypeCondition;
-import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
+import com.rapidminer.ispr.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
 import com.rapidminer.ispr.dataset.IValuesStoreLabels;
+import com.rapidminer.ispr.tools.math.container.knn.KNNFactory;
 
 /**
  * LVQ Operator which provides a set of LVQ neuralNetwork 
@@ -191,7 +192,7 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
         }
         lvqModel.run(trainingSet);
         if (this.modelOutputPort.isConnected()) {
-            ISPRGeometricDataCollection<IValuesStoreLabels> knn = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, codebooks, distance);
+            ISPRGeometricDataCollection<IValuesStoreLabels> knn = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, codebooks, distance);
             IS_KNNClassificationModel<IValuesStoreLabels> model = new IS_KNNClassificationModel<>(codebooks, knn, 1, VotingType.MAJORITY, PredictionType.Classification);
             return model;
         }

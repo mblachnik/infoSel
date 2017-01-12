@@ -12,21 +12,22 @@ import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.ispr.operator.learner.clustering.models.AbstractVQModel;
 import com.rapidminer.ispr.operator.learner.clustering.models.VQModel;
-import com.rapidminer.ispr.tools.math.container.KNNTools;
-import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
+import com.rapidminer.ispr.tools.math.container.knn.KNNTools;
+import com.rapidminer.ispr.tools.math.container.knn.GeometricCollectionTypes;
 import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
 import com.rapidminer.operator.ports.metadata.MDInteger;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeDouble;
 import com.rapidminer.parameter.ParameterTypeInt;
 import com.rapidminer.parameter.UndefinedParameterError;
-import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
+import com.rapidminer.ispr.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.operator.clustering.clusterer.RMAbstractClusterer;
 import com.rapidminer.operator.ports.metadata.MetaData;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
 import com.rapidminer.ispr.dataset.IValuesStoreLabels;
+import com.rapidminer.ispr.tools.math.container.knn.KNNFactory;
 
 /**
  * This class provides vector quantization operator. It uses
@@ -83,9 +84,9 @@ public class VQOperator extends AbstractPrototypeClusteringOnlineOperator {
         boolean addCluster = getParameterAsBoolean(RMAbstractClusterer.PARAMETER_ADD_CLUSTER_ATTRIBUTE);        
         ISPRGeometricDataCollection<IValuesStoreLabels> knnModel;
         if (addAsLabel){
-            knnModel = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, codebooks, codebooks.getAttributes().getLabel(),Const.LABEL, distance);
+            knnModel = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, codebooks, codebooks.getAttributes().getLabel(),Const.LABEL, distance);
         } else {
-            knnModel = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, codebooks, codebooks.getAttributes().getCluster(),Const.LABEL  ,distance);
+            knnModel = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, codebooks, codebooks.getAttributes().getCluster(),Const.LABEL  ,distance);
         }
         IS_PrototypeClusterModel model = new IS_PrototypeClusterModel(trainingSet, knnModel, codebooks.size(), clusterNames, addAsLabel, addCluster);
         return model;

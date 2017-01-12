@@ -1,5 +1,6 @@
-package com.rapidminer.ispr.operator.learner;
+package com.rapidminer.ispr.operator;
 
+import com.rapidminer.ispr.operator.AbstractPRulesBasicOperator;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
@@ -19,12 +20,15 @@ import com.rapidminer.parameter.UndefinedParameterError;
  *
  * @author Marcin
  */
-public abstract class AbstractPRulesOperator extends AbstractPRulesBasicOperator {
+public abstract class AbstractPrototypeBasedOperator extends AbstractPRulesBasicOperator {
 
     /**
      * Output port which is used to return selected prototypes
      */
-    protected final OutputPort prototypesOutputPort = getOutputPorts().createPort("prototypes");
+    protected final OutputPort prototypesOutputPort = getOutputPorts().createPort("prototypes");  
+    /**
+     * Output port which returns an initial ExampleSet
+     */    
     protected double numberOfInstancesBeaforeSelection = -1;
     protected double numberOfInstancesAfterSelection = -1;
     protected double compression = -1;
@@ -34,9 +38,9 @@ public abstract class AbstractPRulesOperator extends AbstractPRulesBasicOperator
      *
      * @param description
      */
-    public AbstractPRulesOperator(OperatorDescription description) {
+    public AbstractPrototypeBasedOperator(OperatorDescription description) {
         super(description);//
-        exampleSetInputPort.addPrecondition(new DistanceMeasurePrecondition(exampleSetInputPort, this));
+        exampleSetInputPort.addPrecondition(new DistanceMeasurePrecondition(exampleSetInputPort, this));        
         getTransformer().addRule(new PassThroughRule(exampleSetInputPort, prototypesOutputPort, true) {
 
             @Override
@@ -44,7 +48,7 @@ public abstract class AbstractPRulesOperator extends AbstractPRulesBasicOperator
                 if (metaData instanceof ExampleSetMetaData) {
                     try {
                         ExampleSetMetaData exampleSetMetaData = (ExampleSetMetaData) metaData;
-                        ExampleSetMetaData exampleSetMetaDataFinal = AbstractPRulesOperator.this.modifyPrototypeOutputMetaData(exampleSetMetaData);
+                        ExampleSetMetaData exampleSetMetaDataFinal = AbstractPrototypeBasedOperator.this.modifyPrototypeOutputMetaData(exampleSetMetaData);
                         return exampleSetMetaDataFinal;
                     } catch (UndefinedParameterError ex) {
                         return metaData;
@@ -89,6 +93,7 @@ public abstract class AbstractPRulesOperator extends AbstractPRulesBasicOperator
         numberOfInstancesBeaforeSelection = trainingSet.size();
         ExampleSet outputSet = processExamples(trainingSet);
         prototypesOutputPort.deliver(outputSet);
+        exampleSetOutputPort.deliver(trainingSet);  
         numberOfInstancesAfterSelection = outputSet.size();
         compression = numberOfInstancesAfterSelection / numberOfInstancesBeaforeSelection;
     }

@@ -12,7 +12,7 @@ import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
-import com.rapidminer.ispr.operator.learner.AbstractPRulesBasicOperator;
+import com.rapidminer.ispr.operator.AbstractPRulesBasicOperator;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.ISClassDecisionFunction;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import com.rapidminer.ispr.operator.learner.selection.models.ENNInstanceSelectionModel;
@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author Marcin
  */
-public class ENNWeightingOperator  extends AbstractPRulesBasicOperator {
+public class ENNWeightingOperator  extends AbstractWeightingOperator {
     /*
     public static final String PARAMETER_TRANSFORM_WEIGHTS = "Wether to nonlineary transform weights";
     public static final String PARAMETER_MEAN = "Mean value of weights transformer";
@@ -47,25 +47,23 @@ public class ENNWeightingOperator  extends AbstractPRulesBasicOperator {
         super(description);
     }
     
-    @Override
-    public void executeOperator(ExampleSet exampleSet) throws OperatorException {
+    
+     @Override
+    public void processExamples(ExampleSet exampleSet) throws OperatorException {        
         DistanceMeasure distance = measureHelper.getInitializedMeasure(exampleSet); 
         k = getParameterAsInt(ENNInstanceSelectionOperator.PARAMETER_K);        
         IISDecisionFunction loss = new ISClassDecisionFunction();
         ENNInstanceSelectionModel model = new ENNInstanceSelectionModel(distance, k, loss);
         model.setStoreConfidence(true);
         model.run(exampleSet);
-        Attributes attributes = exampleSet.getAttributes();
-        Attribute weights = AttributeFactory.createAttribute(Attributes.WEIGHT_NAME,Ontology.NUMERICAL);
-        exampleSet.getExampleTable().addAttribute(weights);
-        attributes.setWeight(weights);
+        Attribute weights = exampleSet.getAttributes().getWeight();        
         int i = 0;
         double[] confidence = model.getConfidence();
 
         for (Example example : exampleSet){
             example.setValue(weights, confidence[i]);
             i ++;
-        }        
+        }             
     }
 
     @Override
@@ -118,5 +116,5 @@ public class ENNWeightingOperator  extends AbstractPRulesBasicOperator {
         types.addAll(DistanceMeasures.getParameterTypes(this));
 
         return types;
-    }
+    }   
 }

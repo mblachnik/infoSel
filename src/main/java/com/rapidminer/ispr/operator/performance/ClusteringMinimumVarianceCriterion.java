@@ -11,10 +11,10 @@ import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.ispr.dataset.ValuesStoreFactory;
 import com.rapidminer.ispr.dataset.VectorDense;
-import com.rapidminer.ispr.tools.math.container.KNNTools;
+import com.rapidminer.ispr.tools.math.container.knn.KNNTools;
 import com.rapidminer.ispr.tools.math.container.DoubleObjectContainer;
-import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
-import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
+import com.rapidminer.ispr.tools.math.container.knn.GeometricCollectionTypes;
+import com.rapidminer.ispr.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.ValueDouble;
@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.List;
 import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 import com.rapidminer.ispr.dataset.IVector;
+import com.rapidminer.ispr.tools.math.container.knn.KNNFactory;
 
 /**
  *
@@ -65,7 +66,7 @@ public class ClusteringMinimumVarianceCriterion extends AbstractExampleSetEvalua
     
     private void count(ExampleSet prototypes, ExampleSet exampleSet) throws OperatorException{
         DistanceMeasure distance = measureHelper.getInitializedMeasure(prototypes);
-        ISPRGeometricDataCollection knn = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH,prototypes, distance);
+        ISPRGeometricDataCollection knn = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH,prototypes, distance);
         //MyKNNClassificationModel<Number> model = new MyKNNClassificationModel<Number>(prototypes, knn, 1, VotingType.MAJORITY, false);
         Attributes attributes = prototypes.getAttributes();
         int n = attributes.size();

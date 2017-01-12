@@ -227,6 +227,19 @@
                 <class>com.rapidminer.ispr.operator.learner.weighting.ENNWeightingOperator</class>
                 <replaces>Weight Examples (ENN)</replaces>
             </operator>
+            <operator>
+                <key>weightBy_NNE_D_test</key>
+                <class>com.rapidminer.ispr.operator.learner.weighting.NNEDeltaTestOperator</class>                
+            </operator>
+            <operator>
+                <key>weightBy_NNE_G_test</key>
+                <class>com.rapidminer.ispr.operator.learner.weighting.NNEGammaTestOperator</class>                
+            </operator>
+            
+            <operator>
+                <key>weightBy_LocalVariance_test</key>
+                <class>com.rapidminer.ispr.operator.learner.weighting.NNEVarianceOperator</class>                
+            </operator>
             <!--
             <operator>
                 <key>WeightTransformation</key>
@@ -234,17 +247,25 @@
                 <replaces>Weighttransormation</replaces>                
             </operator>
             -->
-        </group>
+        </group>        
         <group key="Performance">
             <operator>
                 <key>is_performance</key>
-                <class>com.rapidminer.ispr.operator.performance.InstanceSSelectionPerformance</class>
+                <class>com.rapidminer.ispr.operator.performance.InstanceSelectionPerformance</class>
                 <replaces>IS Performance</replaces>
             </operator>
             <operator>
                 <key>cluster_performance</key>
                 <class>com.rapidminer.ispr.operator.performance.ClusteringMinimumVarianceCriterion</class>
                 <replaces>Cluster Performance</replaces>
+            </operator>
+            <operator>
+                <key>NNE_by_D_test</key>
+                <class>com.rapidminer.ispr.operator.performance.NNEDeltaTestPerformance</class>                
+            </operator>
+            <operator>
+                <key>NNE_by_G_test</key>
+                <class>com.rapidminer.ispr.operator.performance.NNEGammaTestPerformance</class>                
             </operator>
         </group>
    </group>

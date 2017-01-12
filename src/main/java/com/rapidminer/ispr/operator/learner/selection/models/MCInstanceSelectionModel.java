@@ -13,15 +13,16 @@ import com.rapidminer.ispr.dataset.IValuesStoreInstance;
 import com.rapidminer.ispr.dataset.ValuesStoreFactory;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.tools.math.container.KNNTools;
+import com.rapidminer.ispr.tools.math.container.knn.KNNTools;
 //import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.ispr.operator.learner.tools.genetic.RandomGenerator;
-import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
-import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
+import com.rapidminer.ispr.tools.math.container.knn.GeometricCollectionTypes;
+import com.rapidminer.ispr.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 import com.rapidminer.ispr.dataset.IValuesStorePrediction;
 import com.rapidminer.ispr.dataset.IVector;
+import com.rapidminer.ispr.tools.math.container.knn.KNNFactory;
 
 /**
  * Class implements MonteCarlo instance selection. It simply randomly selects a
@@ -95,7 +96,7 @@ public class MCInstanceSelectionModel extends AbstractInstanceSelectorModel {
             }
 
             double errorRate = 0;
-            ISPRGeometricDataCollection<IValuesStoreLabels> kNN = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, workingSet, measure);            
+            ISPRGeometricDataCollection<IValuesStoreLabels> kNN = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, workingSet, measure);            
             for (Example ex : exampleSet) {
                 vector.setValues(ex);                
                 double predictedLabel = KNNTools.predictOneNearestNeighbor(vector, kNN);     

@@ -4,15 +4,12 @@
  */
 package com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions;
 
-import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.ispr.dataset.IValuesStoreInstance;
-import com.rapidminer.ispr.tools.math.container.KNNTools;
-import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
+import com.rapidminer.ispr.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.ispr.dataset.IValuesStoreLabels;
-import com.rapidminer.ispr.dataset.IVector;
 
 /**
  * ClassDecisionFunction is an implementation of IISDecisionFunction. It represents
@@ -20,7 +17,7 @@ import com.rapidminer.ispr.dataset.IVector;
  * identical with predicted label. real == predicted ? 0 : 1;
  * @author Marcin
  */
-public class ISClassDecisionFunction implements IISDecisionFunction {   
+public class ISClassDecisionFunction extends AbstractISDecisionFunction implements IISDecisionFunction {   
     private boolean blockInit = false;    
     @Override
     public void setBlockInit(boolean block) {        

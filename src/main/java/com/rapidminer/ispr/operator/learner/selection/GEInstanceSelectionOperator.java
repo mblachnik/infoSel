@@ -42,7 +42,7 @@ public class GEInstanceSelectionOperator extends AbstractInstanceSelectorOperato
     @Override
     public AbstractInstanceSelectorModel configureInstanceSelectionModel(SelectedExampleSet exampleSet) throws OperatorException {
         DistanceMeasure distance = measureHelper.getInitializedMeasure(exampleSet);
-        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this);
+        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);
         return new GEInstanceSelectionModel(distance, loss);
     }
 

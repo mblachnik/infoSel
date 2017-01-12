@@ -13,9 +13,9 @@ import com.rapidminer.ispr.dataset.Const;
 import com.rapidminer.ispr.dataset.IValuesStoreInstance;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.tools.math.container.KNNTools;
-import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
-import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
+import com.rapidminer.ispr.tools.math.container.knn.KNNTools;
+import com.rapidminer.ispr.tools.math.container.knn.GeometricCollectionTypes;
+import com.rapidminer.ispr.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.Iterator;
@@ -24,6 +24,7 @@ import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 import com.rapidminer.ispr.dataset.IValuesStorePrediction;
 import com.rapidminer.ispr.dataset.ValuesStoreFactory;
 import com.rapidminer.ispr.dataset.IVector;
+import com.rapidminer.ispr.tools.math.container.knn.KNNFactory;
 import java.util.Set;
 
 /**
@@ -115,7 +116,7 @@ public class RMHCNaiveInstanceSelectionGeneralModel extends AbstractInstanceSele
         for (int j = 0; j < selectedInstances.length; j++) {
             indexWorking.set(selectedInstances[j], true);
         }
-        ISPRGeometricDataCollection<IValuesStoreLabels> kNN = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, workingSet, measure);
+        ISPRGeometricDataCollection<IValuesStoreLabels> kNN = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, workingSet, measure);
         loss.init(kNN);
         double errorRateBest = Double.MAX_VALUE;
         int selectedInstanceToChangeId = 0; //a value in range 0-selectedInstances.length-1. It is index of element of selectedInstances array which we are going to change

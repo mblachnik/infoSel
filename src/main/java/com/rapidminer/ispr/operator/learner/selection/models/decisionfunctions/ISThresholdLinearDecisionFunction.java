@@ -6,7 +6,7 @@ package com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions;
 
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.ispr.dataset.IValuesStoreInstance;
-import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
+import com.rapidminer.ispr.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.ispr.dataset.IValuesStoreLabels;
@@ -18,7 +18,7 @@ import com.rapidminer.ispr.dataset.IValuesStoreLabels;
  * @author Marcin
  */
 
-public class ISThresholdLinearDecisionFunction implements IISThresholdDecisionFunction {
+public class ISThresholdLinearDecisionFunction extends AbstractISDecisionFunction  implements IISThresholdDecisionFunction {
     
     private double threshold = 0;    
     private boolean blockInit = false;    

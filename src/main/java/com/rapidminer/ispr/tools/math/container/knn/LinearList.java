@@ -20,7 +20,7 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-package com.rapidminer.ispr.tools.math.container;
+package com.rapidminer.ispr.tools.math.container.knn;
 
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
@@ -45,6 +45,9 @@ import java.util.Set;
 import com.rapidminer.ispr.dataset.ValuesStoreFactory;
 import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 import com.rapidminer.ispr.dataset.IVector;
+import com.rapidminer.ispr.tools.math.container.BoundedPriorityQueue;
+import com.rapidminer.ispr.tools.math.container.DoubleObjectContainer;
+import com.rapidminer.ispr.tools.math.container.PairContainer;
 
 /**
  * This class is an implementation of the GeometricDataCollection interface,

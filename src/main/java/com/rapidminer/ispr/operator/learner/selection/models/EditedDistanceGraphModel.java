@@ -9,15 +9,16 @@ import com.rapidminer.ispr.dataset.Const;
 import com.rapidminer.ispr.dataset.IValuesStoreInstance;
 import com.rapidminer.ispr.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.tools.math.container.KNNTools;
-import com.rapidminer.ispr.tools.math.container.GeometricCollectionTypes;
-import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
+import com.rapidminer.ispr.tools.math.container.knn.KNNTools;
+import com.rapidminer.ispr.tools.math.container.knn.GeometricCollectionTypes;
+import com.rapidminer.ispr.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.ispr.tools.math.similarity.DistanceEvaluator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 import com.rapidminer.ispr.dataset.IValuesStorePrediction;
 import com.rapidminer.ispr.dataset.IVector;
 import com.rapidminer.ispr.dataset.ValuesStoreFactory;
+import com.rapidminer.ispr.tools.math.container.knn.KNNFactory;
 
 /**
  * Class implementing Edited Distance Graph based algorithms
@@ -50,7 +51,7 @@ public class EditedDistanceGraphModel extends AbstractInstanceSelectorModel {
     public DataIndex selectInstances(SelectedExampleSet exampleSet) {
         int size = exampleSet.size();
         ISPRGeometricDataCollection<IValuesStoreLabels> samples;
-        samples = KNNTools.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, exampleSet, distance);
+        samples = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, exampleSet, distance);
 //        ArrayList<double[]> samples = new ArrayList<double[]>(exampleSet.size());
 //        ArrayList<Number> labels = new ArrayList<Number>(exampleSet.size());
         int numberOfAttrbutes = exampleSet.getAttributes().size();

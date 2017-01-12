@@ -8,7 +8,7 @@ import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.ispr.operator.learner.PRulesModel;
 import com.rapidminer.ispr.operator.learner.tools.DataIndex;
-import com.rapidminer.ispr.tools.math.container.ISPRGeometricDataCollection;
+import com.rapidminer.ispr.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.ispr.dataset.IValuesStoreLabels;
 
