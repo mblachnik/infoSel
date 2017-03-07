@@ -3,7 +3,7 @@ package com.rapidminer.example.set;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.table.DataRow;
-import com.rapidminer.ispr.operator.learner.tools.DataIndex;
+import org.prules.operator.learner.tools.DataIndex;
 import java.util.Iterator;
 
 /** Class is an iterator which iterates over examples from EditedExampleSet and SelectedExampleSet

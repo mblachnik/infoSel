@@ -4,7 +4,7 @@ import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.table.ExampleTable;
-import com.rapidminer.ispr.operator.learner.tools.DataIndex;
+import org.prules.operator.learner.tools.DataIndex;
 
 /**
  * A wrapper for the ExampleSet which allows for instance selection. The instance selection is based 

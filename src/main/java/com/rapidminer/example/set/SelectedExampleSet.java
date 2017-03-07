@@ -4,7 +4,8 @@ import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.table.ExampleTable;
-import com.rapidminer.ispr.operator.learner.tools.DataIndex;
+import org.prules.operator.learner.tools.DataIndex;
+import org.prules.operator.learner.tools.IDataIndex;
 
 /**
  * A wrapper for the ExampleSet which allows for instance selection. The instance selection is based 
@@ -24,7 +25,7 @@ public class SelectedExampleSet extends AbstractExampleSet {
         /**
          * DataIndex stores information on each example if this example is on or off.    
          */
-        protected final DataIndex index;	
+        protected final IDataIndex index;	
 	
         /**
          * Creates  SelectedExampleSet by wrapping another ExampleSet
@@ -63,7 +64,7 @@ public class SelectedExampleSet extends AbstractExampleSet {
      * Method returns an index of all examples which are "on"
      * @return DataIndex with the size of examples which are "on"
      */
-        public DataIndex getIndex(){
+        public IDataIndex getIndex(){
 		return index.getIndex();
 	}
         
@@ -82,7 +83,7 @@ public class SelectedExampleSet extends AbstractExampleSet {
  * @return handle to the original DataIndex 
  */     
 //TODO check the accesor, maybe weaker would be better       
-        public DataIndex getFullIndex(){
+        public IDataIndex getFullIndex(){
             return index;
         }
 	
@@ -90,7 +91,7 @@ public class SelectedExampleSet extends AbstractExampleSet {
          * Setter for DataIndex, it allows to set indexes of examples which are "on". 
          * @param index - DataIndex with size equal to the number of examples which are "on" i the parent DataIndex
          */
-        public void setIndex(DataIndex index){
+        public void setIndex(IDataIndex index){
 		this.index.setIndex(index);
 	}
 	
