@@ -120,6 +120,11 @@ public class InstanceLabels extends GenericContainer implements IInstanceLabels 
     public boolean equals(Object o) {
         return super.equals(o); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public void set(String name, Object value) {
+        this.put(name, value);
+    }
     
     
 

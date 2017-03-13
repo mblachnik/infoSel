@@ -13,29 +13,26 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.ListIterator;
 import org.prules.tools.math.container.knn.KNNFactory;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.operator.learner.tools.IDataIndex;
 import org.prules.operator.learner.selection.models.decisionfunctions.ISClassDecisionFunction;
 import org.prules.operator.learner.selection.models.tools.DropBasicModel;
 import org.prules.operator.learner.tools.DataIndex;
-import org.prules.operator.learner.tools.PRulesUtil;
-import org.prules.operator.learner.tools.PredictionProblemType;
 import org.prules.tools.math.container.DoubleIntContainer;
 import org.prules.tools.math.container.knn.INNGraph;
 import org.prules.tools.math.container.knn.ISPRClassGeometricDataCollection;
-import org.prules.tools.math.container.knn.NNGraph;
 import org.prules.tools.math.container.knn.NNGraphWithoutAssocuateUpdates;
 
 /**
  * Class implements Drop3 instance selection algorithm
  * for details see Wilson, Martinez, Reduction Techniques for Instance-Based
 Learning Algorithms, Machine Learning, 38, 257–286, 2000.
+*  A small difference to the other implementation. Here we call ENN directly, and in the other one ENN is called with "samples" as input
  *
  * @author Marcin
  */
-public class Drop3InstanceSelectionModel extends AbstractInstanceSelectorModel {
+public class Drop3InstanceSelectionModel_1 extends AbstractInstanceSelectorModel {
 
     private final DistanceMeasure measure;
     private final int k;
@@ -47,7 +44,7 @@ public class Drop3InstanceSelectionModel extends AbstractInstanceSelectorModel {
      * @param measure - distance measure
      * @param k - number of nearest neighbors
      */
-    public Drop3InstanceSelectionModel(DistanceMeasure measure, int k) {
+    public Drop3InstanceSelectionModel_1(DistanceMeasure measure, int k) {
         this.measure = measure;
         this.k = k;
     }
@@ -62,11 +59,15 @@ public class Drop3InstanceSelectionModel extends AbstractInstanceSelectorModel {
     @Override
     public IDataIndex selectInstances(SelectedExampleSet exampleSet) {
         Attributes attributes = exampleSet.getAttributes();
-        IDataIndex index = exampleSet.getIndex();
         //DATA STRUCTURE PREPARATION        
+        ENNInstanceSelectionModel model = new ENNInstanceSelectionModel(measure, k, new ISClassDecisionFunction(), false);
+        IDataIndex index = model.selectInstances(exampleSet);
+        exampleSet.setIndex(index);
+        //
         ISPRClassGeometricDataCollection<IInstanceLabels> samples;
         samples = (ISPRClassGeometricDataCollection<IInstanceLabels>) KNNFactory.initializeKNearestNeighbourFactory(knnType, exampleSet, measure);
-        return selectInstances(samples);
+        index.setIndex(selectInstances(samples));
+        return index;
     }
 
     /**
@@ -80,16 +81,14 @@ public class Drop3InstanceSelectionModel extends AbstractInstanceSelectorModel {
      */
     public IDataIndex selectInstances(ISPRClassGeometricDataCollection<IInstanceLabels> samples) {
         INNGraph nnGraph;
-        //The code can be optimized when nnGraph is directly used to perform ENN, but here we don;t use it, we simply call ENN
-        ENNInstanceSelectionModel ennModel = new ENNInstanceSelectionModel(measure, k, new ISClassDecisionFunction(), false);
-        IDataIndex index = ennModel.selectInstances(samples, PredictionProblemType.CLASSIFICATION);
-        ISPRClassGeometricDataCollection<IInstanceLabels> samplesSelected;
-        samplesSelected = KNNFactory.takeSelected(samples, index); //Here we remove useless samples      
-        nnGraph = new NNGraphWithoutAssocuateUpdates(samplesSelected,k);
-        //Reorder samples according to distance to nearest enymy        
-        List<DoubleIntContainer> sampleOrderList = new ArrayList<>(samplesSelected.size());
-        IDataIndex indexAfterRemoval = samplesSelected.getIndex();
-        for (int i : indexAfterRemoval) {
+        nnGraph = new NNGraphWithoutAssocuateUpdates(samples, k);
+
+        //Reorder samples according to distance to nearest enymy
+        IDataIndex tmpIndex = samples.getIndex();
+        List<DoubleIntContainer> sampleOrderList = new ArrayList<>(samples.size());
+        List<Integer> order = new ArrayList<>(samples.size());
+        IDataIndex index = samples.getIndex();
+        for (int i : index) {
             List<DoubleIntContainer> enemies = nnGraph.getEnemies(i);
             double distance = Double.POSITIVE_INFINITY;
             if (!enemies.isEmpty()) {
@@ -97,24 +96,22 @@ public class Drop3InstanceSelectionModel extends AbstractInstanceSelectorModel {
             }
             sampleOrderList.add(new DoubleIntContainer(-distance, i));
         }
-        Collections.sort(sampleOrderList);
-        List<Integer> order = new ArrayList<>(samplesSelected.size());
+        Collections.sort(sampleOrderList);        
         for(DoubleIntContainer i : sampleOrderList){
             order.add(i.getSecond());
         }
-//        List<Integer> order = new ArrayList<>(samplesSelected.size());
-//        for (int i : indexAfterRemoval) {
+//        for (int i : index) {
 //            order.add(i);
 //        }
-        //Execute DropModel
+        //Execute DropModel       
+
         order = DropBasicModel.execute(nnGraph, order);
         //Prepare results
-        boolean[] binIndex = new boolean[samplesSelected.size()];
+        boolean[] binIndex = new boolean[samples.size()];
         Arrays.fill(binIndex, false);
         for (int i : order) {
             binIndex[i] = true;
         }
-        index.setIndex(new DataIndex(binIndex));
-        return index;
+        return new DataIndex(binIndex);
     }
 }

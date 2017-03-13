@@ -25,7 +25,7 @@ extensionConfig {
     //The namespace
     namespace = 'prules'
     //Version id
-    version = '7.0.0'
+    version = '8.0.0'
     
     /*
      * The artifact group which will be used when publishing the extensions Jar
@@ -33,7 +33,7 @@ extensionConfig {
      *
      * It is 'com.rapidminer.extension' by default.
      */
-    groupId = 'com.rapidminer.ispr'
+    groupId = 'org.prules'
 
     /*
      * The extension vendor which will be displayed in the extensions about box

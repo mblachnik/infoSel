@@ -11,15 +11,13 @@ import org.prules.operator.learner.selection.models.AbstractInstanceSelectorMode
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
 import java.util.List;
-import org.prules.operator.learner.selection.models.Drop1InstanceSelectionModel;
-import org.prules.operator.learner.selection.models.Drop2InstanceSelectionModel;
-import org.prules.operator.learner.selection.models.Drop3InstanceSelectionModel_1;
+import org.prules.operator.learner.selection.models.Drop4InstanceSelectionModel;
 
 /**
  *
  * @author Marcin
  */
-public class Drop3InstanceSelectionOperator extends AbstractInstanceSelectorOperator {
+public class Drop4InstanceSelectionOperator extends AbstractInstanceSelectorOperator {
     //private final CNNInstanceSelection cnnInstanceSelection;
     public static final String PARAMETER_K = "k";
 
@@ -27,7 +25,7 @@ public class Drop3InstanceSelectionOperator extends AbstractInstanceSelectorOper
      *
      * @param description
      */
-    public Drop3InstanceSelectionOperator(OperatorDescription description) {
+    public Drop4InstanceSelectionOperator(OperatorDescription description) {
         super(description);
     }
 
@@ -58,7 +56,7 @@ public class Drop3InstanceSelectionOperator extends AbstractInstanceSelectorOper
     public AbstractInstanceSelectorModel configureInstanceSelectionModel(SelectedExampleSet exampleSet) throws OperatorException {
         DistanceMeasure distance = measureHelper.getInitializedMeasure(exampleSet);
         int k = getParameterAsInt(PARAMETER_K);
-        return new Drop3InstanceSelectionModel_1(distance,k);
+        return new Drop4InstanceSelectionModel(distance,k);
     }
 
     @Override

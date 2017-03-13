@@ -109,7 +109,7 @@ public class RENNWithModifierInstanceSelectionModel extends AbstractInstanceSele
                 instanceIndex++;
             }                        
             mainIndex.setIndex(index);            
-            for (int i = index.getFullLength() - 1; i > -1; i--) {
+            for (int i = index.size() - 1; i > -1; i--) {
                 if (!index.get(i)) {
                     samples.remove(i);
                 }

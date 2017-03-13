@@ -43,7 +43,7 @@ public class EditedExampleSet extends AbstractExampleSet {
      */
     public EditedExampleSet(ExampleSet parentSet, DataIndex index) {
         parent = (ExampleSet) parentSet.clone();
-        if (parentSet.size() != index.getFullLength()) {
+        if (parentSet.size() != index.size()) {
             throw new RuntimeException("Incorect size of index variable");
         }
         this.index = index;
@@ -75,7 +75,7 @@ public class EditedExampleSet extends AbstractExampleSet {
     @Override
     public Example getExample(int index) {
         int sum = -1;
-        int size = this.index.getFullLength();
+        int size = this.index.size();
         for (int i = 0; i < size; i++) {
             sum += this.index.get(i) ? 1 : 0;
             if (sum == index) {

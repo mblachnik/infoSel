@@ -13,6 +13,7 @@ import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import org.prules.tools.math.container.knn.KNNFactory;
 import org.prules.dataset.IInstanceLabels;
@@ -24,25 +25,25 @@ import org.prules.tools.math.container.knn.ISPRClassGeometricDataCollection;
 import org.prules.tools.math.container.knn.NNGraphWithoutAssocuateUpdates;
 
 /**
- * Class implements Drop2 instance selection algorithm
- * for details see Wilson, Martinez, Reduction Techniques for Instance-Based
-Learning Algorithms, Machine Learning, 38, 257–286, 2000.
+ * Class implements Drop5 instance selection algorithm for details see Wilson,
+ * Martinez, Reduction Techniques for Instance-Based Learning Algorithms,
+ * Machine Learning, 38, 257–286, 2000.
  *
  * @author Marcin
  */
-public class Drop2InstanceSelectionModel extends AbstractInstanceSelectorModel {
+public class Drop5InstanceSelectionModel extends AbstractInstanceSelectorModel {
 
     private final DistanceMeasure measure;
     private final int k;
     private final GeometricCollectionTypes knnType = GeometricCollectionTypes.LINEAR_SEARCH;
-    private boolean algorithmType = true;
+
     /**
      * Constructor for ENN instance selection model.
      *
      * @param measure - distance measure
      * @param k - number of nearest neighbors
      */
-    public Drop2InstanceSelectionModel(DistanceMeasure measure, int k) {
+    public Drop5InstanceSelectionModel(DistanceMeasure measure, int k) {
         this.measure = measure;
         this.k = k;
     }
@@ -72,32 +73,38 @@ public class Drop2InstanceSelectionModel extends AbstractInstanceSelectorModel {
      */
     public IDataIndex selectInstances(ISPRClassGeometricDataCollection<IInstanceLabels> samples) {
         //Reorder samples according to distance to nearest enymy
-        IDataIndex index = samples.getIndex();
+        List<Integer> order;
         List<DoubleIntContainer> sampleOrderList = new ArrayList<>(samples.size());
         INNGraph nnGraph;
-        nnGraph = new NNGraphWithoutAssocuateUpdates(samples, k);        
-        for (int i : index) {
-            List<DoubleIntContainer> enemies = nnGraph.getEnemies(i);
-            double distance = Double.POSITIVE_INFINITY;
-            if (!enemies.isEmpty()) {
-                distance = enemies.get(0).getFirst();
-            }
-            sampleOrderList.add(new DoubleIntContainer(-distance, i));
-        }
-        Collections.sort(sampleOrderList);
-        List<Integer> order = new ArrayList<>(samples.size());
-        for(DoubleIntContainer i : sampleOrderList){
-            order.add(i.getSecond());
-        }
+        nnGraph = new NNGraphWithoutAssocuateUpdates(samples, k);
+        order = DropBasicModel.orderSamplesByEnemies(nnGraph);
         //Execute DropModel
         order = DropBasicModel.execute(nnGraph, order);
         //Prepare results
-        
+        int oldSize;
+        do {
+            oldSize = order.size();
+            sampleOrderList.clear();
+            for (int i : order) {
+                List<DoubleIntContainer> enemies = nnGraph.getEnemies(i);
+                double distance = Double.POSITIVE_INFINITY;
+                if (!enemies.isEmpty()) {
+                    distance = enemies.get(0).getFirst();
+                }
+                sampleOrderList.add(new DoubleIntContainer(-distance, i));
+            }
+            Collections.sort(sampleOrderList);
+            order.clear();
+            for (DoubleIntContainer i : sampleOrderList) {
+                order.add(i.getSecond());
+            }
+            order = DropBasicModel.execute(nnGraph, order);
+        } while (oldSize > order.size());
         boolean[] binIndex = new boolean[samples.size()];
         Arrays.fill(binIndex, false);
-        for (int i : order){            
+        for (int i : order) {
             binIndex[i] = true;
-        }        
+        }
         return new DataIndex(binIndex);
     }
 }

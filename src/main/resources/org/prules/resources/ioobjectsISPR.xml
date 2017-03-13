@@ -4,9 +4,9 @@
 	<!--
 	<ioobject
 		name="Example IOObject"
-		class="com.rapidminer.ispr.ioobjects.ExampleIOObject"
+		class="org.prules.ioobjects.ExampleIOObject"
 		reportable="true">
-	  <renderer>com.rapidminer.ispr.ioobjects.renderer.ExampleIOObjectRenderer</renderer>
+	  <renderer>org.prules.ioobjects.renderer.ExampleIOObjectRenderer</renderer>
 	</ioobject>
     -->
 </ioobjects>

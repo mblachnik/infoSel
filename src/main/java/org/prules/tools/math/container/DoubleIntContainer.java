@@ -78,12 +78,11 @@ public class DoubleIntContainer implements Comparable<DoubleIntContainer>, Seria
         if (getClass() != obj.getClass()) {
             return false;
         }
-        DoubleDoubleContainer other = (DoubleDoubleContainer) obj;
+        DoubleIntContainer other = (DoubleIntContainer) obj;
         if (first != other.first) {            
                 return false;
             }        
-        if (second != other.second) {
-            
+        if (second != other.second) {            
                 return false;            
         } 
         return true;

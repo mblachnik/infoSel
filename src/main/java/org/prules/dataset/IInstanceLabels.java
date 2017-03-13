@@ -68,5 +68,9 @@ public interface IInstanceLabels extends IGenericContainer {
      * @param example 
      */
     void set(Example example);
-                        
+    
+    /**
+     * Set value
+     */
+    void set(String name, Object value);
 }

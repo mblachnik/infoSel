@@ -7,6 +7,8 @@ package org.prules.tools.math.container.knn;
 
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import org.prules.dataset.IInstanceLabels;
 import org.prules.operator.learner.tools.IDataIndex;
 import org.prules.tools.math.container.DoubleIntContainer;
 
@@ -23,7 +25,7 @@ public interface INNGraph {
      * @param nodeId
      * @return
      */
-    Set<Integer> getAssociates(int nodeId);
+    Set<DoubleIntContainer> getAssociates(int nodeId);
 
     /**
      * Returns list containing ordered indexes of enemies samples. The elements
@@ -49,6 +51,11 @@ public interface INNGraph {
 
     void initialize();
 
-    void remove(int nodeId);
+    void remove(int nodeId);      
     
+    ISPRClassGeometricDataCollection<IInstanceLabels> getSamples();
+    
+    int getK();
+    
+    int size();
 }

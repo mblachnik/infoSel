@@ -86,7 +86,7 @@ public class MCInstanceSelectionModel extends AbstractInstanceSelectorModel {
         Vector vector = InstanceFactory.createVector(inputExampleSet);
         IInstancePrediction prediction = InstanceFactory.createPrediction(Double.NaN, null);
         Instance instance = InstanceFactory.createEmptyInstance();
-        IInstanceLabels label = InstanceFactory.createEmptyInstanceLabels();
+        IInstanceLabels label = InstanceFactory.createInstanceLabels();
         
         for (int i = 0; i < iterations; i++) {
             indexWorking.setAllFalse();

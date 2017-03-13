@@ -49,7 +49,7 @@ public interface IDataIndex extends Iterable<Integer> {
      * Total number of elements in the index (both selected and unselected)
      * @return
      */
-    int getFullLength();
+    int size();
 
     /**
      * returns new DataIndex to all elements marked as active (selected)

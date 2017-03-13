@@ -73,7 +73,7 @@ public class DataIndex implements IDataIndex {
      * @param index
      */
     public DataIndex(IDataIndex index) {
-        this.index = new boolean[index.getFullLength()];
+        this.index = new boolean[index.size()];
         this.length = index.getLength();
         for(int i : index){
             this.index[i] = true;
@@ -210,7 +210,7 @@ public class DataIndex implements IDataIndex {
      */
     @Override
     public void setIndex(IDataIndex index) {
-        if (length == index.getFullLength()) {  
+        if (length == index.size()) {  
             Iterator<Integer> ite = this.iterator();          
             int j=0;
             while(ite.hasNext()){
@@ -236,7 +236,7 @@ public class DataIndex implements IDataIndex {
      * @return
      */
     @Override
-    public int getFullLength() {
+    public int size() {
         return index.length;
     }
 

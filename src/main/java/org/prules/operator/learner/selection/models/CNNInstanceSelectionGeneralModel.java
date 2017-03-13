@@ -73,7 +73,7 @@ public class CNNInstanceSelectionGeneralModel extends AbstractInstanceSelectorMo
         Vector vector = InstanceFactory.createVector(trainingSet);
         IInstancePrediction prediction = InstanceFactory.createPrediction(Double.NaN, null);
         Instance instance = InstanceFactory.createEmptyInstance();
-        IInstanceLabels label = InstanceFactory.createEmptyInstanceLabels();
+        IInstanceLabels label = InstanceFactory.createInstanceLabels();
 
         while (isModiffied) {
             isModiffied = false;

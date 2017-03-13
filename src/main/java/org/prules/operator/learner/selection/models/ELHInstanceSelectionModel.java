@@ -12,7 +12,7 @@ import org.prules.operator.learner.PRulesModel;
 import org.prules.operator.learner.selection.models.tools.EmptyInstanceModifier;
 import org.prules.operator.learner.selection.models.tools.InstanceModifier;
 import org.prules.operator.learner.tools.DataIndex;
-import org.prules.operator.learner.tools.ELH;
+import org.prules.operator.learner.selection.models.tools.ELH;
 import org.prules.tools.math.container.knn.KNNTools;
 import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;

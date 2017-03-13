@@ -166,7 +166,7 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
 
     @Override
     public Collection<T> getNearestValues(int k, Vector values, IDataIndex index) {
-        if (index.getFullLength() != samples.size()) {
+        if (index.size() != samples.size()) {
             throw new IndexOutOfBoundsException("index has incorect size. It should has the same size as the number of samples");
         }
         Collection<T> result = new ArrayList<>(k);
@@ -363,10 +363,14 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
     }
 
     @Override
-    public synchronized void remove(int n) {
+    public void remove(int n) {
         
         Vector v = samples.remove(n);
         storedValues.remove(n);
+        for(long i=n; i<storedValues.size(); i++){
+            storedValues.get((int)i).set(Const.INDEX_CONTAINER,i);
+        }
+        sampleCounter--;
     }
 
     @Override
@@ -414,7 +418,7 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
             Vector currentInstance = samples.get(i);
             T second = storedValues.get(i);
             double first = DistanceEvaluator.evaluateDistance(distance, currentInstance, values);
-            if (second.equals(label)) {
+            if (second.getLabel()==label.getLabel()) {
                 DoubleObjectContainer<T> container = queuePositive.getEmptyContainer();
                 if (container == null) {
                     container = new DoubleObjectContainer<>(first, second);
@@ -456,7 +460,7 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
             Vector currentInstance = samples.get(i);
             T second = storedValues.get(i);
             double first = DistanceEvaluator.evaluateDistance(distance, currentInstance, values);
-            if (second.equals(label)) {
+            if (second.getLabel()==label.getLabel()) {
                 DoubleObjectContainer<T> container = queuePositive.getEmptyContainer();
                 if (container == null) {
                     container = new DoubleObjectContainer<>(first, second);
@@ -582,7 +586,7 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
         @Override
         public void remove() {
             samples.remove(iteratorState);
-            storedValues.remove(iteratorState);
+            storedValues.remove(iteratorState);            
         }
     }
 }

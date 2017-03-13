@@ -80,7 +80,7 @@ public class IB2InstanceSelectionModel extends AbstractInstanceSelectorModel {
         Vector vector = InstanceFactory.createVector(exampleSet);
         IInstancePrediction prediction = InstanceFactory.createPrediction(Double.NaN, null);
         Instance instance = InstanceFactory.createEmptyInstance();
-        IInstanceLabels label = InstanceFactory.createEmptyInstanceLabels();
+        IInstanceLabels label = InstanceFactory.createInstanceLabels();
         for (Example currentInstance : trainingSet) {
             vector.setValues(currentInstance);
             Collection<IInstanceLabels> result = nn.getNearestValues(1, modifier.modify(vector));

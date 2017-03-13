@@ -35,6 +35,11 @@ public class InstanceFactory {
         return values;
     }
 
+    /**
+     * Create a label with internal fields determined by special attributes of input Example
+     * @param ex
+     * @return 
+     */
     public static IInstanceLabels createInstaceLabels(Example ex) {
         InstanceLabels values = new InstanceLabels();
         values.put(LABEL, ex.getLabel());
@@ -47,9 +52,23 @@ public class InstanceFactory {
         return values;
     }
 
-    public static IInstanceLabels createEmptyInstanceLabels() {
+    /**
+     * Creates new instance of label with all values set to Double.NaN
+     * @param label
+     * @return 
+     */
+    public static IInstanceLabels createInstanceLabels() {        
+        return createInstanceLabels(Double.NaN);
+    }
+    
+    /**
+     * Creates new instance of label with Const.LABEL set to label. Remining values are set to NaN
+     * @param label
+     * @return 
+     */
+    public static IInstanceLabels createInstanceLabels(double label) {
         Map<String, Object> map = new HashMap<>();
-        map.put(LABEL, Double.NaN);
+        map.put(LABEL, label);
         map.put(CLUSTER, Double.NaN);
         map.put(ID, Double.NaN);
         map.put(WEIGHT, 1);

@@ -74,7 +74,7 @@ public class EditedDistanceGraphModel extends AbstractInstanceSelectorModel {
         Vector vector = InstanceFactory.createVector(exampleSet);
         IInstancePrediction prediction = InstanceFactory.createPrediction(Double.NaN, null);
         Instance instance = InstanceFactory.createEmptyInstance();
-        IInstanceLabels labelB = InstanceFactory.createEmptyInstanceLabels();
+        IInstanceLabels labelB = InstanceFactory.createInstanceLabels();
         
         DataIndex indexA = new DataIndex(size);
         indexA.setAllFalse();

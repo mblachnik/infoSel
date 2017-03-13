@@ -74,9 +74,9 @@ public class RENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
         do {     
             //Execute ENN
             IDataIndex index = enn.selectInstances(samples, PredictionProblemType.CLASSIFICATION, false);
-            if (index.getLength() != index.getFullLength()) { //If any instance was deleted                                                
+            if (index.getLength() != index.size()) { //If any instance was deleted                                                
                 //Remove the instances marked for removal
-                for (int i = index.getFullLength() - 1; i > -1; i--) { //We have to iterate backwords becouse otherwise indexes wouldn't much                                        
+                for (int i = index.size() - 1; i > -1; i--) { //We have to iterate backwords becouse otherwise indexes wouldn't much                                        
                     if (!index.get(i)) {                        
                         //First we chaeck how many instances from geven class we have
                         IInstanceLabels labels = samples.getStoredValue(i);

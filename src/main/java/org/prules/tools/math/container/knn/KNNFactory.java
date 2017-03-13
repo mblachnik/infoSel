@@ -13,21 +13,25 @@ import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.HashMap;
 import java.util.Map;
 import org.prules.dataset.IInstanceLabels;
+import org.prules.dataset.Vector;
+import org.prules.operator.learner.tools.IDataIndex;
+import weka.core.matrix.IntVector;
 
 /**
  *
  * @author Marcin
  */
 public class KNNFactory {
-      public static ISPRGeometricDataCollection<IInstanceLabels> initializeKNearestNeighbourFactory(GeometricCollectionTypes type, ExampleSet exampleSet, DistanceMeasure measure) {
+
+    public static ISPRGeometricDataCollection<IInstanceLabels> initializeKNearestNeighbourFactory(GeometricCollectionTypes type, ExampleSet exampleSet, DistanceMeasure measure) {
         Map<Attribute, String> storedAttributes = new HashMap<>();
-        
+
         storedAttributes.put(exampleSet.getAttributes().getLabel(), Const.LABEL);
         storedAttributes.put(exampleSet.getAttributes().getId(), Const.ID);
         storedAttributes.put(exampleSet.getAttributes().getCluster(), Const.CLUSTER);
         storedAttributes.put(exampleSet.getAttributes().getWeight(), Const.WEIGHT);
         AttributeRole noiseRole = exampleSet.getAttributes().getRole(Const.NOISE);
-        if (noiseRole!=null){
+        if (noiseRole != null) {
             storedAttributes.put(noiseRole.getAttribute(), Const.NOISE);
         }
         return initializeKNearestNeighbourFactory(type, exampleSet, storedAttributes, measure);
@@ -75,5 +79,43 @@ public class KNNFactory {
         Map<Attribute, String> map = new HashMap<>();
         map.put(attribute, storedValueName);
         return initializeKNearestNeighbourFactory(type, exampleSet, map, measure);
+    }
+
+    /**
+     * Returns nearest neighbor data structure
+     *
+     * @param samples
+     * @param index
+     * @return
+     */
+    public static ISPRClassGeometricDataCollection<IInstanceLabels> takeSelected(ISPRClassGeometricDataCollection<IInstanceLabels> samples, IDataIndex index) {
+        ISPRClassGeometricDataCollection<IInstanceLabels> samplesNew;
+        samplesNew = new LinearList<>(samples.getMeasure(), index.getLength());
+        int j = 0;
+        for(int i : index){
+            Vector values = samples.getSample(i);
+            IInstanceLabels storeValue = samples.getStoredValue(i);            
+            samplesNew.add(values, storeValue);            
+        }
+        return samplesNew;
+    }
+    
+     /**
+     * Returns nearest neighbor data structure
+     *
+     * @param samples
+     * @param index
+     * @return
+     */
+    public static ISPRGeometricDataCollection<IInstanceLabels> takeSelected(ISPRGeometricDataCollection<IInstanceLabels> samples, IDataIndex index) {
+        ISPRClassGeometricDataCollection<IInstanceLabels> samplesNew;
+        samplesNew = new LinearList<>(samples.getMeasure(), index.getLength());
+        int j = 0;
+        for(int i : index){
+            Vector values = samples.getSample(i);
+            IInstanceLabels storeValue = samples.getStoredValue(i);            
+            samplesNew.add(values, storeValue);            
+        }
+        return samplesNew;
     }
 }

@@ -80,10 +80,10 @@ public class DataWeightIndex implements IDataWeightIndex {
      * @param index
      */
     public DataWeightIndex(IDataWeightIndex index) {
-        this.index = new boolean[index.getFullLength()];
-        this.weights = new double[index.getFullLength()];
+        this.index = new boolean[index.size()];
+        this.weights = new double[index.size()];
         this.length = index.getLength();
-        for(int i=0; i<index.getFullLength(); i++){
+        for(int i=0; i<index.size(); i++){
             this.weights[i] = index.getWeight(i);            
             this.index[i] = index.get(i);            
         }                 
@@ -94,10 +94,10 @@ public class DataWeightIndex implements IDataWeightIndex {
      * @param index
      */
     public DataWeightIndex(IDataIndex index) {
-        this.index = new boolean[index.getFullLength()];
-        this.weights = new double[index.getFullLength()];
+        this.index = new boolean[index.size()];
+        this.weights = new double[index.size()];
         this.length = index.getLength();
-        for(int i=0; i<index.getFullLength(); i++){
+        for(int i=0; i<index.size(); i++){
             this.weights[i] = Double.NaN;            
             this.index[i] = index.get(i);            
         }                 
@@ -215,7 +215,7 @@ public class DataWeightIndex implements IDataWeightIndex {
      * @param index
      */
     public void setIndex(IDataWeightIndex index) {
-        if (length == index.getFullLength()) {  
+        if (length == index.size()) {  
             Iterator<Integer> ite = this.iterator();          
             int j=0;
             while(ite.hasNext()){
@@ -242,7 +242,7 @@ public class DataWeightIndex implements IDataWeightIndex {
             setIndex((IDataWeightIndex)index);
             return;
         } 
-        if (length == index.getFullLength()) {  
+        if (length == index.size()) {  
             Iterator<Integer> ite = this.iterator();          
             int j=0;
             while(ite.hasNext()){
@@ -268,7 +268,7 @@ public class DataWeightIndex implements IDataWeightIndex {
      * @return
      */
     @Override
-    public int getFullLength() {
+    public int size() {
         return index.length;
     }
 
