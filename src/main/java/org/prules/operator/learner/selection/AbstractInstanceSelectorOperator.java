@@ -47,6 +47,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.prules.tools.math.container.knn.KNNFactory;
 import com.rapidminer.operator.ProcessSetupError.Severity;
+import com.rapidminer.operator.error.AttributeNotFoundError;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.prules.dataset.IInstanceLabels;
@@ -152,6 +153,12 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPrototype
          * trainingSet.getExampleTable().addAttribute(weightsAttribute); trainingSet.getAttributes().setWeight(weightsAttribute);
          * for (Example example : trainingSet){ example.setWeight(1); } }
          */
+        if (isLabelRequired()){
+            if (trainingSet.getAttributes().getLabel()==null){
+                throw new AttributeNotFoundError(this,"","label");
+            }
+                
+        }
         if (isSampleRandomize()) {
             boolean shufleExamples = getParameterAsBoolean(PARAMETER_RANDOMIZE_EXAMPLES);
             if (shufleExamples) { //We can shuffle examples ony if we don't use initial geometricCollection. Order of examples in both in GemoetricCollection and ExampleSet must be equal            
@@ -263,6 +270,16 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPrototype
     }
 
     /**
+     * Method allows to set if label attribute is required by the instance selection operator.
+     * By default label attribute is required, if ovverriden and method returns false then
+     * no checks are made according to label existance.
+     * @return 
+     */
+    public boolean isLabelRequired(){
+        return true;
+    }
+    
+    /**
      * Method returns information of particular instance selection algorithm
      * utilize decision function or not. If true (default) then user has access
      * to the decision function configuration, if not, decision function
@@ -285,7 +302,7 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPrototype
     @Override
     public MDInteger getNumberOfPrototypesMetaData() throws UndefinedParameterError {
         return new MDInteger();
-    }
+    }        
 
     /**
      * Whenever ones would like to implement self instance selection algorithm
@@ -313,6 +330,8 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPrototype
         }
         return null;
     }
+    
+    
 
     /**
      * Setting and configuring operator parameters

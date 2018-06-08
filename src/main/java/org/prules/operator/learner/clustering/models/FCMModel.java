@@ -108,26 +108,29 @@ public class FCMModel extends AbstractBatchModel {
                 double v;
                 if (d != 0) {
                     double mf = partitionMatrixEntry[prototypeIndex];
-                    objFun += Math.pow(d, 2) * mf;
+                    objFun += Math.pow(d, 2) * mf; //It is only here becouse in else section the distance is 0 so 0^2*mf = 0
                     //mf = Math.pow(mf, m);
                     v = Math.pow(d, exp);
+                    sum += v;
                 } else {
-                    v = 1;
+                    v = -1;
                 }
-                partitionMatrixEntry[prototypeIndex] = v;
-                sum += v;
+                partitionMatrixEntry[prototypeIndex] = v;                
                 prototypeIndex++;
             }
-            for (prototypeIndex = 0; prototypeIndex < numberOfPrototypes; prototypeIndex++) {
-                double v = partitionMatrixEntry[prototypeIndex];
-                partitionMatrixEntry[prototypeIndex] = v / sum;
+            for (prototypeIndex = 0; prototypeIndex < numberOfPrototypes; prototypeIndex++) {                
+                double v = partitionMatrixEntry[prototypeIndex];                
+                partitionMatrixEntry[prototypeIndex] = partitionMatrixEntry[prototypeIndex] > 0 ? v / sum : 1;
             }
-        }        
-        if (costFunctionValue - objFun > minGain) {
-            nextItertion = true;
-            costFunctionValue = objFun;
-        } else {
+        }    
+        costFunctionValue.add(objFun);
+        int size = costFunctionValue.size();
+        double gain = costFunctionValue.get(size-1) - costFunctionValue.get(size-2);
+        if (Math.abs(gain) < minGain) {
             nextItertion = false;
+        } else {            
+            nextItertion = true;
+            
         }        
     }
 
@@ -157,6 +160,10 @@ public class FCMModel extends AbstractBatchModel {
                 partitionMatrixEntry[i] = value / sum;
             }
         }			
+    }
+    
+    @Override
+    public void finalizeTraining() {
     }
             
 //    /**

@@ -6,26 +6,32 @@ import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import org.prules.operator.learner.PRulesModel;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * 
+ *
  * @author Marcin
  */
-public abstract class AbstractLVQModel implements PRulesModel<ExampleSet>{
+public abstract class AbstractLVQModel implements PRulesModel<ExampleSet> {
 
+    public static final String LEARNING_RATE_KEY = "LearningRate";
+    public static final String LAMBDA_RATE_KEY = "LambdaRate";
+    
     ExampleSet prototypes;
     private Example example; //Current example from the example set
     double[] exampleValues; //double values retrived from the example set
-    double exampleLabel;
+    double exampleLabel; //Current label
     Attributes prototypeAttributes; //List of attributes
     List<Attribute> trainingAttributes;
     private final int attributesSize, numberOfPrototypes; //Number of prototypes and number of attributes
     double[][] prototypeValues;
     double[] prototypeLabels;
+    Map<String, Object> storedValues;
 
     /**
-     * 
+     *
      * @param prototypes
      */
     public AbstractLVQModel(ExampleSet prototypes) {
@@ -33,10 +39,11 @@ public abstract class AbstractLVQModel implements PRulesModel<ExampleSet>{
         this.prototypes = prototypes;
         attributesSize = prototypeAttributes.size();
         numberOfPrototypes = prototypes.size();
+        storedValues = new HashMap<>();
     }
 
     /**
-     * 
+     *
      * @param trainingSet
      * @return
      */
@@ -60,8 +67,10 @@ public abstract class AbstractLVQModel implements PRulesModel<ExampleSet>{
         //Reordering attributes for 
         for (Attribute a : prototypeAttributes) {
             trainingAttributes.add(tmpTrainingAttributes.get(a.getName()));
-        }
-        exampleValues = new double[prototypeAttributes.size()];
+        }        
+        beforeTraining(trainingSet);
+        
+        exampleValues = new double[prototypeAttributes.size()];        
         do {
             for (Example trainingExample : trainingSet) {
                 this.example = trainingExample;
@@ -72,8 +81,10 @@ public abstract class AbstractLVQModel implements PRulesModel<ExampleSet>{
                 }
                 exampleLabel = trainingExample.getLabel();
                 update();
-            }
-        } while (nextIteration());
+            }                        
+        } while (nextIteration(trainingSet));
+        
+        afterTraining(trainingSet);
 
         i = 0;
         for (Example p : prototypes) {
@@ -88,7 +99,35 @@ public abstract class AbstractLVQModel implements PRulesModel<ExampleSet>{
     }
 
     /**
-     * 
+     * Returns total number of iterations (maximum number of iterations)
+     *
+     * @return
+     */
+    abstract public int getMaxIterations();
+
+    /**
+     * Returns current iteration
+     *
+     * @return
+     */
+    abstract public int getIteration();
+
+    /**
+     * Returns the value of cost function
+     *
+     * @return
+     */
+    abstract public double getCostFunctionValue();
+
+    /**
+     * Returns list of cost function values
+     *
+     * @return
+     */
+    abstract public List<Double> getCostFunctionValues();
+
+    /**
+     *
      * @return
      */
     protected Example getCurrentExample() {
@@ -96,7 +135,7 @@ public abstract class AbstractLVQModel implements PRulesModel<ExampleSet>{
     }
 
     /**
-     * 
+     *
      * @return
      */
     protected double[] getCurrentExampleValues() {
@@ -104,7 +143,7 @@ public abstract class AbstractLVQModel implements PRulesModel<ExampleSet>{
     }
 
     /**
-     * 
+     *
      * @return
      */
     protected int getAttributesSize() {
@@ -112,7 +151,7 @@ public abstract class AbstractLVQModel implements PRulesModel<ExampleSet>{
     }
 
     /**
-     * 
+     *
      * @return
      */
     protected int getNumberOfPrototypes() {
@@ -120,7 +159,7 @@ public abstract class AbstractLVQModel implements PRulesModel<ExampleSet>{
     }
 
     /**
-     * 
+     *
      * @param i
      * @return
      */
@@ -129,7 +168,7 @@ public abstract class AbstractLVQModel implements PRulesModel<ExampleSet>{
     }
 
     /**
-     * 
+     *
      * @param i
      * @return
      */
@@ -138,14 +177,35 @@ public abstract class AbstractLVQModel implements PRulesModel<ExampleSet>{
     }
 
     /**
-     * 
+     *
      * @return
      */
-    abstract boolean nextIteration();
+    abstract boolean nextIteration(ExampleSet trainingSet);
+    
+    /**
+     * Method executed before the training starts.
+     * @param trainingSet 
+     */
+    public void beforeTraining(ExampleSet trainingSet){        
+    }
+    
+    /**
+     * Method executed then the main loop of the LVQ algorithm is finished.
+     * @param trainingSet 
+     */
+    public void afterTraining(ExampleSet trainingSet){        
+    }
 
     /**
-     * 
+     *
      */
     abstract void update();
 
+    public final Object getStoredValue(String key) {        
+        return storedValues.get(key);
+    }
+    
+    public final void addStoredValue(String key, Object value){        
+        storedValues.put(key,value);
+    }
 }

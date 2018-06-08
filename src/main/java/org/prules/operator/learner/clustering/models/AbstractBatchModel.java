@@ -15,7 +15,7 @@ public abstract class AbstractBatchModel {
 
     List<Vector> prototypes;
     DistanceMeasure distance;
-    double costFunctionValue = Double.MAX_VALUE;
+    List<Double> costFunctionValue = new ArrayList<>();    
     Collection<double[]> partitionMatrix;
 
     /**
@@ -26,6 +26,7 @@ public abstract class AbstractBatchModel {
      */
     public AbstractBatchModel(DistanceMeasure distance) {
         this.distance = distance;
+        costFunctionValue.add(Double.MAX_VALUE);
     }
 
     /**
@@ -86,7 +87,7 @@ public abstract class AbstractBatchModel {
      * @return
      */
     public double getCostFunctionValue() {
-        return costFunctionValue;
+        return costFunctionValue.get(costFunctionValue.size()-1);
     }
 
     /**

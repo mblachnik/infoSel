@@ -44,7 +44,7 @@ public class InstanceFactory {
         InstanceLabels values = new InstanceLabels();
         values.put(LABEL, ex.getLabel());
         values.put(CLUSTER, ex.getValue(ex.getAttributes().getCluster()));
-        values.put(ID, ex.getId());
+        values.put(ID, (int)ex.getId());
         values.put(WEIGHT, ex.getWeight());
         if (ex instanceof ISPRExample) {
             values.put(INDEX_EXAMPLESET, ((ISPRExample) ex).getIndex());
@@ -70,7 +70,7 @@ public class InstanceFactory {
         Map<String, Object> map = new HashMap<>();
         map.put(LABEL, label);
         map.put(CLUSTER, Double.NaN);
-        map.put(ID, Double.NaN);
+        map.put(ID, Integer.MIN_VALUE);
         map.put(WEIGHT, 1);
         return new InstanceLabels(map);
     }

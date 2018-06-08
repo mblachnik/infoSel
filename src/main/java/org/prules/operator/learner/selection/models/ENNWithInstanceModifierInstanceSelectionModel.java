@@ -167,7 +167,7 @@ public class ENNWithInstanceModifierInstanceSelectionModel extends AbstractInsta
                 for(int i = 0; i<counter.length; i++){
                     counter[i] /= norm;                                     
                 }
-                predictedLabel = PRulesUtil.findMostFrequentValue(counter);
+                predictedLabel = KNNTools.getMostFrequentValue(counter);
                 if (storeConfidence) {
                     confidence[instanceIndex] = counter[(int) predictedLabel];
                 }                

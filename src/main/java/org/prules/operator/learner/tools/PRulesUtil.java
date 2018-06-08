@@ -100,12 +100,7 @@ public class PRulesUtil {
         for (int i = 1; i < size; i++) {
             idx[i] = i;
         }
-        for (int i = size; i > 1; i--) {
-            int k = randomGenerator.nextInt(i);
-            int t = idx[k];
-            idx[k] = idx[i - 1];
-            idx[i - 1] = t;
-        }
+        randomPermutation(idx, randomGenerator);
         return idx;
     }
 
@@ -114,13 +109,13 @@ public class PRulesUtil {
      * @param size
      * @param randomGenerator
      */
-    public static void randomPermutation(int[] tab, Random randomGenerator) {
-        int size = tab.length;
+    public static void randomPermutation(int[] idx, Random randomGenerator) {
+        int size = idx.length;
         for (int i = size; i > 1; i--) {
             int k = randomGenerator.nextInt(i);
-            int t = tab[k];
-            tab[k] = tab[i];
-            tab[i] = t;
+            int t = idx[k];
+            idx[k] = idx[i - 1];
+            idx[i - 1] = t;
         }
     }
 
@@ -151,39 +146,6 @@ public class PRulesUtil {
         }
     }
 
-    /**
-     *
-     * @param counter
-     * @return
-     */
-    public static int findMostFrequentValue(double[] counter) {
-        int mostFrequentIndex = Integer.MIN_VALUE;
-        double mostFrequentFrequency = Double.NEGATIVE_INFINITY;
-        for (int j = 0; j < counter.length; j++) {
-            if (mostFrequentFrequency < counter[j]) {
-                mostFrequentFrequency = counter[j];
-                mostFrequentIndex = j;
-            }
-        }
-        return mostFrequentIndex;
-    }
-
-    /**
-     *
-     * @param counter
-     * @return
-     */
-    public static int findMostFrequentValue(int[] counter) {
-        int mostFrequentIndex = Integer.MIN_VALUE;
-        double mostFrequentFrequency = Double.NEGATIVE_INFINITY;
-        for (int j = 0; j < counter.length; j++) {
-            if (mostFrequentFrequency < counter[j]) {
-                mostFrequentFrequency = counter[j];
-                mostFrequentIndex = j;
-            }
-        }
-        return mostFrequentIndex;
-    }
 
     /* This method returns extracted list of all kind of attributess one may require ex. for creating new ExampleSet
      * If any of the input attributeLists is empty then it is not considered in the extraction process.
@@ -264,14 +226,14 @@ public class PRulesUtil {
     public static ExampleSet combineExampleSets(List<ExampleSet> exampleSets) {
         //First we create common set of attributes in case when one of prototypes set may contain different set of attributes
         int numberOfAllAttributes = exampleSets.get(0).getAttributes().allSize();
-        int numberOfReularAttributes = exampleSets.get(0).getAttributes().size();
-        int numberOfSpecialAttributes = numberOfAllAttributes - numberOfReularAttributes;
+        int numberOfRegularAttributes = exampleSets.get(0).getAttributes().size();
+        int numberOfSpecialAttributes = numberOfAllAttributes - numberOfRegularAttributes;
         int numberOfSamples = 0;
-        HashMap<String, Attribute> attributesMap = new HashMap<String, Attribute>(numberOfAllAttributes);
+        Map<String, Attribute> attributesMap = new HashMap<String, Attribute>(numberOfAllAttributes);
         List<Attribute> attributesList = new ArrayList<Attribute>(numberOfAllAttributes);
-        List<Attribute> regularAttributesList = new ArrayList<Attribute>(numberOfReularAttributes);
+        List<Attribute> regularAttributesList = new ArrayList<Attribute>(numberOfRegularAttributes);
         Map<Attribute, String> specialAttributes = new HashMap<Attribute, String>(numberOfSpecialAttributes);
-        numberOfAllAttributes = numberOfReularAttributes = numberOfSpecialAttributes = 0;
+        numberOfAllAttributes = numberOfRegularAttributes = numberOfSpecialAttributes = 0;
         for (ExampleSet imputSet : exampleSets) {
             Attributes attributes = imputSet.getAttributes();
             Iterator<Attribute> attributeIterator = attributes.allAttributes();
@@ -290,7 +252,17 @@ public class PRulesUtil {
                         numberOfSpecialAttributes++;
                     } else {
                         regularAttributesList.add(attribute);
-                        numberOfReularAttributes++;
+                        numberOfRegularAttributes++;
+                    }
+                } else {
+                    Attribute attribute = attributesMap.get(attributeName);                    
+                    if (attribute.isNominal()){                        
+                        NominalMapping nominalMapping = attribute.getMapping();
+                        NominalMapping nominalMappingOri = originalAttribute.getMapping();                         
+                        List<String> nomStrOri = nominalMappingOri.getValues();                                                                              
+                        for (String s : nomStrOri){
+                            nominalMapping.mapString(s);
+                        }
                     }
                 }
             }
@@ -310,7 +282,11 @@ public class PRulesUtil {
                 while (inputAttributeIterator.hasNext()) {
                     Attribute inputAttribute = inputAttributeIterator.next();
                     Attribute outputAttribute = attributesMap.get(inputAttribute.getName());
-                    outputExample.setValue(outputAttribute, inputExample.getValue(inputAttribute));
+                    if (inputAttribute.isNumerical()){
+                        outputExample.setValue(outputAttribute, inputExample.getValue(inputAttribute));
+                    } else {
+                        outputExample.setValue(outputAttribute, inputExample.getValueAsString(inputAttribute));
+                    }
                 }
             }
 
@@ -488,19 +464,19 @@ public class PRulesUtil {
         }
         return uniqueLabels;
     }
-    
-    public static Map<Double,Integer> countClassFrequency(ISPRGeometricDataCollection<IInstanceLabels> samples) {
+
+    public static Map<Double, Integer> countClassFrequency(ISPRGeometricDataCollection<IInstanceLabels> samples) {
         Iterator<IInstanceLabels> tmpLabelIterator = samples.storedValueIterator();
-        Map<Double,Integer> map = new HashMap<>();
+        Map<Double, Integer> map = new HashMap<>();
         while (tmpLabelIterator.hasNext()) {
             double label = tmpLabelIterator.next().getLabel();
-            if (map.containsKey(label)){
+            if (map.containsKey(label)) {
                 int counter = map.get(label);
                 counter++;
-                map.put(label,counter);
+                map.put(label, counter);
             } else {
                 map.put(label, 1);
-            }            
+            }
         }
         return map;
     }

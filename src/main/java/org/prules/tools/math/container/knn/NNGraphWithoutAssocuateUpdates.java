@@ -33,7 +33,7 @@ import org.prules.tools.math.container.PairContainer;
 public class NNGraphWithoutAssocuateUpdates implements INNGraph {
 
     int k;
-    Map<Integer, Set<DoubleIntContainer>> associates;
+    Map<Integer, Set<Integer>> associates;
     Map<Integer, List<DoubleIntContainer>> neighbors;
     Map<Integer, List<DoubleIntContainer>> enemies;
     ISPRClassGeometricDataCollection<IInstanceLabels> samples;
@@ -44,7 +44,8 @@ public class NNGraphWithoutAssocuateUpdates implements INNGraph {
         this.samples = samples;
         index = samples.getIndex();
         index.setAllTrue();
-        initialize();
+        init();
+        calculateGraph();
     }
 
     public NNGraphWithoutAssocuateUpdates(NNGraphWithoutAssocuateUpdates nnGraph) {
@@ -55,67 +56,37 @@ public class NNGraphWithoutAssocuateUpdates implements INNGraph {
         this.neighbors = nnGraph.neighbors;
         this.enemies = nnGraph.enemies;
     }
-    
+
+    private void init() {
+        associates = new HashMap(samples.size());
+        neighbors = new HashMap(samples.size());
+        enemies = new HashMap(samples.size());
+        for (int i = 0; i < samples.size(); i++) {
+            associates.put(i, new HashSet<Integer>());
+            neighbors.put(i, new LinkedList<DoubleIntContainer>());
+            enemies.put(i, new LinkedList<DoubleIntContainer>());
+        }
+    }
+
     @Override
     public IDataIndex getIndex() {
         return index;
     }
 
+    /**
+     * Method creates a nearest neighbor graph. It is called from the
+     * constructor so it is not necesary to run it after creation of an obiecjt.
+     * It can be run if anything in the data samples get changed
+     */
     @Override
-    public final void initialize() {        
-        Vector vector;
-        PairContainer<Collection<DoubleObjectContainer<IInstanceLabels>>, Collection<DoubleObjectContainer<IInstanceLabels>>> resAll;
-        List<DoubleObjectContainer<IInstanceLabels>> resCombined;
-        List<DoubleObjectContainer<IInstanceLabels>> resEnemies;
-        //DoubleObjectContainer<IInstanceLabels>[] resTmp;
-        associates = new HashMap(samples.size());
-        neighbors = new HashMap(samples.size());
-        enemies = new HashMap(samples.size());
-        for (int i = 0; i < samples.size(); i++) {
-            associates.put(i, new HashSet<DoubleIntContainer>());
-            neighbors.put(i, new LinkedList<DoubleIntContainer>());
-            enemies.put(i, new LinkedList<DoubleIntContainer>());
-        }
+    public final void calculateGraph() {
         //Fillin associates
-        //sampleIterator = samples.samplesIterator();                
+        //sampleIterator = samples.samplesIterator();     
+        for (int i = 0; i < samples.size(); i++) {
+            associates.get(i).clear();
+        }
         for (int id : index) {
-            vector = samples.getSample(id);
-            IInstanceLabels currentInstanceLabels = samples.getStoredValue(id);
-            int currentInstanceID = (int) currentInstanceLabels.getValueAsLong(Const.INDEX_CONTAINER);
-            if (index.get(id)) { //If the sample which we analyze is on then switch it off for a moment, and than switch it on again
-                index.set(id, false);
-                resAll = samples.getNearestNeighborsAndAnymiesDistances(k + 1, vector, currentInstanceLabels, index);
-                index.set(id, true);
-            } else { //If it is already off just search for nearest neighbor   
-                resAll = samples.getNearestNeighborsAndAnymiesDistances(k + 1, vector, currentInstanceLabels, index);
-            }
-            resCombined = new ArrayList<>(resAll.getFirst());
-            resEnemies = new ArrayList<>(resAll.getSecond());
-            resCombined.addAll(resEnemies);
-            //resTmp = (DoubleObjectContainer<IInstanceLabels>[])resCombined.toArray(new DoubleObjectContainer<?>[resCombined.size()]);
-            Collections.sort(resCombined);
-            int kTmp = 0;
-            for (DoubleObjectContainer<IInstanceLabels> container : resCombined) {
-                IInstanceLabels lab = container.getSecond();
-                double distance = container.getFirst();
-                int neighborID = (int) lab.getValueAsLong(Const.INDEX_CONTAINER);
-                if (kTmp < k) {
-                    associates.get(neighborID).add(new DoubleIntContainer(distance, currentInstanceID));                    
-                }
-                neighbors.get(currentInstanceID).add(new DoubleIntContainer(distance, neighborID));
-                if (kTmp > k) {
-                    break; //We brak the loop when we take k+1 samples.
-                }
-                kTmp++;
-            }
-            //resTmp = (DoubleObjectContainer<IInstanceLabels>[])resEnemies.toArray(new DoubleObjectContainer<?>[resEnemies.size()]);
-            //Arrays.sort(resTmp);
-            Collections.sort(resEnemies);
-            for (DoubleObjectContainer<IInstanceLabels> container : resEnemies) {
-                int enemyID = (int) container.getSecond().getValueAsLong(Const.INDEX_CONTAINER);
-                double distance = container.getFirst();
-                enemies.get(currentInstanceID).add(new DoubleIntContainer(distance, enemyID));
-            }
+            calculateGraphForInstance(id);
         }
     }
 
@@ -139,7 +110,7 @@ public class NNGraphWithoutAssocuateUpdates implements INNGraph {
      * @return
      */
     @Override
-    public Set<DoubleIntContainer> getAssociates(int nodeId) {
+    public Set<Integer> getAssociates(int nodeId) {
         return associates.get(nodeId);
     }
 
@@ -157,63 +128,25 @@ public class NNGraphWithoutAssocuateUpdates implements INNGraph {
         return enemies.get(nodeId);
     }
 
+    /**
+     * Removes sample nodId and recalculate the graph, such that the removal
+     * changes the graph structure
+     *
+     * @param nodeId
+     */
     @Override
     public void remove(int nodeId) {
         //Turn of the instance
-        index.set(nodeId, false);
-
-        PairContainer<Collection<DoubleObjectContainer<IInstanceLabels>>, Collection<DoubleObjectContainer<IInstanceLabels>>> resAll;
-        List<DoubleObjectContainer<IInstanceLabels>> resCombined;
-        List<DoubleObjectContainer<IInstanceLabels>> resEnemies;
-        //DoubleObjectContainer<IInstanceLabels>[] resTmp;
+        index.set(nodeId, false);        
         //Get the associate elements which pointo to the instance being deleted (nodeId)
-        for (DoubleIntContainer associatePair : associates.get(nodeId)) {
-            int associate = associatePair.getSecond();
+        for (int associate : associates.get(nodeId)) {            
             //Recalculate its neighbors when instance nodeId will be deleted
-            Vector vector = samples.getSample(associate);
-            IInstanceLabels vectorLabels = samples.getStoredValue(associate);
-            if (index.get(associate)) { //If the sample which we analyze is on then switch it off for a moment, and than switch it on again
-                index.set(associate, false); //Switch off current instance
-                resAll = samples.getNearestNeighborsAndAnymiesDistances(k + 1, vector, vectorLabels, index);
-                index.set(associate, true); //Switch on current instance
-            } else { //If it is already off just search for nearest neighbor                
-                resAll = samples.getNearestNeighborsAndAnymiesDistances(k + 1, vector, vectorLabels, index);                
-            }
-            resCombined = new ArrayList<>(resAll.getFirst());
-            resEnemies = new ArrayList<>(resAll.getSecond());
-            resCombined.addAll(resEnemies);
-            neighbors.get(associate).clear(); //Clear associates of current instance
-            //resTmp = (DoubleObjectContainer<IInstanceLabels>[])resCombined.toArray(new DoubleObjectContainer<?>[resCombined.size()]);
-            //Arrays.sort(resTmp);
-            Collections.sort(resCombined);
-            int kTmp = 0;
-            for (DoubleObjectContainer<IInstanceLabels> container : resCombined) { //Recreate neighbors
-                IInstanceLabels lab = container.getSecond();
-                int neighborID = (int) lab.getValueAsLong(Const.INDEX_CONTAINER);
-                double distance = container.getFirst();
-                if (kTmp < k) {
-                    associates.get(neighborID).add(new DoubleIntContainer(distance, associate)); //Add info that current point (associate) is belongs to asspociates of nearest neighbors of current instance
-                }
-                neighbors.get(associate).add(new DoubleIntContainer(distance, neighborID));  //Add new neighbors
-                if (kTmp > k) {
-                    break; //Here we break becouse we already have k+1 neighbors
-                }
-                kTmp++;
-            }
-            //resTmp = (DoubleObjectContainer<IInstanceLabels>[])resEnemies.toArray(new DoubleObjectContainer<?>[resEnemies.size()]);
-            //Arrays.sort(resTmp);
-            Collections.sort(resEnemies);
-            enemies.get(associate).clear();
-            for (DoubleObjectContainer<IInstanceLabels> container : resEnemies) {
-                int enemieID = (int) container.getSecond().getValueAsLong(Const.INDEX_CONTAINER);
-                double distance = container.getFirst();
-                enemies.get(associate).add(new DoubleIntContainer(distance, enemieID));
-            }
+            calculateGraphForInstance(associate);
         }
     }
-    
+
     @Override
-    public ISPRClassGeometricDataCollection<IInstanceLabels> getSamples(){
+    public ISPRClassGeometricDataCollection<IInstanceLabels> getSamples() {
         return samples;
     }
 
@@ -226,7 +159,50 @@ public class NNGraphWithoutAssocuateUpdates implements INNGraph {
     public int size() {
         return samples.size();
     }
-    
-    
-    
+
+    public void calculateGraphForInstance(int id) {
+        Vector vector;
+        PairContainer<Collection<DoubleObjectContainer<IInstanceLabels>>, Collection<DoubleObjectContainer<IInstanceLabels>>> resAll;
+        List<DoubleObjectContainer<IInstanceLabels>> resCombined;
+        List<DoubleObjectContainer<IInstanceLabels>> resEnemies;
+        vector = samples.getSample(id);
+        IInstanceLabels currentInstanceLabels = samples.getStoredValue(id);
+        int currentInstanceID = (int) currentInstanceLabels.getValueAsLong(Const.INDEX_CONTAINER);
+        if (index.get(id)) { //If the sample which we analyze is on then switch it off for a moment, and than switch it on again
+            index.set(id, false);
+            resAll = samples.getNearestNeighborsAndAnymiesDistances(k + 1, vector, currentInstanceLabels, index);
+            index.set(id, true);
+        } else { //If it is already off just search for nearest neighbor   
+            resAll = samples.getNearestNeighborsAndAnymiesDistances(k + 1, vector, currentInstanceLabels, index);
+        }
+        resCombined = new ArrayList<>(resAll.getFirst());
+        resEnemies = new ArrayList<>(resAll.getSecond());
+        resCombined.addAll(resEnemies);
+        //resTmp = (DoubleObjectContainer<IInstanceLabels>[])resCombined.toArray(new DoubleObjectContainer<?>[resCombined.size()]);
+        Collections.sort(resCombined);
+        int kTmp = 0;
+        neighbors.get(currentInstanceID).clear();
+        for (DoubleObjectContainer<IInstanceLabels> container : resCombined) {
+            IInstanceLabels lab = container.getSecond();
+            double distance = container.getFirst();
+            int neighborID = (int) lab.getValueAsLong(Const.INDEX_CONTAINER);
+            if (kTmp < k) {
+                associates.get(neighborID).add(currentInstanceID);
+            }
+            neighbors.get(currentInstanceID).add(new DoubleIntContainer(distance, neighborID));            
+            kTmp++;
+            if (kTmp > k) {
+                break; //We brak the loop when we take k+1 samples.
+            }
+        }
+        //resTmp = (DoubleObjectContainer<IInstanceLabels>[])resEnemies.toArray(new DoubleObjectContainer<?>[resEnemies.size()]);
+        //Arrays.sort(resTmp);
+        Collections.sort(resEnemies);
+        enemies.get(currentInstanceID).clear();
+        for (DoubleObjectContainer<IInstanceLabels> container : resEnemies) {
+            int enemyID = (int) container.getSecond().getValueAsLong(Const.INDEX_CONTAINER);
+            double distance = container.getFirst();
+            enemies.get(currentInstanceID).add(new DoubleIntContainer(distance, enemyID));
+        }
+    }
 }

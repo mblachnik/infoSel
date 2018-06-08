@@ -7,12 +7,10 @@ package org.prules.operator.learner.selection.models;
 import org.prules.operator.learner.selection.models.tools.DropBasicModel;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.dataset.Const;
 import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.prules.tools.math.container.knn.KNNFactory;
 import org.prules.dataset.IInstanceLabels;
@@ -72,23 +70,12 @@ public class Drop2InstanceSelectionModel extends AbstractInstanceSelectorModel {
      */
     public IDataIndex selectInstances(ISPRClassGeometricDataCollection<IInstanceLabels> samples) {
         //Reorder samples according to distance to nearest enymy
+        List<Integer> order ;
         IDataIndex index = samples.getIndex();
         List<DoubleIntContainer> sampleOrderList = new ArrayList<>(samples.size());
         INNGraph nnGraph;
         nnGraph = new NNGraphWithoutAssocuateUpdates(samples, k);        
-        for (int i : index) {
-            List<DoubleIntContainer> enemies = nnGraph.getEnemies(i);
-            double distance = Double.POSITIVE_INFINITY;
-            if (!enemies.isEmpty()) {
-                distance = enemies.get(0).getFirst();
-            }
-            sampleOrderList.add(new DoubleIntContainer(-distance, i));
-        }
-        Collections.sort(sampleOrderList);
-        List<Integer> order = new ArrayList<>(samples.size());
-        for(DoubleIntContainer i : sampleOrderList){
-            order.add(i.getSecond());
-        }
+        order = DropBasicModel.orderSamplesByEnemies(nnGraph, -1); //Order according to the distance to farthest enemie
         //Execute DropModel
         order = DropBasicModel.execute(nnGraph, order);
         //Prepare results

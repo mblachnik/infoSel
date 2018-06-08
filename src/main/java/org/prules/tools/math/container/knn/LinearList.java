@@ -32,6 +32,7 @@ import java.util.ArrayList;
 
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -48,6 +49,7 @@ import org.prules.dataset.IInstanceLabels;
 import org.prules.dataset.Vector;
 import org.prules.operator.learner.tools.DataIndex;
 import org.prules.operator.learner.tools.IDataIndex;
+import org.prules.tools.math.similarity.IDistanceEvaluator;
 
 /**
  * This class is an implementation of the GeometricDataCollection interface,
@@ -60,10 +62,11 @@ import org.prules.operator.learner.tools.IDataIndex;
 public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometricDataCollection<T>,  RandomAccess {
 
     private static final long serialVersionUID = -746048910140779285L;
-    DistanceMeasure distance;
-    List<Vector> samples;
-    List<T> storedValues;
+    final DistanceMeasure distance;
+    final List<Vector> samples;
+    final List<T> storedValues;
     private long sampleCounter = 0;
+    final IDistanceEvaluator distanceEvaluator;
 
     /**
      * Create data structure for nearest neighbor search using simply priority queue with linear complexity
@@ -73,6 +76,7 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
         this.distance = distance;
         samples = new ArrayList<>();
         storedValues = new ArrayList<>();
+        distanceEvaluator = new DistanceEvaluator(distance);
     }
     
     /**
@@ -84,6 +88,7 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
         this.distance = distance;
         samples = new ArrayList<>(n);
         storedValues = new ArrayList<>(n);
+        distanceEvaluator = new DistanceEvaluator(distance);
     }
 
     /**
@@ -101,6 +106,7 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
             storedValues.get(i).put(Const.INDEX_CONTAINER, sampleCounter);
             sampleCounter++;
         }
+        distanceEvaluator = new DistanceEvaluator(distance);
     }
 
     /**
@@ -112,7 +118,7 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
      */
     public LinearList(ExampleSet exampleSet, Map<Attribute, String> storedValuesAttribute, DistanceMeasure distance) {
         this(distance, exampleSet.size());
-        initialize(exampleSet, storedValuesAttribute);
+        initialize(exampleSet, storedValuesAttribute);        
     }
 
     /**
@@ -175,7 +181,7 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
             for(int idx : index){
                 Vector currentInstance = samples.get(idx);
                 T second = storedValues.get(idx);
-                double first = DistanceEvaluator.evaluateDistance(distance, currentInstance, values);
+                double first = distanceEvaluator.evaluateDistance(currentInstance, values);
                 DoubleObjectContainer<T> container = queue.getEmptyContainer();
                 if (container == null) {
                     container = new DoubleObjectContainer<>(first, second);
@@ -195,7 +201,7 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
             //for (Vector currentInstance : this.samples) {
             for(int i: index){                
                 Vector currentInstance = samples.get(i);
-                double dist = DistanceEvaluator.evaluateDistance(distance, currentInstance, values);
+                double dist = distanceEvaluator.evaluateDistance(currentInstance, values);
                 if (dist < minDist) {
                     minDist = dist;
                     subResult = storedValues.get(i);
@@ -241,7 +247,7 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
         for (int idx : index) {            
             Vector currentInstance = samples.get(idx);
             T second = storedValues.get(idx);
-            double first = DistanceEvaluator.evaluateDistance(distance, currentInstance, values);
+            double first = distanceEvaluator.evaluateDistance(currentInstance, values);
             DoubleObjectContainer<T> container = queue.getEmptyContainer();
             if (container == null) {
                 container = new DoubleObjectContainer<>(first, second);
@@ -251,7 +257,9 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
             }
             queue.add(container);
         }
-        return queue;
+        List<DoubleObjectContainer<T>> results = new ArrayList<>(queue);
+        Collections.sort(results);
+        return results;
     }
 
     /**
@@ -291,12 +299,14 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
         for (int idx : index) {           
             Vector currentInstance = samples.get(idx);
             T second = storedValues.get(idx);
-            double currentDistance = DistanceEvaluator.evaluateDistance(distance, currentInstance, values);
+            double currentDistance = distanceEvaluator.evaluateDistance(currentInstance, values);
             if (currentDistance <= withinDistance) {
                 queue.add(new DoubleObjectContainer<>(currentDistance, second));
             }
         }
-        return queue;
+        List<DoubleObjectContainer<T>> results = new ArrayList<>(queue);
+        Collections.sort(results);
+        return results;
     }
 
     /**
@@ -417,7 +427,7 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
         for (int i : index) {
             Vector currentInstance = samples.get(i);
             T second = storedValues.get(i);
-            double first = DistanceEvaluator.evaluateDistance(distance, currentInstance, values);
+            double first = distanceEvaluator.evaluateDistance(currentInstance, values);
             if (second.getLabel()==label.getLabel()) {
                 DoubleObjectContainer<T> container = queuePositive.getEmptyContainer();
                 if (container == null) {
@@ -438,10 +448,12 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
                 queueNegative.add(container);
             }
         }
-        for (DoubleObjectContainer<T> tupel : queuePositive) {
+        while (!queuePositive.isEmpty()) {
+            DoubleObjectContainer<T> tupel = queuePositive.poll();
             resultPositive.add(tupel.getSecond());
         }
-        for (DoubleObjectContainer<T> tupel : queueNegative) {
+        while (!queueNegative.isEmpty()) {
+            DoubleObjectContainer<T> tupel = queueNegative.poll();
             resultNegative.add(tupel.getSecond());
         }
         return new PairContainer<>(resultPositive, resultNegative);
@@ -459,7 +471,7 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
         for (int i : index){
             Vector currentInstance = samples.get(i);
             T second = storedValues.get(i);
-            double first = DistanceEvaluator.evaluateDistance(distance, currentInstance, values);
+            double first = distanceEvaluator.evaluateDistance(currentInstance, values);
             if (second.getLabel()==label.getLabel()) {
                 DoubleObjectContainer<T> container = queuePositive.getEmptyContainer();
                 if (container == null) {
@@ -480,7 +492,17 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
                 queueNegative.add(container);
             }
         }
-        return new PairContainer<>((Collection<DoubleObjectContainer<T>>) queuePositive, (Collection<DoubleObjectContainer<T>>) queueNegative);
+        Collection<DoubleObjectContainer<T>> resultPositive = new ArrayList<>(k);
+        Collection<DoubleObjectContainer<T>> resultNegative = new ArrayList<>(k);
+        while (!queuePositive.isEmpty()) {
+            DoubleObjectContainer<T> tupel = queuePositive.poll();
+            resultPositive.add(tupel);
+        }
+        while (!queueNegative.isEmpty()) {
+            DoubleObjectContainer<T> tupel = queueNegative.poll();
+            resultNegative.add(tupel);
+        }
+        return new PairContainer<>( resultPositive, resultNegative);
     }
 
     @Override

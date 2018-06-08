@@ -115,7 +115,7 @@ public class GENNInstanceSelectionModel implements PRulesModel<ExampleSet> {
             predictedLabel = resultExample.getExample(0).getPredictedLabel();
             realLabel = example.getLabel();
             testIndex.set(instanceIndex, false);            
-            trainingIndex.set(instanceIndex, false);
+            trainingIndex.set(instanceIndex, true);
             if (numericalLabel) {
                 double dif = Math.abs(realLabel - predictedLabel);
 

@@ -25,6 +25,7 @@ import com.rapidminer.operator.ports.metadata.MDInteger;
 import com.rapidminer.operator.ports.metadata.MetaData;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.UndefinedParameterError;
+import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
@@ -98,11 +99,12 @@ public class ClassAssignerOperator extends AbstractPrototypeBasedOperator {
         if (oldLabel != null)
             prototypesAttributes.remove(oldLabel);        
         Attribute labelAttribute = AttributeFactory.createAttribute(trainingAttributes.getLabel());
-        prototypesAttributes.addRegular(labelAttribute);
-        prototypesAttributes.setLabel(labelAttribute);   
         prototypes.getExampleTable().addAttribute(labelAttribute);
+        prototypesAttributes.addRegular(labelAttribute);
+        prototypesAttributes.setLabel(labelAttribute);           
         DistanceMeasure distance = measureHelper.getInitializedMeasure(trainingSet);
         distance.init(trainingAttributes, prototypesAttributes);
+        RandomGenerator random = RandomGenerator.getRandomGenerator(this);
         //If training set has nominal label then
         if (trainingAttributes.getLabel().isNominal()) {
             NominalMapping classMapping = trainingSet.getAttributes().getLabel().getMapping();
@@ -111,15 +113,24 @@ public class ClassAssignerOperator extends AbstractPrototypeBasedOperator {
 
             for (Example example : trainingSet) {
                 double minDist = Double.MAX_VALUE;
-                int minIdx = -1;
+                int nearestPrototypeIndex = -1;
                 int label = -1;
                 int i = 0;
                 for (Example prototype : prototypes) {
                     double d = distance.calculateDistance(example, prototype);
+                    double rnd = random.nextDouble(); 
                     if (d < minDist) {
                         minDist = d;
-                        minIdx = i;
+                        nearestPrototypeIndex = i;
                         label = (int) example.getLabel();
+                    } else if (d == minDist && rnd < 1.0/classNumber){ //This is to avoid assigning all example with the nearest distance to the first prototype. Ties are break-down randomly
+                        minDist = d;
+                        nearestPrototypeIndex = i;
+                        label = (int) example.getLabel();                            
+                    } else if (d == minDist){
+                        minDist = d;
+                        nearestPrototypeIndex = i;
+                        label = (int) example.getLabel();                            
                     }
                     i++;
                 }
@@ -127,19 +138,23 @@ public class ClassAssignerOperator extends AbstractPrototypeBasedOperator {
                  * If someone use NominalMapping it shouldnt but if they are created in any other way, then the following line would need to be changed
                  */
                 if (label >= 0)
-                    prototypeLabelRelation[minIdx][label]++;
+                    prototypeLabelRelation[nearestPrototypeIndex][label]++;
             }            
             int j = 0;
             for (Example prototype : prototypes) {
                 int max = Integer.MIN_VALUE;
-                int idMax = -1;
-                for (int i = 0; i < classNumber; i++) {
+                int idMax = -1;                                        
+                for (int i = 0; i < classNumber; i++) {                    
                     if (max < prototypeLabelRelation[j][i]) {
                         max = prototypeLabelRelation[j][i];
                         idMax = i;
                     }
+                }                
+                if (max>0){ //If max==0 then it means cluster is empty and it has no associates, so then label is missing
+                    prototype.setLabel(idMax);                    
+                } else {
+                    prototype.setLabel(Double.NaN);
                 }
-                prototype.setLabel(idMax);
                 j++;
             }
         } else {            
@@ -218,6 +233,7 @@ public class ClassAssignerOperator extends AbstractPrototypeBasedOperator {
         List<ParameterType> types = super.getParameterTypes();
 
         types.addAll(DistanceMeasures.getParameterTypes(this));
+        types.addAll(RandomGenerator.getRandomGeneratorParameters(this));
         return types;
     }
 }

@@ -50,6 +50,21 @@
                 <class>org.prules.operator.learner.selection.Drop5InstanceSelectionOperator</class>                
             </operator>
             <operator>
+                <key>icf_sel</key>
+                <class>org.prules.operator.learner.selection.ICFInstanceSelectionOperator</class>                
+            </operator>
+            <!--
+            Experimental operators. These are modifications of ICF similar to ICF but elements are removed iteratively one by one on the fly recalculating Coverage and Rechability
+            <operator>
+                <key>icf2_sel</key>
+                <class>org.prules.operator.learner.selection.ICF2InstanceSelectionOperator</class>                
+            </operator>
+            <operator>
+                <key>icf21_sel</key>
+                <class>org.prules.operator.learner.selection.ICF21InstanceSelectionOperator</class>                
+            </operator>
+            -->
+            <operator>
                 <key>ib2_sel</key>
                 <class>org.prules.operator.learner.selection.IB2InstanceSelectionOperator</class>
                 <replaces>IB2InstanceSelection</replaces>
@@ -122,18 +137,6 @@
                     <class>org.prules.operator.learner.selection.generalized.GCNNInstanceSelectionOperator</class>
                     <replaces>GCNNInstanceSelection</replaces>
                 </operator>
-                <!--
-                <operator>
-                    <key>regrallknn_sel</key>
-                    <class>org.prules.operator.learner.selection.RegrAllkNNInstanceSelectionOperator</class>
-                    <replaces>RegrAllkNNInstanceSelection</replaces>
-                </operator>
-                <operator>
-                    <key>regrrenn_sel</key>
-                    <class>org.prules.operator.learner.selection.RegrRENNInstanceSelectionOperator</class>
-                    <replaces>RegrRENNInstanceSelection</replaces>
-                </operator>
-                -->
             </group>
             <group key="Ensemble IS">
                 <operator>
@@ -149,6 +152,10 @@
                 <operator>
                     <key>RndFeature_sel</key>        
                     <class>org.prules.operator.learner.selection.ensemble.ISEnsembleRndFeatureOperator</class>
+                </operator>
+                <operator>
+                    <key>adaboost_sel</key>        
+                    <class>org.prules.operator.learner.selection.ensemble.ISEnsembleAdaBoostOperator</class>
                 </operator>   
                 <operator>
                     <key>meta_noise_sel</key>
@@ -176,13 +183,13 @@
                 <replaces>FeatureWeightsTransformer</replaces>
             </operator>
             
-            
+            -->
             <operator>
                 <key>mds_scaling</key>
                 <class>org.prules.operator.learner.feature.construction.MdsOperator</class>
                 <replaces>MDS Scalling</replaces>
             </operator>
-            -->
+            
         </group>		
         <group key="Clustering">
             <operator>
@@ -254,8 +261,11 @@
             <operator>
                 <key>weightBy_NNE_G_test</key>
                 <class>org.prules.operator.learner.weighting.NNEGammaTestOperator</class>                
-            </operator>
-            
+            </operator>            
+            <operator>
+                <key>weightBy_Local_NNE_G_test</key>
+                <class>org.prules.operator.learner.weighting.LocalNNEGammaTestOperator</class>                
+            </operator>           
             <operator>
                 <key>weightBy_LocalVariance_test</key>
                 <class>org.prules.operator.learner.weighting.NNEVarianceOperator</class>                
@@ -287,6 +297,12 @@
                 <key>NNE_by_G_test</key>
                 <class>org.prules.operator.performance.NNEGammaTestPerformance</class>                
             </operator>
+        </group>
+        <group key="Preprocessing">
+            <operator>
+                <key>VDMNominal2NumericalOperator</key>
+                <class>org.prules.operator.learner.preprocessing.VDMNominal2NumericalOperator</class>                
+            </operator>        
         </group>
    </group>
 </operators>

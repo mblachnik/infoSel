@@ -59,7 +59,7 @@ public class NNGraphTest {
     public void testInitialize() {
         NNGraph nn = init(3);
         int neigh;
-        nn.initialize();
+        nn.calculateGraph();
         Collection<DoubleIntContainer> sSet;
         
         {
@@ -83,12 +83,12 @@ public class NNGraphTest {
             }
         }                
         {
-            int[] res = {6, 1, 3};
-            sSet = nn.getAssociates(0);
+            Set<Integer> set;
+            int[] res = {1, 3, 6};
+            set = nn.getAssociates(0);
             int i = 0;
-            for (DoubleIntContainer c : sSet) {
-                neigh = c.getSecond();
-                assertEquals(res[i],neigh);
+            for (int c : set) {                
+                assertEquals(res[i],c);
                 i++;
             }
         }                                
@@ -125,12 +125,12 @@ public class NNGraphTest {
         }
 
         {             
+            Set<Integer> set;
             int[] res = {5};
-            list = nn.getAssociates(4);
+            set = nn.getAssociates(4);
             int i = 0;
-            for (DoubleIntContainer c : list) {
-                neigh = c.getSecond();
-                assertEquals(neigh, res[i]);
+            for (int c : set) {                
+                assertEquals(c, res[i]);
                 i++;
             }
         }        

@@ -6,6 +6,7 @@ buildscript {
 }
 
 plugins { id 'com.rapidminer.extension' version '0.8.0' }
+//plugins { id 'com.rapidminer.extension' version '0.9.2' }
 
 // Define Maven artifact repositories
 repositories {
@@ -17,6 +18,10 @@ configurations {
     runtime
  }
  
+apply plugin: 'java'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 extensionConfig {
     //
     
@@ -53,7 +58,7 @@ extensionConfig {
 
 	// define RapidMiner version and extension dependencies
 	dependencies {
-       rapidminer '7.0.0'
+       rapidminer '8.0.0'
 		//extension namespace: 'text', version: '6.1.0'
 	}
 }
@@ -71,27 +76,37 @@ dependencies {
         compile files('lib/weka.jar')
         compile files('lib/instanceselection.jar')
         compile files('lib/Infosel.jar')
+        //compileOnly "org.projectlombok:lombok:1.16.16"
+        provided "org.projectlombok:lombok:1.16.16"
         //runtime fileTree(dir: 'C:/Marcin/Projects/Java/Common/RapidMiner/6.x/RapidM~1/lib/', include: '*.*', exclude: 'output/*')
         runtime fileTree(dir: 'C:/Programs/RapidMiner Studio/lib/', include: '*.*')
+        //runtime fileTree(dir: 'C:/Marcin/Projects/Java/Common/RapidMiner/Extension/ISPR/lib/', include: '*.*')
 }
 
 def usersHomeDir = 'C:/Marcin/Projects/Java/Common/RapidMiner/7.x/home'
     
-task copyPlugin(type: Copy, dependsOn: jar) {
+task copyPluginFast(type: Copy, dependsOn: jar) {
      description 'Copy jar file into RapidMiner extensions folder'   
     //from 'C:/Marcin/Projects/Java/Common/RapidMiner/Extension/ISPR/build/libs/ISPR-1.0.0.jar'
     from jar.archivePath
     into "$usersHomeDir /.RapidMiner/extensions"
 }
 
-task run(type: JavaExec, dependsOn:copyPlugin) {    
+task copyPlugin(type: Copy, dependsOn: installExtension) {
+     description 'Copy jar file into RapidMiner extensions folder'   
+    from 'C:/Marcin/Projects/Java/Common/RapidMiner/Extension/ISPR/build/libs/ISPR-8.0.0-all.jar'
+    //from jar.archivePath
+    into "$usersHomeDir /.RapidMiner/extensions"
+}
+
+task run(type: JavaExec, dependsOn:copyPluginFast) {    
     description 'Executes RapidMiner'
     main = 'com.rapidminer.launcher.GUILauncher'
     classpath = configurations.runtime
     jvmArgs = ["-Duser.home=$usersHomeDir"]
 }
 
-task debug(type: JavaExec, dependsOn: copyPlugin) {
+task debug(type: JavaExec, dependsOn: copyPluginFast) {
     description 'Executes RapidMiner in debug mode'
     main = 'com.rapidminer.launcher.GUILauncher'
     classpath = configurations.runtime

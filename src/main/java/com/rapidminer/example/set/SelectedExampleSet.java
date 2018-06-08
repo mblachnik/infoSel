@@ -163,5 +163,10 @@ public class SelectedExampleSet extends AbstractExampleSet {
 	public ExampleSet clone(){
 		return new SelectedExampleSet(this);
 	}
-
+/*
+    @Override
+    public void cleanup() {
+        parent.cleanup(); //To change body of generated methods, choose Tools | Templates.
+    }
+  */      
 }

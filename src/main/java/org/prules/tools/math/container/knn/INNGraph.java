@@ -25,7 +25,7 @@ public interface INNGraph {
      * @param nodeId
      * @return
      */
-    Set<DoubleIntContainer> getAssociates(int nodeId);
+    Set<Integer> getAssociates(int nodeId);
 
     /**
      * Returns list containing ordered indexes of enemies samples. The elements
@@ -49,13 +49,32 @@ public interface INNGraph {
      */
     List<DoubleIntContainer> getNeighbors(int nodeId);
 
-    void initialize();
+    /**
+     * 
+     */
+    void calculateGraph();
 
+    /**
+     * Remove given node
+     * @param nodeId 
+     */
     void remove(int nodeId);      
     
+    /**
+     * Returns input data used to construct the data structure
+     * @return 
+     */
     ISPRClassGeometricDataCollection<IInstanceLabels> getSamples();
     
+    /**
+     * returns the value of k for kNN
+     * @return 
+     */
     int getK();
     
+    /**
+     * Returns number of samples in input data
+     * @return 
+     */
     int size();
 }

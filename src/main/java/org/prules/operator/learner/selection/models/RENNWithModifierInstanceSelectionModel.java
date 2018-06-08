@@ -19,6 +19,7 @@ import org.prules.operator.learner.selection.models.tools.InstanceModifier;
 import org.prules.operator.learner.tools.IDataIndex;
 import org.prules.dataset.Vector;
 import org.prules.tools.math.container.knn.ISPRGeometricDataCollectionWithIndex;
+import org.prules.tools.math.container.knn.KNNTools;
 
 /**
  * Class implements repeated ENN algorithm (RENN). It repeats ENN algorithm
@@ -101,7 +102,7 @@ public class RENNWithModifierInstanceSelectionModel extends AbstractInstanceSele
                 }
                 //counter[(int) label.getLabel()] --; //here we have to subtract distanceRate because we took k+1 neighbours 					            
                 //sum--; //here we have to subtract because nearest neighbors includ itself, see line above
-                int mostFrequent = PRulesUtil.findMostFrequentValue(counter);
+                int mostFrequent = KNNTools.getMostFrequentValue(counter);
                 if (label.getLabel() != mostFrequent) {
                     index.set(instanceIndex, false);
                     breakLoop = false;

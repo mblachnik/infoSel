@@ -21,6 +21,7 @@ import org.prules.operator.learner.selection.models.tools.InstanceModifier;
 import org.prules.dataset.Instance;
 import org.prules.dataset.Vector;
 import org.prules.dataset.IInstancePrediction;
+import org.prules.tools.math.similarity.IDistanceEvaluator;
 
 /**
  * Class implementing Edited Distance Graph based algorithms
@@ -32,6 +33,7 @@ public class EditedDistanceGraphModel extends AbstractInstanceSelectorModel {
     private final EditedDistanceGraphCriteria criteria;
     private final IISDecisionFunction loss;
     private final InstanceModifier modifier;
+    private final IDistanceEvaluator distanceEvaluator;
 
     /**
      * Constructor of general Edited distance Graph models such as Gabriel editing
@@ -49,6 +51,7 @@ public class EditedDistanceGraphModel extends AbstractInstanceSelectorModel {
         } else {
             this.modifier = modifier;
         }
+        distanceEvaluator = new DistanceEvaluator(distance);
     }
 
     /**
@@ -91,12 +94,12 @@ public class EditedDistanceGraphModel extends AbstractInstanceSelectorModel {
                 instance.put(Const.PREDICTION, prediction);                
                 if (loss.getValue(instance) > 0) {                    
                     boolean chk = true;
-                    double dAB = DistanceEvaluator.evaluateDistance(distance,sampleA, sampleB);
+                    double dAB = distanceEvaluator.evaluateDistance(sampleA, sampleB);
                     for (int iC = 0; iC < size; iC++) {
                         if (iC == iA || iC == iB) continue;
                         Vector sampleC = samples.getSample(iC);
-                        double dAC = DistanceEvaluator.evaluateDistance(distance,sampleA, sampleC);
-                        double dBC = DistanceEvaluator.evaluateDistance(distance,sampleB, sampleC);
+                        double dAC = distanceEvaluator.evaluateDistance(sampleA, sampleC);
+                        double dBC = distanceEvaluator.evaluateDistance(sampleB, sampleC);
                         if (criteria.evaluate(dAB, dAC, dBC)) {
                             chk = false;
                             break;

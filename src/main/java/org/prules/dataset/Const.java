@@ -5,6 +5,8 @@
  */
 package org.prules.dataset;
 
+import java.util.HashSet;
+import java.util.Set;
 import org.prules.operator.learner.weighting.Ontology;
 
 /**
@@ -12,6 +14,7 @@ import org.prules.operator.learner.weighting.Ontology;
  * @author Marcin
  */
 public class Const {
+    private static final Set<String> labelsSet = new HashSet<>();    
     /**
      * Used to store label values.  Type double
      */
@@ -25,7 +28,7 @@ public class Const {
      */
     public static final String WEIGHT = "weight";
     /**
-     * Used for naming element which stores example id. Type int
+     * Used for naming element which stores example id. (Usually ExampleSet ID) Type int
      */    
     public static final String ID = "id";
     /**
@@ -73,4 +76,19 @@ public class Const {
      */
     public static final String LABELS = "labels";
     
+    static{
+        labelsSet.add(LABEL);
+        labelsSet.add(CLUSTER);
+        labelsSet.add(WEIGHT);
+        labelsSet.add(ID);
+        labelsSet.add(NOISE);
+        labelsSet.add(INDEX_CONTAINER);
+        labelsSet.add(INDEX_EXAMPLESET);
+        labelsSet.add(PREDICTION);
+        labelsSet.add(CONFIDENCE);
+    }
+    
+    public static Set<String> labelsKeySet(){                
+        return labelsSet;
+    }
 }

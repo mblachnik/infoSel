@@ -157,7 +157,7 @@ public class IS_PrototypeClusterModel extends IS_ClusterModel {
             Arrays.fill(counter, 0);
             KNNTools.doNNVotes(counter,instance, samples, 1, weightedNN);
             // finding most frequent class
-            mostFrequentIndex = PRulesUtil.findMostFrequentValue(counter);
+            mostFrequentIndex = KNNTools.getMostFrequentValue(counter);
             // setting prediction
             predictions[j] = mostFrequentIndex;
             j++;

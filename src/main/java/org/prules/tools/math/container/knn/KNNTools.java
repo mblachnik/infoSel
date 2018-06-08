@@ -23,9 +23,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.prules.tools.math.container.DoubleObjectContainer;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.dataset.Vector;
+import org.prules.operator.learner.tools.IDataIndex;
 
 /**
  *
@@ -34,23 +36,6 @@ import org.prules.dataset.Vector;
 public class KNNTools {
 
   
-
-    public static Associates findAssociatedInstances(ExampleSet exampleSet, ISPRGeometricDataCollection<IInstanceLabels> knn, int k) {
-        int numExamples = exampleSet.size();
-        Associates nearestAssociates = new Associates(numExamples, k); //store nearest associates for each vector (list of vectors for which I am the nearest neighbor)
-        Attributes attributes = exampleSet.getAttributes();
-        Vector instance = InstanceFactory.createVector(new double[attributes.size()]);
-        int i = 0;
-        for (Example example : exampleSet) {
-            instance.setValues(example);
-            Collection<IInstanceLabels> nearestNeighbors = knn.getNearestValues(k, instance);
-            for (IInstanceLabels neighbor : nearestNeighbors) {
-                nearestAssociates.add((int) neighbor.getValueAsDouble(Const.INDEX_CONTAINER), i);
-            }
-            i++;
-        }
-        return nearestAssociates;
-    }
 
     /**
      * Returns collection of nearest neighbors
@@ -308,5 +293,96 @@ public class KNNTools {
             }
         }
         return outLabel;
+    }
+
+    /**
+     * Returns index of the value with the highest value
+     * @param counter
+     * @return
+     */
+    public static int getMostFrequentValue(double[] counter) {
+        int mostFrequentIndex = Integer.MIN_VALUE;
+        double mostFrequentFrequency = Double.NEGATIVE_INFINITY;
+        for (int j = 0; j < counter.length; j++) {
+            if (mostFrequentFrequency < counter[j]) {
+                mostFrequentFrequency = counter[j];
+                mostFrequentIndex = j;
+            }
+        }
+        return mostFrequentIndex;
+    }
+    
+    /**
+     * Returns index of the value with the highest value
+     * @param <T>
+     * @param counter
+     * @return
+     */
+    public static <T> T getMostFrequentValue(Map<T,Double> counter) {
+        T mostFrequentIndex = null;
+        double mostFrequentFrequency = Double.NEGATIVE_INFINITY;
+        for (Entry<T,Double> e : counter.entrySet()) {
+            double value = e.getValue();
+            if (mostFrequentFrequency < value) {
+                mostFrequentFrequency = value;
+                mostFrequentIndex = e.getKey();
+            }
+        }
+        return mostFrequentIndex;
+    }
+
+    /**
+     * Returns index of the value with the highest value
+     * @param counter
+     * @return
+     */
+    public static int getMostFrequentValue(int[] counter) {
+        int mostFrequentIndex = Integer.MIN_VALUE;
+        double mostFrequentFrequency = Double.NEGATIVE_INFINITY;
+        for (int j = 0; j < counter.length; j++) {
+            if (mostFrequentFrequency < counter[j]) {
+                mostFrequentFrequency = counter[j];
+                mostFrequentIndex = j;
+            }
+        }
+        return mostFrequentIndex;
+    }
+    
+     /**
+     * Returns nearest neighbor data structure
+     *
+     * @param samples
+     * @param index
+     * @return
+     */
+    public static ISPRClassGeometricDataCollection<IInstanceLabels> takeSelected(ISPRClassGeometricDataCollection<IInstanceLabels> samples, IDataIndex index) {
+        ISPRClassGeometricDataCollection<IInstanceLabels> samplesNew;
+        samplesNew = new LinearList<>(samples.getMeasure(), index.getLength());
+        int j = 0;
+        for (int i : index) {
+            Vector values = samples.getSample(i);
+            IInstanceLabels storeValue = samples.getStoredValue(i);
+            samplesNew.add(values, storeValue);
+        }
+        return samplesNew;
+    }
+
+    /**
+     * Returns nearest neighbor data structure
+     *
+     * @param samples
+     * @param index
+     * @return
+     */
+    public static ISPRGeometricDataCollection<IInstanceLabels> takeSelected(ISPRGeometricDataCollection<IInstanceLabels> samples, IDataIndex index) {
+        ISPRClassGeometricDataCollection<IInstanceLabels> samplesNew;
+        samplesNew = new LinearList<>(samples.getMeasure(), index.getLength());
+        int j = 0;
+        for (int i : index) {
+            Vector values = samples.getSample(i);
+            IInstanceLabels storeValue = samples.getStoredValue(i);
+            samplesNew.add(values, storeValue);
+        }
+        return samplesNew;
     }
 }

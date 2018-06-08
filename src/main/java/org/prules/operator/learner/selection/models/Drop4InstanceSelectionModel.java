@@ -6,30 +6,21 @@ package org.prules.operator.learner.selection.models;
 
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.dataset.Const;
 import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.ListIterator;
 import org.prules.tools.math.container.knn.KNNFactory;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.operator.learner.tools.IDataIndex;
 import org.prules.operator.learner.selection.models.decisionfunctions.ISClassDecisionFunction;
 import org.prules.operator.learner.selection.models.tools.DropBasicModel;
-import static org.prules.operator.learner.selection.models.tools.DropBasicModel.orderSamplesByEnemies;
 import org.prules.operator.learner.tools.DataIndex;
-import org.prules.operator.learner.tools.PRulesUtil;
 import org.prules.operator.learner.tools.PredictionProblemType;
-import org.prules.tools.math.container.DoubleIntContainer;
-import org.prules.tools.math.container.IntIntContainer;
 import org.prules.tools.math.container.knn.INNGraph;
 import org.prules.tools.math.container.knn.ISPRClassGeometricDataCollection;
-import org.prules.tools.math.container.knn.NNGraph;
+import org.prules.tools.math.container.knn.KNNTools;
 import org.prules.tools.math.container.knn.NNGraphWithoutAssocuateUpdates;
-import static org.prules.operator.learner.selection.models.tools.DropBasicModel.orderSamplesByEnemies;
 
 /**
  * Class implements Drop4 instance selection algorithm
@@ -93,19 +84,17 @@ public class Drop4InstanceSelectionModel extends AbstractInstanceSelectorModel {
         indexNeg.negate();
         
         for (int i : indexNeg) {        
-             IntIntContainer withWithout = DropBasicModel.improvement(nnGraph, k, i);
-             int with = withWithout.getFirst();
-             int without = withWithout.getSecond();
-             if (without < with ){ //If without system classifies incorrectly than remove it
+             double improv = DropBasicModel.improvement(nnGraph, k, i);             
+             if (improv < 0){ //If without instance "i" system classifies worse then with it keep intance i
                 index.set(i, true);
              }
         }
         //Prune samples
         ISPRClassGeometricDataCollection<IInstanceLabels> samplesSelected;
-        samplesSelected = KNNFactory.takeSelected(samples, index); //Here we remove useless samples      
+        samplesSelected = KNNTools.takeSelected(samples, index); //Here we remove useless samples      
         nnGraph = new NNGraphWithoutAssocuateUpdates(samplesSelected, k);
         //Reorder samples according to distance to nearest enymy        
-        order = DropBasicModel.orderSamplesByEnemies(nnGraph);
+        order = DropBasicModel.orderSamplesByEnemies(nnGraph, -1); //Order from the furthest to the nearest
         //Execute DropModel
         order = DropBasicModel.execute(nnGraph, order);
         //Prepare results

@@ -5,7 +5,6 @@
  */
 package org.prules.dataset;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +17,13 @@ public class GenericContainer extends HashMap<String,Object> implements IGeneric
     
     public GenericContainer(Map<String, Object> values) {
         super(values);
+    }
+    
+    public GenericContainer(IGenericContainer values) {
+        Set<String> keys =  values.keySet();
+        for(String key : keys){
+            super.put(key,values.get(key));
+        }        
     }
 
     public GenericContainer() {        
@@ -52,5 +58,37 @@ public class GenericContainer extends HashMap<String,Object> implements IGeneric
     @Override
     public float getValueAsFloat(String s) {
         return (Float)super.get(s);
+    }   
+
+    @Override
+    public void set(String key, Object value) {
+        super.put(key,value);
     }
+
+    @Override
+    public void setValueAsInt(String key, int value) {
+        super.put(key,value);
+    }
+
+    @Override
+    public void setValueAsDouble(String key, double value) {
+        super.put(key,value);
+    }
+
+    @Override
+    public void setValueAsLong(String key, long value) {
+        super.put(key,value);
+    }
+
+    @Override
+    public void setValueAsFloat(String key, float value) {
+        super.put(key,value);
+    }
+
+    @Override
+    public void setValueAsString(String key, String value) {
+        super.put(key,value);
+    }    
+    
+    
 }

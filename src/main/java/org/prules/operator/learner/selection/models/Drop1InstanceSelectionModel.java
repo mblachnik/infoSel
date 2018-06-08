@@ -71,10 +71,11 @@ public class Drop1InstanceSelectionModel extends AbstractInstanceSelectorModel {
      */
     public IDataIndex selectInstances(ISPRClassGeometricDataCollection<IInstanceLabels> samples) {
         INNGraph nnGraph = new NNGraph(samples, k);
+        //Create naturaln order
         List<Integer> order = new ArrayList<>(samples.size());
         for(int i=0; i<samples.size(); i++){
             order.add(i);
-        }
+        } 
         order = DropBasicModel.execute(nnGraph, order);
         IDataIndex index = samples.getIndex();
         index.setAllFalse();

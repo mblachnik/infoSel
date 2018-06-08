@@ -11,7 +11,7 @@ import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import org.prules.operator.learner.weighting.models.AbstractNoiseEstimatorModel;
 import org.prules.operator.learner.weighting.models.DeltaTestNoiseModel;
-import org.prules.operator.learner.weighting.models.StdNoiseModel;
+import org.prules.operator.learner.weighting.models.VarianceNoiseModel;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
@@ -78,7 +78,7 @@ public class NNEVarianceOperator extends AbstractWeightingOperator {
     public void processExamples(ExampleSet exampleSet) throws OperatorException {                
         DistanceMeasure distance = measureHelper.getInitializedMeasure(exampleSet); 
         k = getParameterAsInt(PARAMETER_K);                
-        AbstractNoiseEstimatorModel model = new StdNoiseModel(distance, k);        
+        AbstractNoiseEstimatorModel model = new VarianceNoiseModel(distance, k);        
         double[] noise = model.run(exampleSet).getFirst();
         nne = model.getNNE();
         Attributes attributes = exampleSet.getAttributes();        

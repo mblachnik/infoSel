@@ -3,6 +3,8 @@ package org.prules.operator.learner.classifiers.neuralnet.models;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class WTMLVQModel extends AbstractLVQModel {
@@ -77,7 +79,6 @@ public class WTMLVQModel extends AbstractLVQModel {
                     double value = prototypeValues[j][i];
                     value -= alpha * g * (exampleValues[i] - value);
                     prototypeValues[j][i] = value;
-
                 }
             }
             j++;
@@ -86,7 +87,8 @@ public class WTMLVQModel extends AbstractLVQModel {
     }
 
     // metoda uaktualniająca współczynnik uczenia oraz promienia sąsiedztwa, które maleją w czasie
-    public boolean nextIteration() {
+    @Override
+    public boolean nextIteration(ExampleSet trainingSet) {
         currentIteration++;
         alpha = LVQTools.learingRateUpdateRule(alpha, currentIteration, iterations, initialAlpha);        
         lambda = LVQTools.lambdaRateUpdateRule(lambda, currentIteration, iterations, initialLambdaRate);
@@ -94,4 +96,43 @@ public class WTMLVQModel extends AbstractLVQModel {
         return currentIteration < iterations;
     }
 
+    /**
+     * Returns total number of iterations (maximum number of iterations)
+     *
+     * @return
+     */
+    @Override
+    public int getMaxIterations() {
+        return iterations;
+    }
+
+    /**
+     * Returns current iteration
+     *
+     * @return
+     */
+    @Override
+    public int getIteration() {
+        return currentIteration;
+    }
+
+    /**
+     * Returns the value of cost function
+     *
+     * @return
+     */
+    @Override
+    public double getCostFunctionValue() {
+        return Double.NaN;
+    }
+
+    /**
+     * Returns list of cost function values
+     *
+     * @return
+     */
+    @Override
+    public List<Double> getCostFunctionValues() {
+        return new ArrayList<>(0);
+    }
 }

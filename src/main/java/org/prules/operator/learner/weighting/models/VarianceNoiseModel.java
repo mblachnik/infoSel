@@ -22,14 +22,14 @@ import org.prules.dataset.Vector;
  *
  * @author Marcin
  */
-public class StdNoiseModel extends AbstractNoiseEstimatorModel {
+public class VarianceNoiseModel extends AbstractNoiseEstimatorModel {
 
     DistanceMeasure distance;
     private final GeometricCollectionTypes knnType = GeometricCollectionTypes.LINEAR_SEARCH;
     int k = 1;
     double nne = 0;
 
-    public StdNoiseModel(DistanceMeasure distance, int k) {
+    public VarianceNoiseModel(DistanceMeasure distance, int k) {
         assert distance != null;
         assert k >= 1;
         this.k = k;

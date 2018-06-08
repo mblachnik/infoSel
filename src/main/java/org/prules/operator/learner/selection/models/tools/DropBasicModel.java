@@ -10,14 +10,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import org.prules.dataset.Const;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.operator.learner.tools.IDataIndex;
 import org.prules.operator.learner.tools.PRulesUtil;
 import org.prules.tools.math.container.DoubleIntContainer;
-import org.prules.tools.math.container.IntIntContainer;
 import org.prules.tools.math.container.knn.INNGraph;
 import org.prules.tools.math.container.knn.ISPRClassGeometricDataCollection;
+import org.prules.tools.math.container.knn.KNNTools;
 
 /**
  *
@@ -28,21 +29,20 @@ public class DropBasicModel {
     public static List execute(INNGraph nnGraph, List<Integer> order) {
         ISPRClassGeometricDataCollection<IInstanceLabels> samples = nnGraph.getSamples();
         //IDataIndex index = samples.getIndex();
-        int numberOfClasses = PRulesUtil.findUniqueLabels(samples).size();
+        Set<Double> uniqueLabels = PRulesUtil.findUniqueLabels(samples);
+        int numberOfClasses = (int)(Collections.max(uniqueLabels)).doubleValue()+1; //Plus 1 becouse label values starts from 0, so when max=2 there are 3 class labels [0, 1, 2]
+        //int numberOfClasses = PRulesUtil.findUniqueLabels(samples).size();
         int with;
         int without;
-        List<Integer> selected = new ArrayList(order.size());
-        
+        List<Integer> selected = new ArrayList(order.size());        
         //Iterator<IInstanceLabels> labelsIterator = samples.storedValueIterator();
         //Set<Integer> removedInstancesIDs = new HashSet<>(sampleSize);
         Collection<IInstanceLabels> res;
         for (int i : order) {
             //while (labelsIterator.hasNext()) { //Iterate over samples
-            IntIntContainer withWithout = improvement(nnGraph,numberOfClasses,i);
-            with = withWithout.getFirst();
-            without = withWithout.getSecond();
+            double improv = improvement(nnGraph,numberOfClasses,i);            
             //If the drop1 rule is fullfield
-            if (without - with >= 0) {                
+            if (improv >= 0) {                
                     //index.set(queryInstanceID, false);                
                     nnGraph.remove(i);
                     //removedInstancesIDs.add(queryInstanceID);                
@@ -53,7 +53,7 @@ public class DropBasicModel {
         return selected;
     }
 
-    public static IntIntContainer improvement(INNGraph nnGraph, int numberOfClasses, int i) {
+    public static double improvement(INNGraph nnGraph, int numberOfClasses, int i) {
         int with = 0;
         int without = 0;
         double realLabel;
@@ -67,8 +67,7 @@ public class DropBasicModel {
         IInstanceLabels labels;
         labels = samples.getStoredValue(i); //read labels of the sample
         int queryInstanceID = (int) labels.getValueAsLong(Const.INDEX_CONTAINER);        
-        for (DoubleIntContainer associatePair : nnGraph.getAssociates(queryInstanceID)) { //Take associates of sample queryInstanceID
-            int associate = associatePair.getSecond();
+        for (int associate : nnGraph.getAssociates(queryInstanceID)) { //Take associates of sample queryInstanceID           
             realLabel = samples.getStoredValue(associate).getLabel();
             Arrays.fill(classFreqCounterWith, 0);
             Arrays.fill(classFreqCounterWithout, 0);
@@ -84,8 +83,8 @@ public class DropBasicModel {
                 }
                 kTmp++;
             }
-            predictedLabelWithout = PRulesUtil.findMostFrequentValue(classFreqCounterWithout);
-            predictedLabelWith = PRulesUtil.findMostFrequentValue(classFreqCounterWith);
+            predictedLabelWithout = KNNTools.getMostFrequentValue(classFreqCounterWithout);
+            predictedLabelWith = KNNTools.getMostFrequentValue(classFreqCounterWith);
             if (predictedLabelWith == realLabel) {
                 with++;
             }
@@ -93,7 +92,7 @@ public class DropBasicModel {
                 without++;
             }
         }
-        return new IntIntContainer(with,without);
+        return without - with;
     }
     
     public static List<Integer> orderSamplesByEnemies(INNGraph nnGraph){
@@ -102,40 +101,21 @@ public class DropBasicModel {
     
     public static List<Integer> orderSamplesByEnemies(INNGraph nnGraph, int direction){
         List<DoubleIntContainer> sampleOrderList = new ArrayList<>(nnGraph.size());
-        IDataIndex indexAfterRemoval = nnGraph.getIndex();
-        for (int i : indexAfterRemoval) {
+        IDataIndex index = nnGraph.getIndex();
+        for (int i : index) {
             List<DoubleIntContainer> enemies = nnGraph.getEnemies(i);
             double distance = Double.POSITIVE_INFINITY;
             if (!enemies.isEmpty()) {
                 distance = direction * enemies.get(0).getFirst();
             }
-            sampleOrderList.add(new DoubleIntContainer(-distance, i));
+            sampleOrderList.add(new DoubleIntContainer(distance, i));
         }
         Collections.sort(sampleOrderList);
         //Prepare samples order
-        List<Integer> order = new ArrayList<>(indexAfterRemoval.getLength());
+        List<Integer> order = new ArrayList<>(index.getLength());
         for (DoubleIntContainer i : sampleOrderList) {
             order.add(i.getSecond());
         }
         return order;
-    }
-    
-//    public static void orderSamples(INNGraph nnGraph, IDataIndex index, List<Integer> order){
-//        List<DoubleIntContainer> sampleOrderList = new ArrayList<>(index.size());
-//        IDataIndex indexAfterRemoval = index.getIndex();
-//        for (int i : indexAfterRemoval) {
-//            List<DoubleIntContainer> enemies = nnGraph.getEnemies(i);
-//            double distance = Double.POSITIVE_INFINITY;
-//            if (!enemies.isEmpty()) {
-//                distance = enemies.get(0).getFirst();
-//            }
-//            sampleOrderList.add(new DoubleIntContainer(-distance, i));
-//        }
-//        Collections.sort(sampleOrderList);
-//        //Prepare samples order
-//        order = new ArrayList<>(index.size());
-//        for (DoubleIntContainer i : sampleOrderList) {
-//            order.add(i.getSecond());
-//        }
-//    }
+    }    
 }

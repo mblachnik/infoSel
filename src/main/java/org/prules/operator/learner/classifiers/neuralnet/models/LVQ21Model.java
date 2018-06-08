@@ -3,6 +3,8 @@ package org.prules.operator.learner.classifiers.neuralnet.models;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -94,9 +96,49 @@ public class LVQ21Model extends AbstractLVQModel {
      * @return
      */
     @Override
-    public boolean nextIteration() {
+    public boolean nextIteration(ExampleSet trainingSet) {
         currentIteration++;
         alpha = LVQTools.learingRateUpdateRule(alpha, currentIteration, iterations, initialAlpha);        
         return currentIteration < iterations;
+    }
+    
+        /**
+     * Returns total number of iterations (maximum number of iterations)
+     *
+     * @return
+     */
+    @Override
+    public int getMaxIterations() {
+        return iterations;
+    }
+
+    /**
+     * Returns current iteration
+     *
+     * @return
+     */
+    @Override
+    public int getIteration() {
+        return currentIteration;
+    }
+
+    /**
+     * Returns the value of cost function
+     *
+     * @return
+     */
+    @Override
+    public double getCostFunctionValue() {
+        return Double.NaN;
+    }
+
+    /**
+     * Returns list of cost function values
+     *
+     * @return
+     */
+    @Override
+    public List<Double> getCostFunctionValues() {
+        return new ArrayList<>(0);
     }
 }

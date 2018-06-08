@@ -6,6 +6,7 @@
 package org.prules.tools.math.container.knn;
 
 import java.util.Collection;
+import java.util.Set;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Test;
@@ -54,7 +55,7 @@ public class NNGraphWithoutAssocuateUpdatesTest {
     public void testInitialize() {
         INNGraph nn = init(3);
         int neigh;
-        nn.initialize();
+        nn.calculateGraph();
         Collection<DoubleIntContainer> sSet;
         
         {
@@ -78,12 +79,12 @@ public class NNGraphWithoutAssocuateUpdatesTest {
             }
         }                
         {
-            int[] res = {6, 1, 3};
-            sSet = nn.getAssociates(0);
+            int[] res = {1, 3, 6};
+            Set<Integer> set;
+            set = nn.getAssociates(0);
             int i = 0;
-            for (DoubleIntContainer c : sSet) {
-                neigh = c.getSecond();
-                assertEquals(res[i],neigh);
+            for (int c : set) {                
+                assertEquals(res[i],c);
                 i++;
             }
         }                                
@@ -121,11 +122,11 @@ public class NNGraphWithoutAssocuateUpdatesTest {
 
         {             
             int[] res = {5};
-            list = nn.getAssociates(4);
+            Set<Integer> set;
+            set = nn.getAssociates(4);
             int i = 0;
-            for (DoubleIntContainer c : list) {
-                neigh = c.getSecond();
-                assertEquals(neigh, res[i]);
+            for (int c : set) {                
+                assertEquals(c, res[i]);
                 i++;
             }
         }        

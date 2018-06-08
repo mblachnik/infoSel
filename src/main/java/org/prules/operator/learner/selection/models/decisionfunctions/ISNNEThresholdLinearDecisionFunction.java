@@ -70,7 +70,7 @@ public class ISNNEThresholdLinearDecisionFunction extends AbstractISDecisionFunc
         double predicted = instance.getPrediction().getLabel();
         double var = instance.getLabels().getValueAsDouble(Ontology.ATTRIBUTE_NOISE);
         double err = Math.abs(real - predicted);
-        double value = err * err / var > threshold ? 1 : 0;
+        double value = (err * err) / var > threshold ? 1 : 0;
         return value;
     }
 

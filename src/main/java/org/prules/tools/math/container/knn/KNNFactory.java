@@ -81,41 +81,4 @@ public class KNNFactory {
         return initializeKNearestNeighbourFactory(type, exampleSet, map, measure);
     }
 
-    /**
-     * Returns nearest neighbor data structure
-     *
-     * @param samples
-     * @param index
-     * @return
-     */
-    public static ISPRClassGeometricDataCollection<IInstanceLabels> takeSelected(ISPRClassGeometricDataCollection<IInstanceLabels> samples, IDataIndex index) {
-        ISPRClassGeometricDataCollection<IInstanceLabels> samplesNew;
-        samplesNew = new LinearList<>(samples.getMeasure(), index.getLength());
-        int j = 0;
-        for(int i : index){
-            Vector values = samples.getSample(i);
-            IInstanceLabels storeValue = samples.getStoredValue(i);            
-            samplesNew.add(values, storeValue);            
-        }
-        return samplesNew;
-    }
-    
-     /**
-     * Returns nearest neighbor data structure
-     *
-     * @param samples
-     * @param index
-     * @return
-     */
-    public static ISPRGeometricDataCollection<IInstanceLabels> takeSelected(ISPRGeometricDataCollection<IInstanceLabels> samples, IDataIndex index) {
-        ISPRClassGeometricDataCollection<IInstanceLabels> samplesNew;
-        samplesNew = new LinearList<>(samples.getMeasure(), index.getLength());
-        int j = 0;
-        for(int i : index){
-            Vector values = samples.getSample(i);
-            IInstanceLabels storeValue = samples.getStoredValue(i);            
-            samplesNew.add(values, storeValue);            
-        }
-        return samplesNew;
-    }
 }

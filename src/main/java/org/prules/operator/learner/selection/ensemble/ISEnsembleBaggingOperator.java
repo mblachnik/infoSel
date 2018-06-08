@@ -30,38 +30,42 @@ import java.util.logging.Logger;
  */
 public class ISEnsembleBaggingOperator extends AbstractISEnsembleOperator {
 
-    public static final String PARAMETER_USE_ENTRY_EXAMPLESET = "Use entry set";        
-    public static final String PARAMETER_SAMPE_RATIO = "Sample ratio";        
+    public static final String PARAMETER_USE_ENTRY_EXAMPLESET = "Use entry set";
+    public static final String PARAMETER_SAMPE_RATIO = "Sample ratio";
     double sampleRatio = 0.8;
-    
+    transient boolean useEntrySet;
+    transient RandomGenerator random;
+
     public ISEnsembleBaggingOperator(OperatorDescription description) {
         super(description);
     }
 
     @Override
-    public void initializeProcessExamples(ExampleSet exampleSet) throws OperatorException {   
+    public void initializeProcessExamples(ExampleSet exampleSet) throws OperatorException {
         super.initializeProcessExamples(exampleSet);
+        useEntrySet = getParameterAsBoolean(PARAMETER_USE_ENTRY_EXAMPLESET);
+        if (!useEntrySet) {
+            random = RandomGenerator.getRandomGenerator(this);
+        }
     }
 
     @Override
-    ExampleSet prepareExampleSet(ExampleSet trainingSet) throws OperatorException {
-        boolean chk = getParameterAsBoolean(PARAMETER_USE_ENTRY_EXAMPLESET);
+    protected ExampleSet preprocessExampleSet(ExampleSet trainingSet) throws OperatorException {
         ExampleSet dataSet;
-        if (chk) {
+        if (useEntrySet) {
             dataSet = trainingSet;
-        } else {            
-            RandomGenerator r = RandomGenerator.getRandomGenerator(this);
+        } else {
             sampleRatio = getParameterAsDouble(PARAMETER_SAMPE_RATIO);
-            int sampleSize = (int)(trainingSet.size()*sampleRatio);
-            Set<Integer> idxSet = r.nextIntSetWithRange(0, trainingSet.size(), sampleSize);            
+            int sampleSize = (int) (trainingSet.size() * sampleRatio);
+            Set<Integer> idxSet = random.nextIntSetWithRange(0, trainingSet.size(), sampleSize);
             int[] idx = new int[sampleSize];
             int j = 0;
-            for(Integer i : idxSet){
+            for (Integer i : idxSet) {
                 idx[j] = i;
                 j++;
             }
-            dataSet = new MappedExampleSet(trainingSet, idx);            
-        }        
+            dataSet = new MappedExampleSet(trainingSet, idx);
+        }
         return dataSet;
     }
 
@@ -78,12 +82,12 @@ public class ISEnsembleBaggingOperator extends AbstractISEnsembleOperator {
 
         List<ParameterType> types = super.getParameterTypes();
         ParameterType type;
-        type = new ParameterTypeBoolean(PARAMETER_USE_ENTRY_EXAMPLESET, "Use entry exampleSet for each iteration", false, true);                
-        types.add(3,type);
-        type = new ParameterTypeDouble(PARAMETER_SAMPE_RATIO,"Sample size", 0.0001, 1, 0.8);
-        type.registerDependencyCondition(new BooleanParameterCondition(this, PARAMETER_USE_ENTRY_EXAMPLESET, false,false));
-        types.add(4,type);        
+        type = new ParameterTypeBoolean(PARAMETER_USE_ENTRY_EXAMPLESET, "Use entry exampleSet for each iteration", false, true);
+        types.add(3, type);
+        type = new ParameterTypeDouble(PARAMETER_SAMPE_RATIO, "Sample size", 0.0001, 1, 0.8);
+        type.registerDependencyCondition(new BooleanParameterCondition(this, PARAMETER_USE_ENTRY_EXAMPLESET, false, false));
+        types.add(4, type);
         return types;
-    }       
+    }
 
 }

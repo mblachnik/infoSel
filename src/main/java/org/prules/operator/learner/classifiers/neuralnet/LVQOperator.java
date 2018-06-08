@@ -31,32 +31,36 @@ import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
 import com.rapidminer.operator.ports.metadata.MDInteger;
 import com.rapidminer.parameter.ParameterType;
+import com.rapidminer.parameter.ParameterTypeBoolean;
 import com.rapidminer.parameter.ParameterTypeCategory;
 import com.rapidminer.parameter.ParameterTypeDouble;
 import com.rapidminer.parameter.ParameterTypeInt;
 import com.rapidminer.parameter.UndefinedParameterError;
 import com.rapidminer.parameter.conditions.EqualTypeCondition;
+import com.rapidminer.tools.LogService;
 import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import java.util.stream.Collectors;
 import org.prules.tools.math.container.knn.KNNFactory;
 import org.prules.dataset.IInstanceLabels;
+import org.prules.operator.learner.classifiers.neuralnet.models.AbstractLVQModel;
 
 /**
- * LVQ Operator which provides a set of LVQ neuralNetwork 
- * GLVQ algorithm - based on paper: Atsushi Sato, Keiji Yamada Generalized
- * Learning Vector Quantization, 1996
+ * LVQ Operator which provides a set of LVQ neuralNetwork GLVQ algorithm - based
+ * on paper: Atsushi Sato, Keiji Yamada Generalized Learning Vector
+ * Quantization, 1996
  *
  * @author Marcin
  */
 public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator {
-        AbstractPrototypeOptimizationChain{
+        AbstractPrototypeOptimizationChain {
 
     /**
      * Number of iterations
      */
-    public static final String PARAMETER_ITERATION_NUMBER = "Iterations";    
+    public static final String PARAMETER_ITERATION_NUMBER = "Iterations";
 
     /**
      * Initial value of update rate
@@ -84,6 +88,11 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
      * Neighborhood parameter for WTM based algorithms
      */
     public static final String PARAMETER_LAMBDA = "Lambda";
+    
+    /**
+     * Debug mode - store debug values in the log file
+     */
+    public static final String PARAMETER_DEBUG = "Debug mode";
 
     public static final String PARAMETER_CALCDIFF = "Calc dF(u)/du";
 
@@ -110,7 +119,7 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
         window = 0.2;
         epsilon = 0.2;
         measureHelper = new DistanceMeasureHelper(this);
-        lvqNeighborhoodType = LVQNeighborhoodTypes.GAUSSIAN;        
+        lvqNeighborhoodType = LVQNeighborhoodTypes.GAUSSIAN;
     }
 
     /**
@@ -127,10 +136,10 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
      */
     @Override
     public IS_KNNClassificationModel<IInstanceLabels> optimize(ExampleSet trainingSet, ExampleSet codebooks) throws OperatorException {
-        this.numberOfIteration = getParameterAsInt(PARAMETER_ITERATION_NUMBER);        
+        this.numberOfIteration = getParameterAsInt(PARAMETER_ITERATION_NUMBER);
         DistanceMeasure distance = measureHelper.getInitializedMeasure(trainingSet);
         distance.init(codebooks.getAttributes(), trainingSet.getAttributes());
-        PRulesModel<ExampleSet> lvqModel = null;
+        AbstractLVQModel lvqModel = null;
         int idLvqType = getParameterAsInt(PARAMETER_LVQ_TYPE);
         lvqType = LVQTypes.values()[idLvqType];
         int idLvqNeighborhood = 0;
@@ -190,7 +199,28 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
                 throw new UserError(this, "Unknown LVQ type");
 
         }
+
         lvqModel.run(trainingSet);
+
+        if (getParameterAsBoolean(PARAMETER_DEBUG)) {
+            String commaSeparatedValues;
+            //Log cost function
+            commaSeparatedValues = lvqModel.getCostFunctionValues().stream().map(i -> i.toString()).collect(Collectors.joining(";"));
+            this.log("CostFunction: " + commaSeparatedValues, LogService.MINIMUM);
+            List<Double> rates;
+            //Log learning rates
+            rates = (List<Double>) lvqModel.getStoredValue(AbstractLVQModel.LEARNING_RATE_KEY);
+            if (rates != null) {
+                commaSeparatedValues = rates.stream().map(i -> i.toString()).collect(Collectors.joining(";"));
+                this.log("LearningRate: " + commaSeparatedValues, LogService.MINIMUM);
+            }
+            //Log lambda rates
+            rates = (List<Double>) lvqModel.getStoredValue(AbstractLVQModel.LAMBDA_RATE_KEY);
+            if (rates != null) {
+                commaSeparatedValues = rates.stream().map(i -> i.toString()).collect(Collectors.joining(";"));
+                this.log("LambdaRate: " + commaSeparatedValues, LogService.MINIMUM);
+            }
+        }
         if (this.modelOutputPort.isConnected()) {
             ISPRGeometricDataCollection<IInstanceLabels> knn = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, codebooks, distance);
             IS_KNNClassificationModel<IInstanceLabels> model = new IS_KNNClassificationModel<>(codebooks, knn, 1, VotingType.MAJORITY, PredictionType.Classification);
@@ -201,7 +231,7 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
 
     /**
      * Returns metadata defining number of prototypes
-     *     
+     *
      * @return
      * @throws UndefinedParameterError
      */
@@ -210,11 +240,11 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
         if (this.initialPrototypesSourcePort.isConnected()) {
             ExampleSetMetaData prototypesMetaData = (ExampleSetMetaData) this.initialPrototypesSourcePort.getMetaData();
             if (prototypesMetaData != null) {
-                return prototypesMetaData.getNumberOfExamples();                
+                return prototypesMetaData.getNumberOfExamples();
             }
-        } 
+        }
         int num = getParameterAsInt(PARAMETER_NUMBER_OF_NEURONS);
-        return new MDInteger(num);                        
+        return new MDInteger(num);
     }
 
     /**
@@ -262,7 +292,7 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
 
         type = new ParameterTypeCategory(PARAMETER_LVQ_TYPE, "Defines on type of lvq algorithm.", LVQTypes.typeNames(), 0);
         type.setExpert(false);
-        types.add(type);        
+        types.add(type);
 
         type = new ParameterTypeInt(PARAMETER_ITERATION_NUMBER, "Number of iteration loop", 1, Integer.MAX_VALUE, this.numberOfIteration);
         type.setExpert(false);
@@ -304,7 +334,10 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
                 LVQTypes.WTM_LVQ.ordinal(), LVQTypes.SNG.ordinal()));
         types.add(type);
 
-        types.addAll(DistanceMeasures.getParameterTypes(this));        
+        types.addAll(DistanceMeasures.getParameterTypes(this));
+        
+        type = new ParameterTypeBoolean(PARAMETER_DEBUG, "Debug mode. Recorded values are stored in a RapidMiner log", false );
+        types.add(type);
         return types;
     }
 }

@@ -6,26 +6,20 @@ package org.prules.operator.learner.selection.models;
 
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.dataset.Const;
 import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.ListIterator;
 import org.prules.tools.math.container.knn.KNNFactory;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.operator.learner.tools.IDataIndex;
 import org.prules.operator.learner.selection.models.decisionfunctions.ISClassDecisionFunction;
 import org.prules.operator.learner.selection.models.tools.DropBasicModel;
 import org.prules.operator.learner.tools.DataIndex;
-import org.prules.operator.learner.tools.PRulesUtil;
 import org.prules.operator.learner.tools.PredictionProblemType;
-import org.prules.tools.math.container.DoubleIntContainer;
 import org.prules.tools.math.container.knn.INNGraph;
 import org.prules.tools.math.container.knn.ISPRClassGeometricDataCollection;
-import org.prules.tools.math.container.knn.NNGraph;
+import org.prules.tools.math.container.knn.KNNTools;
 import org.prules.tools.math.container.knn.NNGraphWithoutAssocuateUpdates;
 
 /**
@@ -80,32 +74,15 @@ public class Drop3InstanceSelectionModel extends AbstractInstanceSelectorModel {
      */
     public IDataIndex selectInstances(ISPRClassGeometricDataCollection<IInstanceLabels> samples) {
         INNGraph nnGraph;
+        List<Integer> order;
         //The code can be optimized when nnGraph is directly used to perform ENN, but here we don;t use it, we simply call ENN
         ENNInstanceSelectionModel ennModel = new ENNInstanceSelectionModel(measure, k, new ISClassDecisionFunction(), false);
         IDataIndex index = ennModel.selectInstances(samples, PredictionProblemType.CLASSIFICATION);
         ISPRClassGeometricDataCollection<IInstanceLabels> samplesSelected;
-        samplesSelected = KNNFactory.takeSelected(samples, index); //Here we remove useless samples      
+        samplesSelected = KNNTools.takeSelected(samples, index); //Here we remove useless samples      
         nnGraph = new NNGraphWithoutAssocuateUpdates(samplesSelected,k);
         //Reorder samples according to distance to nearest enymy        
-        List<DoubleIntContainer> sampleOrderList = new ArrayList<>(samplesSelected.size());
-        IDataIndex indexAfterRemoval = samplesSelected.getIndex();
-        for (int i : indexAfterRemoval) {
-            List<DoubleIntContainer> enemies = nnGraph.getEnemies(i);
-            double distance = Double.POSITIVE_INFINITY;
-            if (!enemies.isEmpty()) {
-                distance = enemies.get(0).getFirst();
-            }
-            sampleOrderList.add(new DoubleIntContainer(-distance, i));
-        }
-        Collections.sort(sampleOrderList);
-        List<Integer> order = new ArrayList<>(samplesSelected.size());
-        for(DoubleIntContainer i : sampleOrderList){
-            order.add(i.getSecond());
-        }
-//        List<Integer> order = new ArrayList<>(samplesSelected.size());
-//        for (int i : indexAfterRemoval) {
-//            order.add(i);
-//        }
+        order = DropBasicModel.orderSamplesByEnemies(nnGraph,-1); //-1 indicates the order from the furtherst to the nearest enemy
         //Execute DropModel
         order = DropBasicModel.execute(nnGraph, order);
         //Prepare results

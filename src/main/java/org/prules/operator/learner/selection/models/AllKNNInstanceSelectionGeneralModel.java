@@ -115,7 +115,7 @@ public class AllKNNInstanceSelectionGeneralModel extends AbstractInstanceSelecto
                     int i = (int) it.getSecond().getLabel();
                     counter[i] += performanceStep;
                     if (k > lowerK) {
-                        predictedLabel = PRulesUtil.findMostFrequentValue(counter);
+                        predictedLabel = KNNTools.getMostFrequentValue(counter);
                         prediction.put(Const.LABEL, predictedLabel);
                         prediction.put(Const.CONFIDENCE, counter);
                         instance.put(Const.VECTOR, values);

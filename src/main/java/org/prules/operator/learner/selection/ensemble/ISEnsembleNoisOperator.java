@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.prules.operator.learner.selection.ensemble;
 
 import com.rapidminer.example.Attribute;
@@ -22,31 +21,37 @@ import java.util.List;
  *
  * @author Marcin
  */
-public class ISEnsembleNoisOperator extends AbstractISEnsembleOperator{
-    
+public class ISEnsembleNoisOperator extends AbstractISEnsembleOperator {
+
     public static final String PARAMETER_NOISE_LEVEL = "Noise level";
+    transient RandomGenerator random;
 
     public ISEnsembleNoisOperator(OperatorDescription description) {
         super(description);
     }
-    
+
     @Override
-    ExampleSet prepareExampleSet(ExampleSet trainingSet) throws OperatorException {
+    public void initializeProcessExamples(ExampleSet exampleSet) throws OperatorException {
+        super.initializeProcessExamples(exampleSet);
+        random = RandomGenerator.getRandomGenerator(this);
+    }
+
+    @Override
+    protected ExampleSet preprocessExampleSet(ExampleSet trainingSet) throws OperatorException {
         ExampleSet trainingSubSet = PRulesUtil.duplicateExampleSet(trainingSet);
         double noiseLevel = getParameterAsDouble(PARAMETER_NOISE_LEVEL);
-        Attributes attributes = trainingSubSet.getAttributes();
-        RandomGenerator random = RandomGenerator.getRandomGenerator(this);        
-        for (Example e : trainingSubSet){
-            for (Attribute a : attributes){                
+        Attributes attributes = trainingSubSet.getAttributes();        
+        for (Example e : trainingSubSet) {
+            for (Attribute a : attributes) {
                 double value = e.getValue(a);
-                double noise = random.nextGaussian()* noiseLevel;
+                double noise = random.nextGaussian() * noiseLevel;
                 e.setValue(a, value + noise);
-            }                
+            }
         }
         return trainingSubSet;
     }
-    
-        @Override
+
+    @Override
     public List<ParameterType> getParameterTypes() {
         List<ParameterType> types = super.getParameterTypes();
         ParameterType type = new ParameterTypeDouble(PARAMETER_NOISE_LEVEL, PARAMETER_NOISE_LEVEL, 0, Double.MAX_VALUE, 0.1);
@@ -54,5 +59,5 @@ public class ISEnsembleNoisOperator extends AbstractISEnsembleOperator{
         types.add(type);
         return types;
     }
-    
+
 }

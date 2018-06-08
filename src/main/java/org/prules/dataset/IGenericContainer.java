@@ -7,12 +7,13 @@ package org.prules.dataset;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Interface for any single datarow container, it allows to store any complex instance. An instance can contain any complex elements like labels, predictions, vector etc. These elements are called by String names
  * @author Marcin
  */
-public interface IGenericContainer extends Map<String, Object>,Serializable {
+public interface IGenericContainer extends Serializable {
 
     /**
      * Read instance element by name of this element
@@ -21,6 +22,7 @@ public interface IGenericContainer extends Map<String, Object>,Serializable {
      * @return 
      */
     <T> T get(String s); 
+       
     
     /**
      * Read an element as int value
@@ -56,5 +58,62 @@ public interface IGenericContainer extends Map<String, Object>,Serializable {
      * @return 
      */
     String getValueAsString(String s);
+    
+    Object put(String key, Object value);
+    void set(String key, Object value);
+    
+    
+    /**
+     * Write an element as int value
+     * @param key - element name
+     * @param value -      
+     */
+    void setValueAsInt(String key, int value);
+
+    /**
+     * Write an element as double value
+     * @param key - element name
+     * @param value -      
+     */
+    void  setValueAsDouble(String key, double value);
+    
+    /**
+     * Write an element as long value
+     * @param key - element name
+     * @param value -      
+     */
+    void setValueAsLong(String key, long value);
+    
+    /**
+     * Write an element as float
+     * @param key - element name
+     * @param value -      
+     */
+    void setValueAsFloat(String key, float value);
         
+    /**
+     * Write an element as String
+     * @param key - element name
+     * @param value -      
+     */
+    void setValueAsString(String key, String value);
+    
+    /**
+     * Returns number of elements in the container
+     * @return 
+     */
+    int size();
+    
+    /**
+     * Returns list of keys of elements in the container
+     * @return 
+     */
+    Set<String> keySet();
+    
+    /**
+     * returns true if container is empty
+     * @return 
+     */
+    boolean isEmpty();
+    
 }

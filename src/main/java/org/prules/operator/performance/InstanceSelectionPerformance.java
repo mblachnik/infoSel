@@ -118,8 +118,11 @@ public class InstanceSelectionPerformance extends Operator {
                 double size1 = exampleSet1.size();
                 double size2 = exampleSet2.size();
                 sizeReduction = Math.abs(size1 - size2);
-                relativeSizeReduction = sizeReduction / size1;
-                compression = size1 > size2 ? size2 / size1 : size1 / size2;
+                double maxSize = size1 > size2 ? size1 : size2;
+                double minSize = size1 > size2 ? size2 : size1;
+                maxSize = maxSize == 0 ? 1 : maxSize; //Prevent 0/0 and NaN value                
+                compression = minSize / maxSize;
+                relativeSizeReduction = 1-compression;
                 
                 /*
 		this.lastCount = 0;

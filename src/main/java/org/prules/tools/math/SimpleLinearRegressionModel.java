@@ -18,6 +18,7 @@ public class SimpleLinearRegressionModel {
     public void train(double[] x, double y[]){
         assert x!=null && y!=null;
         assert x.length == y.length;
+        assert x.length > 0;
         int n = x.length;
         double meanX=0, meanY=0, meanX2=0, meanXY=0;                
         for(int i=0; i<n; i++){
@@ -30,7 +31,9 @@ public class SimpleLinearRegressionModel {
         meanY  /= n;
         meanXY /= n;
         meanX2 /= n;
-        a = (meanX * meanY - meanXY)/(meanX*meanX - meanX2);
+        double numerator = meanX * meanY - meanXY;
+        double denominator = meanX*meanX - meanX2;        
+        a = (numerator == 0) && (denominator == 0) ? 0 : numerator/denominator;
         b = meanY - a*meanX;        
         
     }

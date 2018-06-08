@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @param <M>
  * @author Marcin
  */
-public class IntIntContainer implements Comparable<IntDoubleContainer>, Serializable {
+public class IntIntContainer implements Comparable<IntIntContainer>, Serializable {
 
     /**
      *
@@ -89,7 +89,7 @@ public class IntIntContainer implements Comparable<IntDoubleContainer>, Serializ
     }
 
     @Override
-    public int compareTo(IntDoubleContainer o) {
+    public int compareTo(IntIntContainer o) {
         int result = first - o.first;
         if (result == 0) {
             return 0;

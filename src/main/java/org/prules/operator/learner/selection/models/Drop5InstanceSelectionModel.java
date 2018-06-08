@@ -7,13 +7,10 @@ package org.prules.operator.learner.selection.models;
 import org.prules.operator.learner.selection.models.tools.DropBasicModel;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.dataset.Const;
 import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import org.prules.tools.math.container.knn.KNNFactory;
 import org.prules.dataset.IInstanceLabels;
@@ -77,27 +74,28 @@ public class Drop5InstanceSelectionModel extends AbstractInstanceSelectorModel {
         List<DoubleIntContainer> sampleOrderList = new ArrayList<>(samples.size());
         INNGraph nnGraph;
         nnGraph = new NNGraphWithoutAssocuateUpdates(samples, k);
-        order = DropBasicModel.orderSamplesByEnemies(nnGraph);
+        order = DropBasicModel.orderSamplesByEnemies(nnGraph); //Order from nearest to furhterest enemie
         //Execute DropModel
         order = DropBasicModel.execute(nnGraph, order);
         //Prepare results
         int oldSize;
         do {
-            oldSize = order.size();
-            sampleOrderList.clear();
-            for (int i : order) {
-                List<DoubleIntContainer> enemies = nnGraph.getEnemies(i);
-                double distance = Double.POSITIVE_INFINITY;
-                if (!enemies.isEmpty()) {
-                    distance = enemies.get(0).getFirst();
-                }
-                sampleOrderList.add(new DoubleIntContainer(-distance, i));
-            }
-            Collections.sort(sampleOrderList);
-            order.clear();
-            for (DoubleIntContainer i : sampleOrderList) {
-                order.add(i.getSecond());
-            }
+              oldSize = order.size();
+//            sampleOrderList.clear();
+//            for (int i : order) {
+//                List<DoubleIntContainer> enemies = nnGraph.getEnemies(i);
+//                double distance = Double.POSITIVE_INFINITY;
+//                if (!enemies.isEmpty()) {
+//                    distance = enemies.get(0).getFirst();
+//                }
+//                sampleOrderList.add(new DoubleIntContainer(-distance, i));
+//            }
+//            Collections.sort(sampleOrderList);
+//            order.clear();
+//            for (DoubleIntContainer i : sampleOrderList) {
+//                order.add(i.getSecond());
+//            }
+            order = DropBasicModel.orderSamplesByEnemies(nnGraph,-1); //Order from furthest to nearest enemie
             order = DropBasicModel.execute(nnGraph, order);
         } while (oldSize > order.size());
         boolean[] binIndex = new boolean[samples.size()];

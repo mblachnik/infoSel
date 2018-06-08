@@ -98,7 +98,7 @@ public class RENNInstanceSelectionModelOld extends AbstractInstanceSelectorModel
                 }
                 counter[(int) example.getLabel()] --; //here we have to subtract distanceRate because we took k+1 neighbours 					            
                 sum--; //here we have to subtract because nearest neighbors includ itself, see line above
-                int mostFrequent = PRulesUtil.findMostFrequentValue(counter);
+                int mostFrequent = KNNTools.getMostFrequentValue(counter);
                 if (example.getLabel() != mostFrequent) {
                     index.set(instanceIndex, false);
                     breakLoop = true;

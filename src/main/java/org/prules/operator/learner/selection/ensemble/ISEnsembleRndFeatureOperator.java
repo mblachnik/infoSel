@@ -37,7 +37,7 @@ public class ISEnsembleRndFeatureOperator extends AbstractISEnsembleOperator {
     public static final String PARAMETER_RATIO = "Sampling ratio";
     ArrayList<Attribute> list;
     double ratio;
-    RandomGenerator random;
+    transient RandomGenerator random;
 
     public ISEnsembleRndFeatureOperator(OperatorDescription description) {
         super(description);
@@ -56,12 +56,12 @@ public class ISEnsembleRndFeatureOperator extends AbstractISEnsembleOperator {
     }
 
     @Override
-    ExampleSet prepareExampleSet(ExampleSet trainingSet) throws OperatorException {                
+    protected ExampleSet preprocessExampleSet(ExampleSet trainingSet) throws OperatorException {                
         ExampleSet trainingSubSet = (ExampleSet) trainingSet.clone();
         Attributes attributes = trainingSubSet.getAttributes();
         int size = attributes.size();
-        int newSize = (int) Math.round(size * ratio);                        
-        Set<Integer> idxSet = random.nextIntSetWithRange(0, size, newSize);
+        int sizeToRemove = (int) Math.round(size * (1-ratio));                        
+        Set<Integer> idxSet = random.nextIntSetWithRange(0, size, sizeToRemove);
         for (int i : idxSet) {            
             attributes.remove(list.get(i));
         }

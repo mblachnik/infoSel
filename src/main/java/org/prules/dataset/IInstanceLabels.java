@@ -71,6 +71,9 @@ public interface IInstanceLabels extends IGenericContainer {
     
     /**
      * Set value
+     * @param name
+     * @param value
      */
+    @Override
     void set(String name, Object value);
 }

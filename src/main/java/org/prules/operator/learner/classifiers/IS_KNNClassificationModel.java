@@ -107,7 +107,7 @@ public class IS_KNNClassificationModel<T extends Serializable> extends Predictio
                     KNNTools.doNNVotes(counter, instance, (ISPRGeometricDataCollection<IInstanceLabels>) samples, k, weightedNN);
 
                     // finding most frequent class
-                    mostFrequentIndex = PRulesUtil.findMostFrequentValue(counter);
+                    mostFrequentIndex = KNNTools.getMostFrequentValue(counter);
                     // setting prediction
                     example.setValue(predictedLabel, mostFrequentIndex);
                     // setting confidence
@@ -121,7 +121,7 @@ public class IS_KNNClassificationModel<T extends Serializable> extends Predictio
                     KNNTools.doNNVotes(counter, instance, (ISPRGeometricDataCollection<IInstanceLabels>) samples, k, weightedNN);
 
                     // finding most frequent class
-                    mostFrequentIndex = PRulesUtil.findMostFrequentValue(counter);
+                    mostFrequentIndex = KNNTools.getMostFrequentValue(counter);
                     // setting prediction
                     example.setValue(predictedLabel, mostFrequentIndex);                                        
                     break;

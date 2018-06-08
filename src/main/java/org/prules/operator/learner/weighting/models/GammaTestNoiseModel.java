@@ -14,8 +14,11 @@ import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 import org.prules.tools.math.container.PairContainer;
 import org.prules.tools.math.container.knn.KNNFactory;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.dataset.Vector;
 
@@ -59,21 +62,20 @@ public class GammaTestNoiseModel extends AbstractNoiseEstimatorModel {
         double[] deviationDist   = new double[k]; //The -1 is used to ignore its selve in nearest neighbors
         while (sampleIterator.hasNext() && labelIterator.hasNext()) {
             vector = sampleIterator.next();
-            res = knn.getNearestValueDistances(k+1, vector);                         
-            int nearestIndex = -1;
+            res = knn.getNearestValueDistances(k, vector);              
             double label = Double.NaN;
             double dist  = Double.NaN;
+            int nearestIndex = 0;
             for (DoubleObjectContainer<IInstanceLabels> distAndLabel : res){
-                if (nearestIndex>=0){
-                    double error = distAndLabel.getSecond().getLabel() - label; 
-                    double nearestDistance = distAndLabel.getFirst();
-                    deviationLabels[nearestIndex] = 0.5 * error * error;                    
-                    deviationDist[nearestIndex]   = nearestDistance * nearestDistance;                    
-                    nneLabels[nearestIndex]    += deviationLabels[nearestIndex];
-                    nneDistances[nearestIndex] += deviationDist[nearestIndex];
-                } else {
+                if (nearestIndex==0){
                     label = distAndLabel.getSecond().getLabel(); //The first value is the qctual value (it selve)
                 }
+                double error = label - distAndLabel.getSecond().getLabel(); 
+                double nearestDistance = distAndLabel.getFirst();
+                deviationLabels[nearestIndex] = 0.5 * error * error;                    
+                deviationDist[nearestIndex]   = nearestDistance * nearestDistance;                    
+                nneLabels[nearestIndex]    += deviationLabels[nearestIndex];
+                nneDistances[nearestIndex] += deviationDist[nearestIndex];                
                 nearestIndex++;                                       
             }            
             linearModel.train(deviationDist, deviationLabels);
@@ -83,8 +85,8 @@ public class GammaTestNoiseModel extends AbstractNoiseEstimatorModel {
             instanceIndex++;
         }
         for(int i=0; i<k; i++){
-            nneLabels[i] /= instanceIndex;
-            nneDistances[i] /= instanceIndex;
+            nneLabels[i] /= knn.size();
+            nneDistances[i] /= knn.size();
         }
         linearModel.train(nneDistances, nneLabels);
         nne       = linearModel.getB();
@@ -97,6 +99,7 @@ public class GammaTestNoiseModel extends AbstractNoiseEstimatorModel {
      * In this case we can get both the level of noise as the bias parameter, and the slope of the noise.
      * @return 
      */
+    @Override
     public double getNNE() {
         return nne;
     }

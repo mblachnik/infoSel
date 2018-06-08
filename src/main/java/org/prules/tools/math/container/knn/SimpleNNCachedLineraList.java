@@ -44,6 +44,7 @@ import org.prules.tools.math.container.DoubleObjectContainer;
 import org.prules.tools.math.container.SymetricDoubleMatrix;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.dataset.Vector;
+import org.prules.tools.math.similarity.IDistanceEvaluator;
 
 /**
  * This class is an implementation of the GeometricDataCollection interface, It
@@ -66,6 +67,7 @@ public class SimpleNNCachedLineraList<T extends IInstanceLabels> implements ISPR
     List<T> storedValues;
     SymetricDoubleMatrix distanceCache; //Structure which holds symetrix matrix
     private int index = -1;
+    IDistanceEvaluator distanceEvaluator;
 
     /**
      * Constructor of the class
@@ -79,6 +81,7 @@ public class SimpleNNCachedLineraList<T extends IInstanceLabels> implements ISPR
         storedValues = new ArrayList<>(n);
         //int cacheSize  = (n*n + n)/2;                
         distanceCache = new SymetricDoubleMatrix(n);
+        distanceEvaluator = new DistanceEvaluator(distance);
     }
 
     public SimpleNNCachedLineraList(ExampleSet exampleSet, Map<Attribute, String> storedValuesAttribute, DistanceMeasure distance) {
@@ -123,7 +126,7 @@ public class SimpleNNCachedLineraList<T extends IInstanceLabels> implements ISPR
         this.storedValues.add(storeValue);
         int i = 0;
         for (Vector sample : samples) {
-            double dist = DistanceEvaluator.evaluateDistance(distance, sample, values);
+            double dist = distanceEvaluator.evaluateDistance(sample, values);
             distanceCache.set(i, (int) index, dist);
             i++;
         }
@@ -144,7 +147,7 @@ public class SimpleNNCachedLineraList<T extends IInstanceLabels> implements ISPR
             BoundedPriorityQueue<Tupel<Double, T>> queue = new BoundedPriorityQueue<>(k);
             int i = 0;
             for (Vector sample : this.samples) {
-                double dist = DistanceEvaluator.evaluateDistance(distance, sample, values);
+                double dist = distanceEvaluator.evaluateDistance(sample, values);
                 queue.add(new Tupel<>(dist, storedValues.get(i)));
                 i++;
             }
@@ -156,7 +159,7 @@ public class SimpleNNCachedLineraList<T extends IInstanceLabels> implements ISPR
             double minDist = Double.MAX_VALUE;
             T subResult = null;
             for (Vector sample : this.samples) {
-                double dist = DistanceEvaluator.evaluateDistance(distance, sample, values);
+                double dist = distanceEvaluator.evaluateDistance(sample, values);
                 if (dist < minDist) {
                     minDist = dist;
                     subResult = storedValues.get(i);
@@ -181,7 +184,7 @@ public class SimpleNNCachedLineraList<T extends IInstanceLabels> implements ISPR
         BoundedPriorityQueue<DoubleObjectContainer<T>> queue = new BoundedPriorityQueue<>(k);
         int i = 0;
         for (Vector sample : this.samples) {
-            double dist = DistanceEvaluator.evaluateDistance(distance, sample, values);
+            double dist = distanceEvaluator.evaluateDistance(sample, values);
             queue.add(new DoubleObjectContainer<>(dist, storedValues.get(i)));
             i++;
         }
@@ -201,7 +204,7 @@ public class SimpleNNCachedLineraList<T extends IInstanceLabels> implements ISPR
         ArrayList<DoubleObjectContainer<T>> queue = new ArrayList<>();
         int i = 0;
         for (Vector sample : this.samples) {
-            double currentDistance = DistanceEvaluator.evaluateDistance(distance, sample, values);
+            double currentDistance = distanceEvaluator.evaluateDistance(sample, values);
             if (currentDistance <= withinDistance) {
                 queue.add(new DoubleObjectContainer<>(currentDistance, storedValues.get(i)));
             }
@@ -418,7 +421,7 @@ public class SimpleNNCachedLineraList<T extends IInstanceLabels> implements ISPR
         storedValues.set(index, storedValue);
         int i = 0;
         for (Vector values : samples) {
-            double dist = DistanceEvaluator.evaluateDistance(distance, values, sample);
+            double dist = distanceEvaluator.evaluateDistance(values, sample);
             distanceCache.set(i, index, dist);
             i++;
         }
