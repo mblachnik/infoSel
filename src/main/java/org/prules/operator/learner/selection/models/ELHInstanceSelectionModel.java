@@ -5,12 +5,8 @@
 package org.prules.operator.learner.selection.models;
 
 import com.rapidminer.example.Example;
-import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.set.EditedExampleSet;
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.operator.learner.PRulesModel;
-import org.prules.operator.learner.selection.models.tools.EmptyInstanceModifier;
-import org.prules.operator.learner.selection.models.tools.InstanceModifier;
 import org.prules.operator.learner.tools.DataIndex;
 import org.prules.operator.learner.selection.models.tools.ELH;
 import org.prules.tools.math.container.knn.KNNTools;
@@ -32,8 +28,7 @@ public class ELHInstanceSelectionModel extends AbstractInstanceSelectorModel {
 
     /**
      * Constructor for ELH instance selection algorithm
-     * @param measure
-     * @param modifier
+     * @param measure     
      */
     public ELHInstanceSelectionModel(DistanceMeasure measure) {
         this.measure = measure;

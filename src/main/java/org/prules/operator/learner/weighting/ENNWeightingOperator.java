@@ -5,26 +5,22 @@
 package org.prules.operator.learner.weighting;
 
 import com.rapidminer.example.Attribute;
-import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
-import org.prules.operator.AbstractPRulesBasicOperator;
 import org.prules.operator.learner.selection.models.decisionfunctions.ISClassDecisionFunction;
 import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
-import org.prules.operator.learner.selection.models.ENNWithInstanceModifierInstanceSelectionModel;
 import org.prules.operator.learner.selection.ENNInstanceSelectionOperator;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeBoolean;
 import com.rapidminer.parameter.ParameterTypeInt;
-import com.rapidminer.tools.Ontology;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
 import java.util.List;
+import org.prules.operator.learner.selection.models.ENNInstanceSelectionModel;
 
 /**
  *
@@ -56,7 +52,7 @@ public class ENNWeightingOperator  extends AbstractWeightingOperator {
         k = getParameterAsInt(ENNInstanceSelectionOperator.PARAMETER_K);        
         IISDecisionFunction loss = new ISClassDecisionFunction();
         boolean weightedNN = getParameterAsBoolean(PARAMETER_WEIGHTED_NN);
-        ENNWithInstanceModifierInstanceSelectionModel model = new ENNWithInstanceModifierInstanceSelectionModel(distance, k, loss, weightedNN);
+        ENNInstanceSelectionModel model = new ENNInstanceSelectionModel(distance, k, loss, weightedNN);
         model.setStoreConfidence(true);
         model.run(exampleSet);
         Attribute weights = exampleSet.getAttributes().getWeight();        

@@ -15,6 +15,7 @@ import org.prules.tools.math.container.PairContainer;
 import org.prules.tools.math.container.knn.KNNFactory;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -62,28 +63,28 @@ public class GammaTestNoiseModel extends AbstractNoiseEstimatorModel {
         double[] deviationDist   = new double[k]; //The -1 is used to ignore its selve in nearest neighbors
         while (sampleIterator.hasNext() && labelIterator.hasNext()) {
             vector = sampleIterator.next();
-            res = knn.getNearestValueDistances(k, vector);              
+            res = knn.getNearestValueDistances(k+1, vector);              
             double label = Double.NaN;
-            double dist  = Double.NaN;
+            double dist  = Double.NaN;            
+            DoubleObjectContainer<IInstanceLabels>[] resArray =  res.toArray(new DoubleObjectContainer[0]);
+            Arrays.sort(resArray);
             int nearestIndex = 0;
-            for (DoubleObjectContainer<IInstanceLabels> distAndLabel : res){
-                if (nearestIndex==0){
-                    label = distAndLabel.getSecond().getLabel(); //The first value is the qctual value (it selve)
-                }
+            label = resArray[nearestIndex].getSecond().getLabel();
+            for (nearestIndex=0; nearestIndex<resArray.length-1; nearestIndex++){ //Here we start from 0, but we iterate untill length-1, and when we read from resTab we read nearestIndex+1
+                DoubleObjectContainer<IInstanceLabels> distAndLabel =  resArray[nearestIndex+1];                
                 double error = label - distAndLabel.getSecond().getLabel(); 
-                double nearestDistance = distAndLabel.getFirst();
+                double nearestDistance = distAndLabel.getFirst();                
                 deviationLabels[nearestIndex] = 0.5 * error * error;                    
                 deviationDist[nearestIndex]   = nearestDistance * nearestDistance;                    
                 nneLabels[nearestIndex]    += deviationLabels[nearestIndex];
-                nneDistances[nearestIndex] += deviationDist[nearestIndex];                
-                nearestIndex++;                                       
+                nneDistances[nearestIndex] += deviationDist[nearestIndex];                                           
             }            
             linearModel.train(deviationDist, deviationLabels);
                         
             noise[instanceIndex] = linearModel.getB();
             slope[instanceIndex] = linearModel.getA();
             instanceIndex++;
-        }
+        }        
         for(int i=0; i<k; i++){
             nneLabels[i] /= knn.size();
             nneDistances[i] /= knn.size();

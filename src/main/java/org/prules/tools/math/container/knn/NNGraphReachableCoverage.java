@@ -62,10 +62,12 @@ public class NNGraphReachableCoverage implements INNGraph {
         enemies = new HashMap(samples.size());
         enemyAssociate = new HashMap(samples.size());
         for (int i = 0; i < samples.size(); i++) {
-            coverage.put(i, new HashSet<Integer>());
-            reachable.put(i, new LinkedList<DoubleIntContainer>());
-            enemies.put(i, new LinkedList<DoubleIntContainer>());
-            enemyAssociate.put(i, new HashSet<Integer>());
+            coverage.put(i, new HashSet<>(k+1));
+            //reachable.put(i, new LinkedList<DoubleIntContainer>());
+            reachable.put(i, new ArrayList<>(k+1));
+            //enemies.put(i, new LinkedList<DoubleIntContainer>());
+            enemies.put(i, new ArrayList<>(k+1));
+            enemyAssociate.put(i, new HashSet<>(k+1));
         }
     }
 

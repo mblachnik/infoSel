@@ -5,7 +5,6 @@ import com.rapidminer.example.set.SelectedExampleSet;
 import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import org.prules.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
 import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
-import org.prules.operator.learner.tools.DataIndex;
 import com.rapidminer.operator.OperatorCapability;
 import static com.rapidminer.operator.OperatorCapability.NUMERICAL_LABEL;
 import com.rapidminer.operator.OperatorDescription;
@@ -14,8 +13,6 @@ import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
 import java.util.List;
-import org.prules.operator.learner.selection.models.tools.InstanceModifier;
-import org.prules.operator.learner.selection.models.tools.InstanceModifierHelper;
 
 /**
  * This class is used to provide Relative Neighbor Graph instance selection operator
@@ -43,9 +40,8 @@ public class RNGInstanceSelectionOperator extends AbstractInstanceSelectorOperat
     @Override
     public AbstractInstanceSelectorModel configureInstanceSelectionModel(SelectedExampleSet exampleSet) throws OperatorException {
         DistanceMeasure distance = measureHelper.getInitializedMeasure(exampleSet);
-        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);
-        InstanceModifier instanceModifier = InstanceModifierHelper.getConfiguredInstanceModifier(this);
-        return new RNGInstanceSelectionModel(distance, loss, instanceModifier);        
+        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);        
+        return new RNGInstanceSelectionModel(distance, loss);        
     }
 
         /**
@@ -104,9 +100,7 @@ public class RNGInstanceSelectionOperator extends AbstractInstanceSelectorOperat
      */
     @Override
     public List<ParameterType> getParameterTypes() {
-        List<ParameterType> types = super.getParameterTypes();        
-                
-        types.addAll(InstanceModifierHelper.getParameterTypes(this));
+        List<ParameterType> types = super.getParameterTypes();                                
 
         return types;
     }

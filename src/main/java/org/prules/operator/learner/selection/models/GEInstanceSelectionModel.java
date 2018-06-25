@@ -4,13 +4,9 @@
  */
 package org.prules.operator.learner.selection.models;
 
-import org.prules.operator.learner.PRulesModel;
-import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.set.SelectedExampleSet;
 import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
-import org.prules.operator.learner.tools.DataIndex;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import org.prules.operator.learner.selection.models.tools.InstanceModifier;
 import org.prules.operator.learner.tools.IDataIndex;
 
 /**
@@ -27,8 +23,8 @@ public class GEInstanceSelectionModel extends AbstractInstanceSelectorModel impl
      * @param loss - loss function
      * @param modifier - how the input instance is modified     
      */
-    public GEInstanceSelectionModel(DistanceMeasure distance, IISDecisionFunction loss, InstanceModifier modifier) {
-        this.model = new EditedDistanceGraphModel(distance,this, loss, modifier);
+    public GEInstanceSelectionModel(DistanceMeasure distance, IISDecisionFunction loss) {
+        this.model = new EditedDistanceGraphModel(distance,this, loss);
     }
 
     /**

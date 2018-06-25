@@ -13,10 +13,14 @@ import static org.prules.dataset.Const.CLUSTER;
 import static org.prules.dataset.Const.ID;
 import static org.prules.dataset.Const.INDEX_EXAMPLESET;
 import static org.prules.dataset.Const.LABEL;
+import static org.prules.dataset.Const.NOISE;
 import static org.prules.dataset.Const.WEIGHT;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import org.prules.operator.learner.weighting.Ontology;
+
 
 /**
  *
@@ -46,6 +50,9 @@ public class InstanceFactory {
         values.put(CLUSTER, ex.getValue(ex.getAttributes().getCluster()));
         values.put(ID, (int)ex.getId());
         values.put(WEIGHT, ex.getWeight());
+        Attribute attrNoise = ex.getAttributes().get(Ontology.ATTRIBUTE_NOISE);
+        double val = attrNoise!=null ? ex.getValue(attrNoise) : 0; 
+        values.put(NOISE, val);        
         if (ex instanceof ISPRExample) {
             values.put(INDEX_EXAMPLESET, ((ISPRExample) ex).getIndex());
         }
@@ -71,7 +78,8 @@ public class InstanceFactory {
         map.put(LABEL, label);
         map.put(CLUSTER, Double.NaN);
         map.put(ID, Integer.MIN_VALUE);
-        map.put(WEIGHT, 1);
+        map.put(WEIGHT, 1);        
+        map.put(NOISE, 0);   
         return new InstanceLabels(map);
     }
 

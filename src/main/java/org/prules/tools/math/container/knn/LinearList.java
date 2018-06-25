@@ -175,7 +175,7 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
         if (index.size() != samples.size()) {
             throw new IndexOutOfBoundsException("index has incorect size. It should has the same size as the number of samples");
         }
-        Collection<T> result = new ArrayList<>(k);
+        List<T> result = new ArrayList<>(k);
         if (k > 1) {
             BoundedPriorityQueue<DoubleObjectContainer<T>> queue = new BoundedPriorityQueue<>(k);
             for(int idx : index){
@@ -195,6 +195,7 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
                 DoubleObjectContainer<T> tupel = queue.poll();
                 result.add(tupel.getSecond());
             }
+            Collections.reverse(result);
         } else {            
             double minDist = Double.MAX_VALUE;
             T subResult = null;
@@ -420,8 +421,8 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
 
     @Override
     public PairContainer<Collection<T>, Collection<T>> getNearestNeighborsAndAnymies(int k, Vector values, T label, IDataIndex index) {
-        Collection<T> resultPositive = new ArrayList<>(k);
-        Collection<T> resultNegative = new ArrayList<>(k);
+        List<T> resultPositive = new ArrayList<>(k);
+        List<T> resultNegative = new ArrayList<>(k);
         BoundedPriorityQueue<DoubleObjectContainer<T>> queuePositive = new BoundedPriorityQueue<>(k);
         BoundedPriorityQueue<DoubleObjectContainer<T>> queueNegative = new BoundedPriorityQueue<>(k);
         for (int i : index) {
@@ -452,10 +453,12 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
             DoubleObjectContainer<T> tupel = queuePositive.poll();
             resultPositive.add(tupel.getSecond());
         }
+        Collections.reverse(resultPositive);
         while (!queueNegative.isEmpty()) {
             DoubleObjectContainer<T> tupel = queueNegative.poll();
             resultNegative.add(tupel.getSecond());
         }
+        Collections.reverse(resultNegative);
         return new PairContainer<>(resultPositive, resultNegative);
     }
 
@@ -492,16 +495,18 @@ public class LinearList<T extends IInstanceLabels> implements ISPRClassGeometric
                 queueNegative.add(container);
             }
         }
-        Collection<DoubleObjectContainer<T>> resultPositive = new ArrayList<>(k);
-        Collection<DoubleObjectContainer<T>> resultNegative = new ArrayList<>(k);
+        List<DoubleObjectContainer<T>> resultPositive = new ArrayList<>(k);
+        List<DoubleObjectContainer<T>> resultNegative = new ArrayList<>(k);
         while (!queuePositive.isEmpty()) {
             DoubleObjectContainer<T> tupel = queuePositive.poll();
             resultPositive.add(tupel);
         }
+        Collections.reverse(resultPositive);
         while (!queueNegative.isEmpty()) {
             DoubleObjectContainer<T> tupel = queueNegative.poll();
             resultNegative.add(tupel);
         }
+        Collections.reverse(resultNegative);
         return new PairContainer<>( resultPositive, resultNegative);
     }
 

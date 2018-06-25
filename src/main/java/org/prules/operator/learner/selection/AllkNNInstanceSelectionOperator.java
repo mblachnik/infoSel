@@ -14,8 +14,6 @@ import com.rapidminer.parameter.ParameterTypeInt;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
 import java.util.List;
-import org.prules.operator.learner.selection.models.tools.InstanceModifier;
-import org.prules.operator.learner.selection.models.tools.InstanceModifierHelper;
 
 /**
  * This class is used to provide All k-NN instance selection operator It use
@@ -64,9 +62,8 @@ public class AllkNNInstanceSelectionOperator extends AbstractInstanceSelectorOpe
         }
         IISDecisionFunction loss = null;
         Attribute labelAttribute = exampleSet.getAttributes().getLabel();
-        loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);
-        InstanceModifier instanceModifier = InstanceModifierHelper.getConfiguredInstanceModifier(this);
-        return new AllKNNInstanceSelectionGeneralModel(measure, k1, k2, loss, instanceModifier);
+        loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);        
+        return new AllKNNInstanceSelectionGeneralModel(measure, k1, k2, loss);
     }
 
     /**
@@ -135,8 +132,7 @@ public class AllkNNInstanceSelectionOperator extends AbstractInstanceSelectorOpe
         ParameterType typeK2 = new ParameterTypeInt(PARAMETER_K_STOP, "The higher number of nearest neighbors.", 1, Integer.MAX_VALUE, 5);
         typeK2.setExpert(false);
         types.add(typeK2);
-        
-        types.addAll(InstanceModifierHelper.getParameterTypes(this));
+                
         return types;
     }
 }

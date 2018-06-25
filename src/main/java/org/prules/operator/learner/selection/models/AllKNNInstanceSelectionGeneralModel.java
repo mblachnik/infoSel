@@ -10,22 +10,16 @@ import com.rapidminer.example.set.SelectedExampleSet;
 import org.prules.dataset.Const;
 import org.prules.operator.learner.classifiers.IS_KNNClassificationModel;
 import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
-import org.prules.operator.learner.tools.DataIndex;
 import org.prules.tools.math.container.knn.KNNTools;
-import org.prules.operator.learner.tools.PRulesUtil;
 import org.prules.tools.math.container.DoubleObjectContainer;
 import org.prules.tools.math.container.knn.GeometricCollectionTypes;
-import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import org.prules.dataset.InstanceFactory;
 import org.prules.tools.math.container.knn.KNNFactory;
-import java.util.Collections;
 import org.prules.dataset.IInstanceLabels;
-import org.prules.operator.learner.selection.models.tools.EmptyInstanceModifier;
-import org.prules.operator.learner.selection.models.tools.InstanceModifier;
 import org.prules.operator.learner.tools.IDataIndex;
 import org.prules.dataset.Instance;
 import org.prules.dataset.Vector;
@@ -44,8 +38,7 @@ public class AllKNNInstanceSelectionGeneralModel extends AbstractInstanceSelecto
     private final DistanceMeasure measure; //distance measure
     private final int lowerK, upperK; // lower and upper bounds for k value
     private final IISDecisionFunction loss; //decision function which is used to determine if certain condition is valid or not. It allows to support both classification and regression tasks    
-    IS_KNNClassificationModel<IInstanceLabels> model;
-    private final InstanceModifier modifier;
+    IS_KNNClassificationModel<IInstanceLabels> model;    
 
     /**
      * Constructor
@@ -53,19 +46,13 @@ public class AllKNNInstanceSelectionGeneralModel extends AbstractInstanceSelecto
      * @param measure - distance measure
      * @param lowerK - lower bound for k
      * @param upperK - upper bound for k
-     * @param loss
-     * @param modifier - instance modifier which allows to modify instance on the fly. If null than uses EMptyModifier
+     * @param loss     
      */
-    public AllKNNInstanceSelectionGeneralModel(DistanceMeasure measure, int lowerK, int upperK, IISDecisionFunction loss, InstanceModifier modifier) {
+    public AllKNNInstanceSelectionGeneralModel(DistanceMeasure measure, int lowerK, int upperK, IISDecisionFunction loss) {
         this.measure = measure;
         this.lowerK = lowerK;
         this.upperK = upperK;
-        this.loss = loss;
-        if (modifier == null){
-            this.modifier = new EmptyInstanceModifier();
-        } else {
-            this.modifier = modifier;
-        }
+        this.loss = loss;        
     }
 
     /**
@@ -100,8 +87,7 @@ public class AllKNNInstanceSelectionGeneralModel extends AbstractInstanceSelecto
             double performanceStep = 1.0 / upperK;
             while (samplesIterator.hasNext() && labelsIterator.hasNext()) {
                 label = labelsIterator.next();
-                Vector values = samplesIterator.next();
-                values = modifier.modify(values);
+                Vector values = samplesIterator.next();                
                 Arrays.fill(counter, 0);
                 counter[(int)label.getLabel()] = -performanceStep; //Note this is becouse we use k+1, becouse always we are the most similar to outselves
                 samplesIndex.set(instanceIndex,false);
@@ -138,8 +124,7 @@ public class AllKNNInstanceSelectionGeneralModel extends AbstractInstanceSelecto
             Iterator<IInstanceLabels> labelsIterator = samples.storedValueIterator();
             while (samplesIterator.hasNext() && labelsIterator.hasNext()) {
                 label = labelsIterator.next();
-                Vector values = samplesIterator.next();
-                values = modifier.modify(values);
+                Vector values = samplesIterator.next();                
                 sum = 0;
                 samplesIndex.set(instanceIndex,false);
                 Collection<DoubleObjectContainer<IInstanceLabels>> res = samples.getNearestValueDistances(upperK, values, samplesIndex);

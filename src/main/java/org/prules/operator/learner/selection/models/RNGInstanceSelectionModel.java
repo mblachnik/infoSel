@@ -8,7 +8,6 @@ import com.rapidminer.example.set.SelectedExampleSet;
 import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import org.prules.operator.learner.tools.DataIndex;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import org.prules.operator.learner.selection.models.tools.InstanceModifier;
 import org.prules.operator.learner.tools.IDataIndex;
 
 /**
@@ -31,8 +30,8 @@ public class RNGInstanceSelectionModel extends AbstractInstanceSelectorModel imp
      * @param loss - loss type - a method to measure if sample is considered as redundant or noise
      * @param modifier - a method to modify input instance
      */
-    public RNGInstanceSelectionModel(DistanceMeasure distance, IISDecisionFunction loss, InstanceModifier modifier) {
-        model = new EditedDistanceGraphModel(distance, this, loss, modifier);
+    public RNGInstanceSelectionModel(DistanceMeasure distance, IISDecisionFunction loss) {
+        model = new EditedDistanceGraphModel(distance, this, loss);
     }
 
     /**

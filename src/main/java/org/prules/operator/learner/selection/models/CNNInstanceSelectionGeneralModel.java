@@ -8,12 +8,9 @@ import com.rapidminer.example.Example;
 import com.rapidminer.example.set.EditedExampleSet;
 import com.rapidminer.example.set.ISPRExample;
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.dataset.InstanceFactory;
 import org.prules.dataset.Const;
 import org.prules.operator.learner.tools.DataIndex;
-import org.prules.tools.math.container.knn.KNNTools;
 import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
-import org.prules.operator.learner.selection.models.tools.InstanceModifier;
 import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
@@ -34,8 +31,7 @@ public class CNNInstanceSelectionGeneralModel extends AbstractInstanceSelectorMo
 
     private final DistanceMeasure distance;
     private final IISDecisionFunction loss;
-    private ISPRGeometricDataCollection<IInstanceLabels> model;
-    private InstanceModifier modifier;
+    private ISPRGeometricDataCollection<IInstanceLabels> model;    
 
     /**
      * Constructor of Condensed NN instance selection algorithms
@@ -85,7 +81,7 @@ public class CNNInstanceSelectionGeneralModel extends AbstractInstanceSelectorMo
                 prediction.setLabel(predictedLabel);
                 instance.put(Const.VECTOR, vector);
                 instance.put(Const.LABELS, label);
-                instance.put(Const.PREDICTION, prediction);
+                instance.put(Const.PREDICTION, prediction);                
                 if (loss.getValue(instance) > 0) {
                     i = ((ISPRExample) firstInstance).getIndex();
                     selectedIndex.set(i, true);

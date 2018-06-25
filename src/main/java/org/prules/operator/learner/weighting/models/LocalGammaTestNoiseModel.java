@@ -14,6 +14,7 @@ import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 import org.prules.tools.math.container.PairContainer;
 import org.prules.tools.math.container.knn.KNNFactory;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import org.prules.dataset.Const;
@@ -69,24 +70,25 @@ public class LocalGammaTestNoiseModel extends AbstractNoiseEstimatorModel {
         double deviationDist; //The -1 is used to ignore its selve in nearest neighbors
         while (sampleIterator.hasNext() && labelIterator.hasNext()) {
             vector = sampleIterator.next();
-            res = knn.getNearestValues(range, vector);            
-            for (IInstanceLabels lab : res) {
+            res = knn.getNearestValues(range, vector);              
+            IInstanceLabels[] resTab = res.toArray(new IInstanceLabels[0]);
+            //Arrays.sort(resTab);
+            for (int i=0; i<resTab.length; i++) {
+                IInstanceLabels lab = resTab[i];
                 Vector localVector = knn.getSample(lab.getValueAsInt(Const.INDEX_CONTAINER));
-                localRes = knn.getNearestValueDistances(k, localVector);
-                double label = Double.NaN;
-                double dist = Double.NaN;
+                localRes = knn.getNearestValueDistances(k, localVector);                
+                double dist = Double.NaN;                
+                DoubleObjectContainer<IInstanceLabels>[] localResTab = localRes.toArray(new DoubleObjectContainer[0]);
                 int nearestIndex = 0;
-                for (DoubleObjectContainer<IInstanceLabels> distAndLabel : localRes) {
-                    if (nearestIndex == 0) {
-                        label = distAndLabel.getSecond().getLabel(); //The first value is the qctual value (it selve)
-                    }
+                double label = localResTab[nearestIndex].getSecond().getLabel();
+                for(nearestIndex = 0; nearestIndex<localResTab.length-1; nearestIndex++){
+                    DoubleObjectContainer<IInstanceLabels> distAndLabel = localResTab[nearestIndex+1];                    
                     double error = distAndLabel.getSecond().getLabel() - label;
                     double nearestDistance = distAndLabel.getFirst();
                     deviationLabels = 0.5 * error * error;
                     deviationDist = nearestDistance * nearestDistance;
                     nneLabels[nearestIndex] += deviationLabels;
-                    nneDistances[nearestIndex] += deviationDist;
-                    nearestIndex++;
+                    nneDistances[nearestIndex] += deviationDist;                    
                 }
             }
             double size = res.size();

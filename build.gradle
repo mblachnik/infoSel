@@ -30,7 +30,7 @@ extensionConfig {
     //The namespace
     namespace = 'prules'
     //Version id
-    version = '8.0.0'
+    version = '8.1.0'
     
     /*
      * The artifact group which will be used when publishing the extensions Jar

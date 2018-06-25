@@ -12,10 +12,13 @@ import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 import org.prules.tools.math.container.PairContainer;
 import org.prules.tools.math.container.knn.KNNFactory;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.dataset.Vector;
+import org.prules.tools.math.container.DoubleObjectContainer;
 
 /**
  * This class is used to estimate the level of noise for each example in the input data
@@ -26,13 +29,13 @@ public class DeltaTestNoiseModel extends AbstractNoiseEstimatorModel {
 
     DistanceMeasure distance;
     private final GeometricCollectionTypes knnType = GeometricCollectionTypes.LINEAR_SEARCH;
-    int k = 1;
+    double sigma = 1;
     double nne = 0;
 
-    public DeltaTestNoiseModel(DistanceMeasure distance, int k) {
+    public DeltaTestNoiseModel(DistanceMeasure distance, double sigma) {
         assert distance != null;
-        assert k >= 1;
-        this.k = k;
+        assert sigma > 0;
+        this.sigma = sigma;
         this.distance = distance;
         this.nne = Double.NaN;
     }
@@ -48,30 +51,30 @@ public class DeltaTestNoiseModel extends AbstractNoiseEstimatorModel {
         Vector vector;
         Iterator<Vector> sampleIterator = knn.samplesIterator();
         Iterator<IInstanceLabels> labelIterator = knn.storedValueIterator();
-        Collection<IInstanceLabels> res;
+        Collection<DoubleObjectContainer<IInstanceLabels>> res;
         int exampleIndex = 0; 
         nne = 0;
+        int totalEvaluatedSamples = 0;
         while (sampleIterator.hasNext() && labelIterator.hasNext()) {
             vector = sampleIterator.next();
-            res = knn.getNearestValues(k+1, vector);                         
-            int nearestNeighborIndex = -1;
-            double label = Double.NaN;
-            double delta = 0;
-            for (IInstanceLabels labels : res){
-                if (nearestNeighborIndex>=0){
-                    double error = labels.getLabel() - label;
-                    delta  += error * error * 0.5;
-                } else {
-                    label = labels.getLabel();
-                }
-                nearestNeighborIndex++;                                       
+            res = knn.getNearestValueDistances(sigma, vector);                     
+            double delta = 0;            
+            DoubleObjectContainer<IInstanceLabels>[] resTab;
+            resTab = res.toArray(new DoubleObjectContainer[0]);
+            Arrays.sort(resTab);            
+            int nearestNeighborIndex = 0;
+            double label = resTab[nearestNeighborIndex].getSecond().getLabel();
+            for(nearestNeighborIndex = 0; nearestNeighborIndex < resTab.length-1; nearestNeighborIndex++){ //The loop starts from 0 in case resTab has only one element (itselfe - no neighbors) than if we start from 1 we will add 1 to totalEvaluatedSamples           
+                IInstanceLabels labels = resTab[nearestNeighborIndex+1].getSecond();
+                double error = labels.getLabel() - label;
+                delta  += error * error * 0.5;                
             }            
-            delta /= nearestNeighborIndex;
+            totalEvaluatedSamples += nearestNeighborIndex;            
             nne += delta;
-            noise[exampleIndex] = delta;
+            noise[exampleIndex] = delta/nearestNeighborIndex;
             exampleIndex++;
         }        
-        nne /= exampleIndex;
+        nne /= totalEvaluatedSamples;
         return new PairContainer<>(noise, null);
     }
 

@@ -13,8 +13,6 @@ import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
 import java.util.List;
-import org.prules.operator.learner.selection.models.tools.InstanceModifier;
-import org.prules.operator.learner.selection.models.tools.InstanceModifierHelper;
 
 /**
  * This class is used to provide Gabriel Graph Editing instance selection
@@ -46,9 +44,8 @@ public class GEInstanceSelectionOperator extends AbstractInstanceSelectorOperato
     @Override
     public AbstractInstanceSelectorModel configureInstanceSelectionModel(SelectedExampleSet exampleSet) throws OperatorException {
         DistanceMeasure distance = measureHelper.getInitializedMeasure(exampleSet);
-        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);
-        InstanceModifier instanceModifier = InstanceModifierHelper.getConfiguredInstanceModifier(this);
-        return new GEInstanceSelectionModel(distance, loss, instanceModifier);
+        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);        
+        return new GEInstanceSelectionModel(distance, loss);
     }
 
     /**
@@ -110,8 +107,7 @@ public class GEInstanceSelectionOperator extends AbstractInstanceSelectorOperato
     @Override
     public List<ParameterType> getParameterTypes() {
         List<ParameterType> types = super.getParameterTypes();
-                
-        types.addAll(InstanceModifierHelper.getParameterTypes(this));
+                        
         return types;
     }
 }

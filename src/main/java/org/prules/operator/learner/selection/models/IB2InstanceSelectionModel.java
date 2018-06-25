@@ -10,10 +10,7 @@ import com.rapidminer.example.set.ISPRExample;
 import com.rapidminer.example.set.SelectedExampleSet;
 import org.prules.dataset.Const;
 import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
-import org.prules.operator.learner.selection.models.tools.EmptyInstanceModifier;
-import org.prules.operator.learner.selection.models.tools.InstanceModifier;
 import org.prules.operator.learner.tools.DataIndex;
-import org.prules.tools.math.container.knn.KNNTools;
 import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
@@ -33,8 +30,7 @@ import org.prules.dataset.IInstancePrediction;
 public class IB2InstanceSelectionModel extends AbstractInstanceSelectorModel {
 
     private DistanceMeasure distance;
-    private IISDecisionFunction loss;
-    private final InstanceModifier modifier;
+    private IISDecisionFunction loss;    
 
     /**
      * Constructor for IB2 algorithm - algorithm is similar to CNN except it
@@ -45,14 +41,9 @@ public class IB2InstanceSelectionModel extends AbstractInstanceSelectorModel {
      * @param modifier - allows for instance modification on the fly, for
      * example by random noise. Can be null.
      */
-    public IB2InstanceSelectionModel(DistanceMeasure distance, IISDecisionFunction loss, InstanceModifier modifier) {
+    public IB2InstanceSelectionModel(DistanceMeasure distance, IISDecisionFunction loss) {
         this.distance = distance;
-        this.loss = loss;
-        if (modifier == null) {
-            this.modifier = new EmptyInstanceModifier();
-        } else {
-            this.modifier = modifier;
-        }
+        this.loss = loss;        
     }
 
     /**
@@ -83,7 +74,7 @@ public class IB2InstanceSelectionModel extends AbstractInstanceSelectorModel {
         IInstanceLabels label = InstanceFactory.createInstanceLabels();
         for (Example currentInstance : trainingSet) {
             vector.setValues(currentInstance);
-            Collection<IInstanceLabels> result = nn.getNearestValues(1, modifier.modify(vector));
+            Collection<IInstanceLabels> result = nn.getNearestValues(1, vector);
             label.set(currentInstance);
             double predictedLabel = result.iterator().next().getLabel();
             prediction.setLabel(predictedLabel);

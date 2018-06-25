@@ -1,6 +1,5 @@
 package org.prules.operator.learner.selection;
 
-import org.prules.operator.learner.selection.models.RENNWithModifierInstanceSelectionModel;
 import java.util.List;
 
 import com.rapidminer.example.set.SelectedExampleSet;
@@ -16,8 +15,6 @@ import com.rapidminer.parameter.ParameterTypeInt;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
 import org.prules.operator.learner.selection.models.RENNInstanceSelectionModel;
-import org.prules.operator.learner.selection.models.tools.InstanceModifier;
-import org.prules.operator.learner.selection.models.tools.InstanceModifierHelper;
 
 /**
  * This class is used to provide Repeated Edited Nearest Neighbor instance

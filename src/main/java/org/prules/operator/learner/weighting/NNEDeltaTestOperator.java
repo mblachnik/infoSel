@@ -21,6 +21,7 @@ import com.rapidminer.operator.ports.metadata.MetaData;
 import com.rapidminer.operator.ports.metadata.SimpleMetaDataError;
 import com.rapidminer.operator.ports.metadata.SimplePrecondition;
 import com.rapidminer.parameter.ParameterType;
+import com.rapidminer.parameter.ParameterTypeDouble;
 import com.rapidminer.parameter.ParameterTypeInt;
 //import com.rapidminer.tools.Ontology;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
@@ -34,10 +35,10 @@ import java.util.List;
  */
 public class NNEDeltaTestOperator extends AbstractWeightingOperator {
     
-    public static final String PARAMETER_K = "k";    
+    public static final String PARAMETER_SIGMA = "sigma";    
     private DistanceMeasureHelper measureHelper = new DistanceMeasureHelper(this); 
     
-    private int k;
+    private double sigma; //The minimum distance criterion
     double nne;
    //private boolean transformWeights;
 
@@ -76,8 +77,8 @@ public class NNEDeltaTestOperator extends AbstractWeightingOperator {
     @Override
     public void processExamples(ExampleSet exampleSet) throws OperatorException {                
         DistanceMeasure distance = measureHelper.getInitializedMeasure(exampleSet); 
-        k = getParameterAsInt(PARAMETER_K);                
-        AbstractNoiseEstimatorModel model = new DeltaTestNoiseModel(distance, k);        
+        sigma = getParameterAsDouble(PARAMETER_SIGMA);                
+        AbstractNoiseEstimatorModel model = new DeltaTestNoiseModel(distance, sigma);        
         double[] noise = model.run(exampleSet).getFirst();
         nne = model.getNNE();
         Attributes attributes = exampleSet.getAttributes();        
@@ -115,7 +116,7 @@ public class NNEDeltaTestOperator extends AbstractWeightingOperator {
     @Override
     public List<ParameterType> getParameterTypes() {
         List<ParameterType> types = super.getParameterTypes();
-        ParameterType type = new ParameterTypeInt(PARAMETER_K, "The number of nearest neighbors.", 1, Integer.MAX_VALUE, 1);
+        ParameterType type = new ParameterTypeDouble(PARAMETER_SIGMA, "The sigma.", 1e-50, Double.MAX_VALUE, 0.01);
         type.setExpert(false);
         types.add(type);                
         

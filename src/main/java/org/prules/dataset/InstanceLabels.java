@@ -5,9 +5,12 @@
  */
 package org.prules.dataset;
 
+import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.set.ISPRExample;
 import java.util.Map;
+import static org.prules.dataset.Const.NOISE;
+import org.prules.operator.learner.weighting.Ontology;
 
 /**
  * Implementation of Instance for handling labels or extra features of an instance. Equivalent to RapidMiner special attributes
@@ -106,6 +109,9 @@ public class InstanceLabels extends GenericContainer implements IInstanceLabels 
         setCluster(example.getValue(example.getAttributes().getCluster()));
         setId((int) example.getId());
         setLabel(example.getLabel());
+        Attribute attrNoise = example.getAttributes().get(Ontology.ATTRIBUTE_NOISE);
+        double val = attrNoise!=null ? example.getValue(attrNoise) : 0; 
+        set(NOISE, val);   
         if (example instanceof ISPRExample) {
             this.put(Const.INDEX_EXAMPLESET, ((ISPRExample) example).getIndex());
         }

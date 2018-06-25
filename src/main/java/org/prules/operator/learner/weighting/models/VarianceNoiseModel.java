@@ -54,6 +54,7 @@ public class VarianceNoiseModel extends AbstractNoiseEstimatorModel {
         double[] values = new double[k];
         while (sampleIterator.hasNext() && labelIterator.hasNext()) {
             vector = sampleIterator.next();
+            double label = labelIterator.next().getLabel();
             res = knn.getNearestValues(k + 1, vector);
             int nearestNeighborIndex = -1;            
             double mean = 0;                        
@@ -65,7 +66,7 @@ public class VarianceNoiseModel extends AbstractNoiseEstimatorModel {
                 nearestNeighborIndex++;
             }
             mean /= nearestNeighborIndex;
-            double var = BasicMath.simpleVariance(values, mean)*0.5;
+            double var = BasicMath.simpleVariance(values, mean);
             nne += var;
             noise[exampleIndex] = var;
             exampleIndex++;

@@ -1,14 +1,10 @@
 package org.prules.operator.learner.selection;
 
 import com.rapidminer.example.Attribute;
-import org.prules.operator.learner.selection.models.ENNWithInstanceModifierInstanceSelectionModel;
 import com.rapidminer.example.set.SelectedExampleSet;
 import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
 import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import org.prules.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
-import org.prules.operator.learner.selection.models.tools.InstanceModifier;
-import org.prules.operator.learner.selection.models.tools.InstanceModifierHelper;
-import org.prules.operator.learner.selection.models.tools.InstanceModifierTypes;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;

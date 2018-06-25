@@ -180,7 +180,7 @@ public class BasicMath {
         double var = 0;
         for (int i=0; i<X.length; i++)
             var += (X[i] - mean)*(X[i] - mean);
-        return var;
+        return var/X.length;
     }
 
      /**
@@ -193,7 +193,7 @@ public class BasicMath {
         double var = 0;
         for (Number x : X)
             var += (x.doubleValue() - mean)*(x.doubleValue() - mean);
-        return var;
+        return var/X.size();
     }
     
     /**
@@ -207,7 +207,7 @@ public class BasicMath {
         double var = 0;
         for (IInstanceLabels x : X)
             var += (x.getValueAsDouble(name) - mean)*(x.getValueAsDouble(name) - mean);
-        return var;
+        return var/X.size();
     }
 
     /**

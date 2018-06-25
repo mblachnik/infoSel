@@ -10,9 +10,7 @@ import com.rapidminer.example.Example;
 import com.rapidminer.example.set.SelectedExampleSet;
 import org.prules.dataset.InstanceFactory;
 import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
-import org.prules.operator.learner.tools.DataIndex;
 import org.prules.tools.math.container.knn.KNNTools;
-import org.prules.operator.learner.tools.PRulesUtil;
 import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
@@ -20,8 +18,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.prules.tools.math.container.knn.KNNFactory;
 import org.prules.dataset.IInstanceLabels;
-import org.prules.operator.learner.selection.models.tools.EmptyInstanceModifier;
-import org.prules.operator.learner.selection.models.tools.InstanceModifier;
 import org.prules.operator.learner.tools.IDataIndex;
 import org.prules.dataset.Vector;
 
@@ -36,7 +32,6 @@ public class RENNInstanceSelectionModelOld extends AbstractInstanceSelectorModel
     private final int k;
     private final DistanceMeasure measure;
     private final IISDecisionFunction loss;
-    private final InstanceModifier modifier;
     private final int maxIterations;
 
     /**
@@ -48,16 +43,11 @@ public class RENNInstanceSelectionModelOld extends AbstractInstanceSelectorModel
      * @param loss - loss function
      * @param modifier - instance modifier, if null it does nothing, one can set here an instance modifier which on the fly changes instance considered for removal
      */
-    public RENNInstanceSelectionModelOld(DistanceMeasure measure, int k, IISDecisionFunction loss, int maxIterations ,InstanceModifier modifier) {
+    public RENNInstanceSelectionModelOld(DistanceMeasure measure, int k, IISDecisionFunction loss, int maxIterations) {
         this.k = k;
         this.measure = measure;
         this.loss = loss;
-        this.maxIterations = maxIterations;        
-        if (modifier == null){
-            this.modifier = new EmptyInstanceModifier();
-        } else {
-            this.modifier = modifier;
-        }
+        this.maxIterations = maxIterations;                
     }
 
     /**
@@ -88,8 +78,7 @@ public class RENNInstanceSelectionModelOld extends AbstractInstanceSelectorModel
             for (Example example : exampleSet) {
                 Arrays.fill(counter, 0);
                 Collection<IInstanceLabels> res;                
-                values.setValues(example);
-                values = modifier.modify(values);
+                values.setValues(example);                
                 res = samples.getNearestValues(k + 1, values);
                 double sum = 0;
                 for (IInstanceLabels i : res) {

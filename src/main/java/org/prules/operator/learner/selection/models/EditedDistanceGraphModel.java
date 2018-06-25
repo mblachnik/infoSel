@@ -16,8 +16,6 @@ import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import org.prules.dataset.InstanceFactory;
 import org.prules.tools.math.container.knn.KNNFactory;
 import org.prules.dataset.IInstanceLabels;
-import org.prules.operator.learner.selection.models.tools.EmptyInstanceModifier;
-import org.prules.operator.learner.selection.models.tools.InstanceModifier;
 import org.prules.dataset.Instance;
 import org.prules.dataset.Vector;
 import org.prules.dataset.IInstancePrediction;
@@ -31,8 +29,7 @@ public class EditedDistanceGraphModel extends AbstractInstanceSelectorModel {
 
     private final DistanceMeasure distance;
     private final EditedDistanceGraphCriteria criteria;
-    private final IISDecisionFunction loss;
-    private final InstanceModifier modifier;
+    private final IISDecisionFunction loss;    
     private final IDistanceEvaluator distanceEvaluator;
 
     /**
@@ -42,15 +39,10 @@ public class EditedDistanceGraphModel extends AbstractInstanceSelectorModel {
      * @param loss
      * @param modifier instance modifier
      */
-    public EditedDistanceGraphModel(DistanceMeasure distance, EditedDistanceGraphCriteria criteria, IISDecisionFunction loss, InstanceModifier modifier) {
+    public EditedDistanceGraphModel(DistanceMeasure distance, EditedDistanceGraphCriteria criteria, IISDecisionFunction loss) {
         this.distance = distance;
         this.criteria = criteria;
-        this.loss = loss;        
-        if (modifier == null){
-            this.modifier = new EmptyInstanceModifier();
-        } else {
-            this.modifier = modifier;
-        }
+        this.loss = loss;                
         distanceEvaluator = new DistanceEvaluator(distance);
     }
 

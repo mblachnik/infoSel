@@ -8,8 +8,6 @@ import com.rapidminer.operator.OperatorException;
 import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import org.prules.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
 import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
-import org.prules.operator.learner.selection.models.tools.InstanceModifier;
-import org.prules.operator.learner.selection.models.tools.InstanceModifierHelper;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
@@ -45,9 +43,8 @@ public class IB2InstanceSelectionOperator extends AbstractInstanceSelectorOperat
     public AbstractInstanceSelectorModel configureInstanceSelectionModel(SelectedExampleSet exampleSet) throws OperatorException {
         DistanceMeasure distance = measureHelper.getInitializedMeasure(exampleSet);
         RandomGenerator randomGenerator = RandomGenerator.getRandomGenerator(this);
-        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);
-        InstanceModifier instanceModifier = InstanceModifierHelper.getConfiguredInstanceModifier(this);
-        return new IB2InstanceSelectionModel(distance, loss, instanceModifier);
+        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);        
+        return new IB2InstanceSelectionModel(distance, loss);
     }
 
     /**
@@ -91,8 +88,7 @@ public class IB2InstanceSelectionOperator extends AbstractInstanceSelectorOperat
     @Override
     public List<ParameterType> getParameterTypes() {
         List<ParameterType> types = super.getParameterTypes();
-        
-        types.addAll(InstanceModifierHelper.getParameterTypes(this));
+                
         return types;
     }
 
