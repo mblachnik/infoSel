@@ -11,7 +11,7 @@ package org.prules.operator.learner.selection.weka;
  */
 public enum WekaISAlgorithms {
 
-    BSE, CNN, DROP1, DROP2, DROP3, DROP4, DROP5, ENN, HMNE, ICF, MI, MSS, RNN, ENN_REG, CNN_REG, ICF_REG, MSS_REG, CCIS_REG;    
+    BSE, CNN, DROP1, DROP2, DROP3, DROP4, DROP5, ENN, HMNE, HMNEI, ICF, MI, MSS, RNN, ENN_REG, CNN_REG, ICF_REG, MSS_REG, CCIS_REG;    
     
     public static final String PARAMETER_IS_ALGORITHM = "IS_Algorithm";
 

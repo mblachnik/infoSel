@@ -250,7 +250,8 @@ public class IB3InstanceSelectionModel extends AbstractInstanceSelectorModel {
             double z2 = z * z;
             double n2 = n * n;
             double numerator, denominator, val;
-            val = z * Math.sqrt((frequency * (1.0 - frequency) / n) + z2 / (4 * n2));
+            //val = z * Math.sqrt((frequency * (1.0 - frequency) / n) + z2 / (4 * n2));
+            val = Math.sqrt((frequency * (1.0 - frequency) / n) + z2 / (4 * n2));
             numerator = frequency + z2 / (2 * n) + val;
             denominator = 1.0 + z2 / n;
             return (numerator / denominator);
@@ -272,7 +273,8 @@ public class IB3InstanceSelectionModel extends AbstractInstanceSelectorModel {
             double z2 = z * z;
             double n2 = n * n;
             double numerator, denominator, val;
-            val = z * Math.sqrt((frequency * (1.0 - frequency) / n) + z2 / (4 * n2));
+            //val = z * Math.sqrt((frequency * (1.0 - frequency) / n) + z2 / (4 * n2));
+            val = Math.sqrt((frequency * (1.0 - frequency) / n) + z2 / (4 * n2));
             numerator = frequency + z2 / (2 * n) - val;
             denominator = 1.0 + z2 / n;
             return (numerator / denominator);

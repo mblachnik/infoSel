@@ -35,6 +35,7 @@ import org.prules.tools.math.similarity.DistanceEvaluator;
 import com.rapidminer.tools.container.Tupel;
 import com.rapidminer.tools.math.container.BoundedPriorityQueue;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -142,18 +143,20 @@ public class SimpleNNCachedLineraList<T extends IInstanceLabels> implements ISPR
      */
     @Override
     public Collection<T> getNearestValues(int k, Vector values) {
-        Collection<T> result = new ArrayList<>(k);
+        List<T> result = new ArrayList<>(k);
         if (k > 1) {
-            BoundedPriorityQueue<Tupel<Double, T>> queue = new BoundedPriorityQueue<>(k);
+            BoundedPriorityQueue<DoubleObjectContainer<T>> queue = new BoundedPriorityQueue<>(k);
             int i = 0;
             for (Vector sample : this.samples) {
                 double dist = distanceEvaluator.evaluateDistance(sample, values);
-                queue.add(new Tupel<>(dist, storedValues.get(i)));
+                queue.add(new DoubleObjectContainer<T>(dist, storedValues.get(i)));
                 i++;
             }
-            for (Tupel<Double, T> tupel : queue) {
+            while (!queue.isEmpty()) {
+                DoubleObjectContainer<T> tupel = queue.poll();
                 result.add(tupel.getSecond());
             }
+            Collections.reverse(result);
         } else {
             int i = 0;
             double minDist = Double.MAX_VALUE;
@@ -168,6 +171,7 @@ public class SimpleNNCachedLineraList<T extends IInstanceLabels> implements ISPR
             }
             result.add(subResult);
         }
+        //Collections.reverse(result);
         return result;
     }   
     
@@ -188,7 +192,9 @@ public class SimpleNNCachedLineraList<T extends IInstanceLabels> implements ISPR
             queue.add(new DoubleObjectContainer<>(dist, storedValues.get(i)));
             i++;
         }
-        return queue;
+        List<DoubleObjectContainer<T>> results = new ArrayList<>(queue);
+        Collections.sort(results);
+        return results;
     }    
 
     /**
@@ -210,7 +216,9 @@ public class SimpleNNCachedLineraList<T extends IInstanceLabels> implements ISPR
             }
             i++;
         }
-        return queue;
+        List<DoubleObjectContainer<T>> results = new ArrayList<>(queue);
+        Collections.sort(results);
+        return results;
     }   
 
     /**
@@ -244,7 +252,7 @@ public class SimpleNNCachedLineraList<T extends IInstanceLabels> implements ISPR
      */
     @Override
     public Collection<T> getNearestValues(int k, int idx) {
-        Collection<T> result = new ArrayList<>(k);
+        List<T> result = new ArrayList<>(k);
         if (k > 1) {
             BoundedPriorityQueue<DoubleObjectContainer<T>> queue = new BoundedPriorityQueue<>(k);
             int i = 0;
@@ -253,9 +261,11 @@ public class SimpleNNCachedLineraList<T extends IInstanceLabels> implements ISPR
                 queue.add(new DoubleObjectContainer<>(dist, storedValues.get(i)));
                 i++;
             }
-            for (DoubleObjectContainer<T> tupel : queue) {
+            while (!queue.isEmpty()) {
+                DoubleObjectContainer<T> tupel = queue.poll();
                 result.add(tupel.getSecond());
             }
+            Collections.reverse(result);
         } else {
             int i = 0;
             double minDist = Double.MAX_VALUE;
@@ -293,7 +303,9 @@ public class SimpleNNCachedLineraList<T extends IInstanceLabels> implements ISPR
             queue.add(new DoubleObjectContainer<>(dist, storedValues.get(i)));
             i++;
         }
-        return queue;
+        List<DoubleObjectContainer<T>> result = new ArrayList<>(queue);        
+        Collections.sort(result);
+        return result;
     }
 
     /**
@@ -319,7 +331,9 @@ public class SimpleNNCachedLineraList<T extends IInstanceLabels> implements ISPR
             }
             i++;
         }
-        return queue;
+        List<DoubleObjectContainer<T>> result = new ArrayList<>(queue);        
+        Collections.sort(result);
+        return result;
     }
 
     /**

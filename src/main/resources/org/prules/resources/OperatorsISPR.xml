@@ -126,6 +126,11 @@
                 <class>org.prules.operator.learner.selection.weka.WekaISOperator</class>
                 <replaces>WekaInstanceSelection</replaces>
             </operator>
+            <operator>
+                <key>keel_sel</key>
+                <class>org.prules.operator.learner.selection.keel.KeelISOperator</class>
+                <replaces>KeelInstanceSelection</replaces>
+            </operator>
             <group key="Generalized">
                 <operator>
                     <key>genn_sel</key>
@@ -265,6 +270,10 @@
             <operator>
                 <key>weightBy_Local_NNE_G_test</key>
                 <class>org.prules.operator.learner.weighting.LocalNNEGammaTestOperator</class>                
+            </operator>  
+            <operator>
+                <key>weightBy_Local_NNE_D_test</key>
+                <class>org.prules.operator.learner.weighting.LocalNNEDeltaTestOperator</class>                
             </operator>           
             <operator>
                 <key>weightBy_LocalVariance_test</key>

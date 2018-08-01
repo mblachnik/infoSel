@@ -46,8 +46,7 @@ public class DeltaTestNoiseModel extends AbstractNoiseEstimatorModel {
         knn = KNNFactory.initializeKNearestNeighbourFactory(knnType, exampleSet, distance);
         int n = exampleSet.size();
         Attributes attributes = exampleSet.getAttributes();
-        int m = attributes.size();
-        double[] noise = new double[n];
+        int m = attributes.size();        
         Vector vector;
         Iterator<Vector> sampleIterator = knn.samplesIterator();
         Iterator<IInstanceLabels> labelIterator = knn.storedValueIterator();
@@ -59,22 +58,26 @@ public class DeltaTestNoiseModel extends AbstractNoiseEstimatorModel {
             vector = sampleIterator.next();
             res = knn.getNearestValueDistances(sigma, vector);                     
             double delta = 0;            
-            DoubleObjectContainer<IInstanceLabels>[] resTab;
-            resTab = res.toArray(new DoubleObjectContainer[0]);
-            Arrays.sort(resTab);            
-            int nearestNeighborIndex = 0;
-            double label = resTab[nearestNeighborIndex].getSecond().getLabel();
-            for(nearestNeighborIndex = 0; nearestNeighborIndex < resTab.length-1; nearestNeighborIndex++){ //The loop starts from 0 in case resTab has only one element (itselfe - no neighbors) than if we start from 1 we will add 1 to totalEvaluatedSamples           
-                IInstanceLabels labels = resTab[nearestNeighborIndex+1].getSecond();
-                double error = labels.getLabel() - label;
+            Iterator<DoubleObjectContainer<IInstanceLabels>> resIterator = res.iterator();
+            double label = 0;
+            if (resIterator.hasNext()) {
+                label = resIterator.next().getSecond().getLabel();
+            }            
+            int nearestNeighborIndex = 0;            
+            while(resIterator.hasNext()){                    
+                IInstanceLabels otherLabels = resIterator.next().getSecond();
+                double otherLabel = otherLabels.getLabel();                        
+                double error = otherLabel - label;
                 delta  += error * error * 0.5;                
+                nearestNeighborIndex++;
             }            
             totalEvaluatedSamples += nearestNeighborIndex;            
-            nne += delta;
-            noise[exampleIndex] = delta/nearestNeighborIndex;
+            nne += delta;            
             exampleIndex++;
-        }        
+        }      
         nne /= totalEvaluatedSamples;
+        double[] noise = new double[n];
+        Arrays.fill(noise,nne);        
         return new PairContainer<>(noise, null);
     }
 

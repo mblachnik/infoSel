@@ -38,6 +38,7 @@ import main.core.algorithm.DROP5Algorithm;
 import main.core.algorithm.ENNAlgorithm;
 import main.core.algorithm.ENNRegAlgorithm;
 import main.core.algorithm.HMNEAlgorithm;
+import main.core.algorithm.HMNEIAlgorithm;
 import main.core.algorithm.ICFAlgorithm;
 import main.core.algorithm.ICFRegAlgorithm;
 import main.core.algorithm.MIAlgorithm;
@@ -128,6 +129,9 @@ public class WekaISOperator extends AbstractInstanceSelectorOperator {
                         break;
                     case HMNE:
                         isAlgorithm = new HMNEAlgorithm(instances);
+                        break;
+                    case HMNEI:
+                        isAlgorithm = new HMNEIAlgorithm(instances);
                         break;
                     case MI:
                         isAlgorithm = new MIAlgorithm(instances);

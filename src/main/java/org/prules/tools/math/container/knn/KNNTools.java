@@ -22,10 +22,12 @@ import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.prules.tools.math.container.DoubleObjectContainer;
 import org.prules.dataset.IInstanceLabels;
+import org.prules.dataset.Instance;
 import org.prules.dataset.Vector;
 import org.prules.operator.learner.tools.IDataIndex;
 
@@ -34,7 +36,7 @@ import org.prules.operator.learner.tools.IDataIndex;
  * @author Marcin
  */
 public class KNNTools {
-
+    public static long t[] = new long[5];
   
 
     /**
@@ -62,6 +64,48 @@ public class KNNTools {
         return resultSet.iterator().next().getLabel();
     }
 
+    public static double predictOneNearestNeighbor(Vector instance, List<Instance>  instances, DistanceMeasure distance){
+        double minDist = Double.MAX_VALUE;
+        double out = Double.NaN;
+        
+        for(Instance i : instances){
+            double d = distance.calculateDistance(instance.getValues(), i.getVector().getValues());
+            if (d<minDist){
+                minDist = d;
+                out = i.getLabels().getLabel();
+            }
+        }
+        return out;
+    }
+    
+    public static double predictOneNearestNeighbor(Vector instance, List<Vector>  samples, List<IInstanceLabels> labels, DistanceMeasure distance, IDataIndex index){
+        double minDist = Double.MAX_VALUE;        
+        IInstanceLabels bestLabel = null;
+        //long t1[] = new long[6];
+        for(Integer id : index){
+          //  t1[0] = System.currentTimeMillis();
+            Vector i = samples.get(id);
+            //  t1[1] = System.currentTimeMillis();
+            double[] val1 = instance.getValues();
+            //  t1[2] = System.currentTimeMillis();
+            double[] val2 = i.getValues();
+            //  t1[3] = System.currentTimeMillis();
+            double d = distance.calculateDistance(val1, val2);
+            //  t1[4] = System.currentTimeMillis();
+            if (d<minDist){
+                minDist = d;
+                bestLabel = labels.get(id);                
+            }
+            //  t1[5] = System.currentTimeMillis();
+            //  t[0] += t1[1]-t1[0];
+            //  t[1] += t1[2]-t1[1];
+            //  t[2] += t1[3]-t1[2];
+            //  t[3] += t1[4]-t1[3];
+            //  t[4] += t1[5]-t1[4];
+        }        
+        double out = bestLabel != null ? bestLabel.getLabel() : Double.NaN;
+        return out;
+    }
     /**
      * Returns label of 1NN
      *

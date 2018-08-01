@@ -17,7 +17,11 @@ import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.TreeSet;
 import org.prules.dataset.InstanceFactory;
 import org.prules.tools.math.container.knn.KNNFactory;
@@ -27,6 +31,8 @@ import org.prules.operator.learner.tools.IDataIndex;
 import org.prules.dataset.Instance;
 import org.prules.dataset.Vector;
 import org.prules.dataset.IInstancePrediction;
+import org.prules.dataset.InstanceLabels;
+import static org.prules.tools.math.container.knn.KNNTools.t;
 
 /**
  * Naive implementation of RMHC algorithm. Here instead of binary coding of
@@ -42,7 +48,7 @@ import org.prules.dataset.IInstancePrediction;
  *
  * @author Marcin
  */
-public class RMHCNaiveInstanceSelectionGeneralModel extends AbstractInstanceSelectorModel {
+public class RMHCNaiveInstanceSelectionGeneralModel1 extends AbstractInstanceSelectorModel {
 
     private final DistanceMeasure measure;
     private final int numberOfPrototypes;
@@ -69,7 +75,7 @@ public class RMHCNaiveInstanceSelectionGeneralModel extends AbstractInstanceSele
      * @param randomGenerator
      * @param loss
      */
-    public RMHCNaiveInstanceSelectionGeneralModel(DistanceMeasure measure, int populationSize, int iterations, RandomGenerator randomGenerator, IISDecisionFunction loss) {
+    public RMHCNaiveInstanceSelectionGeneralModel1(DistanceMeasure measure, int populationSize, int iterations, RandomGenerator randomGenerator, IISDecisionFunction loss) {
         this.measure = measure;
         this.randomGenerator = randomGenerator;
         this.numberOfPrototypes = populationSize;
@@ -89,105 +95,83 @@ public class RMHCNaiveInstanceSelectionGeneralModel extends AbstractInstanceSele
         //loss.init(exampleSet);
         //TODO make use of the loss function, because it is not used now
         //TODO Update the code, because now it repeates the iterations if selected instance is out of range (based on bit enciding) and this may not be good. Moreover it may happen that certain instance is selected more then once, so the final number of samples mey not be equalt to the number of prototypes which should be selected 
-        //initialization
-        loss.init(exampleSet, measure);
-        int[] bestSelectedInstances;        
-        IDataIndex index = exampleSet.getIndex();
-        EditedExampleSet workingSet = new EditedExampleSet(exampleSet);
-        DataIndex indexWorking = workingSet.getIndex();
-        int size = exampleSet.size();
-
-        //choosing initial set of prototypes
-        int[] selectedInstances = new int[this.numberOfPrototypes]; //Array contains indexes of slected instances
-        Set<Integer> setOfWorkingSetIdx = new TreeSet<>();
-        int instanceId;
-        for (int i = 0; i < numberOfPrototypes; i++) {
-            do {
-                instanceId = randomGenerator.nextInt(size);
-            } while (setOfWorkingSetIdx.contains(instanceId));
-            selectedInstances[i] = instanceId;
-            setOfWorkingSetIdx.add(instanceId);
-        }
-
+        //initialization                
+        int[] selectedInstances = new int[numberOfPrototypes];
+        IDataIndex workingIndex = exampleSet.getIndex();
+        int size = exampleSet.size();                       
+        workingIndex.setAllFalse();
+        //Initialize
+        int positionToChange    = -1; //a value in range 0-selectedInstances.length-1. It is index of element of selectedInstances array which we are going to change
+        int oldSelectedInstance = -1; //index of example in traiing set - old value
+        int newSelectedInstance = -1; //index of example in traiing set - new value
         
-        //Building kNN with initial set of prototypes        
-        bestSelectedInstances = new int[numberOfPrototypes];
-        System.arraycopy(selectedInstances, 0, bestSelectedInstances, 0, numberOfPrototypes);
-
-        indexWorking.setAllFalse();
-        for (int j = 0; j < selectedInstances.length; j++) {
-            indexWorking.set(selectedInstances[j], true);
+        List<Integer> rndInts = new ArrayList<>(size);        
+        for(int i=0; i<size; i++){
+            rndInts.add(i);
+        }        
+        Collections.shuffle(rndInts,randomGenerator);        
+        for (int i = 0; i < numberOfPrototypes; i++) {            
+            newSelectedInstance = rndInts.get(i);            
+            selectedInstances[i] = newSelectedInstance;
+            workingIndex.set(newSelectedInstance,true);            
+        }                        
+        //Create faster dataset
+        List<Vector> samples = new ArrayList<>(size);
+        List<IInstanceLabels> labels = new ArrayList<>(size);
+        for(Example e : exampleSet){
+            samples.add(InstanceFactory.createVector(e));
+            labels.add(InstanceFactory.createInstaceLabels(e));
         }
-        ISPRGeometricDataCollection<IInstanceLabels> kNN = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, workingSet, measure);
-        loss.init(kNN);
-        double errorRateBest = Double.MAX_VALUE;
-        int selectedInstanceToChangeId = 0; //a value in range 0-selectedInstances.length-1. It is index of element of selectedInstances array which we are going to change
-        int kNNinstanceIdCurrent = selectedInstances[selectedInstanceToChangeId]; //index of example in traiing set - recent value
-        int kNNinstanceIdCandidate = selectedInstances[selectedInstanceToChangeId]; //index of example in traiing set - which we evaluate if it will be better then instanceIdCurrent        
-        Vector kNNInstanceValues = kNN.getSample(selectedInstanceToChangeId);        
-        IInstanceLabels kNNInstanceLabel = kNN.getStoredValue(selectedInstanceToChangeId);        
-        Vector vector = InstanceFactory.createVector(exampleSet);                
-        IInstancePrediction prediction = InstanceFactory.createPrediction(Double.NaN, null);
-        Instance instance = InstanceFactory.createEmptyInstance();
-        IInstanceLabels label = InstanceFactory.createInstanceLabels();
-        
+        IInstancePrediction prediction = InstanceFactory.createPrediction(Double.NaN, null);                               
+        loss.init(exampleSet,measure);
+        double errorRateBest = Double.MAX_VALUE;        
+        Instance inst = InstanceFactory.createEmptyInstance();
         for (int i = 0; i < iterations; i++) {
             double errorRate = 0;
-            int q=0;
-            for (Example testExample : exampleSet) {
-                vector.setValues(testExample);
-                label.set(testExample);
-                //double predictedLabel = KNNTools.predictOneNearestNeighbor(testExample, kNN);                
-                double predictedLabel = KNNTools.predictOneNearestNeighbor(vector, kNN);
-                prediction.setLabel(predictedLabel);
-                instance.put(Const.VECTOR, vector);
-                instance.put(Const.LABELS, label);
-                instance.put(Const.PREDICTION, prediction);    
-                double lossVal = loss.getValue(instance);
-//                if (lossVal > 0){
-//                    System.out.println(i+" "+q + " " + selectedInstances[0] + " " + selectedInstances[1] + " " + selectedInstances[2]);                    
-//                }
+            int q=0;            
+            //Calculate performance            
+            Iterator<Vector> sampleIterator = samples.iterator();
+            Iterator<IInstanceLabels> labelIterator = labels.iterator();
+            while (sampleIterator.hasNext() && labelIterator.hasNext()) {                   
+                Vector currentSample = sampleIterator.next();
+                IInstanceLabels curentLabel = labelIterator.next();
+                double predictedLabel = KNNTools.predictOneNearestNeighbor(currentSample,samples,labels,measure, workingIndex);                
+                prediction.setLabel(predictedLabel);                
+                inst.setPrediction(prediction);
+                inst.setLabels(curentLabel);
+                inst.setVector(currentSample);
+                double lossVal = loss.getValue(inst);
                 q ++;
                 errorRate += lossVal;
-            }      
-            System.out.println("Error:" + errorRate);
+            }                 
+            //Asses current set
             if (errorRate < errorRateBest) {
-                errorRateBest = errorRate;
-                //kNN is upToDate so we dont need to do anything
-                bestSelectedInstances[selectedInstanceToChangeId] = kNNinstanceIdCandidate;            
-                //System.arraycopy(selectedInstances, 0, bestSelectedInstances, 0, numberOfPrototypes);
-            } else { //We have to restore old current Vector and Label in place of candidate
-                //If the previous change was unseccesfull then restore values from before mutation
-                //Restore values of kNN
-                //IVector vectorToChange = kNN.getSample(selectedInstanceToChangeId);
-                kNN.setSample(selectedInstanceToChangeId, kNNInstanceValues, kNNInstanceLabel);
-                selectedInstances[selectedInstanceToChangeId] = kNNinstanceIdCurrent;                                      
-                //Restore values of selectedInstances                
+                errorRateBest = errorRate;                                
+            } else { //We have to restore old current Vector and Label in place of candidate                
+                workingIndex.set(oldSelectedInstance, true );
+                workingIndex.set(newSelectedInstance, false);                
+                selectedInstances[positionToChange] = oldSelectedInstance;
             }
             //Choose which prototype to change            
-            selectedInstanceToChangeId = randomGenerator.nextInt(numberOfPrototypes);
+            positionToChange = randomGenerator.nextInt(numberOfPrototypes);
             //Get new prototype id and assure that the value is different from the previous one
-            kNNinstanceIdCurrent = selectedInstances[selectedInstanceToChangeId];
-            kNNInstanceValues = kNN.getSample(selectedInstanceToChangeId);
-            kNNInstanceLabel  = kNN.getStoredValue(selectedInstanceToChangeId);
-            do {
-                kNNinstanceIdCandidate = randomGenerator.nextInt(size);
-            } while (kNNinstanceIdCandidate == kNNinstanceIdCurrent);
-            //Update information in selectedInstances
-            selectedInstances[selectedInstanceToChangeId] = kNNinstanceIdCandidate;
-            Example example = exampleSet.getExample(kNNinstanceIdCandidate);            
-            Vector vectorCandidate = InstanceFactory.createVector(example);
-            IInstanceLabels labelCandidate = InstanceFactory.createInstaceLabels(example);                       
-            kNN.setSample(selectedInstanceToChangeId, vectorCandidate, labelCandidate);
-
-            //disp(kNN, selectedInstances, exampleSet);
-        }
-        System.out.println("BestErrorRate = " + errorRateBest);
-        index.setAllFalse();
-        for (int j = 0; j < bestSelectedInstances.length; j++) {
-            index.set(bestSelectedInstances[j], true);
-        }
-        return index;
+            oldSelectedInstance = selectedInstances[positionToChange];                         
+            rndInts.clear();
+            for(int k=0; k<size; k++){
+                if (!workingIndex.get(k)){
+                    rndInts.add(k);
+                }
+            }
+            Collections.shuffle(rndInts,randomGenerator);                    
+            newSelectedInstance = rndInts.get(0);                        
+            workingIndex.set(oldSelectedInstance, false);
+            workingIndex.set(newSelectedInstance, true);                
+            selectedInstances[positionToChange] = newSelectedInstance;                                                                                            
+            //System.out.println("--- NextIter ------");
+        }     
+        //System.out.println("--" + t[0] + "  "+ t[1] + "  "+ t[2] + "  "+ t[3] + "  "+ t[4] + "  ");
+        //Arrays.fill(t,0);
+        return workingIndex;
     }
 
     private void disp(ISPRGeometricDataCollection<Number> kNN, int[] si, SelectedExampleSet es) {

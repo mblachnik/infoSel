@@ -47,8 +47,6 @@ public class GammaTestNoiseModel extends AbstractNoiseEstimatorModel {
         ISPRGeometricDataCollection<IInstanceLabels> knn;
         knn = KNNFactory.initializeKNearestNeighbourFactory(knnType, exampleSet, distance);
         int n = exampleSet.size();
-        Attributes attributes = exampleSet.getAttributes();
-        int m = attributes.size();
         double[] noise = new double[n];
         double[] slope = new double[n];
         double[] nneDistances = new double[k];
@@ -56,42 +54,39 @@ public class GammaTestNoiseModel extends AbstractNoiseEstimatorModel {
         Vector vector;
         Iterator<Vector> sampleIterator = knn.samplesIterator();
         Iterator<IInstanceLabels> labelIterator = knn.storedValueIterator();
-        Collection<DoubleObjectContainer<IInstanceLabels>> res;
-        int instanceIndex = 0;
-        SimpleLinearRegressionModel linearModel = new SimpleLinearRegressionModel();
+        Collection<DoubleObjectContainer<IInstanceLabels>> res;        
         double[] deviationLabels = new double[k]; //The -1 is used to ignore its selve in nearest neighbors
         double[] deviationDist   = new double[k]; //The -1 is used to ignore its selve in nearest neighbors
         while (sampleIterator.hasNext() && labelIterator.hasNext()) {
             vector = sampleIterator.next();
             res = knn.getNearestValueDistances(k+1, vector);              
-            double label = Double.NaN;
-            double dist  = Double.NaN;            
-            DoubleObjectContainer<IInstanceLabels>[] resArray =  res.toArray(new DoubleObjectContainer[0]);
-            Arrays.sort(resArray);
-            int nearestIndex = 0;
-            label = resArray[nearestIndex].getSecond().getLabel();
-            for (nearestIndex=0; nearestIndex<resArray.length-1; nearestIndex++){ //Here we start from 0, but we iterate untill length-1, and when we read from resTab we read nearestIndex+1
-                DoubleObjectContainer<IInstanceLabels> distAndLabel =  resArray[nearestIndex+1];                
+            double label = Double.NaN;              
+            Iterator<DoubleObjectContainer<IInstanceLabels>> resIterator = res.iterator();
+            if (resIterator.hasNext()) {
+                label = resIterator.next().getSecond().getLabel();
+            }           
+            int nearestIndex = 0;            
+            while(resIterator.hasNext()){       
+                DoubleObjectContainer<IInstanceLabels> distAndLabel =  resIterator.next();
                 double error = label - distAndLabel.getSecond().getLabel(); 
                 double nearestDistance = distAndLabel.getFirst();                
                 deviationLabels[nearestIndex] = 0.5 * error * error;                    
                 deviationDist[nearestIndex]   = nearestDistance * nearestDistance;                    
                 nneLabels[nearestIndex]    += deviationLabels[nearestIndex];
                 nneDistances[nearestIndex] += deviationDist[nearestIndex];                                           
-            }            
-            linearModel.train(deviationDist, deviationLabels);
-                        
-            noise[instanceIndex] = linearModel.getB();
-            slope[instanceIndex] = linearModel.getA();
-            instanceIndex++;
+                nearestIndex++;
+            }                        
         }        
         for(int i=0; i<k; i++){
-            nneLabels[i] /= knn.size();
-            nneDistances[i] /= knn.size();
+            nneLabels[i] /= n;
+            nneDistances[i] /= n;
         }
+        SimpleLinearRegressionModel linearModel = new SimpleLinearRegressionModel();
         linearModel.train(nneDistances, nneLabels);
         nne       = linearModel.getB();
         nne_slope = linearModel.getA();
+        Arrays.fill(noise,nne);
+        Arrays.fill(slope,nne_slope );
         return new PairContainer<>(noise, slope);
     }
 

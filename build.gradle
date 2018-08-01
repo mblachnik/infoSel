@@ -76,6 +76,10 @@ dependencies {
         compile files('lib/weka.jar')
         compile files('lib/instanceselection.jar')
         compile files('lib/Infosel.jar')
+        compile files('lib/IS-CCIS.jar')
+        //compile files('C:\\Users\\Marcin\\Documents\\Projects\\Java\\Common\\RapidMiner\\Extension\\RM-Tools\\build\\libs\\RM-Tools-7.0.0.jar')
+        //compile files('..\\RM-Tools\\build\\libs\\RM-Tools-7.0.0.jar')
+        compile files('lib/RM-Tools-7.0.0.jar');
         //compileOnly "org.projectlombok:lombok:1.16.16"
         provided "org.projectlombok:lombok:1.16.16"
         //runtime fileTree(dir: 'C:/Marcin/Projects/Java/Common/RapidMiner/6.x/RapidM~1/lib/', include: '*.*', exclude: 'output/*')

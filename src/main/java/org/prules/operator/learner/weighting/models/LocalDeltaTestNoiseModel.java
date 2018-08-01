@@ -7,14 +7,12 @@ package org.prules.operator.learner.weighting.models;
 
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.ExampleSet;
-import org.prules.tools.math.SimpleLinearRegressionModel;
 import org.prules.tools.math.container.DoubleObjectContainer;
 import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 import org.prules.tools.math.container.PairContainer;
 import org.prules.tools.math.container.knn.KNNFactory;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import org.prules.dataset.Const;
@@ -25,26 +23,29 @@ import org.prules.dataset.Vector;
  *
  * @author Marcin
  */
-public class LocalGammaTestNoiseModel extends AbstractNoiseEstimatorModel {
+public class LocalDeltaTestNoiseModel extends AbstractNoiseEstimatorModel {
 
     DistanceMeasure distance;
     private final GeometricCollectionTypes knnType = GeometricCollectionTypes.CACHED_LINEAR_SEARCH;
     /**
-     * Number of nearest neighbors
+     * The width of the sourrounding where we search for nearest neighbors
      */
-    int k;
+    double sigma;
     /**
      * Range for which we calculate local GammaTest
      */
     int range;
-    double nne;
-    double nne_slope;
+    /**
+     * The value of the noise
+     */
+    double nne;    
 
-    public LocalGammaTestNoiseModel(DistanceMeasure distance, int k, int range) {
+    public LocalDeltaTestNoiseModel(DistanceMeasure distance, double sigma, int range) {
         assert distance != null;
-        assert k >= 1;
-        this.k = k;
-        this.range = range > k ? range : k;
+        assert sigma > 0;
+        assert range > 1;
+        this.sigma = sigma;
+        this.range = range;
         this.distance = distance;
     }
 
@@ -55,33 +56,26 @@ public class LocalGammaTestNoiseModel extends AbstractNoiseEstimatorModel {
         int n = exampleSet.size();
         Attributes attributes = exampleSet.getAttributes();
         int m = attributes.size();
-        double[] noise = new double[n];
-        double[] slope = new double[n];
-        double[] nneDistances = new double[k];
-        double[] nneLabels = new double[k];
+        double[] noise = new double[n];                
+        nne = 0;
         Vector vector;
         Iterator<Vector> sampleIterator = knn.samplesIterator();
         Iterator<IInstanceLabels> labelIterator = knn.storedValueIterator();
         Collection<DoubleObjectContainer<IInstanceLabels>> localRes;
         Collection<IInstanceLabels> res;
-        int instanceIndex = 0;
-        SimpleLinearRegressionModel linearModel = new SimpleLinearRegressionModel();
-        nne = 0;
-        nne_slope = 0;
-        double deviationLabels; //The -1 is used to ignore its selve in nearest neighbors
-        double deviationDist; //The -1 is used to ignore its selve in nearest neighbors
+        int instanceIndex = 0;        
         while (sampleIterator.hasNext() && labelIterator.hasNext()) {
             vector = sampleIterator.next();
             res = knn.getNearestValues(range, vector);                          
-            Iterator<IInstanceLabels> resIterator = res.iterator();
-            Arrays.fill(nneLabels, 0);
-            Arrays.fill(nneDistances,0);
-            //if (resIterator.hasNext()) resIterator.next(); //Ignorring first element becouse it isourselves.
+            Iterator<IInstanceLabels> resIterator = res.iterator();            
+            int nearestNeighborsCount = 0;            
+            double localNNE = 0;
             while (resIterator.hasNext()) {                                
                 IInstanceLabels lab = resIterator.next();
                 Vector localVector = knn.getSample(lab.getValueAsInt(Const.INDEX_CONTAINER));
-                localRes = knn.getNearestValueDistances(k+1, localVector);                                                              
+                localRes = knn.getNearestValueDistances(sigma, localVector);                                                              
                 Iterator<DoubleObjectContainer<IInstanceLabels>> localResIterator = localRes.iterator();
+                double delta = 0;  
                 double label = 0;
                 if (localResIterator.hasNext()) {
                     label = localResIterator.next().getSecond().getLabel();
@@ -89,32 +83,23 @@ public class LocalGammaTestNoiseModel extends AbstractNoiseEstimatorModel {
                 int nearestIndex = 0;
                 while(localResIterator.hasNext()){
                         //nearestIndex = 0; nearestIndex<localResTab.length-1; nearestIndex++){
-                    DoubleObjectContainer<IInstanceLabels> distAndLabel = localResIterator.next();                    
-                    double error = distAndLabel.getSecond().getLabel() - label;
-                    double nearestDistance = distAndLabel.getFirst();
-                    deviationLabels = 0.5 * error * error;
-                    deviationDist = nearestDistance * nearestDistance;
-                    nneLabels[nearestIndex] += deviationLabels;
-                    nneDistances[nearestIndex] += deviationDist;  
+                    IInstanceLabels otherLabels = localResIterator.next().getSecond();
+                    double otherLabel = otherLabels.getLabel();
+                    double error = otherLabel - label;                    
+                    delta += 0.5 * error * error;                                                            
                     nearestIndex++;
                 }
+                nearestNeighborsCount += nearestIndex;
+                localNNE += delta;
             }
-            double size = res.size();
-            for (int i = 0; i < k; i++) {
-                nneLabels[i] /= size;
-                nneDistances[i] /= size;
-            }
-            linearModel.train(nneDistances, nneLabels);
-            noise[instanceIndex] = linearModel.getB();
-            slope[instanceIndex] = linearModel.getA();
-            nne += linearModel.getB();
-            nne_slope += linearModel.getA();
+            localNNE /= nearestNeighborsCount;
+            noise[instanceIndex] = localNNE;
+            nne += localNNE;            
             instanceIndex++;
         }
-        nne /= exampleSet.size();
-        nne_slope /= exampleSet.size();
+        nne /= exampleSet.size();        
                 
-        return new PairContainer<>(noise, slope);
+        return new PairContainer<>(noise, null);
     }
 
     /**
@@ -128,10 +113,6 @@ public class LocalGammaTestNoiseModel extends AbstractNoiseEstimatorModel {
     @Override
     public double getNNE() {
         return nne;
-    }
-
-    public double getNNESlope() {
-        return nne_slope;
     }
 
 }

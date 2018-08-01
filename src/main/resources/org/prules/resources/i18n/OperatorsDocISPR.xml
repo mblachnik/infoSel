@@ -97,28 +97,36 @@
         <key>weightBy_NNE_G_test</key>
         <name>Estimate Noise (G-test)</name>
         <synopsis>Nonparametric Residual Noise Estimation per example using Gamma-test</synopsis>
-        <help>
-            
+        <help>            
         </help>         
         <icon>ispr.png</icon>
     </operator>
     
     <operator>
         <key>weightBy_Local_NNE_G_test</key>
-        <name>Estimate Noise (G-test)</name>
+        <name>Estimate Noise Local (G-test)</name>
         <synopsis>Nonparametric Residual Noise Estimation using Local Gamma-test</synopsis>
         <help>
-            
+            It performs Gamma-test in the local range surrounding given sample. It first search for "range" nearest neighbors and then performs G-test among this "range" neighbors
+        </help>         
+        <icon>ispr.png</icon>
+    </operator>
+        
+    <operator>
+        <key>weightBy_Local_NNE_D_test</key>
+        <name>Estimate Noise Local (D-test)</name>
+        <synopsis>Nonparametric Residual Noise Estimation using Local Delta-test</synopsis>
+        <help>
+            It performs Delta-test in the local range surrounding given sample. It first search for "range" nearest neighbors and then performs D-test among this "range" neighbors
         </help>         
         <icon>ispr.png</icon>
     </operator>
     
     <operator>
         <key>weightBy_LocalVariance_test</key>
-        <name>Estimate Noise (Local Var.)</name>
+        <name>Estimate Noise Local (Var.)</name>
         <synopsis>Nonparametric Residual Noise Estimation per example using local variance</synopsis>
-        <help>
-            
+        <help>            
         </help>         
         <icon>ispr.png</icon>
     </operator>
@@ -439,6 +447,22 @@
             algorithm to reduce computational complexity and reduce the influence of noise in the data.
              &lt;br/&gt;
             This operator is a wrapper over IS Library developed for Weka, and was implemented by Dr. Alvar Arnaiz-Gonzalez from University of Burgos
+        </help>
+        <icon>ispr.png</icon>
+    </operator>
+    
+        <operator>
+        <name>Select by Keel IS</name>
+        <key>keel_sel</key>
+        <synopsis>Keel instances selection</synopsis>
+        <help>             This operator performs instance selection which is a process of selecting a subset of examples
+            from the full training set of a classification task. &lt;br/&gt;
+            As a result only a subset of instances is returned (they are returned on Prot output port).
+             &lt;br/&gt;
+            Originally this kind of algorithms were developed to improve the k-NN 
+            algorithm to reduce computational complexity and reduce the influence of noise in the data.
+             &lt;br/&gt;
+            This operator is a wrapper over IS Library developed in Keel project, see: http://www.keel.es/
         </help>
         <icon>ispr.png</icon>
     </operator>

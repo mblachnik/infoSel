@@ -18,6 +18,7 @@ import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
 import java.util.List;
+import org.prules.operator.learner.selection.models.RMHCNaiveInstanceSelectionGeneralModel1;
 
 /**
  * This class is used to provide Random Mutation Hill Climbing instance
