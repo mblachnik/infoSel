@@ -1,5 +1,7 @@
 .gradle
 .settings
+.idea
+.nb-gradle/
 bin/
 build/
 .classpath
