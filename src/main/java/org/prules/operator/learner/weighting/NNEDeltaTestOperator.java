@@ -116,7 +116,7 @@ public class NNEDeltaTestOperator extends AbstractWeightingOperator {
     @Override
     public List<ParameterType> getParameterTypes() {
         List<ParameterType> types = super.getParameterTypes();
-        ParameterType type = new ParameterTypeDouble(PARAMETER_SIGMA, "The sigma.", 1e-12, Double.MAX_VALUE, 0.01);
+        ParameterType type = new ParameterTypeDouble(PARAMETER_SIGMA, "The sigma.", -1, Double.MAX_VALUE, 0.05);
         type.setExpert(false);
         types.add(type);                
         

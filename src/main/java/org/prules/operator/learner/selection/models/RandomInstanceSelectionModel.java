@@ -6,9 +6,11 @@
 package org.prules.operator.learner.selection.models;
 
 import com.rapidminer.example.set.SelectedExampleSet;
+import com.rapidminer.parameter.ParameterType;
 import org.prules.operator.learner.tools.DataIndex;
 import org.prules.operator.learner.tools.PRulesUtil;
 import com.rapidminer.tools.RandomGenerator;
+import java.util.List;
 import org.prules.operator.learner.tools.IDataIndex;
 
 /**
@@ -36,13 +38,17 @@ public class RandomInstanceSelectionModel extends AbstractInstanceSelectorModel 
         index.setAllFalse();
 
         if (stratifiedSelection) {
+            //index = PRulesUtil.stratifiedSelectionOfFirstSamplesFromEachClass(exampleSet, sampleSize, randomGenerator);
             index = PRulesUtil.stratifiedSelection(exampleSet, sampleSize, randomGenerator);
-        } else {            
+        } else {               
+            int[] ints = randomGenerator.ints(exampleSet.size()).toArray();                    
             for (int i = 0; i < sampleSize; i++) {                
-                index.set(i, true);
+                index.set(ints[i], true);
             }
         }
         return index;
     }
+    
+
 
 }

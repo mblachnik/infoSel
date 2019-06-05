@@ -27,7 +27,7 @@ public class test {
         for (int i = 0; i < c.chromosome.length; i++) {
             System.out.print(" "+c.chromosome[i]);            
         }
-        System.out.println("");
+        System.out.println();
         val = g.decode(c);
         for (int i=0; i<val.length; i++){
             System.out.println("Zdekodowano "+val[i]);

@@ -382,10 +382,9 @@ public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedO
      * prototypeOutput
      *
      * @return
-     * @throws com.rapidminer.parameter.UndefinedParameterError
      */
     @Override
-    public MDInteger getNumberOfPrototypesMetaData() throws UndefinedParameterError {
+    public MDInteger getNumberOfPrototypesMetaData() {
         return new MDInteger();
     }
 

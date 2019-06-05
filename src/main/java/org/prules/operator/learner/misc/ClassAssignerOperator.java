@@ -194,7 +194,7 @@ public class ClassAssignerOperator extends AbstractPrototypeBasedOperator {
      * @return     
      */    
     @Override
-    public MDInteger getNumberOfPrototypesMetaData()  throws UndefinedParameterError {
+    public MDInteger getNumberOfPrototypesMetaData() {
         MetaData md = this.exampleSetInputPort.getMetaData();
         if (md instanceof ExampleSetMetaData){
             return ((ExampleSetMetaData) md).getNumberOfExamples();             

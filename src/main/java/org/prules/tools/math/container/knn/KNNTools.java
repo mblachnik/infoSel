@@ -150,7 +150,7 @@ public class KNNTools {
      */
     public static void doNNVotes(double[] votes, Vector values, ISPRGeometricDataCollection<IInstanceLabels> samples, int k, VotingType voting) {
         Arrays.fill(votes, 0);
-        double totalDistance, totalSimilarity;;
+        double totalDistance, totalSimilarity;
         Collection<DoubleObjectContainer<IInstanceLabels>> neighbours;
         switch (voting) {
             default:

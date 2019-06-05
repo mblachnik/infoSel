@@ -70,7 +70,8 @@ public class ISNNEThresholdLinearDecisionFunction extends AbstractISDecisionFunc
         double predicted = instance.getPrediction().getLabel();
         double var = instance.getLabels().getValueAsDouble(Ontology.ATTRIBUTE_NOISE);
         double err = Math.abs(real - predicted);
-        double value = (err) / Math.sqrt(var) > threshold ? 1 : 0;
+        var = var < 0 ? 0 : var; //We can't do sqrt of negative values so we change it to 0.
+        double value = (err) > Math.sqrt(var) * threshold ? 1 : 0;
         return value;
     }
 
@@ -86,7 +87,7 @@ public class ISNNEThresholdLinearDecisionFunction extends AbstractISDecisionFunc
 
     @Override
     public String description() {
-        return "Y=(R-P)^2 > NNE(i) * Thres";
+        return "Y=(R-P)^2 > sqrt(NNE) * Thres";
     }
 
     @Override

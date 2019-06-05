@@ -19,9 +19,9 @@ public interface BinaryCoding {
      * @param max
      * @return
      */
-    public double decode(boolean[] bits, int min, int max);
+    double decode(boolean[] bits, int min, int max);
     
-    public double decode(boolean[] bits);
+    double decode(boolean[] bits);
     
     /**
      * 
@@ -30,8 +30,8 @@ public interface BinaryCoding {
      * @param min
      * @param max
      */
-    public void code(double val, boolean[] bits, int min, int max);
+    void code(double val, boolean[] bits, int min, int max);
         
-    public void code(double val, boolean[] bits);
+    void code(double val, boolean[] bits);
         
 }

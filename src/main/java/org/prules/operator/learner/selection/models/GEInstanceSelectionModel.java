@@ -24,7 +24,7 @@ public class GEInstanceSelectionModel extends AbstractInstanceSelectorModel impl
      * @param modifier - how the input instance is modified     
      */
     public GEInstanceSelectionModel(DistanceMeasure distance, IISDecisionFunction loss) {
-        this.model = new EditedDistanceGraphModel(distance,this, loss);
+        this.model = new EditedDistanceGraphModel1(distance,this, loss);
     }
 
     /**

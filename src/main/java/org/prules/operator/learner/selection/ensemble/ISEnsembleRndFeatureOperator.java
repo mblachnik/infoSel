@@ -56,7 +56,7 @@ public class ISEnsembleRndFeatureOperator extends AbstractISEnsembleOperator {
     }
 
     @Override
-    protected ExampleSet preprocessExampleSet(ExampleSet trainingSet) throws OperatorException {                
+    protected ExampleSet preprocessExampleSet(ExampleSet trainingSet) {
         ExampleSet trainingSubSet = (ExampleSet) trainingSet.clone();
         Attributes attributes = trainingSubSet.getAttributes();
         int size = attributes.size();

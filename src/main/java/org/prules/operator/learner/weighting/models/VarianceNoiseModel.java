@@ -49,7 +49,7 @@ public class VarianceNoiseModel extends AbstractNoiseEstimatorModel {
         Iterator<Vector> sampleIterator = knn.samplesIterator();
         Iterator<IInstanceLabels> labelIterator = knn.storedValueIterator();
         Collection<IInstanceLabels> res;
-        int exampleIndex = 0;
+        int exampleCounter = 0;
         nne = 0;
         double[] values = new double[k];
         while (sampleIterator.hasNext() && labelIterator.hasNext()) {
@@ -65,13 +65,13 @@ public class VarianceNoiseModel extends AbstractNoiseEstimatorModel {
                 } 
                 nearestNeighborIndex++;
             }
-            mean /= nearestNeighborIndex;
+            mean = nearestNeighborIndex == 0 ? 0 : mean / nearestNeighborIndex;
             double var = BasicMath.simpleVariance(values, mean);
             nne += var;
-            noise[exampleIndex] = var;
-            exampleIndex++;
+            noise[exampleCounter] = var;
+            exampleCounter++;
         }
-        nne /= exampleIndex;
+        nne = exampleCounter == 0 ? 0 : nne / exampleCounter;
         return new PairContainer<>(noise, null);
     }
 

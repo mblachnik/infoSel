@@ -45,7 +45,7 @@ public abstract class AbstractWeightingOperator extends AbstractPRulesBasicOpera
                 }
                 return metaData;
             }
-        };
+        }; 
         getTransformer().addRule(addWeightRule);
     }
 

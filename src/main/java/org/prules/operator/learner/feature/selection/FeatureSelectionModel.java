@@ -33,7 +33,7 @@ public class FeatureSelectionModel extends AbstractModel {
     }
 
     @Override
-    public ExampleSet apply(ExampleSet testSet) throws OperatorException {
+    public ExampleSet apply(ExampleSet testSet) {
         AttributeWeightedExampleSet weightedSet = new AttributeWeightedExampleSet(testSet, attributeWeights);
 	ExampleSet result = weightedSet.createCleanClone();
         return result;

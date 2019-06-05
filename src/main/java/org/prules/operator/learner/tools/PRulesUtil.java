@@ -16,6 +16,7 @@ import com.rapidminer.example.table.DataRowFactory;
 import com.rapidminer.example.table.ExampleTable;
 import com.rapidminer.example.table.MemoryExampleTable;
 import com.rapidminer.example.table.NominalMapping;
+import com.rapidminer.example.utils.ExampleSets;
 import com.rapidminer.operator.UserError;
 import com.rapidminer.tools.RandomGenerator;
 import java.util.ArrayList;
@@ -196,11 +197,11 @@ public class PRulesUtil {
         Map<Attribute, String> specialAttributes = new HashMap<Attribute, String>(attributes.allSize() - attributes.size()); //HashMap of Special attributes this map includes a list of attributes and its roles. Data structure for duplicating attributes                
         PRulesUtil.extractAttributesAsList(attributes, attributesList, regularAttributesList, specialAttributes);
 
-        ExampleTable outputTable = new MemoryExampleTable(attributesList,
-                new DataRowFactory(DataRowFactory.TYPE_DOUBLE_ARRAY, '.'),
-                inputSet.size());
-        ExampleSet outputSet = new SimpleExampleSet(outputTable, regularAttributesList, specialAttributes);
-
+        //ExampleTable outputTable = new MemoryExampleTable(attributesList,
+        //        new DataRowFactory(DataRowFactory.TYPE_DOUBLE_ARRAY, '.'),
+        //        inputSet.size());
+        //ExampleSet outputSet = new SimpleExampleSet(outputTable, regularAttributesList, specialAttributes);
+        ExampleSet outputSet = ExampleSets.from(attributesList).withBlankSize(inputSet.size()).withRoles(specialAttributes).build();
         Iterator<Example> inputSetIterator = inputSet.iterator();
         Iterator<Example> outputSetIterator = outputSet.iterator();
 
@@ -255,12 +256,12 @@ public class PRulesUtil {
                         numberOfRegularAttributes++;
                     }
                 } else {
-                    Attribute attribute = attributesMap.get(attributeName);                    
-                    if (attribute.isNominal()){                        
+                    Attribute attribute = attributesMap.get(attributeName);
+                    if (attribute.isNominal()) {
                         NominalMapping nominalMapping = attribute.getMapping();
-                        NominalMapping nominalMappingOri = originalAttribute.getMapping();                         
-                        List<String> nomStrOri = nominalMappingOri.getValues();                                                                              
-                        for (String s : nomStrOri){
+                        NominalMapping nominalMappingOri = originalAttribute.getMapping();
+                        List<String> nomStrOri = nominalMappingOri.getValues();
+                        for (String s : nomStrOri) {
                             nominalMapping.mapString(s);
                         }
                     }
@@ -268,9 +269,9 @@ public class PRulesUtil {
             }
             numberOfSamples += imputSet.size();
         }
-        ExampleTable outputTable = new MemoryExampleTable(attributesList, new DataRowFactory(DataRowFactory.TYPE_DOUBLE_ARRAY, '.'), numberOfSamples);
-        ExampleSet outputSet = new SimpleExampleSet(outputTable, regularAttributesList, specialAttributes);
-
+        //ExampleTable outputTable = new MemoryExampleTable(attributesList, new DataRowFactory(DataRowFactory.TYPE_DOUBLE_ARRAY, '.'), numberOfSamples);
+        //ExampleSet outputSet = new SimpleExampleSet(outputTable, regularAttributesList, specialAttributes);
+        ExampleSet outputSet =  ExampleSets.from(attributesList).withBlankSize(numberOfSamples).withRoles(specialAttributes).build();
         Iterator<Example> outputSetIterator = outputSet.iterator();
 
         for (ExampleSet inputSet : exampleSets) {
@@ -282,7 +283,7 @@ public class PRulesUtil {
                 while (inputAttributeIterator.hasNext()) {
                     Attribute inputAttribute = inputAttributeIterator.next();
                     Attribute outputAttribute = attributesMap.get(inputAttribute.getName());
-                    if (inputAttribute.isNumerical()){
+                    if (inputAttribute.isNumerical()) {
                         outputExample.setValue(outputAttribute, inputExample.getValue(inputAttribute));
                     } else {
                         outputExample.setValue(outputAttribute, inputExample.getValueAsString(inputAttribute));
@@ -307,7 +308,7 @@ public class PRulesUtil {
      * divide number of samples proportional to ocurence of the class labels)
      * @return data index
      */
-    public static DataIndex stratifiedSelection(ExampleSet exampleSet, int sampleSize, RandomGenerator randomGenerator) {
+    public static DataIndex stratifiedSelectionOfFirstSamplesFromEachClass(ExampleSet exampleSet, int sampleSize, RandomGenerator randomGenerator) {
         int realTrainingSetSize = exampleSet.size();
         Attribute labels = exampleSet.getAttributes().getLabel();
         if (sampleSize > realTrainingSetSize || labels == null || !labels.isNominal()) {
@@ -326,7 +327,7 @@ public class PRulesUtil {
         }
         int sumClassCounterAfterResampling = 0;
         //Haw many samples we should obtain
-        int[] classCounterAfterResampling = (int[]) classesCounter.clone();
+        int[] classCounterAfterResampling = classesCounter.clone();
         for (int i = 0; i < classesCounter.length; i++) {
             classCounterAfterResampling[i] = (int) (sampleSize * classesCounter[i] / (double) realTrainingSetSize); //Here realTrainingSetSize is double, otherwise we would have  problem when dividing
             sumClassCounterAfterResampling += classCounterAfterResampling[i];
@@ -363,6 +364,83 @@ public class PRulesUtil {
     }
 
     /**
+     * This method selects from the input exampleSet sampleSize samples, random
+     * sample preserving class labels distribution
+     *
+     * @param exampleSet input exampleSet
+     * @param sampleSize number of samples to select
+     * @param randomGenerator randomGenerator (used when it is impossible to
+     * divide number of samples proportional to ocurence of the class labels)
+     * @return data index
+     */
+    public static DataIndex stratifiedSelection(ExampleSet exampleSet, int sampleSize, RandomGenerator randomGenerator) {
+        int realTrainingSetSize = exampleSet.size();
+        Attribute labels = exampleSet.getAttributes().getLabel();
+        if (sampleSize > realTrainingSetSize || labels == null || !labels.isNominal()) {
+            return null;
+        }
+        DataIndex index = new DataIndex(realTrainingSetSize);
+        index.setAllFalse();
+
+        NominalMapping labelsMap = labels.getMapping();
+        int numClasses = labelsMap.size();
+        int i;
+        //Initialize classIndexer. It contains list of samples from given class
+        List<Integer>[] classesIndexer = new List[numClasses];
+        for (i = 0; i < numClasses; i++) {
+            classesIndexer[i] = new ArrayList<Integer>(realTrainingSetSize / numClasses);
+        }
+        //Fillin classIndexer with samples id which belong to given class
+        i = 0;
+        for (Example instance : exampleSet) {
+            int currentLabel = (int) instance.getLabel();
+            classesIndexer[currentLabel].add(i++);
+        }
+        //Get class labels distribution
+        int[] classCounter = new int[numClasses];
+        for (i = 0; i < numClasses; i++) {
+            classCounter[i] = classesIndexer[i].size();
+        }
+        //randomize each list
+        for (i = 0; i < numClasses; i++) {
+            int n = classCounter[i];
+            for(int j=0; j<n; j++){
+                int k = randomGenerator.nextInt(n);
+                int vj = classesIndexer[i].get(j);
+                int vk = classesIndexer[i].get(k);
+                classesIndexer[i].set(k, vj);
+                classesIndexer[i].set(j, vk);
+            }
+        }
+        //Calculate samples distribution after resampling
+        int sumClassCounterAfterResampling = 0;
+        int[] classCounterAfterResampling = classCounter.clone();
+        for (i = 0; i < numClasses; i++) {
+            classCounterAfterResampling[i] = (int) (sampleSize * classCounter[i] / (double) realTrainingSetSize); //Here realTrainingSetSize is double, otherwise we would have  problem when dividing
+            sumClassCounterAfterResampling += classCounterAfterResampling[i];
+        }
+        //NOTE that sumClassCounterAfterResampling < sampleSize
+        //If this condition is true, add an extra sample to a random class. Repeat this procedure until  sumClassCounterAfterResampling == sampleSize
+        while (sampleSize - sumClassCounterAfterResampling > 0) { //When 0 the desired sampleSize is equal to those whech will be selected
+            int j = randomGenerator.nextInt(numClasses);
+            if (classCounter[j] - classCounterAfterResampling[j] > 0) { //We need to check this incase of selected random class has not enought samples in the training set
+                classCounterAfterResampling[j]++;
+                sumClassCounterAfterResampling++;
+            }
+        }
+        //Select instancess        
+        for (i = 0; i < numClasses; i++) {
+            //For i'th class get number of samples to be selected, and generate appropriate number of random ints
+            for(int j=0; j<classCounterAfterResampling[i]; j++){
+                //Select appropriate samples
+                int ii = classesIndexer[i].get(j);
+                index.set(ii, true);
+            }
+        }
+        return index;
+    }
+
+    /**
      * This method selects from the input exampleSet sampleSize samples, such
      * that the number of selected samples is proportional to the number of
      * classes. This method does not reorder samples so in case of stratified
@@ -393,7 +471,7 @@ public class PRulesUtil {
         }
         int sumClassCounterAfterResampling = 0;
         //Haw many samples we should obtain
-        int[] classCounterAfterResampling = (int[]) classesCounter.clone();
+        int[] classCounterAfterResampling = classesCounter.clone();
         for (int i = 0; i < classesCounter.length; i++) {
             classCounterAfterResampling[i] = sampleSize * classesCounter[i] / realTrainingSetSize;
             sumClassCounterAfterResampling += classCounterAfterResampling[i];

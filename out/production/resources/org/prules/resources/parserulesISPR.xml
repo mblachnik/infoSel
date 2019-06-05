@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<parserules>
+    <!-- This file can be used to automatically update operator parameters when a process
+            is loaded containing an old version of the operator. -->
+</parserules>

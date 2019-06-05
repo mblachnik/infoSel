@@ -31,7 +31,7 @@ public class RNGInstanceSelectionModel extends AbstractInstanceSelectorModel imp
      * @param modifier - a method to modify input instance
      */
     public RNGInstanceSelectionModel(DistanceMeasure distance, IISDecisionFunction loss) {
-        model = new EditedDistanceGraphModel(distance, this, loss);
+        model = new EditedDistanceGraphModel1(distance, this, loss);
     }
 
     /**

@@ -5,7 +5,6 @@
  */
 package org.prules.operator.learner.weighting.models;
 
-import com.rapidminer.example.Attributes;
 import com.rapidminer.example.ExampleSet;
 import org.prules.tools.math.SimpleLinearRegressionModel;
 import org.prules.tools.math.container.DoubleObjectContainer;
@@ -14,12 +13,9 @@ import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 import org.prules.tools.math.container.PairContainer;
 import org.prules.tools.math.container.knn.KNNFactory;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.dataset.Vector;
 
@@ -78,8 +74,8 @@ public class GammaTestNoiseModel extends AbstractNoiseEstimatorModel {
             }                        
         }        
         for(int i=0; i<k; i++){
-            nneLabels[i] /= n;
-            nneDistances[i] /= n;
+            nneLabels[i]    = n == 0 ? 0 : nneLabels[i] / n;
+            nneDistances[i] = n == 0 ? 0 :  nneDistances[i] / n;
         }
         SimpleLinearRegressionModel linearModel = new SimpleLinearRegressionModel();
         linearModel.train(nneDistances, nneLabels);

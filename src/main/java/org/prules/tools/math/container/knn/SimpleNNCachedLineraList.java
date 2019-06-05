@@ -128,7 +128,7 @@ public class SimpleNNCachedLineraList<T extends IInstanceLabels> implements ISPR
         int i = 0;
         for (Vector sample : samples) {
             double dist = distanceEvaluator.evaluateDistance(sample, values);
-            distanceCache.set(i, (int) index, dist);
+            distanceCache.set(i, index, dist);
             i++;
         }
     }

@@ -33,7 +33,7 @@ public interface ISPRGeometricDataCollectionWithIndex<T extends Serializable> ex
      * @param index a binary index which allows to switch off several examples
      * @return
      */
-    public  Collection<T> getNearestValues(int k, Vector values, IDataIndex index);   
+    Collection<T> getNearestValues(int k, Vector values, IDataIndex index);
     
     /**
      * This method returns a collection of data from the k nearest sample
@@ -49,7 +49,7 @@ public interface ISPRGeometricDataCollectionWithIndex<T extends Serializable> ex
      * @param index a binary index which allows to switch off several examples
      * @return collection of stored values with associated distances
      */
-    public  Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, Vector values, IDataIndex index);   
+    Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, Vector values, IDataIndex index);
 
         /**
      * This method returns a collection of data from all sample points inside
@@ -65,7 +65,7 @@ public interface ISPRGeometricDataCollectionWithIndex<T extends Serializable> ex
      * @param index a binary index which allows to switch off several examples 
      * @return ccollection of stored values with associated distances
      */
-    public  Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, Vector values, IDataIndex index);
+        Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, Vector values, IDataIndex index);
     
     /**
      * This method returns a collection of data from all sample points inside
@@ -83,7 +83,7 @@ public interface ISPRGeometricDataCollectionWithIndex<T extends Serializable> ex
      * @param index a binary index which allows to switch off several examples 
      * @return collection of stored values with associated distances
      */
-    public  Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, Vector values, IDataIndex index);   
+    Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, Vector values, IDataIndex index);
     
     IDataIndex getIndex();
 }

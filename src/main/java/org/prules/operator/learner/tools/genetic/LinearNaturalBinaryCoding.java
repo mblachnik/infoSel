@@ -60,7 +60,7 @@ public class LinearNaturalBinaryCoding implements BinaryCoding{
         int bitVal = (int)val;
         for(int i=startBit; i<=lastBit; i++){            
             int r = bitVal % 2;            
-            bits[i] = r == 1 ? true : false;
+            bits[i] = r == 1;
             bitVal /= 2;
         }        
     }

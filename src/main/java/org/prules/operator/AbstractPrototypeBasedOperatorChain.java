@@ -49,7 +49,7 @@ public abstract class AbstractPrototypeBasedOperatorChain extends OperatorChain 
     public AbstractPrototypeBasedOperatorChain(OperatorDescription description, String... subprocessNames) {
         super(description, subprocessNames);//
         exampleSetInputPort.addPrecondition(new CapabilityPrecondition(this, exampleSetInputPort));
-        exampleSetInputPort.addPrecondition(new DistanceMeasurePrecondition(exampleSetInputPort, this));
+        //exampleSetInputPort.addPrecondition(new DistanceMeasurePrecondition(exampleSetInputPort, this));
         getTransformer().addPassThroughRule(exampleSetInputPort, exampleSetOutputPort);        
         //getTransformer().addPassThroughRule(exampleSetInputPort,originalExampleSetOutputPort);
         addPrototypeTransformationRule();

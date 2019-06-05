@@ -17,5 +17,5 @@ public interface PRulesModel<T> {
      * @param exampleSet - training set
      * @return - resultant set
      */
-    public T run(ExampleSet exampleSet);    
+    T run(ExampleSet exampleSet);
 }

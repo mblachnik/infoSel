@@ -51,53 +51,58 @@ public class LocalDeltaTestNoiseModel extends AbstractNoiseEstimatorModel {
 
     @Override
     public PairContainer<double[], double[]> run(ExampleSet exampleSet) {
-        ISPRGeometricDataCollection<IInstanceLabels> knn;
-        knn = KNNFactory.initializeKNearestNeighbourFactory(knnType, exampleSet, distance);
+        ISPRGeometricDataCollection<IInstanceLabels> dataSet;
+        dataSet = KNNFactory.initializeKNearestNeighbourFactory(knnType, exampleSet, distance);
         int n = exampleSet.size();
         Attributes attributes = exampleSet.getAttributes();
         int m = attributes.size();
         double[] noise = new double[n];                
         nne = 0;
         Vector vector;
-        Iterator<Vector> sampleIterator = knn.samplesIterator();
-        Iterator<IInstanceLabels> labelIterator = knn.storedValueIterator();
+        Iterator<Vector> sampleIterator = dataSet.samplesIterator();
+        Iterator<IInstanceLabels> labelIterator = dataSet.storedValueIterator();
         Collection<DoubleObjectContainer<IInstanceLabels>> localRes;
         Collection<IInstanceLabels> res;
-        int instanceIndex = 0;        
+        int instanceCounter = 0;        
         while (sampleIterator.hasNext() && labelIterator.hasNext()) {
             vector = sampleIterator.next();
-            res = knn.getNearestValues(range, vector);                          
+            res = dataSet.getNearestValues(range, vector);                          
             Iterator<IInstanceLabels> resIterator = res.iterator();            
             int nearestNeighborsCount = 0;            
             double localNNE = 0;
             while (resIterator.hasNext()) {                                
                 IInstanceLabels lab = resIterator.next();
-                Vector localVector = knn.getSample(lab.getValueAsInt(Const.INDEX_CONTAINER));
-                localRes = knn.getNearestValueDistances(sigma, localVector);                                                              
+                Vector localVector = dataSet.getSample(lab.getValueAsInt(Const.INDEX_CONTAINER));
+                if (sigma > 0) {
+                    localRes = dataSet.getNearestValueDistances(sigma, localVector);                                                              
+                } else {
+                    localRes = dataSet.getNearestValueDistances(2, localVector);
+                }
                 Iterator<DoubleObjectContainer<IInstanceLabels>> localResIterator = localRes.iterator();
                 double delta = 0;  
                 double label = 0;
                 if (localResIterator.hasNext()) {
                     label = localResIterator.next().getSecond().getLabel();
                 }                
-                int nearestIndex = 0;
+                int nearestCounter = 0;
                 while(localResIterator.hasNext()){
                         //nearestIndex = 0; nearestIndex<localResTab.length-1; nearestIndex++){
                     IInstanceLabels otherLabels = localResIterator.next().getSecond();
                     double otherLabel = otherLabels.getLabel();
                     double error = otherLabel - label;                    
                     delta += 0.5 * error * error;                                                            
-                    nearestIndex++;
+                    nearestCounter++;
                 }
-                nearestNeighborsCount += nearestIndex;
+                nearestNeighborsCount += nearestCounter;
                 localNNE += delta;
             }
-            localNNE /= nearestNeighborsCount;
-            noise[instanceIndex] = localNNE;
+            localNNE = nearestNeighborsCount == 0 ? 0 : localNNE / nearestNeighborsCount;
+            noise[instanceCounter] = localNNE;
             nne += localNNE;            
-            instanceIndex++;
+            instanceCounter++;
         }
-        nne /= exampleSet.size();        
+        
+        nne = n == 0 ? 0 : nne / n;        
                 
         return new PairContainer<>(noise, null);
     }

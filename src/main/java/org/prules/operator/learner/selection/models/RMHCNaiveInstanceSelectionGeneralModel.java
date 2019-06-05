@@ -217,7 +217,7 @@ public class RMHCNaiveInstanceSelectionGeneralModel extends AbstractInstanceSele
                 System.out.print(values[j] + " ; ");
             }
             System.out.print("] ");
-            System.out.println("");
+            System.out.println();
         }
         System.out.println("------------------------------------------------");
     }

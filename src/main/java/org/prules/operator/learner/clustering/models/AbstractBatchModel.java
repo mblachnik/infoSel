@@ -130,8 +130,6 @@ public abstract class AbstractBatchModel {
     public void finalizeTraining() {
     }
 
-    ;    
-
     /**
      * Returns distance measure used in the calculations
      *

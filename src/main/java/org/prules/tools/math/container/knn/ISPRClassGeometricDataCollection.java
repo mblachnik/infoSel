@@ -32,7 +32,7 @@ public interface ISPRClassGeometricDataCollection<T extends Serializable> extend
      * @param label class label
      * @return Pair of collection of stored values with associated distances, the first element of the pair containes positive nearest neighbors, the second element contains a collection of negative nearest neighbors
      */
-    public  PairContainer<Collection<T>,Collection<T>> getNearestNeighborsAndAnymies(int k, Vector values, T label);
+    PairContainer<Collection<T>,Collection<T>> getNearestNeighborsAndAnymies(int k, Vector values, T label);
 
     /**
      * This method returns a collection of data from the k nearest sample
@@ -48,7 +48,7 @@ public interface ISPRClassGeometricDataCollection<T extends Serializable> extend
      * @param label class label
      * @return Pair of collection of stored values with associated distances, the first element of the pair containes positive nearest neighbors, the second element contains a collection of negative nearest neighbors (anymies) )Returned value also contains a distance to each neighbor
      */
-    public  PairContainer<Collection<DoubleObjectContainer<T>>,Collection<DoubleObjectContainer<T>>> getNearestNeighborsAndAnymiesDistances(int k, Vector values, T label);
+    PairContainer<Collection<DoubleObjectContainer<T>>,Collection<DoubleObjectContainer<T>>> getNearestNeighborsAndAnymiesDistances(int k, Vector values, T label);
 
     /**
      * This method returns a collection of data from all sample points inside
@@ -64,7 +64,7 @@ public interface ISPRClassGeometricDataCollection<T extends Serializable> extend
      * @param label class label
      * @return Pair of collection of stored values with associated distances, the first element of the pair containes positive nearest neighbors, the second element contains a collection of negative nearest neighbors (anymies) )Returned value also contains a distance to each neighbor
      */
-    public  PairContainer<Collection<DoubleObjectContainer<T>>,Collection<DoubleObjectContainer<T>>> getNearestNeighborsAndAnymiesDistances(double withinDistance, Vector values, T label);
+    PairContainer<Collection<DoubleObjectContainer<T>>,Collection<DoubleObjectContainer<T>>> getNearestNeighborsAndAnymiesDistances(double withinDistance, Vector values, T label);
 
     /**
      * This method returns a collection of data from all sample points inside
@@ -82,7 +82,7 @@ public interface ISPRClassGeometricDataCollection<T extends Serializable> extend
      * @param label class label
      * @return Pair of collection of stored values with associated distances, the first element of the pair containes positive nearest neighbors, the second element contains a collection of negative nearest neighbors (anymies) )Returned value also contains a distance to each neighbor
      */
-    public  PairContainer<Collection<DoubleObjectContainer<T>>,Collection<DoubleObjectContainer<T>>> getNearestNeighborsAndAnymiesDistances(double withinDistance, int butAtLeastK, Vector values, T label);
+    PairContainer<Collection<DoubleObjectContainer<T>>,Collection<DoubleObjectContainer<T>>> getNearestNeighborsAndAnymiesDistances(double withinDistance, int butAtLeastK, Vector values, T label);
     
     
     
@@ -102,7 +102,7 @@ public interface ISPRClassGeometricDataCollection<T extends Serializable> extend
      * @param index index of instances considered for nearest neighbors search
      * @return Pair of collection of stored values with associated distances, the first element of the pair containes positive nearest neighbors, the second element contains a collection of negative nearest neighbors
      */
-    public  PairContainer<Collection<T>,Collection<T>> getNearestNeighborsAndAnymies(int k, Vector values, T label, IDataIndex index);
+PairContainer<Collection<T>,Collection<T>> getNearestNeighborsAndAnymies(int k, Vector values, T label, IDataIndex index);
 
     /**
      * This method returns a collection of data from the k nearest sample
@@ -119,7 +119,7 @@ public interface ISPRClassGeometricDataCollection<T extends Serializable> extend
      * @param index index of instances considered for nearest neighbors search
      * @return Pair of collection of stored values with associated distances, the first element of the pair containes positive nearest neighbors, the second element contains a collection of negative nearest neighbors (anymies) )Returned value also contains a distance to each neighbor
      */
-    public  PairContainer<Collection<DoubleObjectContainer<T>>,Collection<DoubleObjectContainer<T>>> getNearestNeighborsAndAnymiesDistances(int k, Vector values, T label, IDataIndex index);
+    PairContainer<Collection<DoubleObjectContainer<T>>,Collection<DoubleObjectContainer<T>>> getNearestNeighborsAndAnymiesDistances(int k, Vector values, T label, IDataIndex index);
 
     /**
      * This method returns a collection of data from all sample points inside
@@ -136,7 +136,7 @@ public interface ISPRClassGeometricDataCollection<T extends Serializable> extend
      * @param index index of instances considered for nearest neighbors search
      * @return Pair of collection of stored values with associated distances, the first element of the pair containes positive nearest neighbors, the second element contains a collection of negative nearest neighbors (anymies) )Returned value also contains a distance to each neighbor
      */
-    public  PairContainer<Collection<DoubleObjectContainer<T>>,Collection<DoubleObjectContainer<T>>> getNearestNeighborsAndAnymiesDistances(double withinDistance, Vector values, T label, IDataIndex index);
+    PairContainer<Collection<DoubleObjectContainer<T>>,Collection<DoubleObjectContainer<T>>> getNearestNeighborsAndAnymiesDistances(double withinDistance, Vector values, T label, IDataIndex index);
 
     /**
      * This method returns a collection of data from all sample points inside
@@ -155,6 +155,6 @@ public interface ISPRClassGeometricDataCollection<T extends Serializable> extend
      * @param index index of instances considered for nearest neighbors search
      * @return Pair of collection of stored values with associated distances, the first element of the pair containes positive nearest neighbors, the second element contains a collection of negative nearest neighbors (anymies) )Returned value also contains a distance to each neighbor
      */
-    public  PairContainer<Collection<DoubleObjectContainer<T>>,Collection<DoubleObjectContainer<T>>> getNearestNeighborsAndAnymiesDistances(double withinDistance, int butAtLeastK, Vector values, T label, IDataIndex index);    
+    PairContainer<Collection<DoubleObjectContainer<T>>,Collection<DoubleObjectContainer<T>>> getNearestNeighborsAndAnymiesDistances(double withinDistance, int butAtLeastK, Vector values, T label, IDataIndex index);
 
 }

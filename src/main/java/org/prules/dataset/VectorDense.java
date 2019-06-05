@@ -129,9 +129,6 @@ public class VectorDense implements Vector {
             return false;
         }
         final VectorDense other = (VectorDense) obj;
-        if (!Arrays.equals(this.values, other.values)) {
-            return false;
-        }
-        return true;
+        return Arrays.equals(this.values, other.values);
     }
 }

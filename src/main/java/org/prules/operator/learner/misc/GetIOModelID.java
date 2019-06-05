@@ -43,7 +43,7 @@ public class GetIOModelID extends Operator {
     }
     
     @Override
-    public void doWork() throws OperatorException {
+    public void doWork() {
         IOObject in = inputPort.getAnyDataOrNull();
         //id = in.getObjectID();
         //No longer supported

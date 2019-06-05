@@ -22,6 +22,10 @@ apply plugin: 'java'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+compileJava {
+    options.compilerArgs += ["-Xlint:deprecation"]
+}
+
 extensionConfig {
     //
     
@@ -75,32 +79,48 @@ dependencies {
         compile files('lib/rapidminer-Weka-5.3.002.jar')
         compile files('lib/weka.jar')
         compile files('lib/instanceselection.jar')
-        compile files('lib/Infosel.jar')
-        compile files('lib/IS-CCIS.jar')
+        compile files('lib/Infosel.jar')                               
+        compile files('D:/Projects/Java/Common/Keel/dist/algorithm/methods/IS-CCIS.jar')
         //compile files('C:\\Users\\Marcin\\Documents\\Projects\\Java\\Common\\RapidMiner\\Extension\\RM-Tools\\build\\libs\\RM-Tools-7.0.0.jar')
         //compile files('..\\RM-Tools\\build\\libs\\RM-Tools-7.0.0.jar')
-        compile files('lib/RM-Tools-7.0.0.jar');
+        //compile files('lib/RM-Tools-7.0.0.jar');
         //compileOnly "org.projectlombok:lombok:1.16.16"
         provided "org.projectlombok:lombok:1.16.16"
         //runtime fileTree(dir: 'C:/Marcin/Projects/Java/Common/RapidMiner/6.x/RapidM~1/lib/', include: '*.*', exclude: 'output/*')
-        runtime fileTree(dir: 'C:/Programs/RapidMiner Studio/lib/', include: '*.*')
+        runtime fileTree(dir: 'C:\\Programs\\RapidMiner\\lib\\', include: '*.*')
         //runtime fileTree(dir: 'C:/Marcin/Projects/Java/Common/RapidMiner/Extension/ISPR/lib/', include: '*.*')
 }
 
-def usersHomeDir = 'C:/Marcin/Projects/Java/Common/RapidMiner/7.x/home'
+def usersHomeDir =  'D:/Projects/Java/Common/RapidMiner/9.x/home' //This is directory which is used for debuging
+def usersHomeDir2 = 'D:/Projects/DataMining/RapidMiner' //This is directory which is used for fast start of RM
     
 task copyPluginFast(type: Copy, dependsOn: jar) {
      description 'Copy jar file into RapidMiner extensions folder'   
     //from 'C:/Marcin/Projects/Java/Common/RapidMiner/Extension/ISPR/build/libs/ISPR-1.0.0.jar'
-    from jar.archivePath
-    into "$usersHomeDir /.RapidMiner/extensions"
+    ["$usersHomeDir", "$usersHomeDir2"].each { dest -> copy {
+        from jar.archivePath
+        into dest+"/.RapidMiner/extensions"
+        }
+    }
 }
 
+//task copyPluginFast(type: Copy, dependsOn: jar) {
+//     description 'Copy jar file into RapidMiner extensions folder'   
+//    //from 'C:/Marcin/Projects/Java/Common/RapidMiner/Extension/ISPR/build/libs/ISPR-1.0.0.jar'
+//        from jar.archivePath
+//        into "$usersHomeDir /.RapidMiner/extensions"}
+//}
+
 task copyPlugin(type: Copy, dependsOn: installExtension) {
-     description 'Copy jar file into RapidMiner extensions folder'   
-    from 'C:/Marcin/Projects/Java/Common/RapidMiner/Extension/ISPR/build/libs/ISPR-8.0.0-all.jar'
+     description 'Copy jar file into RapidMiner extensions folder'  
+     ["$usersHomeDir", "$usersHomeDir2"].each { dest -> copy {
+        from jar.archivePath
+        into dest+"/.RapidMiner/extensions"
+        }
+    }
+    //from 'C:/Marcin/Projects/Java/Common/RapidMiner/Extension/ISPR/build/libs/ISPR-8.0.0-all.jar'
     //from jar.archivePath
-    into "$usersHomeDir /.RapidMiner/extensions"
+    //into "$usersHomeDir /.RapidMiner/extensions"
 }
 
 task run(type: JavaExec, dependsOn:copyPluginFast) {    

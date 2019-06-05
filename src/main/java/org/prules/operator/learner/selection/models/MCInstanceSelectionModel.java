@@ -70,7 +70,7 @@ public class MCInstanceSelectionModel extends AbstractInstanceSelectorModel {
     public DataIndex selectInstances(SelectedExampleSet inputExampleSet) {
         SelectedExampleSet exampleSet;
         if (inputExampleSet instanceof SelectedExampleSet) {
-            exampleSet = (SelectedExampleSet) inputExampleSet;
+            exampleSet = inputExampleSet;
         } else {
             exampleSet = new SelectedExampleSet(inputExampleSet);
         }

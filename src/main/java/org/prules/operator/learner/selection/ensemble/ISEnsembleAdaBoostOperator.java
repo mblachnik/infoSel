@@ -91,10 +91,9 @@ public class ISEnsembleAdaBoostOperator extends AbstractISEnsembleOperator {
      *
      * @param trainingSet
      * @return
-     * @throws OperatorException
      */
     @Override
-    protected ExampleSet preprocessExampleSet(ExampleSet trainingSet) throws OperatorException {        
+    protected ExampleSet preprocessExampleSet(ExampleSet trainingSet) {
         //Sample according to the distribution of 'instanceWeights'
         Set<Integer> set = new HashSet<>(sampleSize);
         for (int i = 0; i < sampleSize; i++) {
@@ -120,10 +119,9 @@ public class ISEnsembleAdaBoostOperator extends AbstractISEnsembleOperator {
      *
      * @param resultSet
      * @return
-     * @throws OperatorException
      */
     @Override
-    protected ExampleSet postprocessExampleSet(ExampleSet resultSet) throws OperatorException {
+    protected ExampleSet postprocessExampleSet(ExampleSet resultSet) {
         double error = 0;
         ISPRClassGeometricDataCollection<IInstanceLabels> model;
         model = (ISPRClassGeometricDataCollection<IInstanceLabels>) KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, resultSet, measure);

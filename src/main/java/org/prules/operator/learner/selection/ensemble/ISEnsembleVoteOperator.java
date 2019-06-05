@@ -208,11 +208,10 @@ public class ISEnsembleVoteOperator extends AbstractPrototypeBasedOperatorChain 
     /**
      * Returns number of prototypes displayed in the MataData related with prototypeOutput
      *
-     * @return     
-     * @throws com.rapidminer.parameter.UndefinedParameterError     
+     * @return
      */    
     @Override
-    public MDInteger getNumberOfPrototypesMetaData() throws UndefinedParameterError {        
+    public MDInteger getNumberOfPrototypesMetaData() {
         return new MDInteger();        
     }
 
@@ -243,4 +242,6 @@ public class ISEnsembleVoteOperator extends AbstractPrototypeBasedOperatorChain 
         types.add(type);
         return types;
     }
+    
+    
 }

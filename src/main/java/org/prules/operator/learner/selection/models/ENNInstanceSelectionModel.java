@@ -214,7 +214,7 @@ public class ENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
                     for (int i = 0; i < counter.length; i++) {
                         counter[i] /= norm;
                     }
-                    predictedLabel = KNNTools.<Double>getMostFrequentValue(counter);
+                    predictedLabel = KNNTools.getMostFrequentValue(counter);
      
                     if (storeConfidence) {
 //                        confidence[instanceIndex] = counterMap.get(predictedLabel);

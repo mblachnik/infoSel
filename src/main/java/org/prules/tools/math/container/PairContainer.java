@@ -90,13 +90,8 @@ public class PairContainer<N, M> implements Serializable {
             return false;
         }
         if (second == null) {
-            if (other.second != null) {
-                return false;
-            }
-        } else if (!second.equals(other.second)) {
-            return false;
-        }
-        return true;
+            return other.second == null;
+        } else return second.equals(other.second);
     }
 /*
     @Override

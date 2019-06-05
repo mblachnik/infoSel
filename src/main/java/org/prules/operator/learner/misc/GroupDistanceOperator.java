@@ -17,6 +17,7 @@ import com.rapidminer.example.table.DataRowFactory;
 import com.rapidminer.example.table.ExampleTable;
 import com.rapidminer.example.table.MemoryExampleTable;
 import com.rapidminer.example.table.NominalMapping;
+import com.rapidminer.example.utils.ExampleSets;
 import com.rapidminer.operator.Operator;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
@@ -71,8 +72,9 @@ public class GroupDistanceOperator extends Operator implements CapabilityProvide
         }        
         NominalMapping idMap = (NominalMapping)map.clone();
         idAttribute.setMapping(idMap);
-        ExampleTable returnTable = new MemoryExampleTable(list, new DataRowFactory(DataRowFactory.TYPE_DOUBLE_ARRAY, '.'), mapSize);
-        ExampleSet returnSet = new SimpleExampleSet(returnTable, list);
+        //ExampleTable returnTable = new MemoryExampleTable(list, new DataRowFactory(DataRowFactory.TYPE_DOUBLE_ARRAY, '.'), mapSize);
+        //ExampleSet returnSet = new SimpleExampleSet(returnTable, list);
+        ExampleSet returnSet = ExampleSets.from(list).withBlankSize(mapSize).build();
         Attributes returnSetAttributes = returnSet.getAttributes();
         returnSetAttributes.setSpecialAttribute(idAttribute, "id");
         

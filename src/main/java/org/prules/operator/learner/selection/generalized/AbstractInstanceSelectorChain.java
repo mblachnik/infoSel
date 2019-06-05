@@ -227,11 +227,10 @@ public abstract class AbstractInstanceSelectorChain extends AbstractPrototypeBas
    /**
      * Returns number of prototypes displayed in the MataData related with prototypeOutput
      *
-     * @return     
-     * @throws com.rapidminer.parameter.UndefinedParameterError     
-     */    
+     * @return
+    */
     @Override
-    protected MDInteger getNumberOfPrototypesMetaData() throws UndefinedParameterError {        
+    protected MDInteger getNumberOfPrototypesMetaData() {
         return new MDInteger();        
     }
 

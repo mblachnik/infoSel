@@ -88,7 +88,9 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPrototype
      */
     private void init() {
         //isDistanceBasedMethod = true;
-        measureHelper = new DistanceMeasureHelper(this);
+        if (isDistanceBased()){
+            measureHelper = new DistanceMeasureHelper(this);
+        }
         //getTransformer().addRule(new GenerateModelTransformationRule(exampleSetInputPort, modelOutputPort, IS_KNNClassificationModel.class));
         exampleSetInputPort.addPrecondition(
                 new ParameterConditionedPrecondition(exampleSetInputPort, new ExampleSetPrecondition(exampleSetInputPort, Ontology.ATTRIBUTE_VALUE, Attributes.ID_NAME), this,

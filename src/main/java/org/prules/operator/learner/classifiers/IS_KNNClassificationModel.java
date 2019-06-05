@@ -26,6 +26,7 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
+import com.rapidminer.example.set.ExampleSetUtilities;
 import org.prules.dataset.InstanceFactory;
 import org.prules.dataset.VectorDense;
 import com.rapidminer.operator.OperatorException;
@@ -73,7 +74,7 @@ public class IS_KNNClassificationModel<T extends Serializable> extends Predictio
      * @param predictionType - type of prediction model: regression/classification/clustering
      */        
     public IS_KNNClassificationModel(ExampleSet trainingSet, ISPRGeometricDataCollection<T> samples, int k, VotingType weightedNN, PredictionType predictionType) {
-        super(trainingSet);
+        super(trainingSet, ExampleSetUtilities.SetsCompareOption.EQUAL, ExampleSetUtilities.TypesCompareOption.EQUAL);
         this.k = k;
         this.size = trainingSet.size();
         this.samples = samples;
@@ -89,7 +90,7 @@ public class IS_KNNClassificationModel<T extends Serializable> extends Predictio
     
     @Override    
     //@SuppressWarnings("unchecked")
-    public ExampleSet performPrediction(ExampleSet exampleSet, Attribute predictedLabel) throws OperatorException {
+    public ExampleSet performPrediction(ExampleSet exampleSet, Attribute predictedLabel) {
         // building attribute order from trainingset
         Attributes attributes = exampleSet.getAttributes();
         attributesNumber = attributes.size();        

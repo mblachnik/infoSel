@@ -14,7 +14,6 @@ import org.prules.tools.math.container.knn.KNNFactory;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.dataset.Vector;
@@ -42,21 +41,25 @@ public class DeltaTestNoiseModel extends AbstractNoiseEstimatorModel {
 
     @Override
     public PairContainer<double[],double[]> run(ExampleSet exampleSet) {
-        ISPRGeometricDataCollection<IInstanceLabels> knn;
-        knn = KNNFactory.initializeKNearestNeighbourFactory(knnType, exampleSet, distance);
+        ISPRGeometricDataCollection<IInstanceLabels> dataSet;
+        dataSet = KNNFactory.initializeKNearestNeighbourFactory(knnType, exampleSet, distance);
         int n = exampleSet.size();
         Attributes attributes = exampleSet.getAttributes();
         int m = attributes.size();        
         Vector vector;
-        Iterator<Vector> sampleIterator = knn.samplesIterator();
-        Iterator<IInstanceLabels> labelIterator = knn.storedValueIterator();
+        Iterator<Vector> sampleIterator = dataSet.samplesIterator();
+        Iterator<IInstanceLabels> labelIterator = dataSet.storedValueIterator();
         Collection<DoubleObjectContainer<IInstanceLabels>> res;
-        int exampleIndex = 0; 
+        int exampleCounter = 0; 
         nne = 0;
         int totalEvaluatedSamples = 0;
         while (sampleIterator.hasNext() && labelIterator.hasNext()) {
             vector = sampleIterator.next();
-            res = knn.getNearestValueDistances(sigma, vector);                     
+            if (sigma>0){
+                res = dataSet.getNearestValueDistances(sigma, vector);                     
+            } else {
+                res = dataSet.getNearestValueDistances(2, vector);                     
+            }
             double delta = 0;            
             Iterator<DoubleObjectContainer<IInstanceLabels>> resIterator = res.iterator();
             double label = 0;
@@ -73,9 +76,9 @@ public class DeltaTestNoiseModel extends AbstractNoiseEstimatorModel {
             }            
             totalEvaluatedSamples += nearestNeighborIndex;            
             nne += delta;            
-            exampleIndex++;
+            exampleCounter++;
         }      
-        nne /= totalEvaluatedSamples;
+        nne = totalEvaluatedSamples == 0 ? 0 : nne / totalEvaluatedSamples;
         double[] noise = new double[n];
         Arrays.fill(noise,nne);        
         return new PairContainer<>(noise, null);

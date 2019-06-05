@@ -62,7 +62,7 @@ public class IntIntContainer implements Comparable<IntIntContainer>, Serializabl
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = (int) (prime * first) + (int) (prime * second);
+        result = (prime * first) + (prime * second);
         return result;
     }
 
@@ -81,11 +81,7 @@ public class IntIntContainer implements Comparable<IntIntContainer>, Serializabl
         if (first != other.first) {
             return false;
         }
-        if (second != other.second) {
-
-            return false;
-        }
-        return true;
+        return !(second != other.second);
     }
 
     @Override

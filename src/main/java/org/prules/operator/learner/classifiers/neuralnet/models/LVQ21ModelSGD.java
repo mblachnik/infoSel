@@ -67,6 +67,7 @@ public class LVQ21ModelSGD extends AbstractLVQModel {
         }
         
         double threshold = Math.min(minDistCorrect / minDistIncorrect, minDistIncorrect / minDistCorrect);
+		//double threshold = minDistCorrect / minDistIncorrect;
         
         if ( threshold > window) {
             for (i = 0; i < getAttributesSize(); i++) {

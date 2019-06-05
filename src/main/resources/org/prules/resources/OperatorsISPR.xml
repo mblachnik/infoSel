@@ -125,7 +125,7 @@
                 <key>weka_sel</key>
                 <class>org.prules.operator.learner.selection.weka.WekaISOperator</class>
                 <replaces>WekaInstanceSelection</replaces>
-            </operator>
+            </operator>            
             <operator>
                 <key>keel_sel</key>
                 <class>org.prules.operator.learner.selection.keel.KeelISOperator</class>
@@ -221,9 +221,16 @@
         <group key="Misc">
             <operator>
                 <key>ClassAssigner</key>
-                <class>org.prules.operator.learner.misc.ClassAssignerOperator</class>
-                <replaces>ClassAssigner</replaces>
+                <class>org.prules.operator.learner.misc.ClassAssignerOperator</class>                
             </operator>
+            <operator>
+                <key>NearestPrototypesOperator</key>
+                <class>org.prules.operator.learner.misc.NearestPrototypesOperator</class>                
+            </operator>   
+             <operator>
+                <key>BatchLoopOperator</key>
+                <class>org.prules.operator.learner.misc.BatchLoopOperator</class>                
+            </operator>            
             <operator>
                 <key>ClassIterator</key>
                 <class>org.prules.operator.learner.misc.ClassIteratorOperator</class>
@@ -237,6 +244,11 @@
                 <key>GroupDistance</key>
                 <class>org.prules.operator.learner.misc.GroupDistanceOperator</class>                
             </operator>   
+            <operator>
+                <key>SubtractExampleSets</key>
+                <class>org.prules.operator.learner.misc.SubtractExampleSets</class>
+                <!--<replaces>ReadKeel</replaces>-->
+            </operator>       
             <!--
             <operator>
                 <key>InputID</key>

@@ -9,8 +9,9 @@ import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
+import com.rapidminer.operator.UserError;
 import com.rapidminer.parameter.ParameterType;
-import com.rapidminer.parameter.ParameterTypeString;
+import com.rapidminer.parameter.ParameterTypeCategory;
 import java.util.List;
 import org.prules.operator.learner.selection.AbstractInstanceSelectorOperator;
 import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
@@ -29,7 +30,17 @@ public class KeelISOperator extends AbstractInstanceSelectorOperator {
 
     @Override
     public AbstractInstanceSelectorModel configureInstanceSelectionModel(SelectedExampleSet trainingSet) throws OperatorException {
-        return new KeelISModel(this.getParameterAsString(CONFIGURATION_PARAMETERS), this);
+        int intType = getParameterAsInt(KeelISAlgorithms.PARAMETER_IS_ALGORITHM);
+        KeelISAlgorithms type = KeelISAlgorithms.valueOf(KeelISAlgorithms.IS_ALGORITHM_TYPES()[intType]);
+        AbstractInstanceSelectorModel model = null;
+        switch (type) {
+            case CCIS:
+                model = new KeelISModel(this.getParameterAsString(CONFIGURATION_PARAMETERS), this);
+                break;
+            default:                
+                throw new UserError(this, "Unknown Keel IS model");
+        }
+        return model;
     }
 
     @Override
@@ -48,9 +59,9 @@ public class KeelISOperator extends AbstractInstanceSelectorOperator {
     public List<ParameterType> getParameterTypes() {
         List<ParameterType> types = super.getParameterTypes();
 
-        ParameterType type = new ParameterTypeString(CONFIGURATION_PARAMETERS, "Configuration parameters");
+        ParameterType type = new ParameterTypeCategory(KeelISAlgorithms.PARAMETER_IS_ALGORITHM, "Name of instance selection algorithm", KeelISAlgorithms.IS_ALGORITHM_TYPES(), 0);
         type.setExpert(false);
-        types.add(type);       
+        types.add(type);
         return types;
     }
 

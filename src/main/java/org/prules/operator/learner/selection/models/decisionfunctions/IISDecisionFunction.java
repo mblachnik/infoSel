@@ -21,40 +21,40 @@ import org.prules.dataset.Instance;
  * @author Marcin
  */
 public interface IISDecisionFunction extends Cloneable{
-    public void init(ExampleSet exampleSet, DistanceMeasure distance); 
-    public void init(ISPRGeometricDataCollection<IInstanceLabels> samples);
+    void init(ExampleSet exampleSet, DistanceMeasure distance);
+    void init(ISPRGeometricDataCollection<IInstanceLabels> samples);
     /**
      * Returns decision if an instance should be accepted or not. If 0 then it will be removed
      * @param instance
      * @return 
      */
-    public double getValue(Instance instance);    
+    double getValue(Instance instance);
     /**
      * Returns the name of this decision function
      * @return 
      */
-    public String name();
+    String name();
     /**
      * Long string describing this decision function
      * @return 
      */
-    public String description();
+    String description();
     /**
      * Set state of the blockInit boolean state. If true then init(...) metheod is ignored
      * @param block 
      */
-    public void setBlockInit(boolean block);
+    void setBlockInit(boolean block);
     /**
      * check state of blockInit. If true then the method init is not executer or ignored
      * @return 
      */
-    public boolean isBlockInit();
+    boolean isBlockInit();
     /**
      * Supported capabilities
      * @param capabilities
      * @return 
      */
-    public boolean supportedLabelTypes(OperatorCapability capabilities);
+    boolean supportedLabelTypes(OperatorCapability capabilities);
     
     /**
      * Function used to define metadata requirements for a loss function. It derives from the fact that some of the decision function require nominal label, some other numerical label, some may need some additional checks.
@@ -64,5 +64,5 @@ public interface IISDecisionFunction extends Cloneable{
      * @param received meta data of the input example set
      * @return  list of lists of strings - where in the first order list each element represent single error or warning  entry, than in the second list each string represent 1) type of error/warning, 2) i18nKey, 3..) parameters 
      */
-    public List<List<String>> makeAdditionalChecks(ExampleSetMetaData received);
+    List<List<String>> makeAdditionalChecks(ExampleSetMetaData received);
 }

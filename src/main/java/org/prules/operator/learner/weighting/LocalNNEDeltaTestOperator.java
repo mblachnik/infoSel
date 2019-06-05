@@ -120,11 +120,11 @@ public class LocalNNEDeltaTestOperator extends AbstractWeightingOperator {
     @Override
     public List<ParameterType> getParameterTypes() {
         List<ParameterType> types = super.getParameterTypes();
-        ParameterType type = new ParameterTypeDouble(PARAMETER_DELTA, "The delta radius", 1E-12, Double.MAX_VALUE, 0.01);
+        ParameterType type = new ParameterTypeDouble(PARAMETER_DELTA, "The delta radius", -1, Double.MAX_VALUE, 0.05);
         type.setExpert(false);
         types.add(type);
 
-        type = new ParameterTypeInt(PARAMETER_RANGE, "Range of the local NNE estimation.", 3, Integer.MAX_VALUE, 10);
+        type = new ParameterTypeInt(PARAMETER_RANGE, "Range of the local NNE estimation.", 3, Integer.MAX_VALUE, 30);
         type.setExpert(false);
         types.add(type);
         

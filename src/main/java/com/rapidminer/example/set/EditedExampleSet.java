@@ -129,13 +129,8 @@ public class EditedExampleSet extends AbstractExampleSet {
             return false;
         }
         if (parent == null) {
-            if (other.parent != null) {
-                return false;
-            }
-        } else if (!parent.equals(other.parent)) {
-            return false;
-        }
-        return true;
+            return other.parent == null;
+        } else return parent.equals(other.parent);
     }
 
     @Override

@@ -31,7 +31,7 @@ public class RandomInstanceSelectionOperator extends AbstractInstanceSelectorOpe
     /**
      *
      */
-    public static final String STRATIFIED = "Stratified";    
+    public static final String STRATIFIED = "Stratified";
 
     /**
      * Default RapidMiner constructor
@@ -39,28 +39,20 @@ public class RandomInstanceSelectionOperator extends AbstractInstanceSelectorOpe
      * @param description
      */
     public RandomInstanceSelectionOperator(OperatorDescription description) {
-        super(description);        
+        super(description);
     }
 
     /**
-     * Returns number of prototypes displayed in the MataData related with prototypeOutput
-     *
-     * @return     
-     * @throws com.rapidminer.parameter.UndefinedParameterError     
-     */    
-    @Override
-    public MDInteger getNumberOfPrototypesMetaData() throws UndefinedParameterError {   
-        sampleSize = getParameterAsInt(INSTANCES_NUMBER);
-        return new MDInteger(sampleSize);
-    }
-    /**
-     * This operator don;t use distance function to perform instance selection
+     * Returns number of prototypes displayed in the MataData related with
+     * prototypeOutput
      *
      * @return
+     * @throws com.rapidminer.parameter.UndefinedParameterError
      */
     @Override
-    public boolean isDistanceBased() {
-        return false;
+    public MDInteger getNumberOfPrototypesMetaData() throws UndefinedParameterError {
+        sampleSize = getParameterAsInt(INSTANCES_NUMBER);
+        return new MDInteger(sampleSize);
     }
 
     /**
@@ -76,7 +68,7 @@ public class RandomInstanceSelectionOperator extends AbstractInstanceSelectorOpe
         boolean stratifiedSelection;
         RandomGenerator randomGenerator;
         stratifiedSelection = getParameterAsBoolean(STRATIFIED);
-        randomGenerator = RandomGenerator.getRandomGenerator(this);               
+        randomGenerator = RandomGenerator.getRandomGenerator(this);
         return new RandomInstanceSelectionModel(sampleSize, stratifiedSelection, randomGenerator);
     }
 
@@ -102,17 +94,6 @@ public class RandomInstanceSelectionOperator extends AbstractInstanceSelectorOpe
     }
 
     /**
-     * This operator don't use loss/decision function for instance selection
-     * @return 
-     */
-    @Override
-    public boolean useDecisionFunction() {
-        return false;
-    }
-
-    
-    
-    /**
      * Configuring operator parameters
      *
      * @return
@@ -129,7 +110,40 @@ public class RandomInstanceSelectionOperator extends AbstractInstanceSelectorOpe
         stratifiedSelectionParameter.setExpert(false);
         types.add(stratifiedSelectionParameter);
 
+        types.addAll(RandomGenerator.getRandomGeneratorParameters(this));
+
         return types;
+    }
+
+    /**
+     * This operator don't use loss/decision function for instance selection
+     *
+     * @return
+     */
+    @Override
+    public boolean useDecisionFunction() {
+        return false;
+    }
+
+    /**
+     * It is not required to randomize input data, so this method always returns
+     * false
+     *
+     * @return
+     */
+    @Override
+    public boolean isSampleRandomize() {
+        return false;
+    }
+
+    /**
+     * This operator don;t use distance function to perform instance selection
+     *
+     * @return
+     */
+    @Override
+    public boolean isDistanceBased() {
+        return false;
     }
 
 }

@@ -93,16 +93,9 @@ public class CFCMModel extends AbstractBatchModel {
                 Example example = trainingSetIterator.next();
                 double[] partitionMatrixEntry = partitionMatrixIterator.next();
                 double d = distance.calculateDistance(example, prototype.getValues());
-                double v;
-                if (d != 0) {
-                    double mf = partitionMatrixEntry[prototypeIndex];
-                    objFun += Math.pow(d, 2) * mf;
-                    //mf = Math.pow(mf, m);
-                    v = Math.pow(d, exp);
-                } else {
-                    v = 1;
-                }
-                //example.setValue(attribute, v);
+                double mf = partitionMatrixEntry[prototypeIndex];
+                objFun += Math.pow(d, 2) * mf;
+                double v = d == 0 ? Double.MAX_VALUE : Math.pow(d, exp);
                 partitionMatrixEntry[prototypeIndex] = v;
             }
             prototypeIndex++;
@@ -154,8 +147,7 @@ public class CFCMModel extends AbstractBatchModel {
         Iterator<double[]> partitionMatrixIterator = partitionMatrix.iterator();
         while (trainingSetIterator.hasNext() && partitionMatrixIterator.hasNext()) {
             Example example = trainingSetIterator.next();
-            double[] partitionMatrixEntry = partitionMatrixIterator.next();
-                        
+            double[] partitionMatrixEntry = partitionMatrixIterator.next();                    
             double sum = 0;
             for (i = 0; i < numberOfPrototypes; i++) {
                 double value = randomGenerator.nextDouble();

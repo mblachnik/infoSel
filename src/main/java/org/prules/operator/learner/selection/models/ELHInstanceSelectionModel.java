@@ -13,8 +13,12 @@ import org.prules.tools.math.container.knn.KNNTools;
 import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import java.util.Collection;
 import org.prules.tools.math.container.knn.KNNFactory;
 import org.prules.dataset.IInstanceLabels;
+import org.prules.dataset.InstanceFactory;
+import org.prules.dataset.Vector;
+import org.prules.dataset.VectorDense;
 
 /**
  * Class implements ELH instance selection algorithm
@@ -61,8 +65,10 @@ public class ELHInstanceSelectionModel extends AbstractInstanceSelectorModel {
         int labels = exampleSet.getAttributes().getLabel().getMapping().size();
         elh = new ELH(m);
         int x = 0;
+        double[] values = new double[exampleSet.getAttributes().size()];        
         for (Example e : exampleSet) {
-            int predictedLabel = (int)KNNTools.predictOneNearestNeighbor(e, samples);
+            KNNTools.extractExampleValues(e, values);            
+            int predictedLabel = (int)KNNTools.predictOneNearestNeighbor(InstanceFactory.createVector(values), samples);            
             int realLabel = (int) e.getLabel();
             x += predictedLabel != realLabel ? 1 : 0;
         }
@@ -82,7 +88,8 @@ public class ELHInstanceSelectionModel extends AbstractInstanceSelectorModel {
                 selectedIndex.set(i, false);
                 samples = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH,selectedSet, measure);
                 for (Example e : exampleSet) {
-                    int predictedLabel = (int)KNNTools.predictOneNearestNeighbor(e, samples);
+                    KNNTools.extractExampleValues(e, values);            
+                    int predictedLabel = (int)KNNTools.predictOneNearestNeighbor(InstanceFactory.createVector(values), samples);                                
                     int realLabel = (int) e.getLabel();
                     x2 += predictedLabel != realLabel ? 1 : 0;
                 }

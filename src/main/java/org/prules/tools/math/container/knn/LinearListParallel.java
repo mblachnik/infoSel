@@ -496,7 +496,7 @@ public class LinearListParallel<T extends IInstanceLabels> implements ISPRClassG
                 queueNegative.add(container);
             }
         }
-        return new PairContainer<>((Collection<DoubleObjectContainer<T>>) queuePositive, (Collection<DoubleObjectContainer<T>>) queueNegative);
+        return new PairContainer<>(queuePositive, queueNegative);
     }
 
     @Override

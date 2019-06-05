@@ -14,19 +14,15 @@ import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.UserError;
-import org.prules.operator.learner.PRulesModel;
 import org.prules.operator.learner.classifiers.IS_KNNClassificationModel;
 import org.prules.operator.learner.classifiers.PredictionType;
 import org.prules.operator.learner.classifiers.VotingType;
 import org.prules.operator.learner.classifiers.neuralnet.models.GLVQModel;
-import org.prules.operator.learner.classifiers.neuralnet.models.LVQ21ModelMy;
 import org.prules.operator.learner.classifiers.neuralnet.models.LVQ2Model;
-import org.prules.operator.learner.classifiers.neuralnet.models.LVQ3ModelMy;
 import org.prules.operator.learner.classifiers.neuralnet.models.LVQNeighborhoodTypes;
 import org.prules.operator.learner.classifiers.neuralnet.models.LVQTypes;
 import org.prules.operator.learner.classifiers.neuralnet.models.SNGModel;
 import org.prules.operator.learner.classifiers.neuralnet.models.WTMLVQModel;
-import org.prules.tools.math.container.knn.KNNTools;
 import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
 import com.rapidminer.operator.ports.metadata.MDInteger;
@@ -46,6 +42,8 @@ import java.util.stream.Collectors;
 import org.prules.tools.math.container.knn.KNNFactory;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.operator.learner.classifiers.neuralnet.models.AbstractLVQModel;
+import org.prules.operator.learner.classifiers.neuralnet.models.LVQ21Model;
+import org.prules.operator.learner.classifiers.neuralnet.models.LVQ3Model;
 
 /**
  * LVQ Operator which provides a set of LVQ neuralNetwork GLVQ algorithm - based
@@ -159,13 +157,13 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
             case LVQ21:
                 this.updateRate = getParameterAsDouble(PARAMETER_UPDATE_RATE);
                 window = getParameterAsDouble(PARAMETER_WINDOW);
-                lvqModel = new LVQ21ModelMy(codebooks, numberOfIteration, distance, updateRate, window);
+                lvqModel = new LVQ21Model(codebooks, numberOfIteration, distance, updateRate, window);
                 break;
             case LVQ3:
                 this.updateRate = getParameterAsDouble(PARAMETER_UPDATE_RATE);
                 window = getParameterAsDouble(PARAMETER_WINDOW);
                 epsilon = getParameterAsDouble(PARAMETER_EPSILON);
-                lvqModel = new LVQ3ModelMy(codebooks, numberOfIteration, distance, updateRate, window, epsilon);
+                lvqModel = new LVQ3Model(codebooks, numberOfIteration, distance, updateRate, window, epsilon);
                 break;
             case WLVQ:
                 this.updateRate = getParameterAsDouble(PARAMETER_UPDATE_RATE);

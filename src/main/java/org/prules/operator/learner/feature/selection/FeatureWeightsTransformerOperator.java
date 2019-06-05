@@ -90,7 +90,7 @@ public class FeatureWeightsTransformerOperator extends Operator {
     @Override
     public void doWork() throws OperatorException {
         super.doWork();
-        AttributeWeights inputWeights = (AttributeWeights) weightsInputPort.getData(AttributeWeights.class);
+        AttributeWeights inputWeights = weightsInputPort.getData(AttributeWeights.class);
         AttributeWeights attributeWeights = processWeights(inputWeights);
         weightsOutputPort.deliver(attributeWeights);
     }

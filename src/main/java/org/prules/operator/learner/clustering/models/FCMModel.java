@@ -104,34 +104,24 @@ public class FCMModel extends AbstractBatchModel {
             int prototypeIndex = 0;
             double sum = 0;
             for (Vector prototype : prototypes) {
-                double d = distance.calculateDistance(exampleValues, prototype.getValues());
-                double v;
-                if (d != 0) {
-                    double mf = partitionMatrixEntry[prototypeIndex];
-                    objFun += Math.pow(d, 2) * mf; //It is only here becouse in else section the distance is 0 so 0^2*mf = 0
-                    //mf = Math.pow(mf, m);
-                    v = Math.pow(d, exp);
-                    sum += v;
-                } else {
-                    v = -1;
-                }
+                double d = distance.calculateDistance(exampleValues, prototype.getValues());              
+                double mf = partitionMatrixEntry[prototypeIndex];
+                objFun += Math.pow(d, 2) * mf; //It is only here becouse in else section the distance is 0 so 0^2*mf = 0
+                //mf = Math.pow(mf, m);
+                double v = d == 0 ? Double.MAX_VALUE : Math.pow(d, exp);
+                sum += v;                
                 partitionMatrixEntry[prototypeIndex] = v;                
                 prototypeIndex++;
             }
             for (prototypeIndex = 0; prototypeIndex < numberOfPrototypes; prototypeIndex++) {                
                 double v = partitionMatrixEntry[prototypeIndex];                
-                partitionMatrixEntry[prototypeIndex] = partitionMatrixEntry[prototypeIndex] > 0 ? v / sum : 1;
+                partitionMatrixEntry[prototypeIndex] = v / sum;
             }
         }    
         costFunctionValue.add(objFun);
         int size = costFunctionValue.size();
         double gain = costFunctionValue.get(size-1) - costFunctionValue.get(size-2);
-        if (Math.abs(gain) < minGain) {
-            nextItertion = false;
-        } else {            
-            nextItertion = true;
-            
-        }        
+        nextItertion = !(Math.abs(gain) < minGain);
     }
 
     /**

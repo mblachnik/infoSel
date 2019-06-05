@@ -16,6 +16,7 @@ import com.rapidminer.example.table.ExampleTable;
 import com.rapidminer.example.table.MemoryExampleTable;
 import com.rapidminer.example.table.NominalMapping;
 import com.rapidminer.example.table.PolynominalMapping;
+import com.rapidminer.example.utils.ExampleSets;
 import com.rapidminer.tools.Ontology;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,7 +36,7 @@ public class IS_ClusterModelTools {
      * Creates a Map<Integer, String> which maps cluster number into cluster
      * name in a form of {
      *
-     * @see Attributes.CLUSTER_NAME} _\#cluster_number
+     * @see com.rapidminer.example.Attributes.CLUSTER_NAME} _\#cluster_number
      * @param c - number of clusters
      */
     public static Map<Integer, String> prepareClusterNamesMap(int c) {
@@ -72,8 +73,11 @@ public class IS_ClusterModelTools {
         NominalMapping codebookLabelsNames = new PolynominalMapping(clusterNames);
         codebookLabels.setMapping(codebookLabelsNames);
         attributes.add(codebookLabels);
-        ExampleTable codebooksTable = new MemoryExampleTable(attributes, new DataRowFactory(DataRowFactory.TYPE_DOUBLE_ARRAY, '.'), codebooks.size());
-        ExampleSet codebooksSet = new SimpleExampleSet(codebooksTable, attributes);
+
+
+        //ExampleTable codebooksTable = new MemoryExampleTable(attributes, new DataRowFactory(DataRowFactory.TYPE_DOUBLE_ARRAY, '.'), codebooks.size());
+        //ExampleSet codebooksSet = new SimpleExampleSet(codebooksTable, attributes);
+        ExampleSet codebooksSet = ExampleSets.from(attributes).withBlankSize(codebooks.size()).build();
         codebooksSet.getAttributes().setLabel(codebookLabels);
         Iterator<Vector> codebookIterator = codebooks.iterator();
         Iterator<Example> codebookExampleIterator = codebooksSet.iterator();

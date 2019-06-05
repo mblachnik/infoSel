@@ -42,7 +42,7 @@ public class SelectedExampleSet extends AbstractExampleSet {
      * @param parentSet - a parent Example Set
      * @param index - an index of examples which are on/off
      */
-        public SelectedExampleSet(ExampleSet parentSet, DataIndex index){
+        public SelectedExampleSet(ExampleSet parentSet, IDataIndex index){
 		parent = (ExampleSet)parentSet.clone();
 		if (parentSet.size() != index.size())
 			throw new RuntimeException("Incorect size of index variable"); 
@@ -152,12 +152,9 @@ public class SelectedExampleSet extends AbstractExampleSet {
 		} else if (!index.equals(other.index))
 			return false;
 		if (parent == null) {
-			if (other.parent != null)
-				return false;
-		} else if (!parent.equals(other.parent))
-			return false;
-		return true;
-	}		
+            return other.parent == null;
+		} else return parent.equals(other.parent);
+    }
 	
 	@Override
 	public ExampleSet clone(){

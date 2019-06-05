@@ -6,7 +6,7 @@ public enum MdsAlgorithm {
 
 	private final String text;
 
-	private MdsAlgorithm(final String text) {
+	MdsAlgorithm(final String text) {
 		this.text = text;
 	}
 

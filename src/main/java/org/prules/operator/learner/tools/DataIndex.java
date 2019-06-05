@@ -64,7 +64,7 @@ public class DataIndex implements IDataIndex {
      * @param index
      */
     public DataIndex(DataIndex index) {
-        this.index = (boolean[]) index.index.clone();
+        this.index = index.index.clone();
         this.length = index.length;
     }
     
@@ -469,10 +469,7 @@ public class DataIndex implements IDataIndex {
         if (!Arrays.equals(index, other.index)) {
             return false;
         }
-        if (length != other.length) {
-            return false;
-        }
-        return true;
+        return length == other.length;
     }
     
     /**

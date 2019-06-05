@@ -35,7 +35,7 @@ public interface ISPRGeometricDataCollection<T extends Serializable> extends Ser
      * @param values specifies the geometric coordinates in data space
      * @param storeValue specifies the value at the given point
      */
-    public  void add(Vector values, T storeValue);
+    void add(Vector values, T storeValue);
 
     /**
      * This method returns a collection of {@code k} stored data values which 
@@ -48,7 +48,7 @@ public interface ISPRGeometricDataCollection<T extends Serializable> extends Ser
      * @param values the coordinate of the query point in the sample dimension
      * @return
      */
-    public  Collection<T> getNearestValues(int k, Vector values);    
+    Collection<T> getNearestValues(int k, Vector values);
 
     /**
      * This method returns a collection of data from the k nearest sample
@@ -63,7 +63,7 @@ public interface ISPRGeometricDataCollection<T extends Serializable> extends Ser
      * @param values the coordinate of the querry point in the sample dimension
      * @return collection of stored values with associated distances
      */
-    public  Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, Vector values);       
+    Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, Vector values);
 
     /**
      * This method returns a collection of data from all sample points inside
@@ -78,7 +78,7 @@ public interface ISPRGeometricDataCollection<T extends Serializable> extends Ser
      * @param values the coordinate of the querry point in the sample dimension
      * @return ccollection of stored values with associated distances
      */
-    public  Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, Vector values);
+    Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, Vector values);
     
     /**
      * This method returns a collection of data from all sample points inside
@@ -95,14 +95,14 @@ public interface ISPRGeometricDataCollection<T extends Serializable> extends Ser
      * @param values the coordinate of the querry point in the sample dimension
      * @return collection of stored values with associated distances
      */
-    public  Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, Vector values);
+    Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int butAtLeastK, Vector values);
 
     /**
      * This method has to return the number of stored data points.
      *
      * @return number of elements
      */
-    public  int size();
+    int size();
 
     /**
      * This returns the index-th value added to this collection.
@@ -110,7 +110,7 @@ public interface ISPRGeometricDataCollection<T extends Serializable> extends Ser
      * @param index
      * @return stored values
      */
-    public  T getStoredValue(int index);
+    T getStoredValue(int index);
 
     /**
      * Set new sample value
@@ -118,44 +118,44 @@ public interface ISPRGeometricDataCollection<T extends Serializable> extends Ser
      * @param sample
      * @param storedValue 
      */
-    public  void setSample(int index, Vector sample, T storedValue);
+    void setSample(int index, Vector sample, T storedValue);
 
     /**
      * Returns sample of given index
      * @param index
      * @return 
      */
-    public  Vector getSample(int index);
+    Vector getSample(int index);
 
     /**
      * remove sample of given index
      * @param index 
      */
-    public  void remove(int index);
+    void remove(int index);
 
     /**
      * Iterator over stored values
      * @return 
      */
-    public Iterator<T> storedValueIterator();
+    Iterator<T> storedValueIterator();
 
     /**
      * Iterator over samples
      * @return 
      */
-    public Iterator<Vector> samplesIterator();
+    Iterator<Vector> samplesIterator();
 
     /**
      * Count how many unique values appears in the storedValue structure
      *
      * @return number of unique values
      */
-    public int numberOfUniquesOfStoredValues();
+    int numberOfUniquesOfStoredValues();
     
     /**
      * A getter for distance measure used to build internal data structure
      * @return 
      */
-    public DistanceMeasure getMeasure();
+    DistanceMeasure getMeasure();
 
 }

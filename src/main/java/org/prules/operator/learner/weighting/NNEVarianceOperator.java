@@ -116,7 +116,7 @@ public class NNEVarianceOperator extends AbstractWeightingOperator {
     @Override
     public List<ParameterType> getParameterTypes() {
         List<ParameterType> types = super.getParameterTypes();
-        ParameterType type = new ParameterTypeInt(PARAMETER_K, "The number of nearest neighbors.", 3, Integer.MAX_VALUE, 1);
+        ParameterType type = new ParameterTypeInt(PARAMETER_K, "The number of nearest neighbors.", 3, Integer.MAX_VALUE, 10);
         type.setExpert(false);
         types.add(type);                
         

@@ -66,6 +66,26 @@
         
     </operator>
     <operator>
+        <key>NearestPrototypesOperator</key>
+        <name>Nearest Prototypes Batch</name>
+        <synopsis>Generates batch attribute out of two nearest prototypes from oposite classes</synopsis>
+        <help>
+            For each training example it finds two closest prototypes from oposite classes, and assignes unique identifier for the pair. This identifier constitutes a batch attribute
+        </help> 
+        <icon>ispr.png</icon>
+    </operator> 
+    
+    <operator>
+        <key>BatchLoopOperator</key>
+        <name>Loop Batches and Build Ensemble Operator</name>
+        <synopsis>Loop over batches in example set and for each batch trains an independant model. Then all models are combined into EnsemblePredictionModel.</synopsis>
+        <help>
+            
+        </help> 
+        <icon>ispr.png</icon>
+    </operator> 
+            
+    <operator>
         <key>NNE_by_D_test</key>
         <name>Performance D-test</name>
         <synopsis>Nonparametric Residual Noise Estimation Delta-test</synopsis>
@@ -451,7 +471,7 @@
         <icon>ispr.png</icon>
     </operator>
     
-        <operator>
+    <operator>
         <name>Select by Keel IS</name>
         <key>keel_sel</key>
         <synopsis>Keel instances selection</synopsis>
@@ -462,7 +482,7 @@
             Originally this kind of algorithms were developed to improve the k-NN 
             algorithm to reduce computational complexity and reduce the influence of noise in the data.
              &lt;br/&gt;
-            This operator is a wrapper over IS Library developed in Keel project, see: http://www.keel.es/
+            This operator is a wrapper over IS Library developed in Keel project, see: http://www.keel.es/            
         </help>
         <icon>ispr.png</icon>
     </operator>
@@ -656,6 +676,11 @@
         <key>GroupDistance</key>
         <icon>ispr.png</icon>
     </operator> 
+    <operator>
+        <key>SubtractExampleSets</key>
+        <name>Subtract ExampleSets</name>
+        <help>This operator allows to subtract samples from one example set from the other such that only the remaining samples are left. In oposite to default operator it compares values of the examples not ID attribte</help>
+    </operator>
     <operator>
         <synopsis>Delivers as logging value an input object ID</synopsis>
         <help> 

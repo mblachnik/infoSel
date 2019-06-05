@@ -77,5 +77,5 @@ public interface Vector extends Cloneable {
      * Creates a shellow copy of the values
      * @return 
      */
-    public Object clone();        
+    Object clone();
 }

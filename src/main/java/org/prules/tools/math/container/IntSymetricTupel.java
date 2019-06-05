@@ -49,10 +49,7 @@ public class IntSymetricTupel implements Serializable {
             return false;
         }
         org.prules.tools.math.container.IntSymetricTupel a = (org.prules.tools.math.container.IntSymetricTupel) o;
-        if (this.t1 == a.t1 && this.t2 == a.t2) {
-            return false;
-        }
-        return true;
+        return this.t1 != a.t1 || this.t2 != a.t2;
     }
 
     @Override

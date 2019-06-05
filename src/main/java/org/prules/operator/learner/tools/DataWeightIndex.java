@@ -70,8 +70,8 @@ public class DataWeightIndex implements IDataWeightIndex {
      * @param index
      */
     public DataWeightIndex(DataWeightIndex index) {
-        this.index = (boolean[]) index.index.clone();
-        this.weights = (double[]) index.weights.clone();
+        this.index = index.index.clone();
+        this.weights = index.weights.clone();
         this.length = index.length;
     }
     
@@ -542,10 +542,7 @@ public class DataWeightIndex implements IDataWeightIndex {
         if (!Arrays.equals(index, other.index)) {
             return false;
         }
-        if (!Arrays.equals(weights, other.weights)) {
-            return false;
-        }        
-        return true;
+        return Arrays.equals(weights, other.weights);
     }
     
     /**

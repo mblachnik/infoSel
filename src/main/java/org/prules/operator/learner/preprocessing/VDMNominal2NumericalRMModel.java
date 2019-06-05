@@ -31,7 +31,7 @@ public class VDMNominal2NumericalRMModel extends AbstractModel{
     }
 
     @Override
-    public ExampleSet apply(ExampleSet testSet) throws OperatorException {
+    public ExampleSet apply(ExampleSet testSet) {
         return model.run((ExampleSet)testSet.clone());
     }
 

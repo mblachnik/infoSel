@@ -63,7 +63,7 @@ public class DoubleIntContainer implements Comparable<DoubleIntContainer>, Seria
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = (int)(prime * first) + (int)(prime*second);        
+        result = (int)(prime * first) + (prime*second);
         return result;
     }
 
@@ -81,11 +81,8 @@ public class DoubleIntContainer implements Comparable<DoubleIntContainer>, Seria
         DoubleIntContainer other = (DoubleIntContainer) obj;
         if (first != other.first) {            
                 return false;
-            }        
-        if (second != other.second) {            
-                return false;            
-        } 
-        return true;
+            }
+        return second == other.second;
     }
 
     @Override

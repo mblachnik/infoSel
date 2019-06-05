@@ -99,10 +99,10 @@ public class LocalGammaTestNoiseModel extends AbstractNoiseEstimatorModel {
                     nearestIndex++;
                 }
             }
-            double size = res.size();
+            double size = res.size();            
             for (int i = 0; i < k; i++) {
-                nneLabels[i] /= size;
-                nneDistances[i] /= size;
+                nneLabels[i]    = size==0 ? 0 : nneLabels[i]   /size;
+                nneDistances[i] = size==0 ? 0 : nneDistances[i]/size;
             }
             linearModel.train(nneDistances, nneLabels);
             noise[instanceIndex] = linearModel.getB();
@@ -110,9 +110,9 @@ public class LocalGammaTestNoiseModel extends AbstractNoiseEstimatorModel {
             nne += linearModel.getB();
             nne_slope += linearModel.getA();
             instanceIndex++;
-        }
-        nne /= exampleSet.size();
-        nne_slope /= exampleSet.size();
+        }        
+        nne       = n == 0 ? 1 : nne / n;
+        nne_slope = n == 0 ? 1 : nne_slope / n;
                 
         return new PairContainer<>(noise, slope);
     }
@@ -133,5 +133,4 @@ public class LocalGammaTestNoiseModel extends AbstractNoiseEstimatorModel {
     public double getNNESlope() {
         return nne_slope;
     }
-
 }

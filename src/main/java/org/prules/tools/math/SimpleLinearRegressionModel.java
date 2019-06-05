@@ -26,11 +26,11 @@ public class SimpleLinearRegressionModel {
             meanY  += y[i];
             meanX2 += x[i]*x[i];
             meanXY += x[i]*y[i];
-        }
-        meanX  /= n;
-        meanY  /= n;
-        meanXY /= n;
-        meanX2 /= n;
+        }        
+        meanX  = n==0 ? 0 : meanX  / n;
+        meanY  = n==0 ? 0 : meanY  / n;
+        meanXY = n==0 ? 0 : meanXY / n;
+        meanX2 = n==0 ? 0 : meanX2 / n;
         double numerator = meanX * meanY - meanXY;
         double denominator = meanX*meanX - meanX2;        
         a = (numerator == 0) && (denominator == 0) ? 0 : numerator/denominator;
@@ -52,7 +52,7 @@ public class SimpleLinearRegressionModel {
             error = y[i] - apply(x[i]);
             mse += error * error;
         }
-        mse /= n;
+        mse = n == 0 ? 0 : mse / n;
         return mse;
     }
     
