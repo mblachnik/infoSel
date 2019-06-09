@@ -90,7 +90,7 @@ This extension implements instance selection algorithms as well as some clusteri
 
 
 # Requirenments
-=============================
+
 ### Prerequisite
 * Requires Gradle 2.3+ (get it [here](http://gradle.org/installation) or use the Gradle wrapper shipped with this template)
 * RapidMiner 7 or later
