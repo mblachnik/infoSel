@@ -18,6 +18,7 @@ configurations {
     runtime
  }
  
+
 apply plugin: 'java'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -80,7 +81,8 @@ dependencies {
         compile files('lib/weka.jar')
         compile files('lib/instanceselection.jar')
         compile files('lib/Infosel.jar')                               
-        compile files('D:/Projects/Java/Common/Keel/dist/algorithm/methods/IS-CCIS.jar')
+        //compile files('D:/Projects/Java/Common/Keel/dist/algorithm/methods/IS-CCIS.jar')
+        compile files('lib/IS-CCIS.jar')
         //compile files('C:\\Users\\Marcin\\Documents\\Projects\\Java\\Common\\RapidMiner\\Extension\\RM-Tools\\build\\libs\\RM-Tools-7.0.0.jar')
         //compile files('..\\RM-Tools\\build\\libs\\RM-Tools-7.0.0.jar')
         //compile files('lib/RM-Tools-7.0.0.jar');
@@ -91,9 +93,11 @@ dependencies {
         //runtime fileTree(dir: 'C:/Marcin/Projects/Java/Common/RapidMiner/Extension/ISPR/lib/', include: '*.*')
 }
 
+import java.nio.file.Paths;
+
 def usersHomeDir =  'D:/Projects/Java/Common/RapidMiner/9.x/home' //This is directory which is used for debuging
-def usersHomeDir2 = 'D:/Projects/DataMining/RapidMiner' //This is directory which is used for fast start of RM
-    
+def usersHomeDir2 = Paths.get(System.getProperty('user.home'))  //This is directory which is used for fast start  
+
 task copyPluginFast(type: Copy, dependsOn: jar) {
      description 'Copy jar file into RapidMiner extensions folder'   
     //from 'C:/Marcin/Projects/Java/Common/RapidMiner/Extension/ISPR/build/libs/ISPR-1.0.0.jar'
@@ -103,13 +107,6 @@ task copyPluginFast(type: Copy, dependsOn: jar) {
         }
     }
 }
-
-//task copyPluginFast(type: Copy, dependsOn: jar) {
-//     description 'Copy jar file into RapidMiner extensions folder'   
-//    //from 'C:/Marcin/Projects/Java/Common/RapidMiner/Extension/ISPR/build/libs/ISPR-1.0.0.jar'
-//        from jar.archivePath
-//        into "$usersHomeDir /.RapidMiner/extensions"}
-//}
 
 task copyPlugin(type: Copy, dependsOn: installExtension) {
      description 'Copy jar file into RapidMiner extensions folder'  
