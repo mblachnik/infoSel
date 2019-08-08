@@ -75,14 +75,18 @@ eclipse {
 }
 // Define third party library dependencies
 dependencies {
+        // https://mvnrepository.com/artifact/com.github.haifengl/smile-core
+        compile group: 'com.github.haifengl', name: 'smile-core', version: '1.5.3'
+        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 	//compile 'com.google.guava:guava:18.0'
         compile files('lib/mdsj.jar')
         compile files('lib/rapidminer-Weka-5.3.002.jar')
         compile files('lib/weka.jar')
         compile files('lib/instanceselection.jar')
-        compile files('lib/Infosel.jar')                               
+        compile files('lib/Infosel.jar')            
         //compile files('D:/Projects/Java/Common/Keel/dist/algorithm/methods/IS-CCIS.jar')
         compile files('lib/IS-CCIS.jar')
+        compile files('lib/JavaMI.jar')    
         //compile files('C:\\Users\\Marcin\\Documents\\Projects\\Java\\Common\\RapidMiner\\Extension\\RM-Tools\\build\\libs\\RM-Tools-7.0.0.jar')
         //compile files('..\\RM-Tools\\build\\libs\\RM-Tools-7.0.0.jar')
         //compile files('lib/RM-Tools-7.0.0.jar');
@@ -101,7 +105,8 @@ def usersHomeDir2 = Paths.get(System.getProperty('user.home'))  //This is direct
 task copyPluginFast(type: Copy, dependsOn: jar) {
      description 'Copy jar file into RapidMiner extensions folder'   
     //from 'C:/Marcin/Projects/Java/Common/RapidMiner/Extension/ISPR/build/libs/ISPR-1.0.0.jar'
-    ["$usersHomeDir", "$usersHomeDir2"].each { dest -> copy {
+    //["$usersHomeDir", "$usersHomeDir2"].each { dest -> copy {
+    ["$usersHomeDir"].each { dest -> copy { //Kopiujemy tylko do trybu debug. Dla wersji pełnej potrzebne jest install
         from jar.archivePath
         into dest+"/.RapidMiner/extensions"
         }

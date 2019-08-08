@@ -13,9 +13,6 @@ import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.HashMap;
 import java.util.Map;
 import org.prules.dataset.IInstanceLabels;
-import org.prules.dataset.Vector;
-import org.prules.operator.learner.tools.IDataIndex;
-import weka.core.matrix.IntVector;
 
 /**
  *

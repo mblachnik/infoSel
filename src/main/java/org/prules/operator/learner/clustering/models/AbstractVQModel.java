@@ -18,12 +18,14 @@ import java.util.List;
 public abstract class AbstractVQModel implements PRulesModel<ExampleSet> {
 
     ExampleSet prototypes; //Set of prototypes
-    private Example example; //Current example from the example set
+    Example example; //Current example from the example set
     double[] exampleValues; //double values retrived from the example set
     Attributes prototypeAttributes; //List of attributes
     List<Attribute> trainingAttributes; //List of attrubutes
-    private int attributesSize, numberOfPrototypes; //Number of prototypes and number of attributes
+    final int attributesSize; //Number of prototypes and number of attributes
+    int numberOfPrototypes; //Number of prototypes and number of attributes
     double[][] prototypeValues; //matrix representing prototypes position. It if finally converted into prototypes
+    int trainingExampleIndex; //Index of the current training sample
 
     /**
      * Constructor which requires initialization of prototypes/codebooks
@@ -44,7 +46,7 @@ public abstract class AbstractVQModel implements PRulesModel<ExampleSet> {
     @Override
     public ExampleSet run(ExampleSet trainingSet) {
         Attributes tmpTrainingAttributes = trainingSet.getAttributes();
-        trainingAttributes = new ArrayList<Attribute>(tmpTrainingAttributes.size());
+        trainingAttributes = new ArrayList<>(tmpTrainingAttributes.size());
         //Caching codebooks for faster optimization
         prototypeValues = new double[numberOfPrototypes][attributesSize];
         int i = 0, j = 0;
@@ -62,6 +64,7 @@ public abstract class AbstractVQModel implements PRulesModel<ExampleSet> {
         }
         exampleValues = new double[prototypeAttributes.size()];
         do {
+            trainingExampleIndex = 0;
             for (Example trainingExample : trainingSet) {
                 this.example = trainingExample;
                 j = 0;
@@ -70,6 +73,7 @@ public abstract class AbstractVQModel implements PRulesModel<ExampleSet> {
                     j++;
                 }
                 update();
+                trainingExampleIndex++;
             }
         } while (nextIteration());
 

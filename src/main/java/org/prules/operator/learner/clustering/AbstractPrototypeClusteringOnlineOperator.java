@@ -226,8 +226,7 @@ public abstract class AbstractPrototypeClusteringOnlineOperator extends Abstract
                     return initialPrototypesSourcePort;
                 }
             }, true, false));
-        }
-        types.addAll(parameters);
+        }       
         return types;
     }
 }

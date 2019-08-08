@@ -213,6 +213,18 @@
                 <replaces>VQ</replaces>
             </operator>
             <operator>
+                <key>SRClust</key>
+                <class>org.prules.operator.learner.clustering.SRVQOperator</class>
+            </operator>
+            <operator>
+                <key>SCSClust</key>
+                <class>org.prules.operator.learner.clustering.SCSVQOperator</class>
+            </operator>
+      <!--      <operator>
+                <key>GNGClust</key>
+                <class>org.prules.operator.learner.clustering.GNGOperator</class>                
+            </operator> -->
+            <operator>
                 <key>FlattenClustersByDistance</key>
                 <class>org.prules.operator.learner.clustering.FlattenByDistanceClusterModel</class>
                 <replaces>FlattenClustersByDistance</replaces>

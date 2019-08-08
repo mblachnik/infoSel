@@ -65,6 +65,68 @@
         <icon>ispr.png</icon>
         
     </operator>
+    
+     <operator>
+        <name>Stochastic Relaxation</name>
+        <synopsis>Stochastic Relaxation clustering algorithm (SR-VQ)</synopsis>
+        <help>
+            This operator implements Stochastic Relaxation a Winner Takes Most version of Vector Quantization (VQ) clustering algorithm. &lt;br/&gt;
+            It is a kind of neural network learned on Winner Takes Most principle using stochastic gradient algorithm.
+            Neurons of this network are called codebooks, and each codebook represent one cluster center.
+            As a result this neural network returns a set of codebooks position as an ExampleSet. It also offers 
+            a model which could be used for clustering new incoming data samples.
+            It can be used for instance optimization and clustering. 
+                &lt;br/&gt;
+            For details see: 
+                &lt;br/&gt;
+            Kohonen T., Self-Organizing Maps, Springer Verlag, 2001                                 
+        </help>                
+        <key>SRClust</key>
+        <icon>ispr.png</icon>
+        
+    </operator>
+    
+     <operator>
+        <name>SCS</name>
+        <synopsis>Soft Competition Scheme clustering algorithm (SCS-VQ)</synopsis>
+        <help>
+            This operator implements Soft Competition Scheme competitive learning a Winner Takes Most version of Vector Quantization (VQ) clustering algorithm. &lt;br/&gt;
+            It is a kind of neural network learned on Winner Takes Most principle using stochastic gradient algorithm.
+            Neurons of this network are called codebooks, and each codebook represent one cluster center.
+            As a result this neural network returns a set of codebooks position as an ExampleSet. It also offers 
+            a model which could be used for clustering new incoming data samples.
+            It can be used for instance optimization and clustering. 
+                &lt;br/&gt;
+            For details see: 
+                &lt;br/&gt;
+            Yair, Eyal, Kenneth Zeger, and Allen Gersho. "Competitive learning and soft competition for vector quantizer design." IEEE transactions on Signal Processing 40.2 (1992): 294-309.
+        </help>                
+        <key>SCSClust</key>
+        <icon>ispr.png</icon>
+        
+    </operator>
+    
+     <operator>
+        <name>Growing Neural Gas</name>
+        <synopsis>Growing Neural Gas clustering algorithm (GNG-VQ)</synopsis>
+        <help>
+            This operator implements Growing Neural Gas  version of Vector Quantization (VQ) clustering algorithm. &lt;br/&gt;
+            It is a kind of neural network learned on Winner Takes Most principle using stochastic gradient algorithm.            
+            Neurons of this network are called codebooks, and each codebook represent one cluster center.            
+            As a result this neural network returns a set of codebooks position as an ExampleSet. 
+            THe algorithm automatically determines the number of neurans adding and removing new neurons when needed.
+            It also offers a model which could be used for clustering new incoming data samples.
+            It can be used for instance optimization and clustering. 
+                &lt;br/&gt;
+            For details see: 
+                &lt;br/&gt;
+            Fritzke, Bernd. "A growing neural gas network learns topologies." Advances in neural information processing systems. 1995.
+        </help>                
+        <key>GNGClust</key>
+        <icon>ispr.png</icon>
+        
+    </operator>
+    
     <operator>
         <key>NearestPrototypesOperator</key>
         <name>Nearest Prototypes Batch</name>

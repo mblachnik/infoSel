@@ -11,6 +11,7 @@ import org.prules.operator.learner.tools.DataIndex;
 import org.prules.operator.learner.tools.PRulesUtil;
 import com.rapidminer.tools.RandomGenerator;
 import java.util.List;
+import java.util.Random;
 import org.prules.operator.learner.tools.IDataIndex;
 
 /**
@@ -41,7 +42,7 @@ public class RandomInstanceSelectionModel extends AbstractInstanceSelectorModel 
             //index = PRulesUtil.stratifiedSelectionOfFirstSamplesFromEachClass(exampleSet, sampleSize, randomGenerator);
             index = PRulesUtil.stratifiedSelection(exampleSet, sampleSize, randomGenerator);
         } else {               
-            int[] ints = randomGenerator.ints(exampleSet.size()).toArray();                    
+            int[] ints = PRulesUtil.randomPermutation(exampleSet.size(), randomGenerator);     
             for (int i = 0; i < sampleSize; i++) {                
                 index.set(ints[i], true);
             }

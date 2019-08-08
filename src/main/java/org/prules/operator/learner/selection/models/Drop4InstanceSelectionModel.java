@@ -9,7 +9,10 @@ import com.rapidminer.example.set.SelectedExampleSet;
 import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import org.prules.tools.math.container.knn.KNNFactory;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.operator.learner.tools.IDataIndex;
@@ -75,6 +78,13 @@ public class Drop4InstanceSelectionModel extends AbstractInstanceSelectorModel {
     public IDataIndex selectInstances(ISPRClassGeometricDataCollection<IInstanceLabels> samples) {
         INNGraph nnGraph;
         List<Integer> order;
+        Set<Double> labels = new HashSet<>(5);
+        Iterator<IInstanceLabels> labelIterator =  samples.storedValueIterator();
+        while(labelIterator.hasNext()){
+            double label = labelIterator.next().getLabel();
+            labels.add(label);
+        }
+        int numberOfClassews = labels.size();
         //RUN ENN
         ENNInstanceSelectionModel ennModel = new ENNInstanceSelectionModel(measure, k, new ISClassDecisionFunction(), false);
         IDataIndex index = ennModel.selectInstances(samples, PredictionProblemType.CLASSIFICATION);
@@ -84,7 +94,7 @@ public class Drop4InstanceSelectionModel extends AbstractInstanceSelectorModel {
         indexNeg.negate();
         
         for (int i : indexNeg) {        
-             double improv = DropBasicModel.improvement(nnGraph, k, i);             
+             double improv = DropBasicModel.improvement(nnGraph, numberOfClassews, i);             
              if (improv < 0){ //If without instance "i" system classifies worse then with it keep intance i
                 index.set(i, true);
              }

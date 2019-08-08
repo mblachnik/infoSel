@@ -1,21 +1,12 @@
 package org.prules.tools.math.container.knn;
 
-import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
-import org.prules.tools.math.container.knn.LinearList;
-import org.prules.tools.math.container.knn.KDTree;
-import org.prules.tools.math.container.knn.GeometricCollectionTypes;
-import org.prules.tools.math.container.knn.SimpleNNCachedLineraList;
-import org.prules.tools.math.container.knn.BallTree;
 import java.util.Collection;
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import org.prules.dataset.InstanceFactory;
-import org.prules.dataset.VectorDense;
-import org.prules.dataset.Const;
 import org.prules.operator.learner.classifiers.VotingType;
-import org.prules.operator.learner.tools.Associates;
 import static org.prules.operator.learner.classifiers.VotingType.EXPONENTIAL;
 import static org.prules.operator.learner.classifiers.VotingType.GAUSSIAN;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
