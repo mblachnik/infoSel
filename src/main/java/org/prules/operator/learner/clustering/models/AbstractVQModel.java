@@ -5,23 +5,25 @@ import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import org.prules.operator.learner.PRulesModel;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Abstract base model for any Vector Quantization models. It extends PRulesModel, and implements basics of any VQ algorithm
  * It is used to extract data from the input example set to speedup the calculations. The class extracts current example and store
- * it as both object of Example type and as double[] - exampleValues. Similarly it provides number of attributes and number of 
+ * it as both object of Example type and as double[] - exampleValues. Similarly it provides number of attributes and number of
  * prototypes, as well as prototypes represented as double[][] matrix
+ *
  * @author Marcin
  */
 public abstract class AbstractVQModel implements PRulesModel<ExampleSet> {
 
     ExampleSet prototypes; //Set of prototypes
     Example example; //Current example from the example set
-    double[] exampleValues; //double values retrived from the example set
+    double[] exampleValues; //double values retrieved from the example set
     Attributes prototypeAttributes; //List of attributes
-    List<Attribute> trainingAttributes; //List of attrubutes
+    List<Attribute> trainingAttributes; //List of attributes
     final int attributesSize; //Number of prototypes and number of attributes
     int numberOfPrototypes; //Number of prototypes and number of attributes
     double[][] prototypeValues; //matrix representing prototypes position. It if finally converted into prototypes
@@ -29,6 +31,7 @@ public abstract class AbstractVQModel implements PRulesModel<ExampleSet> {
 
     /**
      * Constructor which requires initialization of prototypes/codebooks
+     *
      * @param prototypes
      */
     public AbstractVQModel(ExampleSet prototypes) {
@@ -40,6 +43,7 @@ public abstract class AbstractVQModel implements PRulesModel<ExampleSet> {
 
     /**
      * Execute the training process with training data as an input
+     *
      * @param trainingSet - input training data
      * @return
      */
@@ -47,7 +51,7 @@ public abstract class AbstractVQModel implements PRulesModel<ExampleSet> {
     public ExampleSet run(ExampleSet trainingSet) {
         Attributes tmpTrainingAttributes = trainingSet.getAttributes();
         trainingAttributes = new ArrayList<>(tmpTrainingAttributes.size());
-        //Caching codebooks for faster optimization
+        //Caching codeBooks for faster optimization
         prototypeValues = new double[numberOfPrototypes][attributesSize];
         int i = 0, j = 0;
         for (Example p : prototypes) {
@@ -90,7 +94,8 @@ public abstract class AbstractVQModel implements PRulesModel<ExampleSet> {
     }
 
     /**
-     * Returns current example from the training set 
+     * Returns current example from the training set
+     *
      * @return
      */
     protected Example getCurrentExample() {
@@ -98,7 +103,8 @@ public abstract class AbstractVQModel implements PRulesModel<ExampleSet> {
     }
 
     /**
-     * Returns current example in the form from the training set 
+     * Returns current example in the form from the training set
+     *
      * @return
      */
     protected double[] getCurrentExampleValues() {
@@ -107,6 +113,7 @@ public abstract class AbstractVQModel implements PRulesModel<ExampleSet> {
 
     /**
      * Returns the number of attributes
+     *
      * @return
      */
     protected int getAttributesSize() {
@@ -115,6 +122,7 @@ public abstract class AbstractVQModel implements PRulesModel<ExampleSet> {
 
     /**
      * Returns the number of prototypes
+     *
      * @return
      */
     protected int getNumberOfPrototypes() {
@@ -123,6 +131,7 @@ public abstract class AbstractVQModel implements PRulesModel<ExampleSet> {
 
     /**
      * returns a row vector (double[]) of i'th prototype values
+     *
      * @param i
      * @return
      */
@@ -131,29 +140,31 @@ public abstract class AbstractVQModel implements PRulesModel<ExampleSet> {
     }
 
     /**
-     * The VQ algorithm is executed in the main loop and in each iteration of the main loop it iterates over an entry example set. 
-     * This method is used to check if new main iteration should be executed. It allows to check whether the number of iterations has expired 
+     * The VQ algorithm is executed in the main loop and in each iteration of the main loop it iterates over an entry example set.
+     * This method is used to check if new main iteration should be executed. It allows to check whether the number of iterations has expired
      * or appropriate convergence has been achieved. When it return true then next main iteration will be executed, if false then the algorithm
      * stops and returns prototypes. In the body of this method also adaptation parameter alpha can be updated (reduced)
+     *
      * @return true if next iteration should be performed
      */
     public abstract boolean nextIteration();
 
     /**
-     * called for every new instance when iteration over examples from example set. In the body of this method the codebook update rule 
+     * called for every new instance when iteration over examples from example set. In the body of this method the codebook update rule
      * should be performed
      */
     public abstract void update();
 
     /**
-     *This is an extra method which can be used in the body of nextIteration method to perform learning rate update.
+     * This is an extra method which can be used in the body of nextIteration method to perform learning rate update.
+     *
      * @param learningRate
      * @param currentIteration
      * @param iterations
      * @param initialLearningRate
      * @return
      */
-    public static double learingRateUpdateRule(double learningRate, int currentIteration, int iterations, double initialLearningRate) {
+    public static double learningRateUpdateRule(double learningRate, int currentIteration, int iterations, double initialLearningRate) {
         //learningRate = learningRate * Math.exp(-(double)currentIteration/(double)iterations);
         learningRate = learningRate / (1 + Math.sqrt(iterations) / (double) iterations + learningRate);
         return learningRate;

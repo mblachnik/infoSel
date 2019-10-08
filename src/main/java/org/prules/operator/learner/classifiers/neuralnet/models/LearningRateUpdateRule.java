@@ -6,7 +6,6 @@
 package org.prules.operator.learner.classifiers.neuralnet.models;
 
 /**
- *
  * @author Marcin
  */
 public interface LearningRateUpdateRule {

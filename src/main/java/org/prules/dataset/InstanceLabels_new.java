@@ -7,6 +7,7 @@ package org.prules.dataset;
 
 import com.rapidminer.example.Example;
 import com.rapidminer.example.set.ISPRExample;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -15,23 +16,23 @@ import java.util.Set;
 /**
  * Implementation of Instance for handling labels or extra features of an
  * instance. Equivalent to RapidMiner special attributes
- * 
+ *
  * @author Marcin
  */
 
 //TODO Przetestować i podpiąć w miejsce starego InstanceLabels
 public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
 
-    double label;
-    double prediction;
-    double[] confidences;
-    double cluster;
-    double weight;
-    int id;
-    int index_container;
-    int index_exampleset;
-    double noise;
-    Map<String, Object> map;
+    private double label;
+    private double prediction;
+    private double[] confidences;
+    private double cluster;
+    private double weight;
+    private int id;
+    private int index_container;
+    private int index_exampleSet;
+    private double noise;
+    private Map<String, Object> map;
 
     protected InstanceLabels_new(Map<String, Object> values) {
         for (Entry<String, Object> e : values.entrySet()) {
@@ -45,7 +46,7 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
         }
     }
 
-    protected InstanceLabels_new(InstanceLabels_new values) {
+    private InstanceLabels_new(InstanceLabels_new values) {
         this.label = values.label;
         this.prediction = values.label;
         this.confidences = values.confidences;
@@ -53,7 +54,7 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
         this.weight = values.weight;
         this.id = values.id;
         this.index_container = values.index_container;
-        this.index_exampleset = values.index_exampleset;
+        this.index_exampleSet = values.index_exampleSet;
         this.noise = values.noise;
         if (values.map != null) {
             this.map = new HashMap<>(values.map);
@@ -153,34 +154,38 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
         setId((int) example.getId());
         setLabel(example.getLabel());
         if (example instanceof ISPRExample) {
-            this.index_exampleset = ((ISPRExample) example).getIndex();
+            this.index_exampleSet = ((ISPRExample) example).getIndex();
         }
     }
 
-    /** Returns value assosiated to given key as float
-     * 
+    /**
+     * Returns value assosiated to given key as float
+     *
      * @param key - key value
-     * @return 
+     * @return
      */
     @Override
     public float getValueAsFloat(String key) {
         return (float) getValueAsDouble(key);
     }
 
-    /** Returns value assosiated to given key as long
-     * 
+    /**
+     * Returns value assosiated to given key as long
+     *
      * @param key - key value
-     * @return 
+     * @return
      */
     @Override
-    public long getValueAsLong(String s) {
-        return (long) getValueAsDouble(s);
+    public long getValueAsLong(String key) {
+        return (long) getValueAsDouble(key);
     }
 
-    /** Returns value assosiated to given key as object
+    /**
+     * Returns value assosiated to given key as object
      * This is generic version of all others get methods. Note that here you can specify the return type
+     *
      * @param key - key value
-     * @return 
+     * @return
      */
     @Override
     public <T> T get(String key) {
@@ -203,8 +208,8 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
                 tmp = (double) id;
             case Const.INDEX_CONTAINER:
                 tmp = (double) index_container;
-            case Const.INDEX_EXAMPLESET:
-                tmp = (double) index_exampleset;
+            case Const.INDEX_EXAMPLE_SET:
+                tmp = (double) index_exampleSet;
         }
         out = (T) tmp;
         if (out == null && map != null) {
@@ -213,23 +218,25 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
         return out;
     }
 
-    /** Returns value assosiated to given key as String
-     * 
+    /**
+     * Returns value assosiated to given key as String
+     *
      * @param key - key value
-     * @return 
+     * @return
      */
     @Override
-    public String getValueAsString(String s) {
-        if (map != null && map.containsKey(s)) {
-            return (String) map.get(s);
+    public String getValueAsString(String key) {
+        if (map != null && map.containsKey(key)) {
+            return (String) map.get(key);
         }
-        return "" + this.getValueAsDouble(s);
+        return "" + this.getValueAsDouble(key);
     }
 
-    /** Returns value assosiated to given key as double
-     * 
+    /**
+     * Returns value associated to given key as double
+     *
      * @param key - key value
-     * @return 
+     * @return
      */
     @Override
     public double getValueAsDouble(String key) {
@@ -245,13 +252,13 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
             case Const.WEIGHT:
                 return weight;
             case Const.NOISE:
-                return weight;
+                return noise;
             case Const.ID:
                 return id;
             case Const.INDEX_CONTAINER:
                 return index_container;
-            case Const.INDEX_EXAMPLESET:
-                return index_exampleset;
+            case Const.INDEX_EXAMPLE_SET:
+                return index_exampleSet;
             default:
                 if (map != null) {
                     return (Double) map.get(key);
@@ -260,10 +267,11 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
         return Double.NaN;
     }
 
-    /** Returns value assosiated to given key as int
-     * 
+    /**
+     * Returns value assosiated to given key as int
+     *
      * @param key - key value
-     * @return 
+     * @return
      */
     @Override
     public int getValueAsInt(String key) {
@@ -272,8 +280,8 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
                 return id;
             case Const.INDEX_CONTAINER:
                 return index_container;
-            case Const.INDEX_EXAMPLESET:
-                return index_exampleset;
+            case Const.INDEX_EXAMPLE_SET:
+                return index_exampleSet;
             case Const.LABEL:
                 return (int) label;
             case Const.PREDICTION:
@@ -285,7 +293,7 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
             case Const.WEIGHT:
                 return (int) weight;
             case Const.NOISE:
-                return (int) weight;
+                return (int) noise;
         }
         if (map != null) {
             return (int) map.get(key);
@@ -293,16 +301,20 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
         return Integer.MIN_VALUE;
     }
 
-    /**Creates a clone of all elements. 
-     * @return 
+    /**
+     * Creates a clone of all elements.
+     *
+     * @return
      */
     @Override
-    public Object clone() {        
+    public Object clone() {
         return new InstanceLabels_new(this);
     }
 
-    /** Returns all avaliable keys
-     * @return 
+    /**
+     * Returns all avaliable keys
+     *
+     * @return
      */
     @Override
     public Set<String> keySet() {
@@ -313,11 +325,12 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
         return set;
     }
 
-    /** A generic version to set or put elements to the container
-     * 
-     * @param key - key value
+    /**
+     * A generic version to set or put elements to the container
+     *
+     * @param key   - key value
      * @param value
-     * @return 
+     * @return
      */
     private Object putValue(String key, Object value) {
         Object out;
@@ -354,9 +367,9 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
                 out = index_container;
                 index_container = (Integer) value;
                 break;
-            case Const.INDEX_EXAMPLESET:
-                out = index_exampleset;
-                index_exampleset = (Integer) value;
+            case Const.INDEX_EXAMPLE_SET:
+                out = index_exampleSet;
+                index_exampleSet = (Integer) value;
                 break;
             default:
                 initMap();
@@ -366,20 +379,22 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
         return out;
     }
 
-    /** Writes value to the container under given key
-     * 
-     * @param key - key value
+    /**
+     * Writes value to the container under given key
+     *
+     * @param key   - key value
      * @param value
-     * @return 
+     * @return
      */
     @Override
     public Object put(String key, Object value) {
         return putValue(key, value);
     }
 
-    /** Writes value to the container under given key
-     * 
-     * @param key - key value 
+    /**
+     * Writes value to the container under given key
+     *
+     * @param key - key value
      */
     @Override
     public void set(String key, Object value) {
@@ -388,7 +403,8 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
 
     /**
      * Returns true if container is empty. Here always false is returned
-     * @return 
+     *
+     * @return
      */
     @Override
     public boolean isEmpty() {
@@ -397,7 +413,8 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
 
     /**
      * Number of elements in the container
-     * @return 
+     *
+     * @return
      */
     @Override
     public int size() {
@@ -410,8 +427,9 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
 
     /**
      * Writes value to the container under given key as int
+     *
      * @param key
-     * @param value 
+     * @param value
      */
     @Override
     public void setValueAsInt(String key, int value) {
@@ -439,8 +457,8 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
             case Const.INDEX_CONTAINER:
                 index_container = value;
                 break;
-            case Const.INDEX_EXAMPLESET:
-                index_exampleset = value;
+            case Const.INDEX_EXAMPLE_SET:
+                index_exampleSet = value;
                 break;
             default:
                 initMap();
@@ -450,8 +468,9 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
 
     /**
      * Writes value to the container under given key as double
+     *
      * @param key
-     * @param value 
+     * @param value
      */
     @Override
     public void setValueAsDouble(String key, double value) {
@@ -479,8 +498,8 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
             case Const.INDEX_CONTAINER:
                 index_container = (int) value;
                 break;
-            case Const.INDEX_EXAMPLESET:
-                index_exampleset = (int) value;
+            case Const.INDEX_EXAMPLE_SET:
+                index_exampleSet = (int) value;
                 break;
             default:
                 initMap();
@@ -490,8 +509,9 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
 
     /**
      * Writes value to the container under given key as long
+     *
      * @param key
-     * @param value 
+     * @param value
      */
     @Override
     public void setValueAsLong(String key, long value) {
@@ -519,8 +539,8 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
             case Const.INDEX_CONTAINER:
                 index_container = (int) value;
                 break;
-            case Const.INDEX_EXAMPLESET:
-                index_exampleset = (int) value;
+            case Const.INDEX_EXAMPLE_SET:
+                index_exampleSet = (int) value;
                 break;
             default:
                 initMap();
@@ -530,8 +550,9 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
 
     /**
      * Writes value to the container under given key as float
+     *
      * @param key
-     * @param value 
+     * @param value
      */
     @Override
     public void setValueAsFloat(String key, float value) {
@@ -559,8 +580,8 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
             case Const.INDEX_CONTAINER:
                 index_container = (int) value;
                 break;
-            case Const.INDEX_EXAMPLESET:
-                index_exampleset = (int) value;
+            case Const.INDEX_EXAMPLE_SET:
+                index_exampleSet = (int) value;
                 break;
             default:
                 initMap();
@@ -570,8 +591,9 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
 
     /**
      * Writes value to the container under given key as String
+     *
      * @param key
-     * @param value 
+     * @param value
      */
     @Override
     public void setValueAsString(String key, String value) {
@@ -584,7 +606,7 @@ public class InstanceLabels_new implements IInstanceLabels, IGenericContainer {
             case Const.NOISE:
             case Const.ID:
             case Const.INDEX_CONTAINER:
-            case Const.INDEX_EXAMPLESET:
+            case Const.INDEX_EXAMPLE_SET:
                 throw new UnsupportedOperationException("Not supported. " + key + " requires double or int value, not String");
             default:
                 initMap();

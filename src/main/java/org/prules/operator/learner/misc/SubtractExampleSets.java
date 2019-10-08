@@ -9,42 +9,40 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
+import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.operator.Operator;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
+import com.rapidminer.operator.ValueDouble;
 import com.rapidminer.operator.ports.InputPort;
 import com.rapidminer.operator.ports.OutputPort;
 import com.rapidminer.operator.ports.metadata.ExampleSetPrecondition;
+import com.rapidminer.parameter.ParameterType;
+import com.rapidminer.parameter.ParameterTypeBoolean;
+import org.prules.operator.learner.tools.DataIndex;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.rapidminer.example.set.SelectedExampleSet;
-import com.rapidminer.operator.ValueDouble;
-import com.rapidminer.parameter.ParameterType;
-import com.rapidminer.parameter.ParameterTypeAttributes;
-import com.rapidminer.parameter.ParameterTypeBoolean;
 import java.util.Map.Entry;
-import org.prules.operator.learner.tools.DataIndex;
-import org.prules.operator.learner.tools.IDataIndex;
 
 /**
- *
  * @author Marcin
  */
 public class SubtractExampleSets extends Operator {
 
-    public static final String PARAMETER_INVERSE = "Inverse selection";
-    public static final String PARAMETER_INCLUDE_LABEL = "Include label";
+    private static final String PARAMETER_INVERSE = "Inverse selection";
+    private static final String PARAMETER_INCLUDE_LABEL = "Include label";
     public static final String PARAMETER_ATTRIBUTES = "Attributes";
 
-    protected double numberOfMisses = 0;
+    private double numberOfMisses = 0;
 
-    InputPort in1 = getInputPorts().createPort("exampleSet 1", ExampleSet.class);
-    InputPort in2 = getInputPorts().createPort("exampleSet 2", ExampleSet.class);
-    OutputPort out = getOutputPorts().createPort("exampleSet");
-    OutputPort ori1 = getOutputPorts().createPort("original 1");
-    OutputPort ori2 = getOutputPorts().createPort("original 2");
+    private InputPort in1 = getInputPorts().createPort("exampleSet 1", ExampleSet.class);
+    private InputPort in2 = getInputPorts().createPort("exampleSet 2", ExampleSet.class);
+    private OutputPort out = getOutputPorts().createPort("exampleSet");
+    private OutputPort ori1 = getOutputPorts().createPort("original 1");
+    private OutputPort ori2 = getOutputPorts().createPort("original 2");
 
     public SubtractExampleSets(OperatorDescription description) {
         super(description);
@@ -53,7 +51,7 @@ public class SubtractExampleSets extends Operator {
         in1.addPrecondition(new ExampleSetPrecondition(in1));
         in2.addPrecondition(new ExampleSetPrecondition(in2));
         getTransformer().addPassThroughRule(in1, out);
-        addValue(new ValueDouble("Missing elements", "The number Of misses - how meny times element from exampleSet2 did not appeared in exampleSet1") {
+        addValue(new ValueDouble("Missing elements", "The number Of misses - how many times element from exampleSet2 did not appeared in exampleSet1") {
 
             @Override
             public double getDoubleValue() {
@@ -63,11 +61,11 @@ public class SubtractExampleSets extends Operator {
     }
 
     @Override
-    public void doWork() throws OperatorException {        
+    public void doWork() throws OperatorException {
         super.doWork(); //To change body of generated methods, choose Tools | Templates.
         numberOfMisses = 0;
         ExampleSet exampleSet1 = in1.getDataOrNull(ExampleSet.class);
-        ExampleSet exampleSet2 = in2.getDataOrNull(ExampleSet.class);        
+        ExampleSet exampleSet2 = in2.getDataOrNull(ExampleSet.class);
         Map<String, ArrayList<Integer>> map = new HashMap<>(exampleSet1.size()); //Map used to identify identical rows - here we have List<Integer> becouse two rows may be identical, each with different id        
         //Create map from first file
         Attributes attributes1 = exampleSet1.getAttributes();
@@ -89,7 +87,7 @@ public class SubtractExampleSets extends Operator {
         Attribute label2 = attributes2.getLabel();
         DataIndex dataIndex = new DataIndex(exampleSet1.size());
         dataIndex.setAllFalse();
-        if (!(includeLabel && (label2 == null && label1 != null) || (label1 == null && label2 != null))) {        
+        if (!(includeLabel && (label2 == null && label1 != null) || (label1 == null && label2 != null))) {
             for (Example ex : exampleSet1) {
                 StringBuilder sb = new StringBuilder();
                 for (Attribute a : attributes1List) {
@@ -127,11 +125,11 @@ public class SubtractExampleSets extends Operator {
                     sb.append("|").append(ex.getValueAsString(label2));
                 }
                 String s = sb.toString();
-                //Scheck if map contains the string
+                //Check if map contains the string
                 ArrayList<Integer> l = map.get(s);
                 if (l != null) {
                     if (!l.isEmpty()) {
-                        l.remove(0); //Remove first occurance
+                        l.remove(0); //Remove first occurrence
                     }                //We do not remove from map 
                     //if (l.isEmpty()) { //If list is empty remove from map
                     //    map.remove(s);
@@ -168,5 +166,4 @@ public class SubtractExampleSets extends Operator {
         types.add(type);
         return types;
     }
-
 }

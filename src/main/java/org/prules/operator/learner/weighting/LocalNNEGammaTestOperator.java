@@ -10,27 +10,21 @@ import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
-import org.prules.operator.learner.weighting.models.GammaTestNoiseModel;
-import org.prules.tools.math.container.PairContainer;
-import com.rapidminer.operator.OperatorCapability;
-import com.rapidminer.operator.OperatorDescription;
-import com.rapidminer.operator.OperatorException;
-import com.rapidminer.operator.ProcessSetupError;
-import com.rapidminer.operator.ValueDouble;
+import com.rapidminer.operator.*;
 import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
 import com.rapidminer.operator.ports.metadata.MetaData;
 import com.rapidminer.operator.ports.metadata.SimpleMetaDataError;
 import com.rapidminer.operator.ports.metadata.SimplePrecondition;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeInt;
-//import com.rapidminer.tools.Ontology;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import org.prules.operator.learner.weighting.models.LocalGammaTestNoiseModel;
+import org.prules.tools.math.container.PairContainer;
 
 import java.util.List;
-
-import org.prules.operator.learner.weighting.models.LocalGammaTestNoiseModel;
+//import com.rapidminer.tools.Ontology;
 
 /**
  * @author Marcin
@@ -38,7 +32,7 @@ import org.prules.operator.learner.weighting.models.LocalGammaTestNoiseModel;
 public class LocalNNEGammaTestOperator extends AbstractWeightingOperator {
 
     public static final String PARAMETER_K = "k";
-    public static final String PARAMETER_RANGE = "Range";
+    private static final String PARAMETER_RANGE = "Range";
     private DistanceMeasureHelper measureHelper = new DistanceMeasureHelper(this);
     private int k;
     private int range;
@@ -69,7 +63,7 @@ public class LocalNNEGammaTestOperator extends AbstractWeightingOperator {
                 new SimplePrecondition(exampleSetInputPort, new MetaData(), true) {
                     @Override
                     public void makeAdditionalChecks(MetaData received) {
-                        if (received != null && received instanceof ExampleSetMetaData) {
+                        if (received instanceof ExampleSetMetaData) {
                             ExampleSetMetaData emd = (ExampleSetMetaData) received;
                             switch (emd.hasSpecial(Attributes.LABEL_NAME)) {
                                 case NO:
@@ -115,7 +109,7 @@ public class LocalNNEGammaTestOperator extends AbstractWeightingOperator {
         int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
         try {
             measureType = measureHelper.getSelectedMeasureType();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:

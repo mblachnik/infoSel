@@ -4,13 +4,9 @@
  */
 package org.prules.tools.math.container;
 
-import com.rapidminer.tools.container.Tupel;
 import java.io.Serializable;
 
 /**
- *
- * @param <N>
- * @param <M>
  * @author Marcin
  */
 public class DoubleDoubleContainer implements Comparable<DoubleDoubleContainer>, Serializable {
@@ -29,7 +25,6 @@ public class DoubleDoubleContainer implements Comparable<DoubleDoubleContainer>,
     public double second;
 
     /**
-     *
      * @param valueA
      * @param valueB
      */
@@ -55,7 +50,7 @@ public class DoubleDoubleContainer implements Comparable<DoubleDoubleContainer>,
     }
 
     @Override
-    public String toString() {        
+    public String toString() {
         return first + " : " + second;
     }
 
@@ -63,7 +58,7 @@ public class DoubleDoubleContainer implements Comparable<DoubleDoubleContainer>,
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = (int)(prime * first) + (int)(prime*second);        
+        result = (int) (prime * first) + (int) (prime * second);
         return result;
     }
 
@@ -79,19 +74,14 @@ public class DoubleDoubleContainer implements Comparable<DoubleDoubleContainer>,
             return false;
         }
         DoubleDoubleContainer other = (DoubleDoubleContainer) obj;
-        if (first != other.first) {            
-                return false;
-            }
+        if (first != other.first) {
+            return false;
+        }
         return !(second != other.second);
     }
 
     @Override
     public int compareTo(DoubleDoubleContainer o) {
-        //double result = first-o.first;
-        if (first == o.first)
-            return 0;
-        if (first > o.first)
-            return 1;
-        return -1;
+        return Double.compare(first, o.first);
     }
 }

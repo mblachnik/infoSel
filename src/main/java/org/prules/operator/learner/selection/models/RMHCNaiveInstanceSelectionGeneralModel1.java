@@ -6,33 +6,20 @@
 package org.prules.operator.learner.selection.models;
 
 import com.rapidminer.example.Example;
-import com.rapidminer.example.set.EditedExampleSet;
 import com.rapidminer.example.set.ISPRExample;
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.dataset.Const;
-import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
-import org.prules.operator.learner.tools.DataIndex;
-import org.prules.tools.math.container.knn.KNNTools;
-import org.prules.tools.math.container.knn.GeometricCollectionTypes;
-import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import org.prules.dataset.*;
+import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
+import org.prules.operator.learner.tools.IDataIndex;
+import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
+import org.prules.tools.math.container.knn.KNNTools;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.TreeSet;
-import org.prules.dataset.InstanceFactory;
-import org.prules.tools.math.container.knn.KNNFactory;
-import java.util.Set;
-import org.prules.dataset.IInstanceLabels;
-import org.prules.operator.learner.tools.IDataIndex;
-import org.prules.dataset.Instance;
-import org.prules.dataset.Vector;
-import org.prules.dataset.IInstancePrediction;
-import org.prules.dataset.InstanceLabels;
-import static org.prules.tools.math.container.knn.KNNTools.t;
 
 /**
  * Naive implementation of RMHC algorithm. Here instead of binary coding of
@@ -57,7 +44,7 @@ public class RMHCNaiveInstanceSelectionGeneralModel1 extends AbstractInstanceSel
     private final IISDecisionFunction loss;
 
     /**
-     *Constructor of RMHC algorithm implementation. Here instead of binary coding of
+     * Constructor of RMHC algorithm implementation. Here instead of binary coding of
      * instances we use a table of int, and each instance is represented as its
      * id. When performing a change in the example set instead of bit mutation a
      * single new prototype is determined. This requires more memory, but is
@@ -87,7 +74,7 @@ public class RMHCNaiveInstanceSelectionGeneralModel1 extends AbstractInstanceSel
      * Performs instance selection
      *
      * @param exampleSet - example set for which instance selection will be
-     * performed
+     *                   performed
      * @return - index of selected examples
      */
     @Override
@@ -98,89 +85,89 @@ public class RMHCNaiveInstanceSelectionGeneralModel1 extends AbstractInstanceSel
         //initialization                
         int[] selectedInstances = new int[numberOfPrototypes];
         IDataIndex workingIndex = exampleSet.getIndex();
-        int size = exampleSet.size();                       
+        int size = exampleSet.size();
         workingIndex.setAllFalse();
         //Initialize
-        int positionToChange    = -1; //a value in range 0-selectedInstances.length-1. It is index of element of selectedInstances array which we are going to change
-        int oldSelectedInstance = -1; //index of example in traiing set - old value
-        int newSelectedInstance = -1; //index of example in traiing set - new value
-        
-        List<Integer> rndInts = new ArrayList<>(size);        
-        for(int i=0; i<size; i++){
+        int positionToChange = -1; //a value in range 0-selectedInstances.length-1. It is index of element of selectedInstances array which we are going to change
+        int oldSelectedInstance = -1; //index of example in training set - old value
+        int newSelectedInstance = -1; //index of example in training set - new value
+
+        List<Integer> rndInts = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
             rndInts.add(i);
-        }        
-        Collections.shuffle(rndInts,randomGenerator);        
-        for (int i = 0; i < numberOfPrototypes; i++) {            
-            newSelectedInstance = rndInts.get(i);            
+        }
+        Collections.shuffle(rndInts, randomGenerator);
+        for (int i = 0; i < numberOfPrototypes; i++) {
+            newSelectedInstance = rndInts.get(i);
             selectedInstances[i] = newSelectedInstance;
-            workingIndex.set(newSelectedInstance,true);            
-        }                        
-        //Create faster dataset
+            workingIndex.set(newSelectedInstance, true);
+        }
+        //Create faster data set
         List<Vector> samples = new ArrayList<>(size);
         List<IInstanceLabels> labels = new ArrayList<>(size);
-        for(Example e : exampleSet){
+        for (Example e : exampleSet) {
             samples.add(InstanceFactory.createVector(e));
             labels.add(InstanceFactory.createInstaceLabels(e));
         }
-        IInstancePrediction prediction = InstanceFactory.createPrediction(Double.NaN, null);                               
-        loss.init(exampleSet,measure);
-        double errorRateBest = Double.MAX_VALUE;        
+        IInstancePrediction prediction = InstanceFactory.createPrediction(Double.NaN, null);
+        loss.init(exampleSet, measure);
+        double errorRateBest = Double.MAX_VALUE;
         Instance inst = InstanceFactory.createEmptyInstance();
         for (int i = 0; i < iterations; i++) {
             double errorRate = 0;
-            int q=0;            
+            int q = 0;
             //Calculate performance            
             Iterator<Vector> sampleIterator = samples.iterator();
             Iterator<IInstanceLabels> labelIterator = labels.iterator();
-            while (sampleIterator.hasNext() && labelIterator.hasNext()) {                   
+            while (sampleIterator.hasNext() && labelIterator.hasNext()) {
                 Vector currentSample = sampleIterator.next();
-                IInstanceLabels curentLabel = labelIterator.next();
-                double predictedLabel = KNNTools.predictOneNearestNeighbor(currentSample,samples,labels,measure, workingIndex);                
-                prediction.setLabel(predictedLabel);                
+                IInstanceLabels currentLabel = labelIterator.next();
+                double predictedLabel = KNNTools.predictOneNearestNeighbor(currentSample, samples, labels, measure, workingIndex);
+                prediction.setLabel(predictedLabel);
                 inst.setPrediction(prediction);
-                inst.setLabels(curentLabel);
+                inst.setLabels(currentLabel);
                 inst.setVector(currentSample);
                 double lossVal = loss.getValue(inst);
-                q ++;
+                q++;
                 errorRate += lossVal;
-            }                 
+            }
             //Asses current set
             if (errorRate < errorRateBest) {
-                errorRateBest = errorRate;                                
+                errorRateBest = errorRate;
             } else { //We have to restore old current Vector and Label in place of candidate                
-                workingIndex.set(oldSelectedInstance, true );
-                workingIndex.set(newSelectedInstance, false);                
+                workingIndex.set(oldSelectedInstance, true);
+                workingIndex.set(newSelectedInstance, false);
                 selectedInstances[positionToChange] = oldSelectedInstance;
             }
             //Choose which prototype to change            
             positionToChange = randomGenerator.nextInt(numberOfPrototypes);
             //Get new prototype id and assure that the value is different from the previous one
-            oldSelectedInstance = selectedInstances[positionToChange];                         
+            oldSelectedInstance = selectedInstances[positionToChange];
             rndInts.clear();
-            for(int k=0; k<size; k++){
-                if (!workingIndex.get(k)){
+            for (int k = 0; k < size; k++) {
+                if (!workingIndex.get(k)) {
                     rndInts.add(k);
                 }
             }
-            Collections.shuffle(rndInts,randomGenerator);                    
-            newSelectedInstance = rndInts.get(0);                        
+            Collections.shuffle(rndInts, randomGenerator);
+            newSelectedInstance = rndInts.get(0);
             workingIndex.set(oldSelectedInstance, false);
-            workingIndex.set(newSelectedInstance, true);                
-            selectedInstances[positionToChange] = newSelectedInstance;                                                                                            
+            workingIndex.set(newSelectedInstance, true);
+            selectedInstances[positionToChange] = newSelectedInstance;
             //System.out.println("--- NextIter ------");
-        }     
+        }
         //System.out.println("--" + t[0] + "  "+ t[1] + "  "+ t[2] + "  "+ t[3] + "  "+ t[4] + "  ");
         //Arrays.fill(t,0);
         return workingIndex;
     }
 
-    private void disp(ISPRGeometricDataCollection<Number> kNN, int[] si, SelectedExampleSet es) {
+    private void display(ISPRGeometricDataCollection<Number> kNN, int[] si, SelectedExampleSet es) {
         for (int i = 0; i < si.length; i++) {
             double[] values = kNN.getSample(i).getValues();
             int in = si[i];
-            System.out.println("Indeks = " + in);
+            System.out.println("Index = " + in);
             System.out.print(" [");
-            
+
             for (int j = 0; j < values.length; j++) {
                 System.out.print(values[j] + " ; ");
             }
@@ -195,7 +182,7 @@ public class RMHCNaiveInstanceSelectionGeneralModel1 extends AbstractInstanceSel
             double id = ex.getId();
             String ids = es.getAttributes().getId().getMapping().mapIndex((int) id);
             in = ex.getIndex();
-            System.out.println("Indeks = " + in);
+            System.out.println("Index = " + in);
             System.out.print("  " + ids + " [");
             for (int j = 0; j < values.length; j++) {
                 System.out.print(values[j] + " ; ");
@@ -205,6 +192,4 @@ public class RMHCNaiveInstanceSelectionGeneralModel1 extends AbstractInstanceSel
         }
         System.out.println("------------------------------------------------");
     }
-
-    
 }

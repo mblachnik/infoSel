@@ -2,10 +2,6 @@ package org.prules.operator.learner.selection;
 
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
-import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
-import org.prules.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
-import org.prules.operator.learner.selection.models.AllKNNInstanceSelectionGeneralModel;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
@@ -13,6 +9,11 @@ import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeInt;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
+import org.prules.operator.learner.selection.models.AllKNNInstanceSelectionGeneralModel;
+import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
+import org.prules.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
+
 import java.util.List;
 
 /**
@@ -27,11 +28,11 @@ public class AllkNNInstanceSelectionOperator extends AbstractInstanceSelectorOpe
     /**
      * The parameter name for &quot;The used number of nearest neighbors.&quot;
      */
-    public static final String PARAMETER_ADD_WEIGHTS = "k_start";
+    private static final String PARAMETER_ADD_WEIGHTS = "k_start";
     /**
      *
      */
-    public static final String PARAMETER_K_STOP = "k_stop";
+    private static final String PARAMETER_K_STOP = "k_stop";
 
     /**
      * Default constructor
@@ -62,7 +63,7 @@ public class AllkNNInstanceSelectionOperator extends AbstractInstanceSelectorOpe
         }
         IISDecisionFunction loss = null;
         Attribute labelAttribute = exampleSet.getAttributes().getLabel();
-        loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);        
+        loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);
         return new AllKNNInstanceSelectionGeneralModel(measure, k1, k2, loss);
     }
 
@@ -77,7 +78,7 @@ public class AllkNNInstanceSelectionOperator extends AbstractInstanceSelectorOpe
         int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
         try {
             measureType = measureHelper.getSelectedMeasureType();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:
@@ -110,12 +111,13 @@ public class AllkNNInstanceSelectionOperator extends AbstractInstanceSelectorOpe
 
     /**
      * Samples don't need to be randomized. The algorithm is stable
-     * @return 
+     *
+     * @return
      */
     public boolean isSampleRandomize() {
         return false;
     }
-    
+
     /**
      * Operator configuration parameters
      *
@@ -132,7 +134,7 @@ public class AllkNNInstanceSelectionOperator extends AbstractInstanceSelectorOpe
         ParameterType typeK2 = new ParameterTypeInt(PARAMETER_K_STOP, "The higher number of nearest neighbors.", 1, Integer.MAX_VALUE, 5);
         typeK2.setExpert(false);
         types.add(typeK2);
-                
+
         return types;
     }
 }

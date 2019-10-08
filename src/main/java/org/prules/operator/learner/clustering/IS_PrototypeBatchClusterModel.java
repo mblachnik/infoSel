@@ -6,37 +6,36 @@
 package org.prules.operator.learner.clustering;
 
 import com.rapidminer.example.Attribute;
-import com.rapidminer.example.AttributeRole;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.example.table.NominalMapping;
 import com.rapidminer.example.table.PolynominalMapping;
+import com.rapidminer.tools.Ontology;
 import org.prules.operator.learner.clustering.models.AbstractBatchModel;
 import org.prules.operator.learner.tools.PRulesUtil;
-import com.rapidminer.operator.clustering.ClusterModel;
-import com.rapidminer.tools.Ontology;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Information Selection IOObject used for cluster assigment for all type of clustering algorithms based on prototypes which use batch method for obtaining the prototypes
+ *
  * @author Marcin
  */
 public class IS_PrototypeBatchClusterModel extends IS_ClusterModel {
 
-    final Map<Integer, String> clusterNames;
-    final AbstractBatchModel model;
-    final boolean addPartitionMatrix;
-    final List<String> attributeNames;
-    final boolean addCluster;
-    final int numberOfClusters;
+    private final Map<Integer, String> clusterNames;
+    private final AbstractBatchModel model;
+    private final boolean addPartitionMatrix;
+    private final List<String> attributeNames;
+    private final boolean addCluster;
+    private final int numberOfClusters;
 
-    public IS_PrototypeBatchClusterModel(AbstractBatchModel model, Map<Integer, String> clusterNamesMap, ExampleSet exampleSet, int k, boolean addCluster, boolean addClusterAsLabel, boolean removeUnknown, boolean addPartitionMatrix) {
+    IS_PrototypeBatchClusterModel(AbstractBatchModel model, Map<Integer, String> clusterNamesMap, ExampleSet exampleSet, int k, boolean addCluster, boolean addClusterAsLabel, boolean removeUnknown, boolean addPartitionMatrix) {
         super(exampleSet, k, addClusterAsLabel, removeUnknown);
         this.clusterNames = clusterNamesMap;
         this.model = model;
@@ -71,7 +70,7 @@ public class IS_PrototypeBatchClusterModel extends IS_ClusterModel {
      *
      * @param trainingSet
      * @param setClusterAssignments - true idicates that the input data will be
-     * rein
+     *                              rein
      * @return
      */
     @Override

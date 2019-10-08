@@ -7,9 +7,8 @@ package org.prules.operator.learner.misc;
 import com.rapidminer.example.ExampleSet;
 
 /**
- *
  * @author Marcin
  */
-public interface GroupSimilarity {    
+public interface GroupSimilarity {
     double calculate(ExampleSet exampleSet1, ExampleSet exampleSet2);
 }

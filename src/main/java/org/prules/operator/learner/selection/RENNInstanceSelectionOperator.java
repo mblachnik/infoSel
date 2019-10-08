@@ -1,20 +1,19 @@
 package org.prules.operator.learner.selection;
 
-import java.util.List;
-
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
-import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
-import org.prules.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
 import com.rapidminer.operator.OperatorCapability;
-import static com.rapidminer.operator.OperatorCapability.NUMERICAL_LABEL;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeInt;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
 import org.prules.operator.learner.selection.models.RENNInstanceSelectionModel;
+import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
+import org.prules.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
+
+import java.util.List;
 
 /**
  * This class is used to provide Repeated Edited Nearest Neighbor instance
@@ -30,10 +29,9 @@ public class RENNInstanceSelectionOperator extends AbstractInstanceSelectorOpera
      * The parameter name for &quot;The used number of nearest neighbors.&quot;
      */
     public static final String PARAMETER_K = "k";
-    public static final String PARAMETER_MAX_ITERATIONS = "max iterations";
+    private static final String PARAMETER_MAX_ITERATIONS = "max iterations";
 
     /**
-     *
      * @param description
      */
     public RENNInstanceSelectionOperator(OperatorDescription description) {
@@ -52,10 +50,10 @@ public class RENNInstanceSelectionOperator extends AbstractInstanceSelectorOpera
         //INITIALIZATION
         DistanceMeasure measure = measureHelper.getInitializedMeasure(exampleSet);
         int k = getParameterAsInt(PARAMETER_K);
-        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);        
+        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);
         int maxIterations = getParameterAsInt(PARAMETER_MAX_ITERATIONS);
         //return new RENNInstanceSelectionModel(measure, k, loss, maxIterations, instanceModifier);        
-        return new RENNInstanceSelectionModel(measure, k, loss, maxIterations);        
+        return new RENNInstanceSelectionModel(measure, k, loss, maxIterations);
     }
 
     /**
@@ -69,7 +67,7 @@ public class RENNInstanceSelectionOperator extends AbstractInstanceSelectorOpera
         int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
         try {
             measureType = measureHelper.getSelectedMeasureType();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:
@@ -102,16 +100,18 @@ public class RENNInstanceSelectionOperator extends AbstractInstanceSelectorOpera
 
     /**
      * Samples don't need to be randomized. The algorithm is stable
-     * @return 
+     *
+     * @return
      */
     @Override
     public boolean isSampleRandomize() {
         return false;
     }
-    
+
     /**
      * Configuring operators input parameters
-     * @return 
+     *
+     * @return
      */
     @Override
     public List<ParameterType> getParameterTypes() {
@@ -121,11 +121,11 @@ public class RENNInstanceSelectionOperator extends AbstractInstanceSelectorOpera
         type = new ParameterTypeInt(PARAMETER_K, "The used number of nearest neighbors.", 3, Integer.MAX_VALUE, 3);
         type.setExpert(false);
         types.add(type);
-        
+
         type = new ParameterTypeInt(PARAMETER_MAX_ITERATIONS, "Maximum number of iterations. Negative value is equivalent to no limit", -1, Integer.MAX_VALUE, -1);
         type.setExpert(false);
         types.add(type);
-        
+
         return types;
     }
 }

@@ -9,7 +9,6 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
-import org.prules.operator.AbstractPRulesBasicOperator;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.ports.metadata.AttributeMetaData;
@@ -17,35 +16,36 @@ import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
 import com.rapidminer.operator.ports.metadata.MetaData;
 import com.rapidminer.operator.ports.metadata.PassThroughRule;
 import com.rapidminer.tools.Ontology;
+import org.prules.operator.AbstractPRulesBasicOperator;
 
 /**
- *
  * @author Marcin
  */
 public abstract class AbstractWeightingOperator extends AbstractPRulesBasicOperator {
 
-    String attributeName;
-    String attributeRole;
-    public AbstractWeightingOperator(OperatorDescription description) {
-        this(description,Attributes.WEIGHT_NAME,Attributes.WEIGHT_NAME);
-        
+    private String attributeName;
+    private String attributeRole;
+
+    AbstractWeightingOperator(OperatorDescription description) {
+        this(description, Attributes.WEIGHT_NAME, Attributes.WEIGHT_NAME);
+
     }
-    
-    public AbstractWeightingOperator(OperatorDescription description, final String attributeName, final String attributeRole) {
+
+    AbstractWeightingOperator(OperatorDescription description, final String attributeName, final String attributeRole) {
         super(description);
         this.attributeRole = attributeRole;
         this.attributeName = attributeName;
         PassThroughRule addWeightRule = new PassThroughRule(exampleSetInputPort, exampleSetOutputPort, true) {
             @Override
             public MetaData modifyMetaData(MetaData metaData) {
-                if (metaData != null && metaData instanceof ExampleSetMetaData){
-                    ExampleSetMetaData esmd = (ExampleSetMetaData)metaData;
-                    AttributeMetaData attribute= new AttributeMetaData(attributeName,Ontology.NUMERICAL,attributeRole);
+                if (metaData instanceof ExampleSetMetaData) {
+                    ExampleSetMetaData esmd = (ExampleSetMetaData) metaData;
+                    AttributeMetaData attribute = new AttributeMetaData(attributeName, Ontology.NUMERICAL, attributeRole);
                     esmd.addAttribute(attribute);
                 }
                 return metaData;
             }
-        }; 
+        };
         getTransformer().addRule(addWeightRule);
     }
 
@@ -61,7 +61,7 @@ public abstract class AbstractWeightingOperator extends AbstractPRulesBasicOpera
         ExampleSet exampleSet = (ExampleSet) trainingSet.clone();
         Attribute weightAttribute = AttributeFactory.createAttribute(this.attributeName, Ontology.NUMERICAL);
         exampleSet.getExampleTable().addAttribute(weightAttribute);
-        exampleSet.getAttributes().setSpecialAttribute(weightAttribute,this.attributeRole);
+        exampleSet.getAttributes().setSpecialAttribute(weightAttribute, this.attributeRole);
         processExamples(exampleSet);
         exampleSetOutputPort.deliver(exampleSet);
     }

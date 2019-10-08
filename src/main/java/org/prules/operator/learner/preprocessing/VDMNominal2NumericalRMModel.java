@@ -7,33 +7,30 @@ package org.prules.operator.learner.preprocessing;
 
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.AbstractModel;
-import com.rapidminer.operator.OperatorException;
 import org.prules.operator.learner.preprocessing.model.VDMNominal2NumericalModel;
 
 /**
- *
  * @author Marcin
  */
 
 /**
  * This is a preprocessing model which applies VDM Nominal to numerical attribute transformation.
+ *
  * @author Marcin
  */
 
 //TODO add metadata processing
-public class VDMNominal2NumericalRMModel extends AbstractModel{
-    VDMNominal2NumericalModel model;
-    
-    
-    public VDMNominal2NumericalRMModel(ExampleSet exampleSet, VDMNominal2NumericalModel model){
+public class VDMNominal2NumericalRMModel extends AbstractModel {
+    private VDMNominal2NumericalModel model;
+
+
+    VDMNominal2NumericalRMModel(ExampleSet exampleSet, VDMNominal2NumericalModel model) {
         super(exampleSet);
         this.model = model;
     }
 
     @Override
     public ExampleSet apply(ExampleSet testSet) {
-        return model.run((ExampleSet)testSet.clone());
+        return model.run((ExampleSet) testSet.clone());
     }
-
-    
 }

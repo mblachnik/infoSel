@@ -3,9 +3,9 @@ package org.prules.operator.learner.classifiers.neuralnet.models;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,14 +20,13 @@ public class SNGModel extends AbstractLVQModel {
     private double alpha, lambda;
     private double initialAlpha, initialLambda;
     private Pair[] distanceTable;
-    private double minimumAcceptabelRate = 1e-6;
+    private double minimumAcceptableRate = 1e-6;
     private final List<Double> learningRateValues;
     private final List<Double> lambdaRateValues;
-    
+
     //private double minLearningRate;
 
     /**
-     *
      * @param prototypes
      * @param iterations
      * @param measure
@@ -46,7 +45,7 @@ public class SNGModel extends AbstractLVQModel {
         this.initialLambda = lambda;
         this.measure.init(prototypes);
         this.distanceTable = new Pair[prototypes.size()];
-        for(int i=0; i<prototypes.size(); i++ ){
+        for (int i = 0; i < prototypes.size(); i++) {
             distanceTable[i] = new Pair();
         }
         learningRateValues = new ArrayList<>(iterations);
@@ -63,7 +62,7 @@ public class SNGModel extends AbstractLVQModel {
 
         double dist, minDist = Double.MAX_VALUE;
 
-        
+
         int i = 0;
         for (double[] prototype : prototypeValues) {
             dist = measure.calculateDistance(prototype, exampleValues);
@@ -87,7 +86,7 @@ public class SNGModel extends AbstractLVQModel {
             g = Math.exp(-1 * ((j + 1) / lambda));
             double rate = alpha * g;
             //if the rate is too small break the iteration
-            if (rate < minimumAcceptabelRate) { 
+            if (rate < minimumAcceptableRate) {
                 break;
             }
             if (prototypeLabels[prototypePair.key] == exampleLabel || (Double.isNaN(prototypeLabels[prototypePair.key]))) {
@@ -119,7 +118,7 @@ public class SNGModel extends AbstractLVQModel {
         currentIteration++;
         learningRateValues.add(alpha);
         lambdaRateValues.add(lambda);
-        alpha  = LVQTools.learingRateUpdateRule(alpha, currentIteration, iterations, initialAlpha);
+        alpha = LVQTools.learningRateUpdateRule(alpha, currentIteration, iterations, initialAlpha);
         lambda = LVQTools.lambdaRateUpdateRule(lambda, currentIteration, iterations, initialLambda);
         return currentIteration < iterations;
     }
@@ -163,8 +162,8 @@ public class SNGModel extends AbstractLVQModel {
     public List<Double> getCostFunctionValues() {
         return new ArrayList<>(0);
     }
-    
-    
+
+
     private class Pair implements Comparable<Pair> {
 
         public int key;

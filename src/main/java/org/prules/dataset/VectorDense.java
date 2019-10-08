@@ -6,6 +6,7 @@ package org.prules.dataset;
 
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Example;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -73,7 +74,7 @@ public class VectorDense implements Vector {
     public Object clone() {
 
         try {
-            VectorDense instance = (VectorDense) super.clone();            
+            VectorDense instance = (VectorDense) super.clone();
             instance.values = this.values.clone();
             return instance;
         } catch (CloneNotSupportedException ex) {
@@ -103,7 +104,7 @@ public class VectorDense implements Vector {
 
     @Override
     public int[] getNonEmptyIndex() {
-        int idx[] = new int[values.length];
+        int[] idx = new int[values.length];
         for (int i = 0; i < values.length; i++) {
             idx[i] = i;
         }

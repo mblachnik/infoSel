@@ -5,9 +5,8 @@
 package org.prules.operator.learner.classifiers;
 
 /**
- *
  * @author Marcin
  */
 public enum PredictionType {
-    Classification,Regression,Clustering
+    Classification, Regression, Clustering
 }

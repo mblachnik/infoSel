@@ -5,49 +5,34 @@
 package org.prules.operator.learner.clustering;
 
 //import history.OldAbstractPRulesOperator;
-import com.rapidminer.example.Attribute;
-import com.rapidminer.example.Attributes;
-import com.rapidminer.example.Example;
-import com.rapidminer.example.ExampleSet;
-import com.rapidminer.example.Tools;
+
+import com.rapidminer.example.*;
 import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.example.table.NominalMapping;
 import com.rapidminer.example.table.PolynominalMapping;
-import org.prules.operator.AbstractPrototypeBasedOperatorChain;
-import org.prules.operator.learner.classifiers.IS_KNNClassificationModel;
+import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
-import org.prules.operator.learner.clustering.models.AbstractVQModel;
-import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
-import org.prules.operator.learner.selection.models.RandomInstanceSelectionModel;
-import org.prules.operator.learner.tools.PRulesUtil;
-import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.clustering.ClusterModel;
 import com.rapidminer.operator.clustering.clusterer.RMAbstractClusterer;
 import com.rapidminer.operator.learner.CapabilityProvider;
 import com.rapidminer.operator.ports.InputPort;
 import com.rapidminer.operator.ports.OutputPort;
 import com.rapidminer.operator.ports.Port;
-import com.rapidminer.operator.ports.metadata.CapabilityPrecondition;
-import com.rapidminer.operator.ports.metadata.DistanceMeasurePrecondition;
-import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
-import com.rapidminer.operator.ports.metadata.ExampleSetPassThroughRule;
-import com.rapidminer.operator.ports.metadata.ExampleSetPrecondition;
-import com.rapidminer.operator.ports.metadata.GenerateNewMDRule;
-import com.rapidminer.operator.ports.metadata.GeneratePredictionModelTransformationRule;
-import com.rapidminer.operator.ports.metadata.IsConnectedPrecondition;
-import com.rapidminer.operator.ports.metadata.MDInteger;
-import com.rapidminer.operator.ports.metadata.MetaData;
-import com.rapidminer.operator.ports.metadata.SetRelation;
-import com.rapidminer.operator.ports.metadata.SubprocessTransformRule;
+import com.rapidminer.operator.ports.metadata.*;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeBoolean;
 import com.rapidminer.parameter.ParameterTypeInt;
 import com.rapidminer.parameter.PortProvider;
-import com.rapidminer.parameter.UndefinedParameterError;
 import com.rapidminer.parameter.conditions.PortConnectedCondition;
 import com.rapidminer.tools.Ontology;
 import com.rapidminer.tools.RandomGenerator;
+import org.prules.operator.AbstractPrototypeBasedOperatorChain;
+import org.prules.operator.learner.clustering.models.AbstractVQModel;
+import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
+import org.prules.operator.learner.selection.models.RandomInstanceSelectionModel;
+import org.prules.operator.learner.tools.PRulesUtil;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -68,22 +53,22 @@ public abstract class AbstractPrototypeClusteringOnlineOperator extends Abstract
     /**
      *
      */
-    protected final OutputPort exampleInnerSourcePort = getSubprocess(0).getInnerSources().createPort("example Set");
+    private final OutputPort exampleInnerSourcePort = getSubprocess(0).getInnerSources().createPort("example Set");
     /**
      *
      */
-    protected final InputPort initialPrototypesSourcePort = getSubprocess(0).getInnerSinks().createPort("codebooks");  
+    final InputPort initialPrototypesSourcePort = getSubprocess(0).getInnerSinks().createPort("codebooks");
     protected final OutputPort modelOutputPort = getOutputPorts().createPort("model");
     double costFunctionValue = Double.NaN;
-    protected Map<Integer, String> clusterNames;
+    Map<Integer, String> clusterNames;
 
     /**
      * Constructor of prototype based clustering methods
      *
      * @param description
      */
-    public AbstractPrototypeClusteringOnlineOperator(OperatorDescription description) {        
-        super(description, "Initialize_codebooks");//        
+    AbstractPrototypeClusteringOnlineOperator(OperatorDescription description) {
+        super(description, "Initialize_codeBooks");//
         exampleSetInputPort.addPrecondition(new DistanceMeasurePrecondition(exampleSetInputPort, this));
         exampleSetInputPort.addPrecondition(new CapabilityPrecondition(new CapabilityProvider() {
             @Override
@@ -92,15 +77,15 @@ public abstract class AbstractPrototypeClusteringOnlineOperator extends Abstract
                     case BINOMINAL_ATTRIBUTES:
                     case POLYNOMINAL_ATTRIBUTES:
                     case NUMERICAL_ATTRIBUTES:
-                    //case POLYNOMINAL_LABEL:
-                    //case BINOMINAL_LABEL:
+                        //case POLYNOMINAL_LABEL:
+                        //case BINOMINAL_LABEL:
                     case MISSING_VALUES:
                         return true;
                     default:
                         return false;
                 }
             }
-        }, exampleSetInputPort));        
+        }, exampleSetInputPort));
         initialPrototypesSourcePort.addPrecondition(new IsConnectedPrecondition(initialPrototypesSourcePort, new CapabilityPrecondition(new CapabilityProvider() {
             @Override
             public boolean supportsCapability(OperatorCapability capability) {
@@ -108,8 +93,8 @@ public abstract class AbstractPrototypeClusteringOnlineOperator extends Abstract
                     case BINOMINAL_ATTRIBUTES:
                     case POLYNOMINAL_ATTRIBUTES:
                     case NUMERICAL_ATTRIBUTES:
-                    //case POLYNOMINAL_LABEL:
-                    //case BINOMINAL_LABEL:
+                        //case POLYNOMINAL_LABEL:
+                        //case BINOMINAL_LABEL:
                     case MISSING_VALUES:
                         return true;
                     default:
@@ -119,8 +104,8 @@ public abstract class AbstractPrototypeClusteringOnlineOperator extends Abstract
         }, initialPrototypesSourcePort)));
         initialPrototypesSourcePort.addPrecondition(new IsConnectedPrecondition(initialPrototypesSourcePort, new ExampleSetPrecondition(exampleSetInputPort)));
         initialPrototypesSourcePort.addPrecondition(new IsConnectedPrecondition(initialPrototypesSourcePort, new DistanceMeasurePrecondition(initialPrototypesSourcePort, this)));
-        getTransformer().addRule(new GenerateNewMDRule(modelOutputPort, new MetaData(ClusterModel.class)));                                                
-        getTransformer().addRule(new ExampleSetPassThroughRule(exampleSetInputPort, exampleInnerSourcePort, SetRelation.EQUAL));        
+        getTransformer().addRule(new GenerateNewMDRule(modelOutputPort, new MetaData(ClusterModel.class)));
+        getTransformer().addRule(new ExampleSetPassThroughRule(exampleSetInputPort, exampleInnerSourcePort, SetRelation.EQUAL));
         getTransformer().addRule(new SubprocessTransformRule(getSubprocess(0)));
         //initialPrototypesSourcePort. 
         addPrototypeTransformationRule();
@@ -134,45 +119,45 @@ public abstract class AbstractPrototypeClusteringOnlineOperator extends Abstract
      * @throws OperatorException
      */
     @Override
-    public ExampleSet processExamples(ExampleSet trainingSet) throws OperatorException {    
+    public ExampleSet processExamples(ExampleSet trainingSet) throws OperatorException {
         exampleInnerSourcePort.deliver(trainingSet);
         this.getSubprocess(0).execute();
         // checking and creating ids if necessary        
-        ExampleSet codebooksInitialization = initialPrototypesSourcePort.getDataOrNull(ExampleSet.class);
-        ExampleSet codebooks;
-        if (codebooksInitialization == null) {
+        ExampleSet codeBooksInitialization = initialPrototypesSourcePort.getDataOrNull(ExampleSet.class);
+        ExampleSet codeBooks;
+        if (codeBooksInitialization == null) {
             int numberOfNeurons = getParameterAsInt(PARAMETER_NUMBER_OF_NEURONS);
             if (numberOfNeurons == 0) {
                 numberOfNeurons = trainingSet.size() / 10;
             }
             RandomGenerator randomGenerator = RandomGenerator.getRandomGenerator(this);
             AbstractInstanceSelectorModel isModel = new RandomInstanceSelectionModel(numberOfNeurons, false, randomGenerator);
-            codebooks = PRulesUtil.duplicateExampleSet(isModel.run(trainingSet));
-        } else {            
-            codebooks = PRulesUtil.duplicateExampleSet(codebooksInitialization);            
+            codeBooks = PRulesUtil.duplicateExampleSet(isModel.run(trainingSet));
+        } else {
+            codeBooks = PRulesUtil.duplicateExampleSet(codeBooksInitialization);
         }
-        //Here we generate cluster attribute and label codebooks
-        clusterNames = IS_ClusterModelTools.prepareClusterNamesMap(codebooks.size());
+        //Here we generate cluster attribute and label codeBooks
+        clusterNames = IS_ClusterModelTools.prepareClusterNamesMap(codeBooks.size());
         Attribute codebookLabels = AttributeFactory.createAttribute(Attributes.CLUSTER_NAME, Ontology.NOMINAL);
         NominalMapping codebookLabelsNames = new PolynominalMapping(clusterNames);
-        codebookLabels.setMapping(codebookLabelsNames);        
-        codebooks.getExampleTable().addAttribute(codebookLabels);  
+        codebookLabels.setMapping(codebookLabelsNames);
+        codeBooks.getExampleTable().addAttribute(codebookLabels);
         if (getParameterAsBoolean(RMAbstractClusterer.PARAMETER_ADD_AS_LABEL))
-            codebooks.getAttributes().setLabel(codebookLabels);
+            codeBooks.getAttributes().setLabel(codebookLabels);
         else {
-            codebooks.getAttributes().setCluster(codebookLabels);
+            codeBooks.getAttributes().setCluster(codebookLabels);
         }
-        Iterator<Integer> clusterLabelIterator = clusterNames.keySet().iterator();        
-        for (Example codebook : codebooks){
-            int value = clusterLabelIterator.next();            
-            codebook.setValue(codebookLabels,value);
-        }            
-        IS_PrototypeClusterModel model = optimize(trainingSet, codebooks);
+        Iterator<Integer> clusterLabelIterator = clusterNames.keySet().iterator();
+        for (Example codeBook : codeBooks) {
+            int value = clusterLabelIterator.next();
+            codeBook.setValue(codebookLabels, value);
+        }
+        IS_PrototypeClusterModel model = optimize(trainingSet, codeBooks);
         modelOutputPort.deliver(model);
         Tools.checkAndCreateIds(trainingSet);
         model.apply(trainingSet, true);
-        //model.apply(codebooks, false);
-        return codebooks;                                        
+        //model.apply(codeBooks, false);
+        return codeBooks;
     }
 
     /**
@@ -181,11 +166,11 @@ public abstract class AbstractPrototypeClusteringOnlineOperator extends Abstract
      * clustering algorithms
      *
      * @param trainingSet
-     * @param codebooks
+     * @param codeBooks
      * @return
      * @throws OperatorException
      */
-    public abstract IS_PrototypeClusterModel optimize(ExampleSet trainingSet, ExampleSet codebooks) throws OperatorException;
+    public abstract IS_PrototypeClusterModel optimize(ExampleSet trainingSet, ExampleSet codeBooks) throws OperatorException;
 
     /**
      * Configuration options
@@ -206,7 +191,7 @@ public abstract class AbstractPrototypeClusteringOnlineOperator extends Abstract
         }, true, false));
         type.setExpert(false);
         types.add(type);
-        
+
         type = new ParameterTypeBoolean(RMAbstractClusterer.PARAMETER_ADD_CLUSTER_ATTRIBUTE,
                 "If true, the cluster id is stored in an attribute with the special role 'label' instead of 'cluster'.",
                 true);
@@ -226,7 +211,7 @@ public abstract class AbstractPrototypeClusteringOnlineOperator extends Abstract
                     return initialPrototypesSourcePort;
                 }
             }, true, false));
-        }       
+        }
         return types;
     }
 }

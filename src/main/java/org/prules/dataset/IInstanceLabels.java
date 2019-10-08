@@ -6,71 +6,81 @@
 package org.prules.dataset;
 
 import com.rapidminer.example.Example;
-import java.io.Serializable;
 
 /**
  * Interface for storing labels of an instance. In fact labels are any attributes or properties associated with an instance describing its properties
  * It can be any complex data structure but for simplicity this interface provides a set of basic methods for access of "classical" properties
+ *
  * @author Marcin
  */
 public interface IInstanceLabels extends IGenericContainer {
 
     /**
      * Read enumerator of an instance
-     * @return 
+     *
+     * @return
      */
     int getId();
 
     /**
      * Read label as double value
-     * @return 
+     *
+     * @return
      */
-    double getLabel();   
-    
+    double getLabel();
+
     /**
      * Read instance weight
-     * @return 
+     *
+     * @return
      */
     double getWeight();
 
     /**
      * Read cluster label or identifier of clustering problem
-     * @return 
+     *
+     * @return
      */
-    double getCluster();           
+    double getCluster();
 
     /**
      * Set instance id
-     * @param id 
+     *
+     * @param id
      */
     void setId(int id);
 
     /**
      * Set label
-     * @param label 
+     *
+     * @param label
      */
-    void setLabel(double label);    
-    
+    void setLabel(double label);
+
     /**
      * Set instance weight
-     * @param weight 
+     *
+     * @param weight
      */
     void setWeight(double weight);
 
     /**
      * Set instsance cluster
-     * @param cluster 
+     *
+     * @param cluster
      */
-    void setCluster(double cluster);   
-    
+    void setCluster(double cluster);
+
     /**
      * Method which reads all of the instance properties from RapidMiner Example
-     * @param example 
+     *
+     * @param example
      */
     void set(Example example);
-    
+
     /**
      * Set value
+     *
      * @param name
      * @param value
      */

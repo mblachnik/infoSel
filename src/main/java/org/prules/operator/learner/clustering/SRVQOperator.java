@@ -4,27 +4,29 @@
  */
 package org.prules.operator.learner.clustering;
 
-import java.util.List;
-
 import com.rapidminer.example.ExampleSet;
-import org.prules.operator.learner.clustering.models.AbstractVQModel;
-import org.prules.tools.math.container.knn.GeometricCollectionTypes;
-import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.clustering.clusterer.RMAbstractClusterer;
 import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
 import com.rapidminer.operator.ports.metadata.MDInteger;
-import com.rapidminer.parameter.*;
+import com.rapidminer.parameter.ParameterType;
+import com.rapidminer.parameter.ParameterTypeDouble;
+import com.rapidminer.parameter.ParameterTypeInt;
+import com.rapidminer.parameter.UndefinedParameterError;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
 import org.prules.dataset.Const;
 import org.prules.dataset.IInstanceLabels;
-import static org.prules.operator.learner.clustering.AbstractPrototypeClusteringOnlineOperator.PARAMETER_NUMBER_OF_NEURONS;
+import org.prules.operator.learner.clustering.models.AbstractVQModel;
 import org.prules.operator.learner.clustering.models.SRVQModelBuilder;
+import org.prules.tools.math.container.knn.GeometricCollectionTypes;
+import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 import org.prules.tools.math.container.knn.KNNFactory;
+
+import java.util.List;
 
 /**
  * This class provides vector quantization operator. It uses
@@ -42,15 +44,16 @@ public class SRVQOperator extends AbstractPrototypeClusteringOnlineOperator {
     /**
      *
      */
-    public static final String PARAMETER_UPDATE_RATE = "Alpha";
+    private static final String PARAMETER_UPDATE_RATE = "Alpha";
     public static final String PARAMETER_VQ_TYPE = "VQ_type";
-    public static final String PARAMETER_SR_TEMPERATURE = "Temperature";
-    public static final String PARAMETER_SR_TEMP_RATE = "Temperature_rate";    
+    private static final String PARAMETER_SR_TEMPERATURE = "Temperature";
+    private static final String PARAMETER_SR_TEMP_RATE = "Temperature_rate";
     private DistanceMeasureHelper measureHelper;
     private int numberOfIteration;
     private double updateRate;
     private double temperature;
     private double temperatureRate;
+
     /**
      * Default operator constructor
      *
@@ -69,20 +72,20 @@ public class SRVQOperator extends AbstractPrototypeClusteringOnlineOperator {
      * model is executed
      *
      * @param trainingSet
-     * @param codebooks
+     * @param codeBooks
      * @return
      * @throws OperatorException
      */
     @Override
-    public IS_PrototypeClusterModel optimize(ExampleSet trainingSet, ExampleSet codebooks) throws OperatorException {
+    public IS_PrototypeClusterModel optimize(ExampleSet trainingSet, ExampleSet codeBooks) throws OperatorException {
         AbstractVQModel vqModel;
         this.numberOfIteration = getParameterAsInt(PARAMETER_ITERATION_NUMBER);
-        DistanceMeasure distance = measureHelper.getInitializedMeasure(codebooks);
+        DistanceMeasure distance = measureHelper.getInitializedMeasure(codeBooks);
         this.updateRate = getParameterAsDouble(PARAMETER_UPDATE_RATE);
         this.temperature = getParameterAsDouble(PARAMETER_SR_TEMPERATURE);
         this.temperatureRate = getParameterAsDouble(PARAMETER_SR_TEMP_RATE);
         vqModel = SRVQModelBuilder.builder()
-                .withPrototypes(codebooks)
+                .withPrototypes(codeBooks)
                 .withIterations(numberOfIteration)
                 .withMeasure(distance)
                 .withAlpha(updateRate)
@@ -95,11 +98,11 @@ public class SRVQOperator extends AbstractPrototypeClusteringOnlineOperator {
         boolean addCluster = getParameterAsBoolean(RMAbstractClusterer.PARAMETER_ADD_CLUSTER_ATTRIBUTE);
         ISPRGeometricDataCollection<IInstanceLabels> knnModel;
         if (addAsLabel) {
-            knnModel = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, codebooks, codebooks.getAttributes().getLabel(), Const.LABEL, distance);
+            knnModel = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, codeBooks, codeBooks.getAttributes().getLabel(), Const.LABEL, distance);
         } else {
-            knnModel = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, codebooks, codebooks.getAttributes().getCluster(), Const.LABEL, distance);
+            knnModel = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, codeBooks, codeBooks.getAttributes().getCluster(), Const.LABEL, distance);
         }
-        IS_PrototypeClusterModel model = new IS_PrototypeClusterModel(trainingSet, knnModel, codebooks.size(), clusterNames, addAsLabel, addCluster);
+        IS_PrototypeClusterModel model = new IS_PrototypeClusterModel(trainingSet, knnModel, codeBooks.size(), clusterNames, addAsLabel, addCluster);
         return model;
     }
 
@@ -132,7 +135,7 @@ public class SRVQOperator extends AbstractPrototypeClusteringOnlineOperator {
         int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
         try {
             measureType = measureHelper.getSelectedMeasureType();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:
@@ -165,7 +168,7 @@ public class SRVQOperator extends AbstractPrototypeClusteringOnlineOperator {
 
         type = new ParameterTypeDouble(PARAMETER_SR_TEMP_RATE, "Temperature update rate", 0, Double.MAX_VALUE, 0.89);
         type.setExpert(false);
-        types.add(type); 
+        types.add(type);
 
         type = new ParameterTypeInt(PARAMETER_ITERATION_NUMBER, "Number of iteration loop", 1, Integer.MAX_VALUE, this.numberOfIteration);
         type.setExpert(false);

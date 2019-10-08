@@ -6,7 +6,6 @@
 package org.prules.operator.learner.weighting;
 
 /**
- *
  * @author Marcin
  */
 public class Ontology {

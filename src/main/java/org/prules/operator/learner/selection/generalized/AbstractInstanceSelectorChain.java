@@ -8,92 +8,88 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.operator.ValueDouble;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.example.set.SortedExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.UserError;
+import com.rapidminer.operator.ValueDouble;
 import com.rapidminer.operator.learner.PredictionModel;
-import org.prules.operator.AbstractPrototypeBasedOperatorChain;
-import org.prules.operator.learner.classifiers.IS_KNNClassificationModel;
-import org.prules.operator.learner.classifiers.PredictionType;
-import org.prules.operator.learner.classifiers.VotingType;
-import org.prules.tools.math.container.knn.KNNTools;
-import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import com.rapidminer.operator.ports.InputPort;
 import com.rapidminer.operator.ports.OutputPort;
 import com.rapidminer.operator.ports.metadata.*;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeBoolean;
-import com.rapidminer.parameter.UndefinedParameterError;
-import com.rapidminer.tools.RandomGenerator;
-import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
-import org.prules.tools.math.container.IntDoubleContainer;
 import com.rapidminer.tools.Ontology;
+import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import org.prules.dataset.IInstanceLabels;
+import org.prules.operator.AbstractPrototypeBasedOperatorChain;
+import org.prules.operator.learner.classifiers.IS_KNNClassificationModel;
+import org.prules.operator.learner.classifiers.PredictionType;
+import org.prules.operator.learner.classifiers.VotingType;
+import org.prules.tools.math.container.knn.GeometricCollectionTypes;
+import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
+import org.prules.tools.math.container.knn.KNNFactory;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import org.prules.tools.math.container.knn.KNNFactory;
-import org.prules.dataset.IInstanceLabels;
 
 /**
- *
  * @author Marcin
  */
 public abstract class AbstractInstanceSelectorChain extends AbstractPrototypeBasedOperatorChain {
 
-    public static final String PARAMETER_RANDOMIZE_EXAMPLES = "randomize_examples";
-    public static final String PARAMETER_ADD_WEIGHTS = "add weight attribute";
+    private static final String PARAMETER_RANDOMIZE_EXAMPLES = "randomize_examples";
+    private static final String PARAMETER_ADD_WEIGHTS = "add weight attribute";
     /**
      *
      */
-    protected final OutputPort exampleInnerSourcePort = getSubprocess(0).getInnerSources().createPort("exampleSet");
+    private final OutputPort exampleInnerSourcePort = getSubprocess(0).getInnerSources().createPort("exampleSet");
     /**
      *
      */
-    protected final InputPort predictionModelInputInnerSourcePort = getSubprocess(0).getInnerSinks().createPort("model");
+    private final InputPort predictionModelInputInnerSourcePort = getSubprocess(0).getInnerSinks().createPort("model");
     /**
      *
      */
-    protected final OutputPort predictionModelOutputInnerSourcePort = getSubprocess(1).getInnerSources().createPort("model");
+    private final OutputPort predictionModelOutputInnerSourcePort = getSubprocess(1).getInnerSources().createPort("model");
     /**
      *
      */
-    protected final OutputPort testExampleInnerSourcePort = getSubprocess(1).getInnerSources().createPort("testSet");
+    private final OutputPort testExampleInnerSourcePort = getSubprocess(1).getInnerSources().createPort("testSet");
     /**
      *
      */
-    protected final InputPort predictedExampleSetInnerSourcePort = getSubprocess(1).getInnerSinks().createPort("labeled example set");
+    private final InputPort predictedExampleSetInnerSourcePort = getSubprocess(1).getInnerSinks().createPort("labeled example set");
     /**
      *
      */
     protected final OutputPort modelOutputPort = getOutputPorts().createPort("model");
-    //protected final InputPort PerformanceInnerSourcePort = getSubprocess(1).getInnerSinks().createPort("Performance");
+    //protected final InputPort PerformanceInnerSourcePort = getSubProcess(1).getInnerSinks().createPort("Performance");
     int sampleSize = -1;
-    private double numberOfInstancesBeaforeSelection = -1;
+    private double numberOfInstancesBeforeSelection = -1;
     private double numberOfInstancesAfterSelection = -1;
     private double compression = -1;
     private boolean randomize;
     protected DistanceMeasureHelper measureHelper;
 
     /**
-     *
      * @param description
      */
-    public AbstractInstanceSelectorChain(OperatorDescription description) {
+    AbstractInstanceSelectorChain(OperatorDescription description) {
         super(description, "Training", "Testing");
-        measureHelper = new DistanceMeasureHelper(this);   
+        measureHelper = new DistanceMeasureHelper(this);
         randomize = true;
         init();
     }
 
-    public AbstractInstanceSelectorChain(OperatorDescription description, boolean randomize) {
+    AbstractInstanceSelectorChain(OperatorDescription description, boolean randomize) {
         super(description, "Training", "Testing");// 
         measureHelper = new DistanceMeasureHelper(this);
         this.randomize = randomize;
@@ -113,11 +109,11 @@ public abstract class AbstractInstanceSelectorChain extends AbstractPrototypeBas
 
         //getTransformer().addRule(new GenerateModelTransformationRule(exampleSetInputPort, modelOutputPort, IS_KNNClassificationModel.class));
         getTransformer().addRule(new GeneratePredictionModelTransformationRule(exampleSetInputPort, modelOutputPort, IS_KNNClassificationModel.class));
-        addValue(new ValueDouble("Instances_beafore_selection", "Number Of Examples in the training set") {
+        addValue(new ValueDouble("Instances_before_selection", "Number Of Examples in the training set") {
 
             @Override
             public double getDoubleValue() {
-                return numberOfInstancesBeaforeSelection;
+                return numberOfInstancesBeforeSelection;
             }
         });
         addValue(new ValueDouble("Instances_after_selection", "Number Of Examples after selection") {
@@ -127,7 +123,7 @@ public abstract class AbstractInstanceSelectorChain extends AbstractPrototypeBas
                 return numberOfInstancesAfterSelection;
             }
         });
-        addValue(new ValueDouble("Compression", "Compressin = #Instances_after_selection/#Instances_beafore_selection") {
+        addValue(new ValueDouble("Compression", "Compression = #Instances_after_selection/#Instances_beafore_selection") {
 
             @Override
             public double getDoubleValue() {
@@ -140,7 +136,6 @@ public abstract class AbstractInstanceSelectorChain extends AbstractPrototypeBas
     }
 
     /**
-     *
      * @param trainingSet
      * @return
      * @throws OperatorException
@@ -154,8 +149,8 @@ public abstract class AbstractInstanceSelectorChain extends AbstractPrototypeBas
          * for (Example example : trainingSet){ example.setWeight(1); } }
          */
 
-        boolean shufleExamples = getParameterAsBoolean(PARAMETER_RANDOMIZE_EXAMPLES);
-        if (randomize && shufleExamples) {
+        boolean shuffleExamples = getParameterAsBoolean(PARAMETER_RANDOMIZE_EXAMPLES);
+        if (randomize && shuffleExamples) {
             ArrayList<Integer> indicesCollection = new ArrayList<Integer>(trainingSet.size());
             for (int i = 0; i < trainingSet.size(); i++) {
                 indicesCollection.add(i);
@@ -176,16 +171,16 @@ public abstract class AbstractInstanceSelectorChain extends AbstractPrototypeBas
         } else {
             instanceSelectionInput = new SelectedExampleSet(trainingSet);
         }
-        numberOfInstancesBeaforeSelection = trainingSet.size();
+        numberOfInstancesBeforeSelection = trainingSet.size();
         ExampleSet output = selectInstances(instanceSelectionInput);
         numberOfInstancesAfterSelection = output.size();
-        compression = numberOfInstancesAfterSelection / numberOfInstancesBeaforeSelection;
+        compression = numberOfInstancesAfterSelection / numberOfInstancesBeforeSelection;
         if (modelOutputPort.isConnected()) {
             DistanceMeasure distance = measureHelper.getInitializedMeasure(output);
             //if (output.getAttributes().getLabel().isNominal()) {
-                ISPRGeometricDataCollection<IInstanceLabels> samples = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH,output, distance);                
-                IS_KNNClassificationModel<IInstanceLabels> model = new IS_KNNClassificationModel<>(output, samples, 1, VotingType.MAJORITY, PredictionType.Classification);
-                modelOutputPort.deliver(model);
+            ISPRGeometricDataCollection<IInstanceLabels> samples = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, output, distance);
+            IS_KNNClassificationModel<IInstanceLabels> model = new IS_KNNClassificationModel<>(output, samples, 1, VotingType.MAJORITY, PredictionType.Classification);
+            modelOutputPort.deliver(model);
             //} else if (output.getAttributes().getLabel().isNumerical()) {
             //    ISPRGeometricDataCollection<IntDoubleContainer> samples = KNNTools.initializeGeneralizedKNearestNeighbour(output, distance);
             //    //GeometricDataCollection<Integer> samples = KNNTools.initializeKNearestNeighbour(output, distance);                
@@ -198,44 +193,43 @@ public abstract class AbstractInstanceSelectorChain extends AbstractPrototypeBas
         if (addWeights) {
             //ExampleSet tmpOutput = output.getParentExampleSet();
             //DataIndex fullIndex = output.getFullIndex();
-            ExampleSet tmpTraining = (ExampleSet)trainingSet.clone();            
-            Attribute weights = AttributeFactory.createAttribute(Attributes.WEIGHT_NAME,Ontology.NUMERICAL);
+            ExampleSet tmpTraining = (ExampleSet) trainingSet.clone();
+            Attribute weights = AttributeFactory.createAttribute(Attributes.WEIGHT_NAME, Ontology.NUMERICAL);
             Attributes attributes = tmpTraining.getAttributes();
             tmpTraining.getExampleTable().addAttribute(weights);
             attributes.setWeight(weights);
-            
-            ExampleSet sortedTrainingSet = new SortedExampleSet(tmpTraining,attributes.getId(),SortedExampleSet.INCREASING);
+
+            ExampleSet sortedTrainingSet = new SortedExampleSet(tmpTraining, attributes.getId(), SortedExampleSet.INCREASING);
             sortedTrainingSet.getAttributes().setWeight(weights);
-            ExampleSet sortedPrototypesSet = new SortedExampleSet(output,attributes.getId(),SortedExampleSet.INCREASING);
+            ExampleSet sortedPrototypesSet = new SortedExampleSet(output, attributes.getId(), SortedExampleSet.INCREASING);
             Iterator<Example> trainingIterator = sortedTrainingSet.iterator();
             Iterator<Example> prototypeIterator = sortedPrototypesSet.iterator();
-            while(prototypeIterator.hasNext()){
+            while (prototypeIterator.hasNext()) {
                 Example prototypeExample = prototypeIterator.next();
-                while(trainingIterator.hasNext()){
+                while (trainingIterator.hasNext()) {
                     Example trainingExample = trainingIterator.next();
-                    if (prototypeExample.getId() == trainingExample.getId()){
+                    if (prototypeExample.getId() == trainingExample.getId()) {
                         trainingExample.setWeight(1.0);
                         break;
                     }
                 }
             }
-            return tmpTraining;            
+            return tmpTraining;
         }
         return output;
     }
 
-   /**
+    /**
      * Returns number of prototypes displayed in the MataData related with prototypeOutput
      *
      * @return
-    */
+     */
     @Override
     protected MDInteger getNumberOfPrototypesMetaData() {
-        return new MDInteger();        
+        return new MDInteger();
     }
 
     /**
-     *
      * @param trainingSet
      * @return
      * @throws OperatorException
@@ -243,14 +237,12 @@ public abstract class AbstractInstanceSelectorChain extends AbstractPrototypeBas
     public abstract ExampleSet selectInstances(SelectedExampleSet trainingSet) throws OperatorException;
 
     /**
-     *
      * @param trainingSet
      * @param testSet
      * @return
      * @throws OperatorException
      */
-    public ExampleSet executeInerModel(ExampleSet trainingSet, ExampleSet testSet) throws OperatorException {
-
+    public ExampleSet executeInnerModel(ExampleSet trainingSet, ExampleSet testSet) throws OperatorException {
         exampleInnerSourcePort.deliver(trainingSet);
         getSubprocess(0).execute();
         inApplyLoop();
@@ -275,11 +267,11 @@ public abstract class AbstractInstanceSelectorChain extends AbstractPrototypeBas
             type.setExpert(false);
             types.add(type);
         }
-        
+
         ParameterType type = new ParameterTypeBoolean(PARAMETER_ADD_WEIGHTS, "Add weight attribute", false);
         type.setExpert(true);
         types.add(type);
-        
+
         types.addAll(DistanceMeasures.getParameterTypes(this));
         return types;
     }

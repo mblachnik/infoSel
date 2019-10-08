@@ -5,12 +5,7 @@
  */
 package org.prules.operator.learner.selection.keel;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- *
  * @author Marcin
  */
 public enum KeelISAlgorithms {
@@ -30,5 +25,5 @@ public enum KeelISAlgorithms {
         return names;
     }
 
-    
+
 }

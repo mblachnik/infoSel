@@ -5,16 +5,15 @@
 package org.prules.operator.learner.selection.models;
 
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
-import org.prules.operator.learner.tools.DataIndex;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import org.prules.operator.learner.tools.IDataIndex;
 
 /**
  * Class implements RNG (Relative Neighbourhood Graph) instance selection
  * algorithm. It is similar to Gabriel Editing, but use simplified criteria
  * function which measures just relation d13 < max(d12,d23) @author Ma
- *
+ * <p>
  * rcin
  */
 public class RNGInstanceSelectionModel extends AbstractInstanceSelectorModel implements EditedDistanceGraphCriteria {
@@ -24,10 +23,10 @@ public class RNGInstanceSelectionModel extends AbstractInstanceSelectorModel imp
     /**
      * Constructor for class which implements RNG (Relative Neighbourhood Graph)
      * instance selection algorithm. It is similar to Gabriel Editing, but use
-     * simplified criteria function which measures just relation d13 < max(d12,d23) 
+     * simplified criteria function which measures just relation d13 < max(d12,d23)
      *
      * @param distance - distance measure
-     * @param loss - loss type - a method to measure if sample is considered as redundant or noise
+     * @param loss     - loss type - a method to measure if sample is considered as redundant or noise
      * @param modifier - a method to modify input instance
      */
     public RNGInstanceSelectionModel(DistanceMeasure distance, IISDecisionFunction loss) {
@@ -38,7 +37,7 @@ public class RNGInstanceSelectionModel extends AbstractInstanceSelectorModel imp
      * Performs instance selection
      *
      * @param inputExampleSet - example set for which instance selection will be
-     * performed
+     *                        performed
      * @return - index of selected examples
      */
     @Override
@@ -49,10 +48,11 @@ public class RNGInstanceSelectionModel extends AbstractInstanceSelectorModel imp
 
     /**
      * Criteria function
+     *
      * @param a - distance between samples 1 and 3
      * @param b - distance between samples 1 and 2
      * @param c - distance between samples 2 and 3
-     * @return 
+     * @return
      */
     @Override
     public boolean evaluate(double a, double b, double c) {

@@ -5,35 +5,31 @@
 package org.prules.operator.learner.selection.models;
 
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.dataset.Const;
+import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import org.prules.dataset.*;
 import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import org.prules.operator.learner.tools.DataIndex;
-import org.prules.tools.math.container.knn.KNNTools;
 import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
-import org.prules.tools.math.similarity.DistanceEvaluator;
-import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import org.prules.dataset.InstanceFactory;
 import org.prules.tools.math.container.knn.KNNFactory;
-import org.prules.dataset.IInstanceLabels;
-import org.prules.dataset.Instance;
-import org.prules.dataset.Vector;
-import org.prules.dataset.IInstancePrediction;
+import org.prules.tools.math.similarity.DistanceEvaluator;
 import org.prules.tools.math.similarity.IDistanceEvaluator;
 
 /**
  * Class implementing Edited Distance Graph based algorithms
+ *
  * @author Marcin
  */
 public class EditedDistanceGraphModel extends AbstractInstanceSelectorModel {
 
     private final DistanceMeasure distance;
     private final EditedDistanceGraphCriteria criteria;
-    private final IISDecisionFunction loss;    
+    private final IISDecisionFunction loss;
     private final IDistanceEvaluator distanceEvaluator;
 
     /**
      * Constructor of general Edited distance Graph models such as Gabriel editing
+     *
      * @param distance
      * @param criteria
      * @param loss
@@ -42,12 +38,13 @@ public class EditedDistanceGraphModel extends AbstractInstanceSelectorModel {
     public EditedDistanceGraphModel(DistanceMeasure distance, EditedDistanceGraphCriteria criteria, IISDecisionFunction loss) {
         this.distance = distance;
         this.criteria = criteria;
-        this.loss = loss;                
+        this.loss = loss;
         distanceEvaluator = new DistanceEvaluator(distance);
     }
 
     /**
      * Performs instance selection
+     *
      * @param exampleSet - example set for which instance selection will be performed
      * @return - index of selected examples
      */
@@ -58,10 +55,10 @@ public class EditedDistanceGraphModel extends AbstractInstanceSelectorModel {
         samples = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, exampleSet, distance);
 //        ArrayList<double[]> samples = new ArrayList<double[]>(exampleSet.size());
 //        ArrayList<Number> labels = new ArrayList<Number>(exampleSet.size());
-        int numberOfAttrbutes = exampleSet.getAttributes().size();
+        int numberOfAttributes = exampleSet.getAttributes().size();
         loss.init(samples);
 //        for (Example ex : exampleSet) {
-//            double[] values = new double[numberOfAttrbutes];
+//            double[] values = new double[numberOfAttributes];
 //            KNNTools.extractExampleValues(ex, values);
 //            samples.add(values);
 //            labels.add(ex.getLabel());
@@ -70,21 +67,21 @@ public class EditedDistanceGraphModel extends AbstractInstanceSelectorModel {
         IInstancePrediction prediction = InstanceFactory.createPrediction(Double.NaN, null);
         Instance instance = InstanceFactory.createEmptyInstance();
         IInstanceLabels labelB = InstanceFactory.createInstanceLabels();
-        
+
         DataIndex indexA = new DataIndex(size);
         indexA.setAllFalse();
         for (int iA = 0; iA < size; iA++) {
-            Vector sampleA = samples.getSample(iA);            
+            Vector sampleA = samples.getSample(iA);
             double labelA = samples.getStoredValue(iA).getLabel();
             for (int iB = 0; iB < size; iB++) {
                 if (iB == iA) continue;
-                Vector sampleB = samples.getSample(iB);                
-                labelB = samples.getStoredValue(iB);                                
+                Vector sampleB = samples.getSample(iB);
+                labelB = samples.getStoredValue(iB);
                 prediction.setLabel(labelA);
                 instance.put(Const.VECTOR, sampleB);
                 instance.put(Const.LABELS, labelB);
-                instance.put(Const.PREDICTION, prediction);                
-                if (loss.getValue(instance) > 0) {                    
+                instance.put(Const.PREDICTION, prediction);
+                if (loss.getValue(instance) > 0) {
                     boolean chk = true;
                     double dAB = distanceEvaluator.evaluateDistance(sampleA, sampleB);
                     for (int iC = 0; iC < size; iC++) {
@@ -100,10 +97,10 @@ public class EditedDistanceGraphModel extends AbstractInstanceSelectorModel {
                     if (chk) {
                         indexA.set(iA, true);
                         indexA.set(iB, true);
-                    }                    
+                    }
                 }
             }
-        }                
+        }
         return indexA;
 
 

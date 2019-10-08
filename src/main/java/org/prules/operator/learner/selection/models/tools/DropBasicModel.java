@@ -5,12 +5,6 @@
  */
 package org.prules.operator.learner.selection.models.tools;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 import org.prules.dataset.Const;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.operator.learner.tools.IDataIndex;
@@ -20,8 +14,9 @@ import org.prules.tools.math.container.knn.INNGraph;
 import org.prules.tools.math.container.knn.ISPRClassGeometricDataCollection;
 import org.prules.tools.math.container.knn.KNNTools;
 
+import java.util.*;
+
 /**
- *
  * @author Marcin
  */
 public class DropBasicModel {
@@ -30,22 +25,22 @@ public class DropBasicModel {
         ISPRClassGeometricDataCollection<IInstanceLabels> samples = nnGraph.getSamples();
         //IDataIndex index = samples.getIndex();
         Set<Double> uniqueLabels = PRulesUtil.findUniqueLabels(samples);
-        int numberOfClasses = (int)(Collections.max(uniqueLabels)).doubleValue()+1; //Plus 1 becouse label values starts from 0, so when max=2 there are 3 class labels [0, 1, 2]
+        int numberOfClasses = (int) (Collections.max(uniqueLabels)).doubleValue() + 1; //Plus 1 becouse label values starts from 0, so when max=2 there are 3 class labels [0, 1, 2]
         //int numberOfClasses = PRulesUtil.findUniqueLabels(samples).size();
         int with;
         int without;
-        List<Integer> selected = new ArrayList(order.size());        
+        List<Integer> selected = new ArrayList(order.size());
         //Iterator<IInstanceLabels> labelsIterator = samples.storedValueIterator();
         //Set<Integer> removedInstancesIDs = new HashSet<>(sampleSize);
         Collection<IInstanceLabels> res;
         for (int i : order) {
             //while (labelsIterator.hasNext()) { //Iterate over samples
-            double improv = improvement(nnGraph,numberOfClasses,i);            
-            //If the drop1 rule is fullfield
-            if (improv >= 0) {                
-                    //index.set(queryInstanceID, false);                
-                    nnGraph.remove(i);
-                    //removedInstancesIDs.add(queryInstanceID);                
+            double improve = improvement(nnGraph, numberOfClasses, i);
+            //If the drop1 rule is fulfilled
+            if (improve >= 0) {
+                //index.set(queryInstanceID, false);
+                nnGraph.remove(i);
+                //removedInstancesIDs.add(queryInstanceID);
             } else {
                 selected.add(i);
             }
@@ -66,7 +61,7 @@ public class DropBasicModel {
         samples = nnGraph.getSamples();
         IInstanceLabels labels;
         labels = samples.getStoredValue(i); //read labels of the sample
-        int queryInstanceID = (int) labels.getValueAsLong(Const.INDEX_CONTAINER);        
+        int queryInstanceID = (int) labels.getValueAsLong(Const.INDEX_CONTAINER);
         for (int associate : nnGraph.getAssociates(queryInstanceID)) { //Take associates of sample queryInstanceID           
             realLabel = samples.getStoredValue(associate).getLabel();
             Arrays.fill(classFreqCounterWith, 0);
@@ -94,12 +89,12 @@ public class DropBasicModel {
         }
         return without - with;
     }
-    
-    public static List<Integer> orderSamplesByEnemies(INNGraph nnGraph){
+
+    public static List<Integer> orderSamplesByEnemies(INNGraph nnGraph) {
         return orderSamplesByEnemies(nnGraph, 1);
     }
-    
-    public static List<Integer> orderSamplesByEnemies(INNGraph nnGraph, int direction){
+
+    public static List<Integer> orderSamplesByEnemies(INNGraph nnGraph, int direction) {
         List<DoubleIntContainer> sampleOrderList = new ArrayList<>(nnGraph.size());
         IDataIndex index = nnGraph.getIndex();
         for (int i : index) {
@@ -117,5 +112,5 @@ public class DropBasicModel {
             order.add(i.getSecond());
         }
         return order;
-    }    
+    }
 }

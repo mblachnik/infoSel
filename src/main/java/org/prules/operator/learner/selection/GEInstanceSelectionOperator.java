@@ -1,17 +1,17 @@
 package org.prules.operator.learner.selection;
 
-import org.prules.operator.learner.selection.models.GEInstanceSelectionModel;
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
-import org.prules.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
-import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
 import com.rapidminer.operator.OperatorCapability;
-import static com.rapidminer.operator.OperatorCapability.NUMERICAL_LABEL;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
+import org.prules.operator.learner.selection.models.GEInstanceSelectionModel;
+import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
+import org.prules.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
+
 import java.util.List;
 
 /**
@@ -44,7 +44,7 @@ public class GEInstanceSelectionOperator extends AbstractInstanceSelectorOperato
     @Override
     public AbstractInstanceSelectorModel configureInstanceSelectionModel(SelectedExampleSet exampleSet) throws OperatorException {
         DistanceMeasure distance = measureHelper.getInitializedMeasure(exampleSet);
-        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);        
+        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);
         return new GEInstanceSelectionModel(distance, loss);
     }
 
@@ -59,7 +59,7 @@ public class GEInstanceSelectionOperator extends AbstractInstanceSelectorOperato
         int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
         try {
             measureType = measureHelper.getSelectedMeasureType();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:
@@ -89,16 +89,17 @@ public class GEInstanceSelectionOperator extends AbstractInstanceSelectorOperato
     public boolean useDecisionFunction() {
         return true;
     }
-    
+
     /**
      * Input dataset should be randomized by default (method always returns true)
-     * @return 
+     *
+     * @return
      */
     @Override
     public boolean isSampleRandomize() {
         return false;
     }
-    
+
     /**
      * Operator configuration parameters
      *
@@ -106,8 +107,6 @@ public class GEInstanceSelectionOperator extends AbstractInstanceSelectorOperato
      */
     @Override
     public List<ParameterType> getParameterTypes() {
-        List<ParameterType> types = super.getParameterTypes();
-                        
-        return types;
+        return super.getParameterTypes();
     }
 }

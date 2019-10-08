@@ -2,24 +2,20 @@ package org.prules.operator.learner.selection;
 
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
-import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
-import org.prules.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
-import com.rapidminer.parameter.ParameterType;
-import com.rapidminer.parameter.ParameterTypeBoolean;
-import com.rapidminer.parameter.ParameterTypeDouble;
-import com.rapidminer.parameter.ParameterTypeInt;
-import com.rapidminer.parameter.ParameterTypeList;
-import com.rapidminer.parameter.ParameterTypeString;
+import com.rapidminer.parameter.*;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
-import java.util.Iterator;
-import java.util.List;
+import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
 import org.prules.operator.learner.selection.models.ENNInstanceSelectionModel;
+import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
+import org.prules.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This class is used to provide Edited Nearest Neighbor instance selection
@@ -42,11 +38,10 @@ public class ENNInstanceSelectionOperator extends AbstractInstanceSelectorOperat
      * class w * C (empty: using 1 for all classes where the weight was not
      * defined).&quot;
      */
-    public static final String PARAMETER_CLASS_WEIGHTS = "class_weights";
-    public static final String PARAMETER_WEIGHTED_NN = "weighted_vote";
+    private static final String PARAMETER_CLASS_WEIGHTS = "class_weights";
+    private static final String PARAMETER_WEIGHTED_NN = "weighted_vote";
 
     /**
-     *
      * @param description
      */
     public ENNInstanceSelectionOperator(OperatorDescription description) {
@@ -68,19 +63,15 @@ public class ENNInstanceSelectionOperator extends AbstractInstanceSelectorOperat
         int k = getParameterAsInt(PARAMETER_K);
         Attribute labelAttribute = exampleSet.getAttributes().getLabel();
         double[] classWeight = null;
-        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);                
+        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);
         if (labelAttribute.isNominal()) {
             classWeight = new double[labelAttribute.getMapping().size()];
-            for (int i = 0; i < classWeight.length; i++) {
-                classWeight[i] = 1.0d;
-            }
+            Arrays.fill(classWeight, 1.0d);
             if (isParameterSet(PARAMETER_CLASS_WEIGHTS)) {
                 List<String[]> classWeights = getParameterList(PARAMETER_CLASS_WEIGHTS);
-                Iterator<String[]> i = classWeights.iterator();
-                while (i.hasNext()) {
-                    String[] classWeightArray = i.next();
+                for (String[] classWeightArray : classWeights) {
                     String className = classWeightArray[0];
-                    double classWeightValue = Double.valueOf(classWeightArray[1]);
+                    double classWeightValue = Double.parseDouble(classWeightArray[1]);
                     int index = labelAttribute.getMapping().getIndex(className);
                     if ((index >= 0) && (index < classWeight.length)) {
                         classWeight[index] = classWeightValue;
@@ -106,7 +97,7 @@ public class ENNInstanceSelectionOperator extends AbstractInstanceSelectorOperat
         try {
             measureType = measureHelper.getSelectedMeasureType();
             //loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this); //This is in this kind of block in case it wont be possible to access LoossFunctionHelper           
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:
@@ -161,13 +152,13 @@ public class ENNInstanceSelectionOperator extends AbstractInstanceSelectorOperat
 
         types.add(new ParameterTypeList(PARAMETER_CLASS_WEIGHTS, "The weights w for all classes (first column: class name, second column: weight), i.e. set the parameters C of each class w * C (empty: using 1 for all classes where the weight was not defined).", new ParameterTypeString("class_name", "The class name."), new ParameterTypeDouble("weight",
                 "The weight for this class.", 0.0d, Double.POSITIVE_INFINITY, 1.0d)));
-        
+
         //types.addAll(InstanceModifierHelper.getParameterTypes(this));
-        
+
         type = new ParameterTypeBoolean(PARAMETER_WEIGHTED_NN, "Use of weighted vote in nearest neighbor search.", false);
         type.setExpert(true);
         types.add(type);
-        
+
         return types;
     }
 }

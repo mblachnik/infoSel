@@ -4,40 +4,25 @@
  */
 package org.prules.operator.learner.clustering;
 
-import java.util.Iterator;
-import java.util.List;
-
-import com.rapidminer.example.Attribute;
-import com.rapidminer.example.Attributes;
-import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.example.table.AttributeFactory;
-import com.rapidminer.example.table.NominalMapping;
-import com.rapidminer.example.table.PolynominalMapping;
+import com.rapidminer.operator.OperatorCapability;
+import com.rapidminer.operator.OperatorDescription;
+import com.rapidminer.operator.OperatorException;
+import com.rapidminer.operator.ports.metadata.MDInteger;
+import com.rapidminer.parameter.ParameterType;
+import com.rapidminer.parameter.ParameterTypeDouble;
+import com.rapidminer.parameter.ParameterTypeInt;
+import com.rapidminer.parameter.UndefinedParameterError;
+import com.rapidminer.tools.RandomGenerator;
+import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import com.rapidminer.tools.math.similarity.DistanceMeasures;
 import org.prules.operator.learner.clustering.models.AbstractVQModel;
 import org.prules.operator.learner.clustering.models.GNG_VQ_Model;
 import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
 import org.prules.operator.learner.selection.models.RandomInstanceSelectionModel;
 import org.prules.operator.learner.tools.PRulesUtil;
-import org.prules.tools.math.container.knn.GeometricCollectionTypes;
-import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
-import com.rapidminer.operator.OperatorCapability;
-import com.rapidminer.operator.OperatorDescription;
-import com.rapidminer.operator.OperatorException;
-import com.rapidminer.operator.clustering.clusterer.RMAbstractClusterer;
-import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
-import com.rapidminer.operator.ports.metadata.MDInteger;
-import com.rapidminer.parameter.*;
-import com.rapidminer.parameter.conditions.EqualTypeCondition;
-import com.rapidminer.tools.Ontology;
-import com.rapidminer.tools.RandomGenerator;
-import com.rapidminer.tools.container.Pair;
-import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
-import com.rapidminer.tools.math.similarity.DistanceMeasures;
-import org.prules.dataset.Const;
-import org.prules.dataset.IInstanceLabels;
-import org.prules.tools.math.container.knn.KNNFactory;
+
+import java.util.List;
 
 /**
  * This class provides vector quantization operator. It uses
@@ -55,19 +40,19 @@ public class GNGOperator extends AbstractPrototypeClusteringOnlineDynOperator {
     /**
      *
      */
-    public static final String PARAMETER_UPDATE_RATE = "Alpha";        
-    public static final String PARAMETER_BETA = "Beta";
-    public static final String PARAMETER_EB = "eb";
-    public static final String PARAMETER_EN = "en";
-    public static final String PARAMETER_LAMBDA = "Lambda";
-    public static final String PARAMETER_AGE = "Age";    
-   
+    private static final String PARAMETER_UPDATE_RATE = "Alpha";
+    private static final String PARAMETER_BETA = "Beta";
+    private static final String PARAMETER_EB = "eb";
+    private static final String PARAMETER_EN = "en";
+    private static final String PARAMETER_LAMBDA = "Lambda";
+    private static final String PARAMETER_AGE = "Age";
+
     private int numberOfIteration, lambda;
     private double updateRate;
     private double beta, eb, en;
     private int age;
     private int numberOfPrototypes = -1;
-    
+
     /**
      * Default operator constructor
      *
@@ -76,7 +61,7 @@ public class GNGOperator extends AbstractPrototypeClusteringOnlineDynOperator {
     public GNGOperator(OperatorDescription description) {
         super(description);
         numberOfIteration = 50;
-        updateRate = 0.02;        
+        updateRate = 0.02;
     }
 
     /**
@@ -94,7 +79,7 @@ public class GNGOperator extends AbstractPrototypeClusteringOnlineDynOperator {
         AbstractVQModel vqModel;
         this.numberOfIteration = getParameterAsInt(PARAMETER_ITERATION_NUMBER);
         DistanceMeasure distance = measureHelper.getInitializedMeasure(trainingSet);
-        this.updateRate = getParameterAsDouble(PARAMETER_UPDATE_RATE);        
+        this.updateRate = getParameterAsDouble(PARAMETER_UPDATE_RATE);
         this.lambda = getParameterAsInt(PARAMETER_LAMBDA);
         this.age = getParameterAsInt(PARAMETER_AGE);
         this.beta = getParameterAsDouble(PARAMETER_BETA);
@@ -104,21 +89,21 @@ public class GNGOperator extends AbstractPrototypeClusteringOnlineDynOperator {
         // Two random prototypes - it will ignore user selection
         RandomGenerator randomGenerator = RandomGenerator.getRandomGenerator(this);
         AbstractInstanceSelectorModel isModel = new RandomInstanceSelectionModel(2, true, randomGenerator);
-        ExampleSet codebooks = PRulesUtil.duplicateExampleSet(isModel.run(trainingSet));
+        ExampleSet codeBooks = PRulesUtil.duplicateExampleSet(isModel.run(trainingSet));
 
         // Target number of neurons
         int numberOfNeurons = getParameterAsInt(PARAMETER_NUMBER_OF_NEURONS);
 
-        vqModel = new GNG_VQ_Model(codebooks, numberOfIteration, distance, numberOfNeurons, updateRate, lambda, beta, eb, en, age);
+        vqModel = new GNG_VQ_Model(codeBooks, numberOfIteration, distance, numberOfNeurons, updateRate, lambda, beta, eb, en, age);
 
         /**
          * If we are using GNG algorithm then it is necessary to start from 2
          * neurons because our neural network is growing. Also we need to create
          * new cluster names.
          */
-        codebooks = vqModel.run(trainingSet);
-        numberOfPrototypes = codebooks.size();
-        return codebooks;
+        codeBooks = vqModel.run(trainingSet);
+        numberOfPrototypes = codeBooks.size();
+        return codeBooks;
     }
 
 //    /**
@@ -140,7 +125,7 @@ public class GNGOperator extends AbstractPrototypeClusteringOnlineDynOperator {
 //    }
 
     /**
-     * Checks requirements of input dataset
+     * Checks requirements of input data set
      *
      * @param capability
      * @return
@@ -150,7 +135,7 @@ public class GNGOperator extends AbstractPrototypeClusteringOnlineDynOperator {
         int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
         try {
             measureType = measureHelper.getSelectedMeasureType();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:
@@ -204,7 +189,7 @@ public class GNGOperator extends AbstractPrototypeClusteringOnlineDynOperator {
         type = new ParameterTypeDouble(PARAMETER_UPDATE_RATE, "Value of update rate", 0, Double.MAX_VALUE, 0.3);
         type.setExpert(false);
         types.add(type);
-        
+
         return types;
     }
 
@@ -212,5 +197,4 @@ public class GNGOperator extends AbstractPrototypeClusteringOnlineDynOperator {
     public MDInteger getNumberOfPrototypesMetaData() throws UndefinedParameterError {
         return new MDInteger(numberOfPrototypes);
     }
-
 }

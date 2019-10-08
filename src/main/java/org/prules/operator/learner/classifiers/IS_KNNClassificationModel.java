@@ -27,27 +27,25 @@ import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.set.ExampleSetUtilities;
-import org.prules.dataset.InstanceFactory;
-import org.prules.dataset.VectorDense;
-import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.learner.PredictionModel;
-import org.prules.tools.math.container.knn.KNNTools;
-import org.prules.operator.learner.tools.PRulesUtil;
 import com.rapidminer.tools.Tools;
+import org.prules.dataset.IInstanceLabels;
+import org.prules.dataset.InstanceFactory;
+import org.prules.dataset.Vector;
+import org.prules.operator.learner.tools.PRulesUtil;
 import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
+import org.prules.tools.math.container.knn.KNNTools;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import org.prules.dataset.IInstanceLabels;
-import org.prules.dataset.Vector;
 
 /**
  * An implementation of a knn model.
  *
- * @author Sebastian Land
  * @param <T>
- *
+ * @author Sebastian Land
  */
 public class IS_KNNClassificationModel<T extends Serializable> extends PredictionModel {
 
@@ -64,15 +62,14 @@ public class IS_KNNClassificationModel<T extends Serializable> extends Predictio
     private final List<String> trainingAttributeNames;
 
     /**
-     *Constructor of kNN prediction model.
-     * 
-     * 
-     * @param trainingSet - training data set (used to extract attribute information)
-     * @param samples - the nearest neighbor structure
-     * @param k - number of nearest neighbors
-     * @param weightedNN - if we wont to specify particular weighting scheme     
+     * Constructor of kNN prediction model.
+     *
+     * @param trainingSet    - training data set (used to extract attribute information)
+     * @param samples        - the nearest neighbor structure
+     * @param k              - number of nearest neighbors
+     * @param weightedNN     - if we wont to specify particular weighting scheme
      * @param predictionType - type of prediction model: regression/classification/clustering
-     */        
+     */
     public IS_KNNClassificationModel(ExampleSet trainingSet, ISPRGeometricDataCollection<T> samples, int k, VotingType weightedNN, PredictionType predictionType) {
         super(trainingSet, ExampleSetUtilities.SetsCompareOption.EQUAL, ExampleSetUtilities.TypesCompareOption.EQUAL);
         this.k = k;
@@ -87,13 +84,13 @@ public class IS_KNNClassificationModel<T extends Serializable> extends Predictio
         this.useCovariance = false;
         this.predictionType = predictionType;
     }
-    
-    @Override    
+
+    @Override
     //@SuppressWarnings("unchecked")
     public ExampleSet performPrediction(ExampleSet exampleSet, Attribute predictedLabel) {
-        // building attribute order from trainingset
+        // building attribute order from training set
         Attributes attributes = exampleSet.getAttributes();
-        attributesNumber = attributes.size();        
+        attributesNumber = attributes.size();
         List<Attribute> orderedAttributes = PRulesUtil.reorderAttributesByName(attributes, trainingAttributeNames);
         Vector instance = InstanceFactory.createVector(exampleSet.getExample(0));
         for (Example example : exampleSet) {
@@ -124,7 +121,7 @@ public class IS_KNNClassificationModel<T extends Serializable> extends Predictio
                     // finding most frequent class
                     mostFrequentIndex = KNNTools.getMostFrequentValue(counter);
                     // setting prediction
-                    example.setValue(predictedLabel, mostFrequentIndex);                                        
+                    example.setValue(predictedLabel, mostFrequentIndex);
                     break;
                 case Regression:
                     double predictedValue = KNNTools.getRegVotes(instance, (ISPRGeometricDataCollection<IInstanceLabels>) samples, k, weightedNN);
@@ -142,7 +139,7 @@ public class IS_KNNClassificationModel<T extends Serializable> extends Predictio
      * @param updateSet @throws OperatorException
      *
      * @Override public void update(ExampleSet updateSet) throws OperatorException { Attribute label =
-     * updateSet.getAttributes().getLabel(); // check if exampleset header is correct if (label.isNominal()) { Attributes
+     * updateSet.getAttributes().getLabel(); // check if example set header is correct if (label.isNominal()) { Attributes
      * attributes = updateSet.getAttributes();
      *
      * int valuesSize = attributes.size(); for (Example example : updateSet) { double[] values = new double[valuesSize]; int i =

@@ -8,9 +8,11 @@ package org.prules.dataset;
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.set.ISPRExample;
-import java.util.Map;
-import static org.prules.dataset.Const.NOISE;
 import org.prules.operator.learner.weighting.Ontology;
+
+import java.util.Map;
+
+import static org.prules.dataset.Const.NOISE;
 
 /**
  * Implementation of Instance for handling labels or extra features of an instance. Equivalent to RapidMiner special attributes
@@ -18,18 +20,19 @@ import org.prules.operator.learner.weighting.Ontology;
  * @author Marcin
  */
 public class InstanceLabels extends GenericContainer implements IInstanceLabels {
-    
-    protected InstanceLabels(Map<String, Object> values) {
+
+    InstanceLabels(Map<String, Object> values) {
         super(values);
     }
 
-    protected InstanceLabels() {
+    InstanceLabels() {
         super();
     }
 
     /**
      * Return ale label
-     * @return 
+     *
+     * @return
      */
     @Override
     public double getLabel() {
@@ -38,7 +41,8 @@ public class InstanceLabels extends GenericContainer implements IInstanceLabels 
 
     /**
      * Set label
-     * @param label 
+     *
+     * @param label
      */
     @Override
     public void setLabel(double label) {
@@ -47,7 +51,8 @@ public class InstanceLabels extends GenericContainer implements IInstanceLabels 
 
     /**
      * Get Instance ID (enumerator)
-     * @return 
+     *
+     * @return
      */
     @Override
     public int getId() {
@@ -56,7 +61,8 @@ public class InstanceLabels extends GenericContainer implements IInstanceLabels 
 
     /**
      * Set instance ID (enumerator)
-     * @param id 
+     *
+     * @param id
      */
     @Override
     public void setId(int id) {
@@ -65,7 +71,8 @@ public class InstanceLabels extends GenericContainer implements IInstanceLabels 
 
     /**
      * Get instance weight
-     * @return 
+     *
+     * @return
      */
     @Override
     public double getWeight() {
@@ -74,7 +81,8 @@ public class InstanceLabels extends GenericContainer implements IInstanceLabels 
 
     /**
      * Get instance cluster
-     * @return 
+     *
+     * @return
      */
     @Override
     public double getCluster() {
@@ -83,7 +91,8 @@ public class InstanceLabels extends GenericContainer implements IInstanceLabels 
 
     /**
      * set instance weight
-     * @param weight 
+     *
+     * @param weight
      */
     @Override
     public void setWeight(double weight) {
@@ -92,7 +101,8 @@ public class InstanceLabels extends GenericContainer implements IInstanceLabels 
 
     /**
      * set cluster label
-     * @param cluster 
+     *
+     * @param cluster
      */
     @Override
     public void setCluster(double cluster) {
@@ -101,7 +111,8 @@ public class InstanceLabels extends GenericContainer implements IInstanceLabels 
 
     /**
      * Set properties of labels which are gathered from RapidMiner Special attributes
-     * @param example 
+     *
+     * @param example
      */
     @Override
     public void set(Example example) {
@@ -110,10 +121,10 @@ public class InstanceLabels extends GenericContainer implements IInstanceLabels 
         setId((int) example.getId());
         setLabel(example.getLabel());
         Attribute attrNoise = example.getAttributes().get(Ontology.ATTRIBUTE_NOISE);
-        double val = attrNoise!=null ? example.getValue(attrNoise) : 0; 
-        set(NOISE, val);   
+        double val = attrNoise != null ? example.getValue(attrNoise) : 0;
+        set(NOISE, val);
         if (example instanceof ISPRExample) {
-            this.put(Const.INDEX_EXAMPLESET, ((ISPRExample) example).getIndex());
+            this.put(Const.INDEX_EXAMPLE_SET, ((ISPRExample) example).getIndex());
         }
     }
 
@@ -131,7 +142,4 @@ public class InstanceLabels extends GenericContainer implements IInstanceLabels 
     public void set(String name, Object value) {
         this.put(name, value);
     }
-    
-    
-
 }

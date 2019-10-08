@@ -1,8 +1,8 @@
 package org.prules.operator.learner.clustering.models.gng.comparators;
 
-import java.util.Comparator;
-
 import org.prules.operator.learner.clustering.gng.NeuronNode;
+
+import java.util.Comparator;
 
 
 /**
@@ -10,19 +10,13 @@ import org.prules.operator.learner.clustering.gng.NeuronNode;
  */
 public class DistanceComparator implements Comparator<NeuronNode> {
 
-	@Override
-	public int compare(NeuronNode neuronNode, NeuronNode n) {
-		if (neuronNode.getDist() < n.getDist()) {
-			return -1;
-		} else if (neuronNode.getDist() == n.getDist()) {
-			return 0;
-		} else {
-			return 1;
-		}
-	}
+    @Override
+    public int compare(NeuronNode neuronNode, NeuronNode n) {
+        return Double.compare(neuronNode.getDist(), n.getDist());
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		return false;
-	}
+    @Override
+    public boolean equals(Object o) {
+        return false;
+    }
 }

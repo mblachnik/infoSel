@@ -7,8 +7,6 @@ package org.prules.tools.math.container;
 import java.io.Serializable;
 
 /**
- *
- * @param <N>
  * @param <M>
  * @author Marcin
  */
@@ -28,7 +26,6 @@ public class DoubleObjectContainer<M> implements Comparable<DoubleObjectContaine
     public M second;
 
     /**
-     *
      * @param valueA
      * @param valueB
      */
@@ -90,13 +87,6 @@ public class DoubleObjectContainer<M> implements Comparable<DoubleObjectContaine
 
     @Override
     public int compareTo(DoubleObjectContainer<M> o) {
-        double result = first - o.first;
-        if (result == 0) {
-            return 0;
-        }
-        if (result > 0) {
-            return 1;
-        }
-        return -1;
+        return Double.compare(first, o.first);
     }
 }

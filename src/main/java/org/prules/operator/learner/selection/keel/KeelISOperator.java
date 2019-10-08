@@ -12,17 +12,17 @@ import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.UserError;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeCategory;
-import java.util.List;
 import org.prules.operator.learner.selection.AbstractInstanceSelectorOperator;
 import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
 
+import java.util.List;
+
 /**
- *
  * @author Marcin
  */
 public class KeelISOperator extends AbstractInstanceSelectorOperator {
 
-    public static final String CONFIGURATION_PARAMETERS = "k";
+    private static final String CONFIGURATION_PARAMETERS = "k";
 
     public KeelISOperator(OperatorDescription description) {
         super(description);
@@ -37,7 +37,7 @@ public class KeelISOperator extends AbstractInstanceSelectorOperator {
             case CCIS:
                 model = new KeelISModel(this.getParameterAsString(CONFIGURATION_PARAMETERS), this);
                 break;
-            default:                
+            default:
                 throw new UserError(this, "Unknown Keel IS model");
         }
         return model;

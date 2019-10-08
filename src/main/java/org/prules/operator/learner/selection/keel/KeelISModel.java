@@ -11,10 +11,10 @@ import com.rapidminer.example.Example;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.operator.Operator;
 import keel.Algorithms.Instance_Selection.CCIS.CCIS;
-import org.prules.operator.learner.tools.IDataIndex;
 import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
+import org.prules.operator.learner.tools.IDataIndex;
+
 /**
- *
  * @author Marcin
  */
 public class KeelISModel extends AbstractInstanceSelectorModel {
@@ -36,7 +36,7 @@ public class KeelISModel extends AbstractInstanceSelectorModel {
         int n = exampleSet.size();
         double[][] trainingSet = new double[exampleSet.size()][attrs.size()];
         int[] labels = new int[exampleSet.size()];
-        //========================> Create dataset for Keel
+        //========================> Create data set for Keel
         int i = 0;
         for (Example ex : exampleSet) {
             int j = 0;
@@ -58,7 +58,8 @@ public class KeelISModel extends AbstractInstanceSelectorModel {
         int numberOfMisses = 0;
         //=========================> Convert results to index
         IDataIndex index = filter.filterSamples(trainingSet, labels);
-        if (filter.getNumberOfMisses()>0) throw new RuntimeException("Numer of misses in DataFIlter should be 0 but it isnt. Number of misses= " + filter.getNumberOfMisses());        
+        if (filter.getNumberOfMisses() > 0)
+            throw new RuntimeException("Number of misses in DataFilter should be 0 but it isn't. Number of misses= " + filter.getNumberOfMisses());
         return index;
     }
 }

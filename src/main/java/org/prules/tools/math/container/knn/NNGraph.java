@@ -5,16 +5,15 @@
  */
 package org.prules.tools.math.container.knn;
 
-import java.util.Iterator;
-import java.util.Set;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.tools.math.container.DoubleIntContainer;
 
+import java.util.Set;
+
 /**
- *
  * @author Marcin
  */
-public class NNGraph extends NNGraphWithoutAssocuateUpdates implements INNGraph {
+public class NNGraph extends NNGraphWithoutAssociateUpdates implements INNGraph {
 
     public NNGraph(ISPRClassGeometricDataCollection<IInstanceLabels> samples, int k) {
         super(samples, k);

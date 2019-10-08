@@ -5,15 +5,6 @@
  */
 package org.prules.tools.math.container.knn;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.prules.dataset.Const;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.dataset.Vector;
@@ -22,20 +13,21 @@ import org.prules.tools.math.container.DoubleIntContainer;
 import org.prules.tools.math.container.DoubleObjectContainer;
 import org.prules.tools.math.container.PairContainer;
 
+import java.util.*;
+
 /**
- *
  * @author Marcin
  */
-public class NNGraphWithoutAssocuateUpdates implements INNGraph {
+public class NNGraphWithoutAssociateUpdates implements INNGraph {
 
-    int k;
+    private int k;
     Map<Integer, Set<Integer>> associates;
     Map<Integer, List<DoubleIntContainer>> neighbors;
-    Map<Integer, List<DoubleIntContainer>> enemies;
-    ISPRClassGeometricDataCollection<IInstanceLabels> samples;
-    IDataIndex index;
+    private Map<Integer, List<DoubleIntContainer>> enemies;
+    private ISPRClassGeometricDataCollection<IInstanceLabels> samples;
+    private IDataIndex index;
 
-    public NNGraphWithoutAssocuateUpdates(ISPRClassGeometricDataCollection<IInstanceLabels> samples, int k) {
+    public NNGraphWithoutAssociateUpdates(ISPRClassGeometricDataCollection<IInstanceLabels> samples, int k) {
         this.k = k;
         this.samples = samples;
         index = samples.getIndex();
@@ -44,7 +36,7 @@ public class NNGraphWithoutAssocuateUpdates implements INNGraph {
         calculateGraph();
     }
 
-    public NNGraphWithoutAssocuateUpdates(NNGraphWithoutAssocuateUpdates nnGraph) {
+    NNGraphWithoutAssociateUpdates(NNGraphWithoutAssociateUpdates nnGraph) {
         this.k = nnGraph.k;
         this.samples = nnGraph.samples;
         this.index = nnGraph.index;
@@ -58,11 +50,11 @@ public class NNGraphWithoutAssocuateUpdates implements INNGraph {
         neighbors = new HashMap(samples.size());
         enemies = new HashMap(samples.size());
         for (int i = 0; i < samples.size(); i++) {
-            associates.put(i, new HashSet<>(k+1));
+            associates.put(i, new HashSet<>(k + 1));
             //neighbors.put(i, new LinkedList<DoubleIntContainer>());
             //enemies.put(i, new LinkedList<DoubleIntContainer>());
-            neighbors.put(i, new ArrayList<>(k+1));
-            enemies.put(i, new ArrayList<>(k+1));
+            neighbors.put(i, new ArrayList<>(k + 1));
+            enemies.put(i, new ArrayList<>(k + 1));
         }
     }
 
@@ -78,7 +70,7 @@ public class NNGraphWithoutAssocuateUpdates implements INNGraph {
      */
     @Override
     public final void calculateGraph() {
-        //Fillin associates
+        //Filling associates
         //sampleIterator = samples.samplesIterator();     
         for (int i = 0; i < samples.size(); i++) {
             associates.get(i).clear();
@@ -135,9 +127,9 @@ public class NNGraphWithoutAssocuateUpdates implements INNGraph {
     @Override
     public void remove(int nodeId) {
         //Turn of the instance
-        index.set(nodeId, false);        
+        index.set(nodeId, false);
         //Get the associate elements which points to the instance being deleted (nodeId)
-        for (int associate : associates.get(nodeId)) {            
+        for (int associate : associates.get(nodeId)) {
             //Recalculate its neighbors when instance nodeId will be deleted
             calculateGraphForInstance(associate);
         }
@@ -158,7 +150,7 @@ public class NNGraphWithoutAssocuateUpdates implements INNGraph {
         return samples.size();
     }
 
-    public void calculateGraphForInstance(int id) {
+    private void calculateGraphForInstance(int id) {
         Vector vector;
         PairContainer<Collection<DoubleObjectContainer<IInstanceLabels>>, Collection<DoubleObjectContainer<IInstanceLabels>>> resAll;
         List<DoubleObjectContainer<IInstanceLabels>> resCombined;
@@ -188,15 +180,15 @@ public class NNGraphWithoutAssocuateUpdates implements INNGraph {
             if (kTmp < k) {
                 associates.get(neighborID).add(currentInstanceID);
             }
-            neighbors.get(currentInstanceID).add(new DoubleIntContainer(distance, neighborID));            
+            neighbors.get(currentInstanceID).add(new DoubleIntContainer(distance, neighborID));
             kTmp++;
             if (kTmp > k) {
-                break; //We brak the loop when we take k+1 samples.
+                break; //We brake the loop when we take k+1 samples.
             }
         }
         //resTmp = (DoubleObjectContainer<IInstanceLabels>[])resEnemies.toArray(new DoubleObjectContainer<?>[resEnemies.size()]);
         //Arrays.sort(resTmp);
-        //Collections.sort(resEnemies); //The sorting was moved to the begining becouse sorting already sorted values is more efficient, and we sort the resCombined
+        //Collections.sort(resEnemies); //The sorting was moved to the beginning because sorting already sorted values is more efficient, and we sort the resCombined
         enemies.get(currentInstanceID).clear();
         for (DoubleObjectContainer<IInstanceLabels> container : resEnemies) {
             int enemyID = (int) container.getSecond().getValueAsLong(Const.INDEX_CONTAINER);

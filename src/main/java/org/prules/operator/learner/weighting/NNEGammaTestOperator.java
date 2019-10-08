@@ -10,27 +10,24 @@ import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
-import org.prules.operator.learner.weighting.models.GammaTestNoiseModel;
-import org.prules.tools.math.container.PairContainer;
-import com.rapidminer.operator.OperatorCapability;
-import com.rapidminer.operator.OperatorDescription;
-import com.rapidminer.operator.OperatorException;
-import com.rapidminer.operator.ProcessSetupError;
-import com.rapidminer.operator.ValueDouble;
+import com.rapidminer.operator.*;
 import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
 import com.rapidminer.operator.ports.metadata.MetaData;
 import com.rapidminer.operator.ports.metadata.SimpleMetaDataError;
 import com.rapidminer.operator.ports.metadata.SimplePrecondition;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeInt;
-//import com.rapidminer.tools.Ontology;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import org.prules.operator.learner.weighting.models.GammaTestNoiseModel;
+import org.prules.tools.math.container.PairContainer;
+
 import java.util.List;
 
+//import com.rapidminer.tools.Ontology;
+
 /**
- *
  * @author Marcin
  */
 public class NNEGammaTestOperator extends AbstractWeightingOperator {
@@ -61,22 +58,22 @@ public class NNEGammaTestOperator extends AbstractWeightingOperator {
         exampleSetInputPort.addPrecondition(
                 new SimplePrecondition(exampleSetInputPort, new MetaData(), true) {
 
-            @Override
-            public void makeAdditionalChecks(MetaData received) {
-                if (received != null && received instanceof ExampleSetMetaData) {
-                    ExampleSetMetaData emd = (ExampleSetMetaData) received;
-                    switch (emd.hasSpecial(Attributes.LABEL_NAME)) {
-                        case NO:
-                            exampleSetInputPort.addError(new SimpleMetaDataError(ProcessSetupError.Severity.WARNING, exampleSetInputPort, "special_missing", Attributes.LABEL_NAME));
-                            break;
-                        case YES:
-                            if (!emd.getLabelMetaData().isNumerical()) {
-                                exampleSetInputPort.addError(new SimpleMetaDataError(ProcessSetupError.Severity.WARNING, exampleSetInputPort, "special_attribute_has_wrong_type", emd.getLabelMetaData().getName(), Attributes.LABEL_NAME, com.rapidminer.tools.Ontology.VALUE_TYPE_NAMES[com.rapidminer.tools.Ontology.NUMERICAL]));
+                    @Override
+                    public void makeAdditionalChecks(MetaData received) {
+                        if (received instanceof ExampleSetMetaData) {
+                            ExampleSetMetaData emd = (ExampleSetMetaData) received;
+                            switch (emd.hasSpecial(Attributes.LABEL_NAME)) {
+                                case NO:
+                                    exampleSetInputPort.addError(new SimpleMetaDataError(ProcessSetupError.Severity.WARNING, exampleSetInputPort, "special_missing", Attributes.LABEL_NAME));
+                                    break;
+                                case YES:
+                                    if (!emd.getLabelMetaData().isNumerical()) {
+                                        exampleSetInputPort.addError(new SimpleMetaDataError(ProcessSetupError.Severity.WARNING, exampleSetInputPort, "special_attribute_has_wrong_type", emd.getLabelMetaData().getName(), Attributes.LABEL_NAME, com.rapidminer.tools.Ontology.VALUE_TYPE_NAMES[com.rapidminer.tools.Ontology.NUMERICAL]));
+                                    }
                             }
+                        }
                     }
                 }
-            }
-        }
         );
     }
 
@@ -108,7 +105,7 @@ public class NNEGammaTestOperator extends AbstractWeightingOperator {
         int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
         try {
             measureType = measureHelper.getSelectedMeasureType();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:

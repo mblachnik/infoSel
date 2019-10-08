@@ -6,29 +6,21 @@ package org.prules.operator.learner.selection.models;
 
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import org.prules.tools.math.container.knn.KNNFactory;
 import org.prules.dataset.IInstanceLabels;
-import org.prules.operator.learner.tools.IDataIndex;
 import org.prules.operator.learner.selection.models.decisionfunctions.ISClassDecisionFunction;
 import org.prules.operator.learner.selection.models.tools.DropBasicModel;
 import org.prules.operator.learner.tools.DataIndex;
+import org.prules.operator.learner.tools.IDataIndex;
 import org.prules.operator.learner.tools.PredictionProblemType;
-import org.prules.tools.math.container.knn.INNGraph;
-import org.prules.tools.math.container.knn.ISPRClassGeometricDataCollection;
-import org.prules.tools.math.container.knn.KNNTools;
-import org.prules.tools.math.container.knn.NNGraphWithoutAssocuateUpdates;
+import org.prules.tools.math.container.knn.*;
+
+import java.util.*;
 
 /**
  * Class implements Drop4 instance selection algorithm
  * for details see Wilson, Martinez, Reduction Techniques for Instance-Based
-Learning Algorithms, Machine Learning, 38, 257–286, 2000.
+ * Learning Algorithms, Machine Learning, 38, 257–286, 2000.
  *
  * @author Marcin
  */
@@ -42,7 +34,7 @@ public class Drop4InstanceSelectionModel extends AbstractInstanceSelectorModel {
      * Constructor for ENN instance selection model.
      *
      * @param measure - distance measure
-     * @param k - number of nearest neighbors
+     * @param k       - number of nearest neighbors
      */
     public Drop4InstanceSelectionModel(DistanceMeasure measure, int k) {
         this.measure = measure;
@@ -53,7 +45,7 @@ public class Drop4InstanceSelectionModel extends AbstractInstanceSelectorModel {
      * Performs instance selection
      *
      * @param exampleSet - example set for which instance selection will be
-     * performed
+     *                   performed
      * @return - index of selected examples
      */
     @Override
@@ -79,8 +71,8 @@ public class Drop4InstanceSelectionModel extends AbstractInstanceSelectorModel {
         INNGraph nnGraph;
         List<Integer> order;
         Set<Double> labels = new HashSet<>(5);
-        Iterator<IInstanceLabels> labelIterator =  samples.storedValueIterator();
-        while(labelIterator.hasNext()){
+        Iterator<IInstanceLabels> labelIterator = samples.storedValueIterator();
+        while (labelIterator.hasNext()) {
             double label = labelIterator.next().getLabel();
             labels.add(label);
         }
@@ -89,21 +81,21 @@ public class Drop4InstanceSelectionModel extends AbstractInstanceSelectorModel {
         ENNInstanceSelectionModel ennModel = new ENNInstanceSelectionModel(measure, k, new ISClassDecisionFunction(), false);
         IDataIndex index = ennModel.selectInstances(samples, PredictionProblemType.CLASSIFICATION);
         //Check  samples affect classification and analyze instances which should be removed if they affect classification accuracy        
-        nnGraph = new NNGraphWithoutAssocuateUpdates(samples, k);
+        nnGraph = new NNGraphWithoutAssociateUpdates(samples, k);
         IDataIndex indexNeg = new DataIndex(index);
         indexNeg.negate();
-        
-        for (int i : indexNeg) {        
-             double improv = DropBasicModel.improvement(nnGraph, numberOfClassews, i);             
-             if (improv < 0){ //If without instance "i" system classifies worse then with it keep intance i
+
+        for (int i : indexNeg) {
+            double improve = DropBasicModel.improvement(nnGraph, numberOfClassews, i);
+            if (improve < 0) { //If without instance "i" system classifies worse then with it keep instance i
                 index.set(i, true);
-             }
+            }
         }
         //Prune samples
         ISPRClassGeometricDataCollection<IInstanceLabels> samplesSelected;
         samplesSelected = KNNTools.takeSelected(samples, index); //Here we remove useless samples      
-        nnGraph = new NNGraphWithoutAssocuateUpdates(samplesSelected, k);
-        //Reorder samples according to distance to nearest enymy        
+        nnGraph = new NNGraphWithoutAssociateUpdates(samplesSelected, k);
+        //Reorder samples according to distance to nearest enemy
         order = DropBasicModel.orderSamplesByEnemies(nnGraph, -1); //Order from the furthest to the nearest
         //Execute DropModel
         order = DropBasicModel.execute(nnGraph, order);

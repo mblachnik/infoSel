@@ -7,13 +7,7 @@ import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.learner.CapabilityProvider;
 import com.rapidminer.operator.ports.InputPort;
 import com.rapidminer.operator.ports.OutputPort;
-import com.rapidminer.operator.ports.metadata.CapabilityPrecondition;
-import com.rapidminer.operator.ports.metadata.DistanceMeasurePrecondition;
-import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
-import com.rapidminer.operator.ports.metadata.MDInteger;
-import com.rapidminer.operator.ports.metadata.MetaData;
-import com.rapidminer.operator.ports.metadata.PassThroughRule;
-import com.rapidminer.operator.ports.metadata.SubprocessTransformRule;
+import com.rapidminer.operator.ports.metadata.*;
 import com.rapidminer.parameter.UndefinedParameterError;
 
 /**
@@ -33,7 +27,7 @@ public abstract class AbstractPrototypeBasedOperatorChain extends OperatorChain 
     /**
      * Output port which delivers ExampleSet with constructed prototypes
      */
-    protected final OutputPort prototypesOutputPort = getOutputPorts().createPort("prototypes");
+    private final OutputPort prototypesOutputPort = getOutputPorts().createPort("prototypes");
     /**
      * Output port which delivers the training ExampleSet
      */
@@ -44,13 +38,13 @@ public abstract class AbstractPrototypeBasedOperatorChain extends OperatorChain 
      * Constructor, called by the RapidMiner core
      *
      * @param description
-     * @param subprocessNames
+     * @param subProcessNames
      */
-    public AbstractPrototypeBasedOperatorChain(OperatorDescription description, String... subprocessNames) {
-        super(description, subprocessNames);//
+    public AbstractPrototypeBasedOperatorChain(OperatorDescription description, String... subProcessNames) {
+        super(description, subProcessNames);//
         exampleSetInputPort.addPrecondition(new CapabilityPrecondition(this, exampleSetInputPort));
         //exampleSetInputPort.addPrecondition(new DistanceMeasurePrecondition(exampleSetInputPort, this));
-        getTransformer().addPassThroughRule(exampleSetInputPort, exampleSetOutputPort);        
+        getTransformer().addPassThroughRule(exampleSetInputPort, exampleSetOutputPort);
         //getTransformer().addPassThroughRule(exampleSetInputPort,originalExampleSetOutputPort);
         addPrototypeTransformationRule();
     }
@@ -92,9 +86,9 @@ public abstract class AbstractPrototypeBasedOperatorChain extends OperatorChain 
      */
     protected MetaData modifyPrototypeOutputMetaData(ExampleSetMetaData metaData)
             throws UndefinedParameterError {
-        try { 
+        try {
             metaData.setNumberOfExamples(getNumberOfPrototypesMetaData());
-        } catch (UndefinedParameterError e){
+        } catch (UndefinedParameterError e) {
             metaData.setNumberOfExamples(new MDInteger());
         }
         return metaData;
@@ -123,16 +117,16 @@ public abstract class AbstractPrototypeBasedOperatorChain extends OperatorChain 
      *
      * @return output port
      */
-    public OutputPort getProtoOutputPort(){
+    public OutputPort getProtoOutputPort() {
         return prototypesOutputPort;
     }
-    
+
     /**
-     * This method should be executed at the end of all other transformation rules. It generates 
+     * This method should be executed at the end of all other transformation rules. It generates
      * PrototypeOutput metadata. This metadata usually depends on the subprocess metadata. In this case
      * when this method will be executed to early it wouldn't be able to generate metadata values for prototypeOutput
      */
-    protected void addPrototypeTransformationRule(){
+    protected void addPrototypeTransformationRule() {
         getTransformer().addRule(new PassThroughRule(exampleSetInputPort, prototypesOutputPort, true) {
             @Override
             public MetaData modifyMetaData(MetaData metaData) {

@@ -7,75 +7,87 @@ package org.prules.dataset;
 
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Example;
+
 import java.util.List;
 
 /**
  * Elements stored
- * @author Marcin 
+ *
+ * @author Marcin
  */
 public interface Vector extends Cloneable {
     /**
      * Return stored values as dense double vector
-     * @return 
+     *
+     * @return
      */
-    double[] getValues();            
-    
+    double[] getValues();
+
     /**
      * Set values using RapidMiner Example and selected attributes
+     *
      * @param example
-     * @param attributes 
+     * @param attributes
      */
     void setValues(Example example, List<Attribute> attributes);
-    
+
     /**
      * The same as above but instead of list use array of attributes
+     *
      * @param example
-     * @param attributes 
+     * @param attributes
      */
     void setValues(Example example, Attribute[] attributes);
 
     /**
      * The same as above but sotres all elements of example
-     * @param example 
+     *
+     * @param example
      */
-    void setValues(Example example);   
-    
+    void setValues(Example example);
+
     /**
      * Returns number of elements in vector
-     * @return 
+     *
+     * @return
      */
     int size();
-    
+
     /**
      * Set vale of index i given value
+     *
      * @param i
-     * @param value 
+     * @param value
      */
     void setValue(int i, double value);
-    
+
     /**
      * reads i'th value from vector
+     *
      * @param i
-     * @return 
+     * @return
      */
     double getValue(int i);
-    
+
     /**
      * Returns true if vector is sparse
-     * @return 
+     *
+     * @return
      */
     boolean isSparse();
-    
+
     /**
-     * It returns index of elements which can be non zero. especially used for sparse representation, 
+     * It returns index of elements which can be non zero. especially used for sparse representation,
      * than it returns non zero elements stored inside vector
-     * @return 
+     *
+     * @return
      */
     int[] getNonEmptyIndex();
 
     /**
      * Creates a shellow copy of the values
-     * @return 
+     *
+     * @return
      */
     Object clone();
 }

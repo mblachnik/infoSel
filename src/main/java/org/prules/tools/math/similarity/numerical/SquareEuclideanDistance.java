@@ -3,7 +3,6 @@ package org.prules.tools.math.similarity.numerical;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.Tools;
 import com.rapidminer.operator.OperatorException;
-import com.rapidminer.parameter.ParameterHandler;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 
 /**
@@ -11,31 +10,31 @@ import com.rapidminer.tools.math.similarity.DistanceMeasure;
  *
  * @author Sebastian Land, Michael Wurst
  */
-public class RBFKernel extends DistanceMeasure {
+public class SquareEuclideanDistance extends DistanceMeasure {
 
     private static final long serialVersionUID = -6657784365192589335L;
 
     @Override
     public double calculateDistance(double[] value1, double[] value2) {
-        double d = 0.0;
+        double sum = 0.0;
         int counter = 0;
         for (int i = 0; i < value1.length; i++) {
             if ((!Double.isNaN(value1[i])) && (!Double.isNaN(value2[i]))) {
-                double df = (value1[i] - value2[i]);
-                d += df * df;
+                double diff = value1[i] - value2[i];
+                sum += diff * diff;
                 counter++;
             }
         }
         if (counter > 0) {
-            return Math.exp(-d);
+            return sum;
         } else {
-            return 0;
+            return Double.NaN;
         }
     }
 
     @Override
     public double calculateSimilarity(double[] value1, double[] value2) {
-        return 1 / calculateDistance(value1, value2) - 1;
+        return -calculateDistance(value1, value2);
     }
 
     @Override
@@ -45,17 +44,7 @@ public class RBFKernel extends DistanceMeasure {
     }
 
     @Override
-    public void init(ExampleSet exampleSet, ParameterHandler parameterHandler) throws OperatorException {
-        super.init(exampleSet, parameterHandler);
-    }
-
-    @Override
-    public boolean isDistance() {
-        return false;
-    }
-
-    @Override
     public String toString() {
-        return "RBF Kernel";
+        return "Squared Euclidian distance";
     }
 }

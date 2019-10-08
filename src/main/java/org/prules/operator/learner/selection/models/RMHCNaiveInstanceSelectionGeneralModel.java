@@ -9,24 +9,20 @@ import com.rapidminer.example.Example;
 import com.rapidminer.example.set.EditedExampleSet;
 import com.rapidminer.example.set.ISPRExample;
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.dataset.Const;
-import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
-import org.prules.operator.learner.tools.DataIndex;
-import org.prules.tools.math.container.knn.KNNTools;
-import org.prules.tools.math.container.knn.GeometricCollectionTypes;
-import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import java.util.Iterator;
-import java.util.TreeSet;
-import org.prules.dataset.InstanceFactory;
-import org.prules.tools.math.container.knn.KNNFactory;
-import java.util.Set;
-import org.prules.dataset.IInstanceLabels;
+import org.prules.dataset.*;
+import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
+import org.prules.operator.learner.tools.DataIndex;
 import org.prules.operator.learner.tools.IDataIndex;
-import org.prules.dataset.Instance;
-import org.prules.dataset.Vector;
-import org.prules.dataset.IInstancePrediction;
+import org.prules.tools.math.container.knn.GeometricCollectionTypes;
+import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
+import org.prules.tools.math.container.knn.KNNFactory;
+import org.prules.tools.math.container.knn.KNNTools;
+
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Naive implementation of RMHC algorithm. Here instead of binary coding of
@@ -51,7 +47,7 @@ public class RMHCNaiveInstanceSelectionGeneralModel extends AbstractInstanceSele
     private final IISDecisionFunction loss;
 
     /**
-     *Constructor of RMHC algorithm implementation. Here instead of binary coding of
+     * Constructor of RMHC algorithm implementation. Here instead of binary coding of
      * instances we use a table of int, and each instance is represented as its
      * id. When performing a change in the example set instead of bit mutation a
      * single new prototype is determined. This requires more memory, but is
@@ -81,17 +77,19 @@ public class RMHCNaiveInstanceSelectionGeneralModel extends AbstractInstanceSele
      * Performs instance selection
      *
      * @param exampleSet - example set for which instance selection will be
-     * performed
+     *                   performed
      * @return - index of selected examples
      */
     @Override
     public IDataIndex selectInstances(SelectedExampleSet exampleSet) {
         //loss.init(exampleSet);
         //TODO make use of the loss function, because it is not used now
-        //TODO Update the code, because now it repeates the iterations if selected instance is out of range (based on bit enciding) and this may not be good. Moreover it may happen that certain instance is selected more then once, so the final number of samples mey not be equalt to the number of prototypes which should be selected 
+        //TODO Update the code, because now it repeates the iterations if selected instance is out of range (based on bit encoding)
+        // and this may not be good. Moreover it may happen that certain instance is selected more then once,
+        // so the final number of samples mey not be equal to the number of prototypes which should be selected
         //initialization
         loss.init(exampleSet, measure);
-        int[] bestSelectedInstances;        
+        int[] bestSelectedInstances;
         IDataIndex index = exampleSet.getIndex();
         EditedExampleSet workingSet = new EditedExampleSet(exampleSet);
         DataIndex indexWorking = workingSet.getIndex();
@@ -109,7 +107,7 @@ public class RMHCNaiveInstanceSelectionGeneralModel extends AbstractInstanceSele
             setOfWorkingSetIdx.add(instanceId);
         }
 
-        
+
         //Building kNN with initial set of prototypes        
         bestSelectedInstances = new int[numberOfPrototypes];
         System.arraycopy(selectedInstances, 0, bestSelectedInstances, 0, numberOfPrototypes);
@@ -122,18 +120,18 @@ public class RMHCNaiveInstanceSelectionGeneralModel extends AbstractInstanceSele
         loss.init(kNN);
         double errorRateBest = Double.MAX_VALUE;
         int selectedInstanceToChangeId = 0; //a value in range 0-selectedInstances.length-1. It is index of element of selectedInstances array which we are going to change
-        int kNNinstanceIdCurrent = selectedInstances[selectedInstanceToChangeId]; //index of example in traiing set - recent value
-        int kNNinstanceIdCandidate = selectedInstances[selectedInstanceToChangeId]; //index of example in traiing set - which we evaluate if it will be better then instanceIdCurrent        
-        Vector kNNInstanceValues = kNN.getSample(selectedInstanceToChangeId);        
-        IInstanceLabels kNNInstanceLabel = kNN.getStoredValue(selectedInstanceToChangeId);        
-        Vector vector = InstanceFactory.createVector(exampleSet);                
+        int kNNInstanceIdCurrent = selectedInstances[selectedInstanceToChangeId]; //index of example in training set - recent value
+        int kNNInstanceIdCandidate = selectedInstances[selectedInstanceToChangeId]; //index of example in training set - which we evaluate if it will be better then instanceIdCurrent
+        Vector kNNInstanceValues = kNN.getSample(selectedInstanceToChangeId);
+        IInstanceLabels kNNInstanceLabel = kNN.getStoredValue(selectedInstanceToChangeId);
+        Vector vector = InstanceFactory.createVector(exampleSet);
         IInstancePrediction prediction = InstanceFactory.createPrediction(Double.NaN, null);
         Instance instance = InstanceFactory.createEmptyInstance();
         IInstanceLabels label = InstanceFactory.createInstanceLabels();
-        
+
         for (int i = 0; i < iterations; i++) {
             double errorRate = 0;
-            int q=0;
+            int q = 0;
             for (Example testExample : exampleSet) {
                 vector.setValues(testExample);
                 label.set(testExample);
@@ -142,63 +140,63 @@ public class RMHCNaiveInstanceSelectionGeneralModel extends AbstractInstanceSele
                 prediction.setLabel(predictedLabel);
                 instance.put(Const.VECTOR, vector);
                 instance.put(Const.LABELS, label);
-                instance.put(Const.PREDICTION, prediction);    
+                instance.put(Const.PREDICTION, prediction);
                 double lossVal = loss.getValue(instance);
 //                if (lossVal > 0){
 //                    System.out.println(i+" "+q + " " + selectedInstances[0] + " " + selectedInstances[1] + " " + selectedInstances[2]);                    
 //                }
-                q ++;
+                q++;
                 errorRate += lossVal;
-            }      
+            }
             System.out.println("Error:" + errorRate);
             if (errorRate < errorRateBest) {
                 errorRateBest = errorRate;
-                //kNN is upToDate so we dont need to do anything
-                bestSelectedInstances[selectedInstanceToChangeId] = kNNinstanceIdCandidate;            
-                //System.arraycopy(selectedInstances, 0, bestSelectedInstances, 0, numberOfPrototypes);
+                //kNN is upToDate so we don't need to do anything
+                bestSelectedInstances[selectedInstanceToChangeId] = kNNInstanceIdCandidate;
+//                System.arraycopy(selectedInstances, 0, bestSelectedInstances, 0, numberOfPrototypes);
             } else { //We have to restore old current Vector and Label in place of candidate
-                //If the previous change was unseccesfull then restore values from before mutation
+                //If the previous change was unsuccessful then restore values from before mutation
                 //Restore values of kNN
                 //IVector vectorToChange = kNN.getSample(selectedInstanceToChangeId);
                 kNN.setSample(selectedInstanceToChangeId, kNNInstanceValues, kNNInstanceLabel);
-                selectedInstances[selectedInstanceToChangeId] = kNNinstanceIdCurrent;                                      
+                selectedInstances[selectedInstanceToChangeId] = kNNInstanceIdCurrent;
                 //Restore values of selectedInstances                
             }
             //Choose which prototype to change            
             selectedInstanceToChangeId = randomGenerator.nextInt(numberOfPrototypes);
             //Get new prototype id and assure that the value is different from the previous one
-            kNNinstanceIdCurrent = selectedInstances[selectedInstanceToChangeId];
+            kNNInstanceIdCurrent = selectedInstances[selectedInstanceToChangeId];
             kNNInstanceValues = kNN.getSample(selectedInstanceToChangeId);
-            kNNInstanceLabel  = kNN.getStoredValue(selectedInstanceToChangeId);
+            kNNInstanceLabel = kNN.getStoredValue(selectedInstanceToChangeId);
             do {
-                kNNinstanceIdCandidate = randomGenerator.nextInt(size);
-            } while (kNNinstanceIdCandidate == kNNinstanceIdCurrent);
+                kNNInstanceIdCandidate = randomGenerator.nextInt(size);
+            } while (kNNInstanceIdCandidate == kNNInstanceIdCurrent);
             //Update information in selectedInstances
-            selectedInstances[selectedInstanceToChangeId] = kNNinstanceIdCandidate;
-            Example example = exampleSet.getExample(kNNinstanceIdCandidate);            
+            selectedInstances[selectedInstanceToChangeId] = kNNInstanceIdCandidate;
+            Example example = exampleSet.getExample(kNNInstanceIdCandidate);
             Vector vectorCandidate = InstanceFactory.createVector(example);
-            IInstanceLabels labelCandidate = InstanceFactory.createInstaceLabels(example);                       
+            IInstanceLabels labelCandidate = InstanceFactory.createInstaceLabels(example);
             kNN.setSample(selectedInstanceToChangeId, vectorCandidate, labelCandidate);
 
-            //disp(kNN, selectedInstances, exampleSet);
+            //display(kNN, selectedInstances, exampleSet);
         }
         System.out.println("BestErrorRate = " + errorRateBest);
         index.setAllFalse();
-        for (int j = 0; j < bestSelectedInstances.length; j++) {
-            index.set(bestSelectedInstances[j], true);
+        for (int bestSelectedInstance : bestSelectedInstances) {
+            index.set(bestSelectedInstance, true);
         }
         return index;
     }
 
-    private void disp(ISPRGeometricDataCollection<Number> kNN, int[] si, SelectedExampleSet es) {
+    private void display(ISPRGeometricDataCollection<Number> kNN, int[] si, SelectedExampleSet es) {
         for (int i = 0; i < si.length; i++) {
             double[] values = kNN.getSample(i).getValues();
             int in = si[i];
-            System.out.println("Indeks = " + in);
+            System.out.println("Index = " + in);
             System.out.print(" [");
-            
-            for (int j = 0; j < values.length; j++) {
-                System.out.print(values[j] + " ; ");
+
+            for (double value : values) {
+                System.out.print(value + " ; ");
             }
             System.out.print("] ");
             Iterator it = es.iterator();
@@ -211,16 +209,14 @@ public class RMHCNaiveInstanceSelectionGeneralModel extends AbstractInstanceSele
             double id = ex.getId();
             String ids = es.getAttributes().getId().getMapping().mapIndex((int) id);
             in = ex.getIndex();
-            System.out.println("Indeks = " + in);
+            System.out.println("Index = " + in);
             System.out.print("  " + ids + " [");
-            for (int j = 0; j < values.length; j++) {
-                System.out.print(values[j] + " ; ");
+            for (double value : values) {
+                System.out.print(value + " ; ");
             }
             System.out.print("] ");
             System.out.println();
         }
         System.out.println("------------------------------------------------");
     }
-
-    
 }

@@ -6,7 +6,6 @@
 package org.prules.exceptions;
 
 /**
- *
  * @author Marcin
  */
 public class IncorrectAttributeException extends RuntimeException {
@@ -29,8 +28,7 @@ public class IncorrectAttributeException extends RuntimeException {
     public IncorrectAttributeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
-    
-    
+
 
     @Override
     public String getMessage() {
@@ -38,5 +36,4 @@ public class IncorrectAttributeException extends RuntimeException {
         msg += super.getMessage(); //To change body of generated methods, choose Tools | Templates.
         return msg;
     }
-    
 }

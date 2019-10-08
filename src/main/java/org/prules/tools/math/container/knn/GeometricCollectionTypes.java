@@ -5,11 +5,11 @@
 package org.prules.tools.math.container.knn;
 
 import org.prules.operator.learner.tools.PredictionProblemType;
+
 import java.util.ArrayList;
 import java.util.EnumSet;
 
 /**
- *
  * @author Marcin
  */
 public enum GeometricCollectionTypes {
@@ -24,15 +24,15 @@ public enum GeometricCollectionTypes {
     public static String[] getFriendlyNames(PredictionProblemType type) {
         EnumSet<GeometricCollectionTypes> es;
         es = EnumSet.allOf(GeometricCollectionTypes.class);
-        
+
         ArrayList<String> namesList = new ArrayList<String>(es.size());
         int i = 0;
 
         for (GeometricCollectionTypes x : es) {
-            if(x.type.checkCompatability(type)){
-                namesList.add(x.getFriendlyName());            
+            if (x.type.checkCompatibility(type)) {
+                namesList.add(x.getFriendlyName());
             }
-        }        
+        }
         return namesList.toArray(new String[0]);
     }
 

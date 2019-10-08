@@ -8,8 +8,9 @@ package org.prules.operator.learner.selection.models.decisionfunctions;
 /**
  * IISThresholdDecisionFunction extends IISDecisionFunction, and is used to identify all
  * decision functions which require a threshold
+ *
  * @author Marcin
  */
-public interface IISThresholdDecisionFunction extends IISDecisionFunction{
+public interface IISThresholdDecisionFunction extends IISDecisionFunction {
     void setThreshold(double threshold);
 }

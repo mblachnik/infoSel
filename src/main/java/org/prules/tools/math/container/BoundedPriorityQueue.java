@@ -24,6 +24,7 @@ package org.prules.tools.math.container;
 
 import com.rapidminer.tools.math.container.ReverseComparableComparator;
 import com.rapidminer.tools.math.container.ReverseComparator;
+
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
@@ -31,60 +32,59 @@ import java.util.PriorityQueue;
  * This class implements a bounded priority queue which contains always the n-th smalles values.
  * If a new value is added, it is added only if it is smaller than the greatest value already in queue.
  * The greatest value is then removed. The iterator does not iterate in any particular order.
- * This queue will implement a reverse order in compare with the java PriorityQueue, so 
- * peek and poll will retrieve the greatest elements  
- * 
- * @author Sebastian Land
+ * This queue will implement a reverse order in compare with the java PriorityQueue, so
+ * peek and poll will retrieve the greatest elements
  *
  * @param <E>
+ * @author Sebastian Land
  */
 public class BoundedPriorityQueue<E> extends PriorityQueue<E> {
 
-	private static final long serialVersionUID = 6020635755912950637L;
-        private E emptyContainer;
-	private final int bound;
-	private final Comparator<E> comparator;
-	
-	public BoundedPriorityQueue(int bound) {
-		super(bound, new ReverseComparableComparator<E>());
-		this.comparator = new ReverseComparableComparator<E>();
-		this.bound = bound;
-	}
+    private static final long serialVersionUID = 6020635755912950637L;
+    private E emptyContainer;
+    private final int bound;
+    private final Comparator<E> comparator;
 
-	public BoundedPriorityQueue(int bound, Comparator<? super E> comp) {
-		super(bound, new ReverseComparator<E>(comp));
-		this.bound = bound;
-		this.comparator = new ReverseComparator<E>(comp);
-	}
+    public BoundedPriorityQueue(int bound) {
+        super(bound, new ReverseComparableComparator<E>());
+        this.comparator = new ReverseComparableComparator<E>();
+        this.bound = bound;
+    }
 
-	@Override
-	public boolean offer(E e) {
-		if (size() == bound) {
-			E head = peek();
-			// test with Reverse(!) comparator if e is smaller: Test if greater
-			if (comparator.compare(e, head) > 0) {
-				// if smaller: remove biggest and add e
-				emptyContainer = poll();
-				return super.offer(e);
-			}
-		} else {                    
-			return super.offer(e);
-		}
-		return false;
-	}
-	
-	@Override
-	public boolean add(E e) {
-		return offer(e);
-	}
-	
-	public boolean isFilled() {
-		return (size() == bound);
-	}
-        
-        public E getEmptyContainer(){
-            E container = emptyContainer;
-            emptyContainer = null;
-            return container;
+    public BoundedPriorityQueue(int bound, Comparator<? super E> comp) {
+        super(bound, new ReverseComparator<E>(comp));
+        this.bound = bound;
+        this.comparator = new ReverseComparator<E>(comp);
+    }
+
+    @Override
+    public boolean offer(E e) {
+        if (size() == bound) {
+            E head = peek();
+            // test with Reverse(!) comparator if e is smaller: Test if greater
+            if (comparator.compare(e, head) > 0) {
+                // if smaller: remove biggest and add e
+                emptyContainer = poll();
+                return super.offer(e);
+            }
+        } else {
+            return super.offer(e);
         }
+        return false;
+    }
+
+    @Override
+    public boolean add(E e) {
+        return offer(e);
+    }
+
+    public boolean isFilled() {
+        return (size() == bound);
+    }
+
+    public E getEmptyContainer() {
+        E container = emptyContainer;
+        emptyContainer = null;
+        return container;
+    }
 }

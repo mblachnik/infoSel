@@ -7,44 +7,50 @@ package org.prules.dataset;
 
 /**
  * An IGenericContainer with extra tools for storing datamining instances
+ *
  * @author Marcin
  */
 public interface Instance extends IGenericContainer {
 
     /**
      * Get attributes of an instance
-     * @return 
+     *
+     * @return
      */
     Vector getVector();
 
     /**
      * Set attributes of an instance
-     * @param vector 
+     *
+     * @param vector
      */
     void setVector(Vector vector);
 
     /**
      * Get properties of an instance - all extra attributes
-     * @return 
+     *
+     * @return
      */
     IInstanceLabels getLabels();
 
     /**
      * Set properties of an instance - these are all extra descriptors of an instance
-     * @param vector 
+     *
+     * @param vector
      */
     void setLabels(IInstanceLabels vector);
 
     /**
      * Set prediction results of an instance
-     * @param prediction 
+     *
+     * @param prediction
      */
     void setPrediction(IInstancePrediction prediction);
 
     /**
      * Read prediction results of an instance
-     * @return 
+     *
+     * @return
      */
     IInstancePrediction getPrediction();
-
 }

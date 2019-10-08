@@ -22,33 +22,21 @@
  */
 package org.prules.tools.math.container.knn;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.ListIterator;
-import java.util.Stack;
-
 import com.rapidminer.datatable.SimpleDataTable;
 import com.rapidminer.datatable.SimpleDataTableRow;
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import org.prules.dataset.InstanceFactory;
-import org.prules.dataset.VectorDense;
-import org.prules.dataset.Const;
 import com.rapidminer.tools.math.container.BoundedPriorityQueue;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import org.prules.dataset.InstanceFactory;
-import org.prules.tools.math.container.DoubleObjectContainer;
+import org.prules.dataset.Const;
 import org.prules.dataset.IInstanceLabels;
+import org.prules.dataset.InstanceFactory;
 import org.prules.dataset.Vector;
-import org.prules.operator.learner.tools.IDataIndex;
+import org.prules.tools.math.container.DoubleObjectContainer;
+
+import java.util.*;
 
 /**
  * This class is an implementation of a Ball-Tree for organizing
@@ -58,8 +46,7 @@ import org.prules.operator.learner.tools.IDataIndex;
  * search strategy will outperform the ballTree in overall performance.
  *
  * @param <T> This is the type of value with is stored with the points and
- * retrieved on nearest neighbour search
- *
+ *            retrieved on nearest neighbour search
  * @author Sebastian Land
  */
 public class BallTree<T extends IInstanceLabels> implements ISPRGeometricDataCollection<T> {
@@ -73,11 +60,11 @@ public class BallTree<T extends IInstanceLabels> implements ISPRGeometricDataCol
     private List<T> values = new ArrayList<>();
     private long index = 0;
 
-    public BallTree(DistanceMeasure distance) {
+    private BallTree(DistanceMeasure distance) {
         this.distance = distance;
     }
 
-    public BallTree(ExampleSet exampleSet, Map<Attribute, String> storedValuesAttribute, DistanceMeasure distance) {
+    BallTree(ExampleSet exampleSet, Map<Attribute, String> storedValuesAttribute, DistanceMeasure distance) {
         this(distance);
         initialize(exampleSet, storedValuesAttribute);
     }
@@ -100,7 +87,7 @@ public class BallTree<T extends IInstanceLabels> implements ISPRGeometricDataCol
                 i++;
             }
             IInstanceLabels labelValue = InstanceFactory.createInstanceLabels(example, storedValuesAttribute);
-            this.add(InstanceFactory.createVector(exampleValues), (T)labelValue);
+            this.add(InstanceFactory.createVector(exampleValues), (T) labelValue);
         }
     }
 
@@ -149,7 +136,7 @@ public class BallTree<T extends IInstanceLabels> implements ISPRGeometricDataCol
                 }
 
                 // search for better child
-                if (currentNode.hasTwoChilds()) {
+                if (currentNode.hasTwoChildren()) {
                     BallTreeNode<T> leftChild = currentNode.getLeftChild();
                     double deltaVLeft = getVolumeIncludingPoint(leftChild, values.getValues()) - getVolume(leftChild);
                     BallTreeNode<T> rightChild = currentNode.getRightChild();
@@ -181,7 +168,7 @@ public class BallTree<T extends IInstanceLabels> implements ISPRGeometricDataCol
             ListIterator<BallTreeNode<T>> iterator = ancestorList.listIterator(bestNodeIndex + 1);
             while (iterator.hasPrevious()) {
                 BallTreeNode<T> ancestor = iterator.previous();
-                if (ancestor.hasTwoChilds()) {
+                if (ancestor.hasTwoChildren()) {
                     BallTreeNode<T> leftChild = ancestor.getLeftChild();
                     BallTreeNode<T> rightChild = ancestor.getRightChild();
                     ancestor.setRadius(Math.max(rightChild.getRadius() + distance.calculateDistance(rightChild.getCenter(), ancestor.getCenter()),
@@ -210,8 +197,8 @@ public class BallTree<T extends IInstanceLabels> implements ISPRGeometricDataCol
     public Collection<T> getNearestValues(int k, Vector values) {
         BoundedPriorityQueue<DoubleObjectContainer<BallTreeNode<T>>> priorityQueue = getNearestNodes(k, values.getValues());
         LinkedList<T> neighboursList = new LinkedList<>();
-        for (DoubleObjectContainer<BallTreeNode<T>> tupel : priorityQueue) {
-            neighboursList.add((tupel.getSecond()).getStoreValue());
+        for (DoubleObjectContainer<BallTreeNode<T>> tuple : priorityQueue) {
+            neighboursList.add((tuple.getSecond()).getStoreValue());
         }
         return neighboursList;
     }
@@ -220,8 +207,8 @@ public class BallTree<T extends IInstanceLabels> implements ISPRGeometricDataCol
     public Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, Vector values) {
         BoundedPriorityQueue<DoubleObjectContainer<BallTreeNode<T>>> priorityQueue = getNearestNodes(k, values.getValues());
         LinkedList<DoubleObjectContainer<T>> neighboursList = new LinkedList<>();
-        for (DoubleObjectContainer<BallTreeNode<T>> tupel : priorityQueue) {
-            boolean add = neighboursList.add(new DoubleObjectContainer<T>(tupel.getFirst(), tupel.getSecond().getStoreValue()));
+        for (DoubleObjectContainer<BallTreeNode<T>> tuple : priorityQueue) {
+            boolean add = neighboursList.add(new DoubleObjectContainer<T>(tuple.getFirst(), tuple.getSecond().getStoreValue()));
         }
         return neighboursList;
 
@@ -240,10 +227,10 @@ public class BallTree<T extends IInstanceLabels> implements ISPRGeometricDataCol
             // put top element into priorityQueue
             BallTreeNode<T> currentNode = nodeStack.pop();
             Integer currentSide = sideStack.pop();
-            DoubleObjectContainer<BallTreeNode<T>> currentTupel = new DoubleObjectContainer<>(distance.calculateDistance(currentNode.getCenter(), values), currentNode);
-            priorityQueue.add(currentTupel);
+            DoubleObjectContainer<BallTreeNode<T>> currentTuple = new DoubleObjectContainer<>(distance.calculateDistance(currentNode.getCenter(), values), currentNode);
+            priorityQueue.add(currentTuple);
             // now check if far children has to be regarded
-            if (currentNode.hasTwoChilds()) {
+            if (currentNode.hasTwoChildren()) {
                 BallTreeNode<T> otherChild = (currentSide < 0) ? currentNode.getRightChild() : currentNode.getLeftChild();
                 if (!priorityQueue.isFilled()
                         || priorityQueue.peek().getFirst() + otherChild.getRadius()
@@ -261,7 +248,7 @@ public class BallTree<T extends IInstanceLabels> implements ISPRGeometricDataCol
         BallTreeNode<T> currentNode = root;
         stack.push(currentNode);
         while (!currentNode.isLeaf()) {
-            if (currentNode.hasTwoChilds()) {
+            if (currentNode.hasTwoChildren()) {
                 double distanceLeft = distance.calculateDistance(currentNode.getLeftChild().getCenter(), values);
                 double distanceRight = distance.calculateDistance(currentNode.getRightChild().getCenter(), values);
                 currentNode = (distanceLeft < distanceRight) ? currentNode.getLeftChild() : currentNode.getRightChild();
@@ -359,18 +346,11 @@ public class BallTree<T extends IInstanceLabels> implements ISPRGeometricDataCol
      */
     @Override
     public int numberOfUniquesOfStoredValues() {
-        Set<T> uniqueValues = new HashSet<>();
-        for (T value : values) {
-            uniqueValues.add(value);
-        }
-        return uniqueValues.size();
+        return new HashSet<>(values).size();
     }
 
     @Override
     public DistanceMeasure getMeasure() {
         return this.distance;
     }
-    
-    
-
 }

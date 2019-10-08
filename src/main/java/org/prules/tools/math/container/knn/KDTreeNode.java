@@ -26,107 +26,105 @@ import java.io.Serializable;
 
 /**
  * The node for a KD tree.
- * 
- * @author Sebastian Land
  *
  * @param <T> This is the type of value with is stored with the points and retrieved on nearest
- * neighbour search
+ *            neighbour search
+ * @author Sebastian Land
  */
 public class KDTreeNode<T> implements Serializable {
-	
-	private static final long serialVersionUID = -4204535347268139613L;
-	private T storeValue;
-	private double[] values;
-	private KDTreeNode<T> lesserChild;
-	private KDTreeNode<T> greaterChild;
-	private int comparationDimension;
 
-	public KDTreeNode(double[] values, T storeValue, int comparationDimension) {
-		this.values = values;
-		this.storeValue = storeValue;
-		this.comparationDimension = comparationDimension;
-	}
+    private static final long serialVersionUID = -4204535347268139613L;
+    private T storeValue;
+    private double[] values;
+    private KDTreeNode<T> lesserChild;
+    private KDTreeNode<T> greaterChild;
+    private int comparisionDimension;
 
-	public KDTreeNode<T> getNearChild(double[] compare) {   
-		if (compare[comparationDimension] < values[comparationDimension])
-			return lesserChild;
-		else
-			return greaterChild;
-	}
+    KDTreeNode(double[] values, T storeValue, int comparisionDimension) {
+        this.values = values;
+        this.storeValue = storeValue;
+        this.comparisionDimension = comparisionDimension;
+    }
 
-	public KDTreeNode<T> getFarChild(double[] compare) {
-		if (compare[comparationDimension] >= values[comparationDimension])
-			return lesserChild;
-		else
-			return greaterChild;
-	}
+    KDTreeNode<T> getNearChild(double[] compare) {
+        if (compare[comparisionDimension] < values[comparisionDimension])
+            return lesserChild;
+        else
+            return greaterChild;
+    }
 
-	public boolean hasNearChild(double[] compare) {
-		if (compare[comparationDimension] < values[comparationDimension])
-			return lesserChild != null;
-		else
-			return greaterChild != null;
-	}
+    KDTreeNode<T> getFarChild(double[] compare) {
+        if (compare[comparisionDimension] >= values[comparisionDimension])
+            return lesserChild;
+        else
+            return greaterChild;
+    }
 
-	public boolean hasFarChild(double[] compare) {
-		if (compare[comparationDimension] >= values[comparationDimension])
-			return lesserChild != null;
-		else
-			return greaterChild != null;
-	}
+    boolean hasNearChild(double[] compare) {
+        if (compare[comparisionDimension] < values[comparisionDimension])
+            return lesserChild != null;
+        else
+            return greaterChild != null;
+    }
 
-	public void setChild(KDTreeNode<T> node) {
-		if (node.getValues()[comparationDimension] < values[comparationDimension])
-			lesserChild = node;
-		else
-			greaterChild = node;
-	}
+    boolean hasFarChild(double[] compare) {
+        if (compare[comparisionDimension] >= values[comparisionDimension])
+            return lesserChild != null;
+        else
+            return greaterChild != null;
+    }
 
-	public T getStoreValue() {
-		return storeValue;
-	}
+    void setChild(KDTreeNode<T> node) {
+        if (node.getValues()[comparisionDimension] < values[comparisionDimension])
+            lesserChild = node;
+        else
+            greaterChild = node;
+    }
 
-	public KDTreeNode getLesserChild() {
-		return lesserChild;
-	}
+    T getStoreValue() {
+        return storeValue;
+    }
 
-	public void setLesserChild(KDTreeNode<T> leftChild) {
-		this.lesserChild = leftChild;
-	}
+    public KDTreeNode getLesserChild() {
+        return lesserChild;
+    }
 
-	public KDTreeNode<T> getGreaterChild() {
-		return greaterChild;
-	}
+    public void setLesserChild(KDTreeNode<T> leftChild) {
+        this.lesserChild = leftChild;
+    }
 
-	public void setGreaterChild(KDTreeNode<T> rightChild) {
-		this.greaterChild = rightChild;
-	}
+    public KDTreeNode<T> getGreaterChild() {
+        return greaterChild;
+    }
 
-	public double[] getValues() {
-		return values;
-	}
+    public void setGreaterChild(KDTreeNode<T> rightChild) {
+        this.greaterChild = rightChild;
+    }
 
-	public double getCompareValue() {
-		return values[comparationDimension];
-	}
+    public double[] getValues() {
+        return values;
+    }
 
-	public int getCompareDimension() {
-		return comparationDimension;
-	}
+    double getCompareValue() {
+        return values[comparisionDimension];
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder buffer = new StringBuilder();
-		for (int i = 0; i < comparationDimension; i++) {
-			buffer.append(values[i]).append("  ");
-		}
-		buffer.append("[");
-		buffer.append(values[comparationDimension]);
-		buffer.append("]  ");
-		for (int i = comparationDimension + 1; i < values.length; i++) {
-			buffer.append(values[i]).append("  ");
-		}
-		return buffer.toString();
-	}
+    int getCompareDimension() {
+        return comparisionDimension;
+    }
 
+    @Override
+    public String toString() {
+        StringBuilder buffer = new StringBuilder();
+        for (int i = 0; i < comparisionDimension; i++) {
+            buffer.append(values[i]).append("  ");
+        }
+        buffer.append("[");
+        buffer.append(values[comparisionDimension]);
+        buffer.append("]  ");
+        for (int i = comparisionDimension + 1; i < values.length; i++) {
+            buffer.append(values[i]).append("  ");
+        }
+        return buffer.toString();
+    }
 }

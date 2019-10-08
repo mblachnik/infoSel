@@ -7,27 +7,27 @@ package org.prules.operator.learner.weighting.models;
 
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.ExampleSet;
+import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import org.prules.dataset.IInstanceLabels;
+import org.prules.dataset.Vector;
 import org.prules.tools.math.BasicMath;
 import org.prules.tools.math.container.PairContainer;
 import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 import org.prules.tools.math.container.knn.KNNFactory;
-import com.rapidminer.tools.math.similarity.DistanceMeasure;
+
 import java.util.Collection;
 import java.util.Iterator;
-import org.prules.dataset.IInstanceLabels;
-import org.prules.dataset.Vector;
 
 /**
- *
  * @author Marcin
  */
 public class VarianceNoiseModel extends AbstractNoiseEstimatorModel {
 
-    DistanceMeasure distance;
     private final GeometricCollectionTypes knnType = GeometricCollectionTypes.LINEAR_SEARCH;
-    int k = 1;
-    double nne = 0;
+    private DistanceMeasure distance;
+    private int k = 1;
+    private double nne = 0;
 
     public VarianceNoiseModel(DistanceMeasure distance, int k) {
         assert distance != null;
@@ -56,13 +56,13 @@ public class VarianceNoiseModel extends AbstractNoiseEstimatorModel {
             vector = sampleIterator.next();
             double label = labelIterator.next().getLabel();
             res = knn.getNearestValues(k + 1, vector);
-            int nearestNeighborIndex = -1;            
-            double mean = 0;                        
+            int nearestNeighborIndex = -1;
+            double mean = 0;
             for (IInstanceLabels labels : res) {
                 if (nearestNeighborIndex >= 0) {
-                    values[nearestNeighborIndex] = labels.getLabel();                    
-                    mean += labels.getLabel(); 
-                } 
+                    values[nearestNeighborIndex] = labels.getLabel();
+                    mean += labels.getLabel();
+                }
                 nearestNeighborIndex++;
             }
             mean = nearestNeighborIndex == 0 ? 0 : mean / nearestNeighborIndex;
@@ -79,5 +79,4 @@ public class VarianceNoiseModel extends AbstractNoiseEstimatorModel {
     public double getNNE() {
         return nne;
     }
-
 }

@@ -5,25 +5,22 @@
 package org.prules.operator.learner.tools.genetic;
 
 /**
- *
  * @author Marcin
  */
 
 //TODO Implement different LossFunction support
 public class RMRandomGenerator implements RandomGenerator {
-    com.rapidminer.tools.RandomGenerator random;
-    
-    
+    private com.rapidminer.tools.RandomGenerator random;
+
+
     /**
-     * 
      * @param random
      */
-    public RMRandomGenerator(com.rapidminer.tools.RandomGenerator random){
+    public RMRandomGenerator(com.rapidminer.tools.RandomGenerator random) {
         this.random = random;
     }
 
     /**
-     * 
      * @return
      */
     @Override
@@ -32,7 +29,6 @@ public class RMRandomGenerator implements RandomGenerator {
     }
 
     /**
-     * 
      * @param n
      * @return
      */
@@ -42,13 +38,10 @@ public class RMRandomGenerator implements RandomGenerator {
     }
 
     /**
-     * 
      * @return
      */
     @Override
     public double nextDouble() {
         return random.nextDouble();
     }
-    
-    
 }

@@ -6,114 +6,128 @@
 package org.prules.dataset;
 
 import java.io.Serializable;
-import java.util.Map;
 import java.util.Set;
 
 /**
  * Interface for any single datarow container, it allows to store any complex instance. An instance can contain any complex elements like labels, predictions, vector etc. These elements are called by String names
+ *
  * @author Marcin
  */
 public interface IGenericContainer extends Serializable {
 
     /**
      * Read instance element by name of this element
+     *
      * @param <T> - type of returned element
-     * @param s - element name
-     * @return 
+     * @param s   - element name
+     * @return
      */
-    <T> T get(String s); 
-       
-    
+    <T> T get(String s);
+
+
     /**
      * Read an element as int value
+     *
      * @param s - element name
-     * @return 
+     * @return
      */
     int getValueAsInt(String s);
 
     /**
      * Read an element as double value
+     *
      * @param s - element name
-     * @return 
+     * @return
      */
     double getValueAsDouble(String s);
-    
+
     /**
      * Read an element as long value
+     *
      * @param s - element name
-     * @return 
+     * @return
      */
     long getValueAsLong(String s);
-    
+
     /**
      * Read an element as float
+     *
      * @param s - element name
-     * @return 
+     * @return
      */
     float getValueAsFloat(String s);
-        
+
     /**
      * Read an element as String
+     *
      * @param s - element name
-     * @return 
+     * @return
      */
     String getValueAsString(String s);
-    
+
     Object put(String key, Object value);
+
     void set(String key, Object value);
-    
-    
+
+
     /**
      * Write an element as int value
-     * @param key - element name
-     * @param value -      
+     *
+     * @param key   - element name
+     * @param value -
      */
     void setValueAsInt(String key, int value);
 
     /**
      * Write an element as double value
-     * @param key - element name
-     * @param value -      
+     *
+     * @param key   - element name
+     * @param value -
      */
-    void  setValueAsDouble(String key, double value);
-    
+    void setValueAsDouble(String key, double value);
+
     /**
      * Write an element as long value
-     * @param key - element name
-     * @param value -      
+     *
+     * @param key   - element name
+     * @param value -
      */
     void setValueAsLong(String key, long value);
-    
+
     /**
      * Write an element as float
-     * @param key - element name
-     * @param value -      
+     *
+     * @param key   - element name
+     * @param value -
      */
     void setValueAsFloat(String key, float value);
-        
+
     /**
      * Write an element as String
-     * @param key - element name
-     * @param value -      
+     *
+     * @param key   - element name
+     * @param value -
      */
     void setValueAsString(String key, String value);
-    
+
     /**
      * Returns number of elements in the container
-     * @return 
+     *
+     * @return
      */
     int size();
-    
+
     /**
      * Returns list of keys of elements in the container
-     * @return 
+     *
+     * @return
      */
     Set<String> keySet();
-    
+
     /**
      * returns true if container is empty
-     * @return 
+     *
+     * @return
      */
     boolean isEmpty();
-    
 }

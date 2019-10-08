@@ -5,29 +5,10 @@
 
 package org.prules.operator.learner.feature.selection;
 
-import com.rapidminer.example.AttributeWeights;
-import com.rapidminer.example.ExampleSet;
-import com.rapidminer.operator.OperatorDescription;
-import com.rapidminer.operator.OperatorException;
-import com.rapidminer.operator.features.selection.AttributeWeightSelection;
-import com.rapidminer.operator.ports.InputPort;
-import com.rapidminer.operator.ports.InputPorts;
-import com.rapidminer.operator.ports.OutputPort;
-import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
-import com.rapidminer.operator.ports.metadata.ExampleSetPassThroughRule;
-import com.rapidminer.operator.ports.metadata.GenerateModelTransformationRule;
-import com.rapidminer.operator.ports.metadata.MDInteger;
-import com.rapidminer.operator.ports.metadata.SetRelation;
-import com.rapidminer.operator.ports.metadata.SimplePrecondition;
-import com.rapidminer.parameter.UndefinedParameterError;
-
-import java.util.Set;
-
 /**
- *
  * @author Marcin
  */
-public class FeatureSelectionOperator{
+public class FeatureSelectionOperator {
     /*extends  AbstractPRulesFeatureSelection{
     private InputPort  weightsInputPort = getInputPorts().createPort("attribute weights", AttributeWeights.class);
     private OutputPort weightsOutputPort = getOutputPorts().createPort("attribute weights");

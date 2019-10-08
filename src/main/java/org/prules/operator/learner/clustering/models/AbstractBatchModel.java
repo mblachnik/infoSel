@@ -2,29 +2,29 @@ package org.prules.operator.learner.clustering.models;
 
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import org.prules.dataset.Vector;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.prules.dataset.Vector;
 
 /**
- *
  * @author Marcin
  */
 public abstract class AbstractBatchModel {
 
     List<Vector> prototypes;
     DistanceMeasure distance;
-    List<Double> costFunctionValue = new ArrayList<>();    
+    List<Double> costFunctionValue = new ArrayList<>();
     Collection<double[]> partitionMatrix;
 
     /**
      * Constructor of any batch based data processing (clusterubg) model
      *
      * @param numberOfPrototypes - number of prototypes => number of clusters
-     * @param distance - distanceMeasure
+     * @param distance           - distanceMeasure
      */
-    public AbstractBatchModel(DistanceMeasure distance) {
+    AbstractBatchModel(DistanceMeasure distance) {
         this.distance = distance;
         costFunctionValue.add(Double.MAX_VALUE);
     }
@@ -52,18 +52,18 @@ public abstract class AbstractBatchModel {
     }
 
     /**
-     * This method resets or creates new partition matrix. It checks if partition matrix is 
-     * already allocated and size of partition matrix is appropriate, if not then 
-     * new partition matrix is allocated.      
+     * This method resets or creates new partition matrix. It checks if partition matrix is
+     * already allocated and size of partition matrix is appropriate, if not then
+     * new partition matrix is allocated.
      *
      * @param trainingSet
      */
     public void resetPartitionMatrix(ExampleSet trainingSet) {
         int numberOfTrainingExamples = trainingSet.size();
-        if (partitionMatrix == null){
+        if (partitionMatrix == null) {
             partitionMatrix = new ArrayList<>(numberOfTrainingExamples);
         }
-        if (partitionMatrix.size() != trainingSet.size()){
+        if (partitionMatrix.size() != trainingSet.size()) {
             for (int i = 0; i < numberOfTrainingExamples; i++) {
                 double[] row = new double[prototypes.size()];
                 partitionMatrix.add(row);
@@ -87,7 +87,7 @@ public abstract class AbstractBatchModel {
      * @return
      */
     public double getCostFunctionValue() {
-        return costFunctionValue.get(costFunctionValue.size()-1);
+        return costFunctionValue.get(costFunctionValue.size() - 1);
     }
 
     /**

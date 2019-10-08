@@ -26,32 +26,24 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import org.prules.dataset.Const;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Stack;
-
 import com.rapidminer.tools.math.container.BoundedPriorityQueue;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import org.prules.dataset.InstanceFactory;
-import org.prules.tools.math.container.DoubleObjectContainer;
+import org.prules.dataset.Const;
 import org.prules.dataset.IInstanceLabels;
+import org.prules.dataset.InstanceFactory;
 import org.prules.dataset.Vector;
+import org.prules.tools.math.container.DoubleObjectContainer;
+
+import java.util.*;
 
 /**
  * This class is an implementation of a KD-Tree for organizing multidimensional
  * datapoints in a fashion supporting the search for nearest neighbours. This is
  * only working well in low dimensions.
  *
- * @author Sebastian Land
- *
  * @param <T> This is the type of value with is stored with the points and
- * retrieved on nearest neighbour search
+ *            retrieved on nearest neighbour search
+ * @author Sebastian Land
  */
 public class KDTree<T extends IInstanceLabels> implements ISPRGeometricDataCollection<T> {
 
@@ -61,26 +53,26 @@ public class KDTree<T extends IInstanceLabels> implements ISPRGeometricDataColle
     private DistanceMeasure distance;
     private int size = 0;
     private ArrayList<T> values = new ArrayList<T>();
-    long index = 0;
+    private long index = 0;
 
-    public KDTree(DistanceMeasure distance, int numberOfDimensions) {
+    private KDTree(DistanceMeasure distance, int numberOfDimensions) {
         this.k = numberOfDimensions;
         this.distance = distance;
     }
 
-    public KDTree(ExampleSet exampleSet, Map<Attribute,String> storedValuesAttribute, DistanceMeasure distance) {
-        this(distance,exampleSet.size());
+    KDTree(ExampleSet exampleSet, Map<Attribute, String> storedValuesAttribute, DistanceMeasure distance) {
+        this(distance, exampleSet.size());
         initialize(exampleSet, storedValuesAttribute);
     }
-     
+
     /**
      * Initialize data structure
      *
      * @param exampleSet
-     * @param storedValuesAttribute     
+     * @param storedValuesAttribute
      */
     @Override
-    public final void initialize(ExampleSet exampleSet, Map<Attribute,String> storedValuesAttribute) {
+    public final void initialize(ExampleSet exampleSet, Map<Attribute, String> storedValuesAttribute) {
         Attributes attributes = exampleSet.getAttributes();
         int valuesSize = attributes.size();
         for (Example example : exampleSet) {
@@ -90,11 +82,11 @@ public class KDTree<T extends IInstanceLabels> implements ISPRGeometricDataColle
                 exampleValues[i] = example.getValue(attribute);
                 i++;
             }
-            IInstanceLabels labelValue = InstanceFactory.createInstanceLabels(example,storedValuesAttribute);
-            this.add(InstanceFactory.createVector(exampleValues),(T)labelValue);
+            IInstanceLabels labelValue = InstanceFactory.createInstanceLabels(example, storedValuesAttribute);
+            this.add(InstanceFactory.createVector(exampleValues), (T) labelValue);
         }
     }
-    
+
     @Override
     public void add(Vector values, T storeValue) {
         storeValue.put(Const.INDEX_CONTAINER, index++);
@@ -126,8 +118,8 @@ public class KDTree<T extends IInstanceLabels> implements ISPRGeometricDataColle
     public Collection<T> getNearestValues(int k, Vector values) {
         BoundedPriorityQueue<DoubleObjectContainer<KDTreeNode<T>>> priorityQueue = getNearestNodes(k, values.getValues());
         LinkedList<T> neighboursList = new LinkedList<T>();
-        for (DoubleObjectContainer<KDTreeNode<T>> tupel : priorityQueue) {
-            neighboursList.add(tupel.getSecond().getStoreValue());
+        for (DoubleObjectContainer<KDTreeNode<T>> tuple : priorityQueue) {
+            neighboursList.add(tuple.getSecond().getStoreValue());
         }
         return neighboursList;
     }
@@ -136,8 +128,8 @@ public class KDTree<T extends IInstanceLabels> implements ISPRGeometricDataColle
     public Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, Vector values) {
         BoundedPriorityQueue<DoubleObjectContainer<KDTreeNode<T>>> priorityQueue = getNearestNodes(k, values.getValues());
         LinkedList<DoubleObjectContainer<T>> neighboursList = new LinkedList<DoubleObjectContainer<T>>();
-        for (DoubleObjectContainer<KDTreeNode<T>> tupel : priorityQueue) {
-            neighboursList.add(new DoubleObjectContainer<T>(tupel.getFirst(), tupel.getSecond().getStoreValue()));
+        for (DoubleObjectContainer<KDTreeNode<T>> tuple : priorityQueue) {
+            neighboursList.add(new DoubleObjectContainer<T>(tuple.getFirst(), tuple.getSecond().getStoreValue()));
         }
         return neighboursList;
     }
@@ -154,8 +146,8 @@ public class KDTree<T extends IInstanceLabels> implements ISPRGeometricDataColle
         while (!nodeStack.isEmpty()) {
             // put top element into priorityQueue
             KDTreeNode<T> currentNode = nodeStack.pop();
-            DoubleObjectContainer<KDTreeNode<T>> currentTupel = new DoubleObjectContainer<KDTreeNode<T>>(distance.calculateDistance(currentNode.getValues(), values), currentNode);
-            priorityQueue.add(currentTupel);
+            DoubleObjectContainer<KDTreeNode<T>> currentTuple = new DoubleObjectContainer<KDTreeNode<T>>(distance.calculateDistance(currentNode.getValues(), values), currentNode);
+            priorityQueue.add(currentTuple);
             // now check if far children has to be regarded
             if (!priorityQueue.isFilled()
                     || priorityQueue.peek().getFirst() > currentNode.getCompareValue() - values[currentNode.getCompareDimension()]) {
@@ -208,15 +200,15 @@ public class KDTree<T extends IInstanceLabels> implements ISPRGeometricDataColle
     @Override
     public Vector getSample(int index) {
         throw new UnsupportedOperationException("Not supported.");
-    }    
-    
+    }
+
     @Override
-    public Iterator<T> storedValueIterator(){
+    public Iterator<T> storedValueIterator() {
         return values.iterator();
     }
-        
+
     @Override
-    public Iterator<Vector> samplesIterator(){
+    public Iterator<Vector> samplesIterator() {
         throw new UnsupportedOperationException("Not supported.");
     }
 
@@ -238,7 +230,7 @@ public class KDTree<T extends IInstanceLabels> implements ISPRGeometricDataColle
         }
         return uniqueValues.size();
     }
-    
+
     @Override
     public DistanceMeasure getMeasure() {
         return this.distance;

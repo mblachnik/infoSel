@@ -5,48 +5,51 @@
 package org.prules.operator.learner.clustering;
 
 //import history.OldAbstractPRulesOperator;
+
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.Tools;
-import org.prules.operator.AbstractPrototypeBasedOperator;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
-import com.rapidminer.operator.clustering.clusterer.RMAbstractClusterer;
-import org.prules.operator.learner.clustering.models.AbstractBatchModel;
 import com.rapidminer.operator.ValueDouble;
+import com.rapidminer.operator.clustering.clusterer.RMAbstractClusterer;
 import com.rapidminer.operator.ports.OutputPort;
 import com.rapidminer.operator.ports.metadata.DistanceMeasurePrecondition;
 import com.rapidminer.operator.ports.metadata.GenerateModelTransformationRule;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeBoolean;
-
-import java.util.*;
 import org.prules.dataset.Vector;
+import org.prules.operator.AbstractPrototypeBasedOperator;
+import org.prules.operator.learner.clustering.models.AbstractBatchModel;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This is an abstract class for all prototype based clustering operators which use batch based update method.
- * In fact it requires that the clustering algorithm will be implemented based on the {@link  org.prules.operator.learner.clustering.models.AbstractBatchModel} 
+ * In fact it requires that the clustering algorithm will be implemented based on the {@link  org.prules.operator.learner.clustering.models.AbstractBatchModel}
+ *
  * @author Marcin
  */
 public abstract class AbstractPrototypeClusteringBatchOperator extends AbstractPrototypeBasedOperator {
 
-    public static final String PARAMETER_ADD_PARTITION_MATRIX = "Add partition matrix";
+    private static final String PARAMETER_ADD_PARTITION_MATRIX = "Add partition matrix";
     private static final long serialVersionUID = 21;
     protected final OutputPort modelOutputPort = getOutputPorts().createPort("model");
-    double costFunctionValue = Double.NaN;
-    protected Map<Integer, String> clusterNames;
+    private double costFunctionValue = Double.NaN;
+    private Map<Integer, String> clusterNames;
 
     /**
-     * Constructor of prototype based clustering operator. 
-     * 
+     * Constructor of prototype based clustering operator.
      *
-     * @param description     
+     * @param description
      */
-    public AbstractPrototypeClusteringBatchOperator(OperatorDescription description) {
+    AbstractPrototypeClusteringBatchOperator(OperatorDescription description) {
         super(description);
         exampleSetInputPort.addPrecondition(new DistanceMeasurePrecondition(exampleSetInputPort, this));
         getTransformer().addRule(new GenerateModelTransformationRule(exampleSetInputPort, modelOutputPort, IS_ClusterModel.class));
         //getTransformer().addRule(new GenerateModelTransformationRule(exampleSetInputPort, modelOutputPort, MyKNNClassificationModel.class));        
-       
+
         addValue(new ValueDouble("CostFunctionValue", "Cost Function Value") {
             @Override
             public double getDoubleValue() {
@@ -65,7 +68,7 @@ public abstract class AbstractPrototypeClusteringBatchOperator extends AbstractP
      * @throws OperatorException
      */
     @Override
-    public ExampleSet processExamples(ExampleSet trainingSet) throws OperatorException {        
+    public ExampleSet processExamples(ExampleSet trainingSet) throws OperatorException {
         AbstractBatchModel trainModel = optimize(trainingSet);
         Collection<Vector> prototypes = trainModel.getPrototypes();
         costFunctionValue = trainModel.getCostFunctionValue();
@@ -77,8 +80,7 @@ public abstract class AbstractPrototypeClusteringBatchOperator extends AbstractP
         modelOutputPort.deliver(model);
         Tools.checkAndCreateIds(trainingSet);
         model.apply(trainingSet, true);
-        ExampleSet codebooks = IS_ClusterModelTools.prepareCodebooksExampleSet(prototypes, clusterNames, trainingSet.getAttributes());
-        return codebooks;
+        return IS_ClusterModelTools.prepareCodeBooksExampleSet(prototypes, clusterNames, trainingSet.getAttributes());
     }
 
     /**
@@ -101,8 +103,8 @@ public abstract class AbstractPrototypeClusteringBatchOperator extends AbstractP
                 "If true, the cluster id is stored in an attribute with the special role 'label' instead of 'cluster'.",
                 false);
         type.setExpert(false);
-        types.add(type);        
-     
+        types.add(type);
+
         type = new ParameterTypeBoolean(PARAMETER_ADD_PARTITION_MATRIX,
                 "If true, results also contain membership matrix which shows how strong given example belong to particular cluster.",
                 false);
@@ -123,5 +125,4 @@ public abstract class AbstractPrototypeClusteringBatchOperator extends AbstractP
      * @throws OperatorException
      */
     public abstract AbstractBatchModel optimize(ExampleSet trainingSet) throws OperatorException;
-
 }

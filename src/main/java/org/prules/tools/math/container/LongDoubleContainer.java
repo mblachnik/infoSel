@@ -7,8 +7,9 @@ package org.prules.tools.math.container;
 import java.io.Serializable;
 
 /**
- *Container which allows to store long double values as primitive types. Not that it implements comparable interface.
+ * Container which allows to store long double values as primitive types. Not that it implements comparable interface.
  * COmparison is made according to the first element
+ *
  * @author Marcin
  */
 public class LongDoubleContainer implements Comparable<LongDoubleContainer>, Serializable {
@@ -27,7 +28,6 @@ public class LongDoubleContainer implements Comparable<LongDoubleContainer>, Ser
     public double second;
 
     /**
-     *
      * @param valueA
      * @param valueB
      */
@@ -61,7 +61,7 @@ public class LongDoubleContainer implements Comparable<LongDoubleContainer>, Ser
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = (int)(prime * first) + (int) (prime * second);
+        result = (int) (prime * first) + (int) (prime * second);
         return result;
     }
 

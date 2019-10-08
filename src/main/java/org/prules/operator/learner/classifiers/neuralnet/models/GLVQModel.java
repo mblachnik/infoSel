@@ -3,25 +3,20 @@ package org.prules.operator.learner.classifiers.neuralnet.models;
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import org.prules.tools.math.BasicMath;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import java.io.IOException;
+import org.prules.tools.math.BasicMath;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 /**
- *
  * @author Marcin
  */
 public class GLVQModel extends AbstractLVQModel {
 
     private final DistanceMeasure measure; //Distance measure
-    private final int iterations; //TOtal number of iterations
+    private final int iterations; //Total number of iterations
     private int currentIteration; //Iteration id
     private double alpha; //Learning rate    
     private double time; //Time used in sigmoidal cost function evaluation
@@ -36,17 +31,16 @@ public class GLVQModel extends AbstractLVQModel {
     private final LearningRateUpdateRule learningRateUpdateRule; //THe update rule of the learning rate
     private int numberOfUpdates; //The number of times the update function was executed before nextIteration was executed
     private double tmpFactor = 0;
+
     /**
-     *
      * @param prototypes
      * @param iterations
      * @param measure
      * @param alpha
-     * @param debug - wether to use debug mode. In debug mode the algorithm also calculates the cost function which can be time consuming
      * @throws OperatorException
      */
     public GLVQModel(ExampleSet prototypes, int iterations,
-            DistanceMeasure measure, double alpha) throws OperatorException {
+                     DistanceMeasure measure, double alpha) throws OperatorException {
         super(prototypes);
         this.iterations = iterations;
         this.currentIteration = 0;
@@ -54,14 +48,14 @@ public class GLVQModel extends AbstractLVQModel {
         this.time = 1;
         this.initialAlpha = alpha;
         this.measure = measure;
-        this.measure.init(prototypes);        
+        this.measure.init(prototypes);
         this.costValues = new ArrayList<>(iterations);
         this.debug = false;
         learningRateUpdateRule = new HyperbolicLearningRateUpdateRule();
         learningRateValues = new ArrayList<>(iterations);
         timeRateValues = new ArrayList<>(iterations);
         addStoredValue(LEARNING_RATE_KEY, learningRateValues);
-        addStoredValue(LAMBDA_RATE_KEY, timeRateValues);        
+        addStoredValue(LAMBDA_RATE_KEY, timeRateValues);
     }
 
     /**
@@ -94,7 +88,7 @@ public class GLVQModel extends AbstractLVQModel {
         double mu = (minDistCorrect - minDistIncorrect) / denominator;
         double currentCostValue = BasicMath.sigmoid(mu * time);
         costValue += currentCostValue;
-        
+
         double dif_df_mu = currentCostValue * time * (1 - currentCostValue);
         double factorCorrect = minDistIncorrect / (denominator * denominator);
         double factorIncorrect = minDistCorrect / (denominator * denominator);
@@ -120,13 +114,13 @@ public class GLVQModel extends AbstractLVQModel {
     public boolean nextIteration(ExampleSet trainingSet) {
         currentIteration++;
         //time *= 1.1;
-        
+
         if (debug) {
             costValues.add(calcCostFunction(trainingSet));
         } else {
-            costValues.add(costValue/numberOfUpdates);
-            timeRateValues.add(tmpFactor/numberOfUpdates);
-            learningRateValues.add(alpha);        
+            costValues.add(costValue / numberOfUpdates);
+            timeRateValues.add(tmpFactor / numberOfUpdates);
+            learningRateValues.add(alpha);
         }
         costValue = 0;
         numberOfUpdates = 0;
@@ -137,14 +131,15 @@ public class GLVQModel extends AbstractLVQModel {
     }
 
     /**
-     * Cost function. Note that the cost normally the cost function should be executed in each iteration, 
-     * but this is very time consuming because we have to two times iterate over the dataset. 
-     * Normally instead we use cost function value calculated trivially but it 
-     * doesn't give us the true value of the cost function because the prototypes 
+     * Cost function. Note that the cost normally the cost function should be executed in each iteration,
+     * but this is very time consuming because we have to two times iterate over the data set.
+     * Normally instead we use cost function value calculated trivially but it
+     * doesn't give us the true value of the cost function because the prototypes
      * position changes after presenting each training sample (because of SGD)
      * This is the true cost function
+     *
      * @param trainingSet
-     * @return 
+     * @return
      */
     private double calcCostFunction(ExampleSet trainingSet) {
         double[] tmpExampleValues = new double[getAttributesSize()];
@@ -176,7 +171,7 @@ public class GLVQModel extends AbstractLVQModel {
             double mu = (minDistCorrect - minDistIncorrect) / denominator;
             costValue += BasicMath.sigmoid(mu * time);
         }
-        return costValue/trainingSet.size();
+        return costValue / trainingSet.size();
     }
 
     /**
@@ -206,8 +201,8 @@ public class GLVQModel extends AbstractLVQModel {
      */
     @Override
     public double getCostFunctionValue() {
-        if (costValues.size()>0)
-            return costValues.get(costValues.size()-1);
+        if (costValues.size() > 0)
+            return costValues.get(costValues.size() - 1);
         return -1;
     }
 

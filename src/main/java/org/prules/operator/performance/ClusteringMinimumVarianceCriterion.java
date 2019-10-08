@@ -5,16 +5,9 @@
  */
 package org.prules.operator.performance;
 
-import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import org.prules.dataset.InstanceFactory;
-import org.prules.dataset.VectorDense;
-import org.prules.tools.math.container.knn.KNNTools;
-import org.prules.tools.math.container.DoubleObjectContainer;
-import org.prules.tools.math.container.knn.GeometricCollectionTypes;
-import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.ValueDouble;
@@ -26,14 +19,18 @@ import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import org.prules.dataset.IInstanceLabels;
+import org.prules.dataset.InstanceFactory;
+import org.prules.dataset.Vector;
+import org.prules.tools.math.container.DoubleObjectContainer;
+import org.prules.tools.math.container.knn.GeometricCollectionTypes;
+import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
+import org.prules.tools.math.container.knn.KNNFactory;
+
 import java.util.Collection;
 import java.util.List;
-import org.prules.tools.math.container.knn.KNNFactory;
-import org.prules.dataset.IInstanceLabels;
-import org.prules.dataset.Vector;
 
 /**
- *
  * @author Marcin
  */
 public class ClusteringMinimumVarianceCriterion extends AbstractExampleSetEvaluator {
@@ -58,26 +55,26 @@ public class ClusteringMinimumVarianceCriterion extends AbstractExampleSetEvalua
     public PerformanceVector evaluate(ExampleSet exampleSet) throws OperatorException {
         PerformanceVector performanceCriteria = new PerformanceVector();
         ExampleSet prototypes = protoSetInput.getDataOrNull(ExampleSet.class);
-        if (prototypes!=null)   count(prototypes,exampleSet);        
+        if (prototypes != null) count(prototypes, exampleSet);
         EstimatedPerformance interClusterDistancePerformance = new EstimatedPerformance("intar_cluster_distance", interClusterDistance, 1, true);
         performanceCriteria.addCriterion(interClusterDistancePerformance);
         return performanceCriteria;
     }
-    
-    private void count(ExampleSet prototypes, ExampleSet exampleSet) throws OperatorException{
+
+    private void count(ExampleSet prototypes, ExampleSet exampleSet) throws OperatorException {
         DistanceMeasure distance = measureHelper.getInitializedMeasure(prototypes);
-        ISPRGeometricDataCollection knn = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH,prototypes, distance);
+        ISPRGeometricDataCollection knn = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, prototypes, distance);
         //MyKNNClassificationModel<Number> model = new MyKNNClassificationModel<Number>(prototypes, knn, 1, VotingType.MAJORITY, false);
         Attributes attributes = prototypes.getAttributes();
         int n = attributes.size();
         Vector values = InstanceFactory.createVector(exampleSet);
         interClusterDistance = 0;
-        for (Example example : exampleSet){
+        for (Example example : exampleSet) {
             values.setValues(example);
             Collection<DoubleObjectContainer<IInstanceLabels>> collDist = knn.getNearestValueDistances(1, values);
             double dist = collDist.iterator().next().getFirst();
-            interClusterDistance += dist*dist;
-        }        
+            interClusterDistance += dist * dist;
+        }
     }
 
     @Override

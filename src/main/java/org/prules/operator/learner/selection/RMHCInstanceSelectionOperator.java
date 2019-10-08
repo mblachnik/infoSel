@@ -5,10 +5,6 @@
 package org.prules.operator.learner.selection;
 
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
-import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
-import org.prules.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
-import org.prules.operator.learner.selection.models.RMHCNaiveInstanceSelectionGeneralModel;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
@@ -17,8 +13,12 @@ import com.rapidminer.parameter.ParameterTypeInt;
 import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
+import org.prules.operator.learner.selection.models.RMHCNaiveInstanceSelectionGeneralModel;
+import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
+import org.prules.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
+
 import java.util.List;
-import org.prules.operator.learner.selection.models.RMHCNaiveInstanceSelectionGeneralModel1;
 
 /**
  * This class is used to provide Random Mutation Hill Climbing instance
@@ -33,7 +33,7 @@ public class RMHCInstanceSelectionOperator extends AbstractInstanceSelectorOpera
     /**
      * The parameter name for &quot;The used number of nearest neighbors.&quot;
      */
-    public static final String PARAMETER_PROTOTYPES_NUMBER = "Number of prototypes";
+    private static final String PARAMETER_PROTOTYPES_NUMBER = "Number of prototypes";
     /**
      *
      */
@@ -64,7 +64,7 @@ public class RMHCInstanceSelectionOperator extends AbstractInstanceSelectorOpera
         RandomGenerator randomGenerator = RandomGenerator.getRandomGenerator(this);
         IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);
         return new RMHCNaiveInstanceSelectionGeneralModel(measure, numberOfPrototypes, numberOfIterations, randomGenerator, loss);
-        
+
     }
 
     /**
@@ -78,7 +78,7 @@ public class RMHCInstanceSelectionOperator extends AbstractInstanceSelectorOpera
         int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
         try {
             measureType = measureHelper.getSelectedMeasureType();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:

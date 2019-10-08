@@ -7,10 +7,9 @@ package org.prules.tools.math.container;
 import java.io.Serializable;
 
 /**
- *
  * @author Marcin
  */
-public class IntSymetricTupel implements Serializable {
+public class IntSymmetricTuple implements Serializable {
 
     /**
      * This class can be used to build pairs of typed objects and sort them.
@@ -21,11 +20,11 @@ public class IntSymetricTupel implements Serializable {
      * @author Sebastian Land
      */
     private static final long serialVersionUID = 9219166123756515L;
-    public static final int MEM_SIZE = (Integer.SIZE * 2)/8; //Number of bytes used to store the object
+    public static final int MEM_SIZE = (Integer.SIZE * 2) / 8; //Number of bytes used to store the object
     private int t1;
     private int t2;
 
-    public IntSymetricTupel(int t1, int t2) {
+    public IntSymmetricTuple(int t1, int t2) {
         if (t1 > t2) {
             this.t1 = t1;
             this.t2 = t2;
@@ -45,10 +44,10 @@ public class IntSymetricTupel implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof org.prules.tools.math.container.IntSymetricTupel)) {
+        if (!(o instanceof IntSymmetricTuple)) {
             return false;
         }
-        org.prules.tools.math.container.IntSymetricTupel a = (org.prules.tools.math.container.IntSymetricTupel) o;
+        IntSymmetricTuple a = (IntSymmetricTuple) o;
         return this.t1 != a.t1 || this.t2 != a.t2;
     }
 

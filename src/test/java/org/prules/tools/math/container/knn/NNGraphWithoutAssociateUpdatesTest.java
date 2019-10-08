@@ -20,15 +20,15 @@ import org.prules.tools.math.container.DoubleIntContainer;
  *
  * @author Marcin
  */
-public class NNGraphWithoutAssocuateUpdatesTest {
+public class NNGraphWithoutAssociateUpdatesTest {
     
-    public NNGraphWithoutAssocuateUpdatesTest() {
+    public NNGraphWithoutAssociateUpdatesTest() {
     }
 
    public static INNGraph init(int k) {
         INNGraph nn;
         ISPRClassGeometricDataCollection<IInstanceLabels> samples = org.prules.operator.learner.tools.TestUtils.createSampleDataTwoClasses();
-        nn = new NNGraphWithoutAssocuateUpdates(samples, k);
+        nn = new NNGraphWithoutAssociateUpdates(samples, k);
         return nn;
     }
 

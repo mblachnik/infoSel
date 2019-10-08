@@ -7,9 +7,6 @@ package org.prules.operator.learner.selection.weka;
 
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.operator.learner.selection.AbstractInstanceSelectorOperator;
-import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
-import org.prules.operator.learner.tools.DataIndex;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
@@ -21,42 +18,23 @@ import com.rapidminer.parameter.ParameterTypeInt;
 import com.rapidminer.parameter.conditions.EqualTypeCondition;
 import com.rapidminer.tools.WekaInstancesAdaptor;
 import com.rapidminer.tools.WekaTools;
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import main.core.algorithm.Algorithm;
-import main.core.algorithm.BSEAlgorithm;
-import main.core.algorithm.CCISRegAlgorithm;
-import main.core.algorithm.CNNAlgorithm;
-import main.core.algorithm.CNNRegAlgorithm;
-import main.core.algorithm.DROP1Algorithm;
-import main.core.algorithm.DROP2Algorithm;
-import main.core.algorithm.DROP3Algorithm;
-import main.core.algorithm.DROP4Algorithm;
-import main.core.algorithm.DROP5Algorithm;
-import main.core.algorithm.ENNAlgorithm;
-import main.core.algorithm.ENNRegAlgorithm;
-import main.core.algorithm.HMNEAlgorithm;
-import main.core.algorithm.HMNEIAlgorithm;
-import main.core.algorithm.ICFAlgorithm;
-import main.core.algorithm.ICFRegAlgorithm;
 import main.core.algorithm.MIAlgorithm;
-import main.core.algorithm.MSSAlgorithm;
-import main.core.algorithm.MSSRegAlgorithm;
-import main.core.algorithm.RNNAlgorithm;
+import main.core.algorithm.*;
 import main.core.exception.NotEnoughInstancesException;
+import org.prules.operator.learner.selection.AbstractInstanceSelectorOperator;
+import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
 import weka.classifiers.lazy.IBk;
 import weka.core.Instances;
 
+import java.util.List;
+
 /**
- *
  * @author Marcin
  */
 public class WekaISOperator extends AbstractInstanceSelectorOperator {
 
-    public static final String PARAMETER_NEAREST_NEIGHBORS = "k";
-    public static final String PARAMETER_THRESHOLD = "Threshold";
+    private static final String PARAMETER_NEAREST_NEIGHBORS = "k";
+    private static final String PARAMETER_THRESHOLD = "Threshold";
 
     public WekaISOperator(OperatorDescription description) {
         super(description);
@@ -177,7 +155,7 @@ public class WekaISOperator extends AbstractInstanceSelectorOperator {
                         isAlgorithm = mssRegIsAlgorithm;
                         break;
                     case CCIS_REG:
-                        instances = WekaInstanceHelper.cretateInstances(exampleSet);
+                        instances = WekaInstanceHelper.createInstances(exampleSet);
                         CCISRegAlgorithm ccisRegAlgorithm = new CCISRegAlgorithm(instances);
                         threshold = getParameterAsDouble(PARAMETER_THRESHOLD);
                         ccisRegAlgorithm.setSigma(threshold);
@@ -237,9 +215,9 @@ public class WekaISOperator extends AbstractInstanceSelectorOperator {
      return true;
      }
      */
+
     /**
      * Method used to generate parameters of this group of algorithms
-     *
      */
     @Override
     public List<ParameterType> getParameterTypes() {

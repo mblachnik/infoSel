@@ -5,11 +5,7 @@
  */
 package org.prules.operator.learner.selection.ensemble;
 
-import com.rapidminer.example.Attribute;
-import com.rapidminer.example.AttributeRole;
-import com.rapidminer.example.Attributes;
-import com.rapidminer.example.Example;
-import com.rapidminer.example.ExampleSet;
+import com.rapidminer.example.*;
 import com.rapidminer.example.set.MappedExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.operator.OperatorDescription;
@@ -20,12 +16,6 @@ import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.dataset.InstanceFactory;
 import org.prules.dataset.Vector;
@@ -36,29 +26,32 @@ import org.prules.tools.math.container.knn.ISPRClassGeometricDataCollection;
 import org.prules.tools.math.container.knn.KNNFactory;
 import org.prules.tools.math.container.knn.KNNTools;
 
+import java.util.*;
+import java.util.logging.Level;
+
 /**
- *
  * @author Marcin
  */
 public class ISEnsembleAdaBoostOperator extends AbstractISEnsembleOperator {
 
-    double[] instanceWeights; //weights of instances
-    double[] modelWeights; //weights of model in each iteration
-    int sampleSize; //Number of samples in training set 
-    ExampleSet iterationExampleSet; //Temporal store for dataset used in given iteration
-    ExampleSet initialExampleSet;
-    Attribute rowIdAttribute;
-    DistanceMeasure measure;
-    int k = 3;
-    List<Attribute> listOfAttributes; //It is used to synchronize attributes in case user will change the order of attributes in the resultant exampleSet
-    int largeErrorCounter; //Counts how many times AdaBoost with Error > 0.5 was executed
-    RandomGenerator random;
+    private double[] instanceWeights; //weights of instances
+    private double[] modelWeights; //weights of model in each iteration
+    private int sampleSize; //Number of samples in training set
+    private ExampleSet iterationExampleSet; //Temporal store for data set used in given iteration
+    private ExampleSet initialExampleSet;
+    private Attribute rowIdAttribute;
+    private DistanceMeasure measure;
+    private int k = 3;
+    private List<Attribute> listOfAttributes; //It is used to synchronize attributes in case user will change the order of attributes in the resultant exampleSet
+    private int largeErrorCounter; //Counts how many times AdaBoost with Error > 0.5 was executed
+    private RandomGenerator random;
+
     public ISEnsembleAdaBoostOperator(OperatorDescription description) {
         super(description);
     }
 
     @Override
-    public void initializeProcessExamples(ExampleSet exampleSet) throws OperatorException {        
+    public void initializeProcessExamples(ExampleSet exampleSet) throws OperatorException {
         super.initializeProcessExamples(exampleSet);
         random = RandomGenerator.getRandomGenerator(this);
         initialExampleSet = (ExampleSet) exampleSet.clone();
@@ -93,7 +86,7 @@ public class ISEnsembleAdaBoostOperator extends AbstractISEnsembleOperator {
      * @return
      */
     @Override
-    protected ExampleSet preprocessExampleSet(ExampleSet trainingSet) {
+    protected ExampleSet preProcessExampleSet(ExampleSet trainingSet) {
         //Sample according to the distribution of 'instanceWeights'
         Set<Integer> set = new HashSet<>(sampleSize);
         for (int i = 0; i < sampleSize; i++) {
@@ -112,7 +105,7 @@ public class ISEnsembleAdaBoostOperator extends AbstractISEnsembleOperator {
     }
 
     /**
-     * Method can be overriden to process results of instance selection. It is
+     * Method can be overridden to process results of instance selection. It is
      * called in a loop every time an internal process finishes processing of
      * the data By default it returns input exampleSet but for example in
      * AdaBoost algorithms it can be used to check which samples were returned
@@ -121,7 +114,7 @@ public class ISEnsembleAdaBoostOperator extends AbstractISEnsembleOperator {
      * @return
      */
     @Override
-    protected ExampleSet postprocessExampleSet(ExampleSet resultSet) {
+    protected ExampleSet postProcessExampleSet(ExampleSet resultSet) {
         double error = 0;
         ISPRClassGeometricDataCollection<IInstanceLabels> model;
         model = (ISPRClassGeometricDataCollection<IInstanceLabels>) KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, resultSet, measure);
@@ -144,11 +137,11 @@ public class ISEnsembleAdaBoostOperator extends AbstractISEnsembleOperator {
         int iteration = getIteration();
         double alpha;
         if (error > 0.5) {
-            largeErrorCounter++; //COunts how many times this piece of code (error>0.5) was executed
+            largeErrorCounter++; //Counts how many times this piece of code (error > 0.5) was executed
             this.getLogger().log(Level.FINEST, "Error < 0.5, iteration: {0}", iteration);
             alpha = 0;
             for (int i = 0; i < sampleSize; i++) {
-                instanceWeights[i] = 1.0 / sampleSize;                
+                instanceWeights[i] = 1.0 / sampleSize;
             }
         } else if (error == 0) {
             this.getLogger().log(Level.FINEST, "Error < 0.5, iteration: {0}", iteration);
@@ -181,7 +174,6 @@ public class ISEnsembleAdaBoostOperator extends AbstractISEnsembleOperator {
     }
 
     /**
-     *
      * @return
      */
     @Override
@@ -210,5 +202,4 @@ public class ISEnsembleAdaBoostOperator extends AbstractISEnsembleOperator {
         types.addAll(DistanceMeasures.getParameterTypes(this));
         return types;
     }
-
 }

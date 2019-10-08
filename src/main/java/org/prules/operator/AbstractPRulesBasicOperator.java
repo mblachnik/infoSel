@@ -10,7 +10,8 @@ import com.rapidminer.operator.ports.OutputPort;
 import com.rapidminer.operator.ports.metadata.CapabilityPrecondition;
 
 /**
- * A base class for all PRules operators. 
+ * A base class for all PRules operators.
+ *
  * @author Marcin
  */
 public abstract class AbstractPRulesBasicOperator extends Operator implements CapabilityProvider {
@@ -18,14 +19,15 @@ public abstract class AbstractPRulesBasicOperator extends Operator implements Ca
     /**
      * Input port which delivers training ExampleSet
      */
-    protected final InputPort exampleSetInputPort = getInputPorts().createPort("exampleSet");    
+    protected final InputPort exampleSetInputPort = getInputPorts().createPort("exampleSet");
     /**
      * Output port which returns an initial ExampleSet
      */
-    protected final OutputPort exampleSetOutputPort = getOutputPorts().createPassThroughPort("original");    
+    protected final OutputPort exampleSetOutputPort = getOutputPorts().createPassThroughPort("original");
 
     /**
      * Creates AbstractPRulesBasicOperator class
+     *
      * @param description
      */
     public AbstractPRulesBasicOperator(OperatorDescription description) {
@@ -36,12 +38,13 @@ public abstract class AbstractPRulesBasicOperator extends Operator implements Ca
 
     @Override
     public void doWork() throws OperatorException {
-        ExampleSet trainingSet = exampleSetInputPort.getData(ExampleSet.class);                
-        executeOperator(trainingSet);           
+        ExampleSet trainingSet = exampleSetInputPort.getData(ExampleSet.class);
+        executeOperator(trainingSet);
     }
-    
+
     /**
      * A method which implements the learning process.
+     *
      * @param trainingSet - training set
      * @throws OperatorException - in case of an exception during learning
      */
@@ -49,6 +52,7 @@ public abstract class AbstractPRulesBasicOperator extends Operator implements Ca
 
     /**
      * Give access to the input port
+     *
      * @return
      */
     public InputPort getExampleSetInputPort() {
@@ -57,6 +61,7 @@ public abstract class AbstractPRulesBasicOperator extends Operator implements Ca
 
     /**
      * Give access to the output port
+     *
      * @return
      */
     public OutputPort getExampleSetOutputPort() {

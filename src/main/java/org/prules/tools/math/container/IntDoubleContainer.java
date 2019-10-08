@@ -7,9 +7,8 @@ package org.prules.tools.math.container;
 import java.io.Serializable;
 
 /**
- *Container which allows to store int double values as primitive types. Not that it implements comparable interface. COmparison is made according to the first element
- * @param <N>
- * @param <M>
+ * Container which allows to store int double values as primitive types. Not that it implements comparable interface. COmparison is made according to the first element
+ *
  * @author Marcin
  */
 public class IntDoubleContainer implements Comparable<IntDoubleContainer>, Serializable {
@@ -28,7 +27,6 @@ public class IntDoubleContainer implements Comparable<IntDoubleContainer>, Seria
     public double second;
 
     /**
-     *
      * @param valueA
      * @param valueB
      */
@@ -86,13 +84,6 @@ public class IntDoubleContainer implements Comparable<IntDoubleContainer>, Seria
 
     @Override
     public int compareTo(IntDoubleContainer o) {
-        int result = first - o.first;
-        if (result == 0) {
-            return 0;
-        }
-        if (result > 0) {
-            return 1;
-        }
-        return -1;
+        return Integer.compare(first, o.first);
     }
 }

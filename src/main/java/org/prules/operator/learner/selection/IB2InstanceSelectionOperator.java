@@ -1,17 +1,18 @@
 package org.prules.operator.learner.selection;
 
-import org.prules.operator.learner.selection.models.IB2InstanceSelectionModel;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
-import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
-import org.prules.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
-import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
+import org.prules.operator.learner.selection.models.IB2InstanceSelectionModel;
+import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
+import org.prules.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
+
 import java.util.List;
 
 /**
@@ -43,7 +44,7 @@ public class IB2InstanceSelectionOperator extends AbstractInstanceSelectorOperat
     public AbstractInstanceSelectorModel configureInstanceSelectionModel(SelectedExampleSet exampleSet) throws OperatorException {
         DistanceMeasure distance = measureHelper.getInitializedMeasure(exampleSet);
         RandomGenerator randomGenerator = RandomGenerator.getRandomGenerator(this);
-        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);        
+        IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);
         return new IB2InstanceSelectionModel(distance, loss);
     }
 
@@ -58,7 +59,7 @@ public class IB2InstanceSelectionOperator extends AbstractInstanceSelectorOperat
         int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
         try {
             measureType = measureHelper.getSelectedMeasureType();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:
@@ -79,7 +80,7 @@ public class IB2InstanceSelectionOperator extends AbstractInstanceSelectorOperat
                 return false;
         }
     }
-    
+
     /**
      * Setting GUI parameters of this operator
      *
@@ -87,9 +88,6 @@ public class IB2InstanceSelectionOperator extends AbstractInstanceSelectorOperat
      */
     @Override
     public List<ParameterType> getParameterTypes() {
-        List<ParameterType> types = super.getParameterTypes();
-                
-        return types;
+        return super.getParameterTypes();
     }
-
 }

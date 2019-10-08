@@ -7,15 +7,15 @@ import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeInt;
-import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
-import java.util.List;
+import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
 import org.prules.operator.learner.selection.models.ICF21InstanceSelectionModel;
+
+import java.util.List;
 
 
 /**
- *
  * @author Marcin
  */
 public class ICF21InstanceSelectionOperator extends AbstractInstanceSelectorOperator {
@@ -23,7 +23,6 @@ public class ICF21InstanceSelectionOperator extends AbstractInstanceSelectorOper
     public static final String PARAMETER_K = "k";
 
     /**
-     *
      * @param description
      */
     public ICF21InstanceSelectionOperator(OperatorDescription description) {
@@ -37,7 +36,7 @@ public class ICF21InstanceSelectionOperator extends AbstractInstanceSelectorOper
 
     @Override
     public boolean isDistanceBased() {
-        return true;        
+        return true;
     }
 
     @Override
@@ -45,7 +44,7 @@ public class ICF21InstanceSelectionOperator extends AbstractInstanceSelectorOper
         return false;
     }
 
-    
+
     /**
      * Method used to configure and initialize instance selection model.
      *
@@ -57,7 +56,7 @@ public class ICF21InstanceSelectionOperator extends AbstractInstanceSelectorOper
     public AbstractInstanceSelectorModel configureInstanceSelectionModel(SelectedExampleSet exampleSet) throws OperatorException {
         DistanceMeasure distance = measureHelper.getInitializedMeasure(exampleSet);
         int k = getParameterAsInt(PARAMETER_K);
-        return new ICF21InstanceSelectionModel(distance,k);
+        return new ICF21InstanceSelectionModel(distance, k);
     }
 
     @Override
@@ -65,7 +64,7 @@ public class ICF21InstanceSelectionOperator extends AbstractInstanceSelectorOper
         int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
         try {
             measureType = measureHelper.getSelectedMeasureType();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:
@@ -84,7 +83,7 @@ public class ICF21InstanceSelectionOperator extends AbstractInstanceSelectorOper
                 return false;
         }
     }
-    
+
     /**
      * Operator configuration parameters
      *
@@ -96,7 +95,7 @@ public class ICF21InstanceSelectionOperator extends AbstractInstanceSelectorOper
 
         ParameterType type = new ParameterTypeInt(PARAMETER_K, "The number of nearest neighbors.", 1, Integer.MAX_VALUE, 3);
         type.setExpert(false);
-        types.add(type);       
+        types.add(type);
         return types;
     }
 }

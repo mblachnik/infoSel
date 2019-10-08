@@ -5,26 +5,24 @@ import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.parameter.ParameterType;
-import com.rapidminer.parameter.ParameterTypeBoolean;
 import com.rapidminer.parameter.ParameterTypeInt;
-import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
-import java.util.List;
+import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
 import org.prules.operator.learner.selection.models.ICFInstanceSelectionModel;
 
+import java.util.List;
+
 /**
- *
  * @author Marcin
  */
 public class ICFInstanceSelectionOperator extends AbstractInstanceSelectorOperator {
 
     //private final CNNInstanceSelection cnnInstanceSelection;
     public static final String PARAMETER_K = "k";
-    public static final String PARAMETER_MAX_ITERATIONS = "max iterations";
+    private static final String PARAMETER_MAX_ITERATIONS = "max iterations";
 
     /**
-     *
      * @param description
      */
     public ICFInstanceSelectionOperator(OperatorDescription description) {
@@ -66,7 +64,7 @@ public class ICFInstanceSelectionOperator extends AbstractInstanceSelectorOperat
         int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
         try {
             measureType = measureHelper.getSelectedMeasureType();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:
@@ -100,7 +98,7 @@ public class ICFInstanceSelectionOperator extends AbstractInstanceSelectorOperat
         type.setExpert(false);
         types.add(type);
 
-        type = new ParameterTypeInt(PARAMETER_MAX_ITERATIONS,"Upper limint on the number of repetitions of the main algorithm. By default it iterates until noimprovement, but that may couse long execution time, so the number of iterations can be limit setting this parameter",1, Integer.MAX_VALUE, Integer.MAX_VALUE);
+        type = new ParameterTypeInt(PARAMETER_MAX_ITERATIONS, "Upper limint on the number of repetitions of the main algorithm. By default it iterates until noimprovement, but that may couse long execution time, so the number of iterations can be limit setting this parameter", 1, Integer.MAX_VALUE, Integer.MAX_VALUE);
         type.setExpert(true);
         types.add(type);
         return types;

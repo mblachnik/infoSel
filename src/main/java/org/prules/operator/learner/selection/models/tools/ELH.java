@@ -7,7 +7,6 @@ package org.prules.operator.learner.selection.models.tools;
 import org.prules.tools.math.BasicMath;
 
 /**
- *
  * @author Marcin
  */
 public class ELH {
@@ -22,7 +21,6 @@ public class ELH {
     }
 
     /**
-     *
      * Returns the 'cost' (using Cameron-Jones' Encoding Length Heuristic) of a model that retains 'm' instances out of 'n'
      * (=numTrain), with 'x' misclassified instances and 'c' (=numClasses) possible output classes. This cost is the sum of four
      * values: 1. Cost of encoding which 'm' of the 'n' instances are kept. 2. Cost of encoding which of the 'c' classes each 'm'
@@ -99,7 +97,7 @@ public class ELH {
         }
         double a = n - m;
         double b = m + 1;
-        double bt = lf[(int)(a + b)] - lf[(int)(a)] - lf[(int)(b)] - 1.0;
+        double bt = lf[(int) (a + b)] - lf[(int) (a)] - lf[(int) (b)] - 1.0;
         if (x < (a + 1) / (a + b + 2)) {
             return bt + BasicMath.log2(betafc(a, b, x) / a);
         } else {
@@ -148,6 +146,6 @@ public class ELH {
                 return az;
             }
         }
-        return az;    
+        return az;
     }
 }

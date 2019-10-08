@@ -1,20 +1,19 @@
 package org.prules.operator.learner.selection;
 
-import java.util.List;
-
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
-import org.prules.operator.learner.selection.models.RandomInstanceSelectionModel;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
-import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
 import com.rapidminer.operator.ports.metadata.MDInteger;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeBoolean;
 import com.rapidminer.parameter.ParameterTypeInt;
 import com.rapidminer.parameter.UndefinedParameterError;
 import com.rapidminer.tools.RandomGenerator;
+import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
+import org.prules.operator.learner.selection.models.RandomInstanceSelectionModel;
+
+import java.util.List;
 
 /**
  * This class is used to provide simple Random instance selection operator It
@@ -27,11 +26,11 @@ public class RandomInstanceSelectionOperator extends AbstractInstanceSelectorOpe
     /**
      *
      */
-    public static final String INSTANCES_NUMBER = "Number of Instances to select";
+    private static final String INSTANCES_NUMBER = "Number of Instances to select";
     /**
      *
      */
-    public static final String STRATIFIED = "Stratified";
+    private static final String STRATIFIED = "Stratified";
 
     /**
      * Default RapidMiner constructor

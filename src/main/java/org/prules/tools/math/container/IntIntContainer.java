@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 /**
  * Container for storing two int double values. It sotres values as primitives for performance reasons. It also implements @{see Comparable} interface, and the comparison is mad according to first value
+ *
  * @param <N>
  * @param <M>
  * @author Marcin
@@ -29,6 +30,7 @@ public class IntIntContainer implements Comparable<IntIntContainer>, Serializabl
 
     /**
      * Input values
+     *
      * @param valueA also used for ordering calues
      * @param valueB
      */
@@ -86,13 +88,6 @@ public class IntIntContainer implements Comparable<IntIntContainer>, Serializabl
 
     @Override
     public int compareTo(IntIntContainer o) {
-        int result = first - o.first;
-        if (result == 0) {
-            return 0;
-        }
-        if (result > 0) {
-            return 1;
-        }
-        return -1;
+        return Integer.compare(first, o.first);
     }
 }

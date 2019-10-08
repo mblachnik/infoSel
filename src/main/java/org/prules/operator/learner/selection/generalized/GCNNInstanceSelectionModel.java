@@ -10,24 +10,24 @@ import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.set.EditedExampleSet;
 import com.rapidminer.example.set.ISPRExample;
 import com.rapidminer.example.set.SelectedExampleSet;
+import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import org.prules.dataset.IInstanceLabels;
 import org.prules.operator.learner.PRulesModel;
 import org.prules.operator.learner.tools.DataIndex;
-import org.prules.tools.math.container.knn.GeometricCollectionTypes;
-import org.prules.tools.math.container.knn.KNNTools;
-import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
-import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import java.util.Collection;
-import org.prules.tools.math.container.knn.KNNFactory;
-import org.prules.dataset.IInstanceLabels;
 import org.prules.operator.learner.tools.IDataIndex;
+import org.prules.tools.math.container.knn.GeometricCollectionTypes;
+import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
+import org.prules.tools.math.container.knn.KNNFactory;
+import org.prules.tools.math.container.knn.KNNTools;
+
+import java.util.Collection;
 
 /**
- *
  * @author Marcin
  */
 public class GCNNInstanceSelectionModel implements PRulesModel<ExampleSet> {
 
-    private final DistanceMeasure distance;    
+    private final DistanceMeasure distance;
     private final AbstractInstanceSelectorChain evaluator;
     private final boolean relativeError;
     private final double maxError;
@@ -35,7 +35,6 @@ public class GCNNInstanceSelectionModel implements PRulesModel<ExampleSet> {
     private Exception exception = null;
 
     /**
-     * 
      * @param distance
      * @param relativeError
      * @param maxError
@@ -43,7 +42,7 @@ public class GCNNInstanceSelectionModel implements PRulesModel<ExampleSet> {
      * @param evaluator
      */
     public GCNNInstanceSelectionModel(DistanceMeasure distance, boolean relativeError, double maxError, int k, AbstractInstanceSelectorChain evaluator) {
-        this.distance = distance;        
+        this.distance = distance;
         this.relativeError = relativeError;
         this.maxError = maxError;
         this.k = k;
@@ -52,7 +51,6 @@ public class GCNNInstanceSelectionModel implements PRulesModel<ExampleSet> {
     }
 
     /**
-     * 
      * @param inputExampleSet
      * @return
      */
@@ -68,8 +66,8 @@ public class GCNNInstanceSelectionModel implements PRulesModel<ExampleSet> {
         EditedExampleSet testSet = new EditedExampleSet(exampleSet);
         EditedExampleSet selectedSet = new EditedExampleSet(exampleSet);
         EditedExampleSet examplesLeftSet = new EditedExampleSet(exampleSet);
-        IDataIndex index         = exampleSet.getIndex();
-        DataIndex testIndex     = testSet.getIndex();
+        IDataIndex index = exampleSet.getIndex();
+        DataIndex testIndex = testSet.getIndex();
         DataIndex selectedIndex = selectedSet.getIndex();
         DataIndex examplesLeftIndex = examplesLeftSet.getIndex();
 
@@ -82,29 +80,29 @@ public class GCNNInstanceSelectionModel implements PRulesModel<ExampleSet> {
         index.set(i, true);
         selectedIndex.set(i, true);
         examplesLeftIndex.set(i, false);
-        Attribute attribue = exampleSet.getAttributes().getLabel();
-        boolean numericalLabel = attribue.isNumerical();
-        boolean nominalLabel = attribue.isNominal();
+        Attribute attribute = exampleSet.getAttributes().getLabel();
+        boolean numericalLabel = attribute.isNumerical();
+        boolean nominalLabel = attribute.isNominal();
         boolean isModified;
         boolean update = false;
-        do {            
+        do {
             isModified = false;
-            for (Example example : examplesLeftSet) {                
-                
+            for (Example example : examplesLeftSet) {
+
                 ISPRExample queryExample = (ISPRExample) example;
                 int exampleIndex = queryExample.getIndex();
                 testIndex.set(exampleIndex, true);
                 ExampleSet resultSet;
                 try {
-                    resultSet = evaluator.executeInerModel(selectedSet, testSet);
+                    resultSet = evaluator.executeInnerModel(selectedSet, testSet);
                 } catch (Exception e) {
                     exception = e;
                     return null;
-                }                                
-                double predictedY = resultSet.getExample(0).getPredictedLabel();                
+                }
+                double predictedY = resultSet.getExample(0).getPredictedLabel();
                 double realY = example.getLabel();
                 testIndex.set(exampleIndex, false);
-                
+
                 if (numericalLabel) {
                     double dif = Math.abs(realY - predictedY);
                     if (!relativeError) {
@@ -118,18 +116,18 @@ public class GCNNInstanceSelectionModel implements PRulesModel<ExampleSet> {
                         }
                         mean /= nearestNeighbors.size(); //Warning here is size() instead of k because there may be less samples then k
                         for (IInstanceLabels x : nearestNeighbors) {
-                            var += (x.getLabel()- mean) * (x.getLabel()- mean);
+                            var += (x.getLabel() - mean) * (x.getLabel() - mean);
                         }
                         var /= nearestNeighbors.size();
                         double vdY = maxError * Math.sqrt(var);
                         update = dif > vdY;
                     }
-                } else if (nominalLabel){
+                } else if (nominalLabel) {
                     update = predictedY != realY;
                 } else {
-                    exception = new Exception("Unsupportet label type");
+                    exception = new Exception("Unsupported label type");
                 }
-                if (update) {                                        
+                if (update) {
                     index.set(exampleIndex, true);
                     selectedIndex.set(exampleIndex, true);
                     examplesLeftIndex.set(exampleIndex, false);
@@ -142,7 +140,6 @@ public class GCNNInstanceSelectionModel implements PRulesModel<ExampleSet> {
     }
 
     /**
-     * 
      * @return
      */
     public boolean isException() {
@@ -150,7 +147,6 @@ public class GCNNInstanceSelectionModel implements PRulesModel<ExampleSet> {
     }
 
     /**
-     * 
      * @return
      */
     public Exception getException() {

@@ -9,24 +9,24 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import org.prules.operator.learner.tools.PRulesUtil;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeDouble;
 import com.rapidminer.tools.RandomGenerator;
+import org.prules.operator.learner.tools.PRulesUtil;
+
 import java.util.List;
 
 /**
- *
  * @author Marcin
  */
-public class ISEnsembleNoisOperator extends AbstractISEnsembleOperator {
+public class ISEnsembleNoiseOperator extends AbstractISEnsembleOperator {
 
-    public static final String PARAMETER_NOISE_LEVEL = "Noise level";
-    transient RandomGenerator random;
+    private static final String PARAMETER_NOISE_LEVEL = "Noise level";
+    private transient RandomGenerator random;
 
-    public ISEnsembleNoisOperator(OperatorDescription description) {
+    public ISEnsembleNoiseOperator(OperatorDescription description) {
         super(description);
     }
 
@@ -37,10 +37,10 @@ public class ISEnsembleNoisOperator extends AbstractISEnsembleOperator {
     }
 
     @Override
-    protected ExampleSet preprocessExampleSet(ExampleSet trainingSet) throws OperatorException {
+    protected ExampleSet preProcessExampleSet(ExampleSet trainingSet) throws OperatorException {
         ExampleSet trainingSubSet = PRulesUtil.duplicateExampleSet(trainingSet);
         double noiseLevel = getParameterAsDouble(PARAMETER_NOISE_LEVEL);
-        Attributes attributes = trainingSubSet.getAttributes();        
+        Attributes attributes = trainingSubSet.getAttributes();
         for (Example e : trainingSubSet) {
             for (Attribute a : attributes) {
                 double value = e.getValue(a);
@@ -59,5 +59,4 @@ public class ISEnsembleNoisOperator extends AbstractISEnsembleOperator {
         types.add(type);
         return types;
     }
-
 }

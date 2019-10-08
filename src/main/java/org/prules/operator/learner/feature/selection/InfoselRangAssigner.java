@@ -1,21 +1,17 @@
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
- */ 
+ */
 
 package org.prules.operator.learner.feature.selection;
 
-import com.rapidminer.example.Attribute;
-import com.rapidminer.example.AttributeWeights;
-import com.rapidminer.example.Attributes;
-import com.rapidminer.example.Example;
-import com.rapidminer.example.ExampleSet;
+import com.rapidminer.example.*;
 import com.rapidminer.operator.*;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeFile;
 import com.rapidminer.parameter.ParameterTypeString;
-import com.rapidminer.tools.math.similarity.DistanceMeasures;
 import infosel.JavaInfosel;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -24,21 +20,20 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- *
  * @author Marcin
  */
-public class InfoselRangAssigner extends AbstractPRulesFeatureSelection{
-     
+public class InfoselRangAssigner extends AbstractPRulesFeatureSelection {
+
     /**
-     * 
+     *
      */
-    public static final String SELECTION_METHOD = "Algorithm";
+    private static final String SELECTION_METHOD = "Algorithm";
     /**
-     * 
+     *
      */
-    public static final String DISCRETIZATION_METHOD = "Discretization";
+    private static final String DISCRETIZATION_METHOD = "Discretization";
     /**
-     * 
+     *
      */
     public static final String INFOSEL_PATH = "Infosel path";
     private String featureSelectionMethod = null;
@@ -48,7 +43,6 @@ public class InfoselRangAssigner extends AbstractPRulesFeatureSelection{
     private int selectedFeaturesCount = 0;
 
     /**
-     * 
      * @param description
      */
     public InfoselRangAssigner(OperatorDescription description) {
@@ -71,17 +65,16 @@ public class InfoselRangAssigner extends AbstractPRulesFeatureSelection{
     }
 
     /**
-     * 
      * @param exampleSet
      * @return
      * @throws OperatorException
      */
     @Override
-    public AttributeWeights doSelection(ExampleSet exampleSet) throws OperatorException{
-        featureSelectionMethod  = getParameterAsString(SELECTION_METHOD);
+    public AttributeWeights doSelection(ExampleSet exampleSet) throws OperatorException {
+        featureSelectionMethod = getParameterAsString(SELECTION_METHOD);
         discretizationAlgorithm = getParameterAsString(DISCRETIZATION_METHOD);
-        infoselPath             = getParameterAsString(INFOSEL_PATH);
-        
+        infoselPath = getParameterAsString(INFOSEL_PATH);
+
         selectedFeaturesCount = 0;
 
         AttributeWeights attributeWeights = null;
@@ -125,23 +118,24 @@ public class InfoselRangAssigner extends AbstractPRulesFeatureSelection{
 
             infosel.run(input);
             featureIndexMatrix = infosel.getIndex();
-            if (featureIndexMatrix == null) throw new OperatorException("Infosel error - Check Infosel console informations");
+            if (featureIndexMatrix == null)
+                throw new OperatorException("Infosel error - Check Infosel console information's");
             int attributesSize = attributes.size();
             /*
              Map for feature number to feature weight relation. Warning: JavaInfosel returns just a set of
             selected features by sorting its results ordered from the most to the least relevance (or vice veras).
-             *Rapid miner AttributeWeights class require assigning value to given attribute name, to do so we newd
-             a map that maps feature index (feature number) to given value index
+             *Rapid miner AttributeWeights class require assigning value to given attribute name, to do so we new
+             map that maps feature index (feature number) to given value index
              */
-    
-            HashMap<Integer,Integer> featureIndexNumberMap = new HashMap<Integer,Integer>(attributesSize);
+
+            HashMap<Integer, Integer> featureIndexNumberMap = new HashMap<Integer, Integer>(attributesSize);
             //Initialization with zeros, because, Infosel may return just a feature subset
             for (int i = 0; i < attributesSize; i++) {
-                featureIndexNumberMap.put(i+1, 0);
+                featureIndexNumberMap.put(i + 1, 0);
             }
             //Assigning weights to given feature by numbering each feature
             int[] fi = featureIndexMatrix[0];
-            for (int i=0; i<fi.length; i++){
+            for (int i = 0; i < fi.length; i++) {
                 featureIndexNumberMap.put(fi[i], attributesSize - i);
             }
             //Assigning real feature weights
@@ -151,8 +145,8 @@ public class InfoselRangAssigner extends AbstractPRulesFeatureSelection{
             for (Attribute attribute : attributes) {
                 String attrName = attribute.getName();
                 double weight = featureIndexNumberMap.get(j);
-                selectedFeaturesCount += (weight != 0)&(!Double.isNaN(weight))&(!Double.isInfinite(weight)) ? 1 : 0;
-                attributeWeights.setWeight(attrName,weight);
+                selectedFeaturesCount += (weight != 0) & (!Double.isNaN(weight)) & (!Double.isInfinite(weight)) ? 1 : 0;
+                attributeWeights.setWeight(attrName, weight);
                 strAttrNames.append(attrName);
                 strAttrNames.append(";");
                 strWeights.append(weight);
@@ -172,35 +166,33 @@ public class InfoselRangAssigner extends AbstractPRulesFeatureSelection{
     public List<ParameterType> getParameterTypes() {
         List<ParameterType> types = super.getParameterTypes();
 
-        ParameterType featureSelectionAlgorithmParameter = new ParameterTypeString(SELECTION_METHOD, "Feature selection method","mi_mi(0)");
+        ParameterType featureSelectionAlgorithmParameter = new ParameterTypeString(SELECTION_METHOD, "Feature selection method", "mi_mi(0)");
         featureSelectionAlgorithmParameter.setExpert(false);
         types.add(featureSelectionAlgorithmParameter);
 
-        ParameterType discretizationAlgorithmParameter = new ParameterTypeString(DISCRETIZATION_METHOD, "Discretization algorithm name","equiwidth(24)");
+        ParameterType discretizationAlgorithmParameter = new ParameterTypeString(DISCRETIZATION_METHOD, "Discretization algorithm name", "equiwidth(24)");
         discretizationAlgorithmParameter.setExpert(false);
         types.add(discretizationAlgorithmParameter);
 
         ParameterType infoselPathParameter = //new ParameterTypeString(INFOSEL_PATH, "Path to the infosel library",infoselPath);
-                new ParameterTypeFile(INFOSEL_PATH, "Path to the infosel library","exe",infoselPath);
+                new ParameterTypeFile(INFOSEL_PATH, "Path to the infosel library", "exe", infoselPath);
         infoselPathParameter.setExpert(false);
         types.add(infoselPathParameter);
-        
+
         return types;
     }
-    
-        @Override
+
+    @Override
     public boolean supportsCapability(OperatorCapability capability) {
-                
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:
-            case POLYNOMINAL_ATTRIBUTES:        
-            case NUMERICAL_ATTRIBUTES:                
+            case POLYNOMINAL_ATTRIBUTES:
+            case NUMERICAL_ATTRIBUTES:
             case POLYNOMINAL_LABEL:
-            case BINOMINAL_LABEL:            
+            case BINOMINAL_LABEL:
                 return true;
             default:
                 return false;
         }
     }
-
 }

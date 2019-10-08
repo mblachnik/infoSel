@@ -3,11 +3,11 @@ package org.prules.operator.learner.classifiers.neuralnet.models;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author Marcin
  */
 public class LVQ21ModelMy extends AbstractLVQModel {
@@ -20,19 +20,18 @@ public class LVQ21ModelMy extends AbstractLVQModel {
     private final double window;
 
     /**
-     *
      * @param prototypes
      * @param iterations
      * @param measure
-     * @param alpha     
+     * @param alpha
      * @param window
      * @throws OperatorException
      */
     public LVQ21ModelMy(ExampleSet prototypes, int iterations,
-            DistanceMeasure measure, double alpha, double window) throws OperatorException {
+                        DistanceMeasure measure, double alpha, double window) throws OperatorException {
         super(prototypes);
         this.iterations = iterations;
-        this.currentIteration = 0;        
+        this.currentIteration = 0;
         this.alpha = alpha;
         this.initialAlpha = alpha;
         this.measure = measure;
@@ -64,15 +63,15 @@ public class LVQ21ModelMy extends AbstractLVQModel {
             }
             i++;
         }
-        
+
         double threshold = Math.min(minDistCorrect / minDistIncorrect, minDistIncorrect / minDistCorrect);
-        
-        if ( threshold > window) {
+
+        if (threshold > window) {
             for (i = 0; i < getAttributesSize(); i++) {
                 double trainValue = exampleValues[i];
                 double valueCorrect = prototypeValues[selectedPrototypeCorrect][i];
                 double valueIncorrect = prototypeValues[selectedPrototypeIncorrect][i];
-                valueCorrect   += alpha * (trainValue - valueCorrect);
+                valueCorrect += alpha * (trainValue - valueCorrect);
                 valueIncorrect -= alpha * (trainValue - valueIncorrect);
                 prototypeValues[selectedPrototypeCorrect][i] = valueCorrect;
                 prototypeValues[selectedPrototypeIncorrect][i] = valueIncorrect;
@@ -81,17 +80,16 @@ public class LVQ21ModelMy extends AbstractLVQModel {
     }
 
     /**
-     *
      * @return
      */
     @Override
     public boolean nextIteration(ExampleSet trainingSet) {
         currentIteration++;
-        alpha = LVQTools.learingRateUpdateRule(alpha, currentIteration, iterations, initialAlpha);        
+        alpha = LVQTools.learningRateUpdateRule(alpha, currentIteration, iterations, initialAlpha);
         return currentIteration < iterations;
     }
-    
-        /**
+
+    /**
      * Returns total number of iterations (maximum number of iterations)
      *
      * @return
