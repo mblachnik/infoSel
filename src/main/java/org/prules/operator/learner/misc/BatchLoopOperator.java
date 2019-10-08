@@ -75,7 +75,7 @@ public class BatchLoopOperator extends OperatorChain {
         ExampleSet exampleSet = exampleSetInputPort.getData(ExampleSet.class);
         PrototypesEnsembeleModel inputModel = prototypesEnsemble.getData(PrototypesEnsembeleModel.class);
         Attribute attr = exampleSet.getAttributes().findRoleBySpecialName(Attributes.BATCH_NAME).getAttribute();
-        //Map which contons list of elements which belong to given batch
+        //Map which cantons list of elements which belong to given batch
         Map<Long,IDataIndex> pairsMap = new HashMap<>();                        
         //Get all possible pairs and samples which belong to given pair
         IDataIndex idx;
@@ -92,7 +92,7 @@ public class BatchLoopOperator extends OperatorChain {
             idx.set(exampleIndex,true);            
             exampleIndex++;
         }                
-        modelsMap = new HashMap<>(pairsMap.size());
+        modelsMap = new HashMap<>();
         for (Entry<Long,NearestPrototypesOperator.PiredTriple> entry : inputModel.getSelectedPairs().entrySet()){  
             Long pair = entry.getKey();
             if (pairsMap.containsKey(pair)){

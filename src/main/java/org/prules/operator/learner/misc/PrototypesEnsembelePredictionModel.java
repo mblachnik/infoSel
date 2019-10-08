@@ -13,11 +13,13 @@ import com.rapidminer.example.set.ExampleSetUtilities;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.learner.PredictionModel;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.IntStream;
+
 import org.prules.operator.learner.misc.NearestPrototypesOperator.PiredTriple;
 import org.prules.operator.learner.tools.DataIndex;
 import org.prules.operator.learner.tools.IDataIndex;
@@ -25,12 +27,13 @@ import org.prules.operator.learner.tools.IDataIndex;
 /**
  * A class implementing Ensembles based on nearest prototypes local competence models.
  * For given testing vector it searches for a pair of nearest prototypes and applies corresponding prediction model
+ *
  * @author Marcin
  */
 public class PrototypesEnsembelePredictionModel extends PredictionModel {
 
     /**
-     * PrototypesEnsembeleModel which contains informations such as: prototypes 
+     * PrototypesEnsembeleModel which contains informations such as: prototypes
      * position, labels, a map which allows to decode pair into the prototypes
      */
     PrototypesEnsembeleModel model;
@@ -65,12 +68,16 @@ public class PrototypesEnsembelePredictionModel extends PredictionModel {
             double minSum = Double.MAX_VALUE;
             Long bestPair = new Long(-1);
             for (Entry<Long, PiredTriple> entry : model.getSelectedPairs().entrySet()) {
-                PiredTriple pair = entry.getValue();
-                double sum = distances[pair.protoId1]
-                        + distances[pair.protoId2];
-                if (sum < minSum) {
-                    minSum = sum;
-                    bestPair = entry.getKey();
+                try {
+                    PiredTriple pair = entry.getValue();
+                    double sum = distances[pair.protoId1]
+                            + distances[pair.protoId2];
+                    if (sum < minSum) {
+                        minSum = sum;
+                        bestPair = entry.getKey();
+                    }
+                } catch (ArrayIndexOutOfBoundsException ex) {
+//                    skip this pair
                 }
             }
             IDataIndex index;
@@ -83,7 +90,7 @@ public class PrototypesEnsembelePredictionModel extends PredictionModel {
             exampleIndex++;
         }
         for (Entry<Long, IDataIndex> entry : subsetMap.entrySet()) {
-            SelectedExampleSet subset = new SelectedExampleSet(exampleSet,entry.getValue());
+            SelectedExampleSet subset = new SelectedExampleSet(exampleSet, entry.getValue());
             PredictionModel predictionModel = predictionModelsMap.get(entry.getKey());
             predictionModel.performPrediction(subset, predictedLabel);
         }
@@ -93,11 +100,11 @@ public class PrototypesEnsembelePredictionModel extends PredictionModel {
     @Override
     public String toResultString() {
         StringBuilder sb = new StringBuilder();
-        model.selectedPairs.entrySet().stream().forEachOrdered(entry -> { 
+        model.selectedPairs.entrySet().stream().forEachOrdered(entry -> {
             PiredTriple pair = entry.getValue();
-                sb.append("Pair:").append(pair.pired)
-                        .append(" Proto 1:").append(pair.protoId1)
-                        .append(" Proto 2:").append(pair.protoId2).append("\n");
+            sb.append("Pair:").append(pair.pired)
+                    .append(" Proto 1:").append(pair.protoId1)
+                    .append(" Proto 2:").append(pair.protoId2).append("\n");
         });
         sb.append("=====================================\n");
         sb.append("=========== Prototypes ==============\n");
@@ -105,10 +112,10 @@ public class PrototypesEnsembelePredictionModel extends PredictionModel {
         int i = 0;
         model.attributes.stream().forEach(str -> sb.append(str).append(" | "));
         sb.append("Label \n");
-        IntStream.range(0, model.prototypes.length).forEachOrdered( idx -> {
-            double[] row = model.prototypes[idx];        
+        IntStream.range(0, model.prototypes.length).forEachOrdered(idx -> {
+            double[] row = model.prototypes[idx];
             sb.append("id").append(idx).append(" | ");
-            Arrays.stream(row).forEach( element -> {
+            Arrays.stream(row).forEach(element -> {
                 sb.append(element).append(" | ");
             });
             sb.append(model.labels[idx]);

@@ -72,5 +72,24 @@ public class PrototypesEnsembeleModel extends ResultObjectAdapter{
         });
         return sb.toString(); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
+    public Map<Long, PiredTriple> getSelectedPairs() {
+        return selectedPairs;
+    }
+
+    public double[][] getPrototypes() {
+        return prototypes;
+    }
+
+    public double[] getLabels() {
+        return labels;
+    }
+
+    public List<String> getAttributes() {
+        return attributes;
+    }
+
+    public DistanceMeasure getMeasure() {
+        return measure;
+    }
 }
