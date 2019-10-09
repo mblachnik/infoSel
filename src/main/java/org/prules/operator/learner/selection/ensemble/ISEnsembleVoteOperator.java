@@ -56,8 +56,8 @@ public class ISEnsembleVoteOperator extends AbstractPrototypeBasedOperatorChain 
     /**
      *
      */
-    protected OutputPortExtender subprocessInputExtender = new OutputPortExtender("training set", getSubprocess(0).getInnerSources());
-    protected InputPortExtender subprocessOutputExtender = new InputPortExtender("base model", getSubprocess(0).getInnerSinks(), new ExampleSetMetaData(), 2);
+    protected OutputPortExtender subprocessInputExtender  = new OutputPortExtender("training set", getSubprocess(0).getInnerSources());
+    protected InputPortExtender  subprocessOutputExtender = new InputPortExtender("base model", getSubprocess(0).getInnerSinks(), new ExampleSetMetaData(), 2);
     /**
      *
      */
@@ -66,11 +66,11 @@ public class ISEnsembleVoteOperator extends AbstractPrototypeBasedOperatorChain 
     private int numberOfInstancesBeaforeSelection;
     private int numberOfInstancesAfterSelection;
     private int compression;
-    protected DistanceMeasureHelper measureHelper;
+    //protected DistanceMeasureHelper measureHelper;
 
     public ISEnsembleVoteOperator(OperatorDescription description) {
         super(description, "Selection");
-        measureHelper = new DistanceMeasureHelper(this);
+        //measureHelper = new DistanceMeasureHelper(this);
         init();
     }
 
@@ -214,7 +214,7 @@ public class ISEnsembleVoteOperator extends AbstractPrototypeBasedOperatorChain 
 
     @Override
     public boolean supportsCapability(OperatorCapability capability) {
-        int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
+        //int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:
             case POLYNOMINAL_ATTRIBUTES:

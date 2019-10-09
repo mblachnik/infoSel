@@ -38,7 +38,7 @@ public abstract class AbstractWeightingOperator extends AbstractPRulesBasicOpera
         PassThroughRule addWeightRule = new PassThroughRule(exampleSetInputPort, exampleSetOutputPort, true) {
             @Override
             public MetaData modifyMetaData(MetaData metaData) {
-                if (metaData instanceof ExampleSetMetaData){
+                if (metaData != null && metaData instanceof ExampleSetMetaData){
                     ExampleSetMetaData esmd = (ExampleSetMetaData)metaData;
                     AttributeMetaData attribute= new AttributeMetaData(attributeName,Ontology.NUMERICAL,attributeRole);
                     esmd.addAttribute(attribute);

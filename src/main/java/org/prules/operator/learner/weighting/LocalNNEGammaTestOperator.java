@@ -27,11 +27,12 @@ import com.rapidminer.parameter.ParameterTypeInt;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
+
 import java.util.List;
+
 import org.prules.operator.learner.weighting.models.LocalGammaTestNoiseModel;
 
 /**
- *
  * @author Marcin
  */
 public class LocalNNEGammaTestOperator extends AbstractWeightingOperator {
@@ -61,25 +62,27 @@ public class LocalNNEGammaTestOperator extends AbstractWeightingOperator {
                 return nneSlope;
             }
         });
-        exampleSetInputPort.addPrecondition(
-                new SimplePrecondition(exampleSetInputPort, null, true) {
 
-            @Override
-            public void makeAdditionalChecks(MetaData received) {
-                if (received instanceof ExampleSetMetaData) {
-                    ExampleSetMetaData emd = (ExampleSetMetaData) received;
-                    switch (emd.hasSpecial(Attributes.LABEL_NAME)) {
-                        case NO:
-                            exampleSetInputPort.addError(new SimpleMetaDataError(ProcessSetupError.Severity.WARNING, exampleSetInputPort, "special_missing", Attributes.LABEL_NAME));
-                            break;
-                        case YES:
-                            if (!emd.getLabelMetaData().isNumerical()) {
-                                exampleSetInputPort.addError(new SimpleMetaDataError(ProcessSetupError.Severity.WARNING, exampleSetInputPort, "special_attribute_has_wrong_type", emd.getLabelMetaData().getName(), Attributes.LABEL_NAME, com.rapidminer.tools.Ontology.VALUE_TYPE_NAMES[com.rapidminer.tools.Ontology.NUMERICAL]));
+        this.getLogger().info("======================== 12345");
+
+        exampleSetInputPort.addPrecondition(
+                new SimplePrecondition(exampleSetInputPort, new MetaData(), true) {
+                    @Override
+                    public void makeAdditionalChecks(MetaData received) {
+                        if (received != null && received instanceof ExampleSetMetaData) {
+                            ExampleSetMetaData emd = (ExampleSetMetaData) received;
+                            switch (emd.hasSpecial(Attributes.LABEL_NAME)) {
+                                case NO:
+                                    exampleSetInputPort.addError(new SimpleMetaDataError(ProcessSetupError.Severity.WARNING, exampleSetInputPort, "special_missing", Attributes.LABEL_NAME));
+                                    break;
+                                case YES:
+                                    if (!emd.getLabelMetaData().isNumerical()) {
+                                        exampleSetInputPort.addError(new SimpleMetaDataError(ProcessSetupError.Severity.WARNING, exampleSetInputPort, "special_attribute_has_wrong_type", emd.getLabelMetaData().getName(), Attributes.LABEL_NAME, com.rapidminer.tools.Ontology.VALUE_TYPE_NAMES[com.rapidminer.tools.Ontology.NUMERICAL]));
+                                    }
                             }
+                        }
                     }
                 }
-            }
-        }
         );
     }
 
@@ -140,7 +143,7 @@ public class LocalNNEGammaTestOperator extends AbstractWeightingOperator {
         type = new ParameterTypeInt(PARAMETER_RANGE, "Range of the local NNE estimation.", 3, Integer.MAX_VALUE, 100);
         type.setExpert(false);
         types.add(type);
-        
+
         types.addAll(DistanceMeasures.getParameterTypes(this));
 
         return types;

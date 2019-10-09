@@ -53,11 +53,11 @@ public class NNEVarianceOperator extends AbstractWeightingOperator {
         });
         
         exampleSetInputPort.addPrecondition(
-                new SimplePrecondition(exampleSetInputPort, null, true) {
+                new SimplePrecondition(exampleSetInputPort, new MetaData(), true) {
 
                     @Override
                     public void makeAdditionalChecks(MetaData received) {
-                        if (received instanceof ExampleSetMetaData) {
+                        if (received != null && received instanceof ExampleSetMetaData) {
                             ExampleSetMetaData emd = (ExampleSetMetaData) received;
                             switch (emd.hasSpecial(Attributes.LABEL_NAME)) {
                                 case NO:
