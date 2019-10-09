@@ -9,7 +9,7 @@ import com.rapidminer.operator.ResultObjectAdapter;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import lombok.Getter;
 import lombok.Setter;
-import org.prules.operator.learner.misc.NearestPrototypesOperator.PairedTriple;
+import org.prules.operator.learner.misc.NearestPrototypesOperator.PairedTuple;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,10 +27,10 @@ public class PrototypesEnsembleModel extends ResultObjectAdapter {
     double[][] prototypes;
     double[] labels;
     List<String> attributes;
-    Map<Long, PairedTriple> selectedPairs;
+    Map<Long, PairedTuple> selectedPairs;
     private DistanceMeasure measure;
 
-    PrototypesEnsembleModel(double[][] prototypes, double[] labels, List<String> attributes, DistanceMeasure measure, Map<Long, PairedTriple> selectedPairs) {
+    PrototypesEnsembleModel(double[][] prototypes, double[] labels, List<String> attributes, DistanceMeasure measure, Map<Long, PairedTuple> selectedPairs) {
         this.prototypes = prototypes;
         this.labels = labels;
         this.attributes = attributes;
@@ -48,8 +48,8 @@ public class PrototypesEnsembleModel extends ResultObjectAdapter {
     public String toResultString() {
         StringBuilder sb = new StringBuilder();
         selectedPairs.entrySet().stream().forEachOrdered(entry -> {
-            PairedTriple pair = entry.getValue();
-            sb.append("Pair:").append(pair.pired)
+            PairedTuple pair = entry.getValue();
+            sb.append("Pair:").append(pair.paired)
                     .append(" Proto 1:").append(pair.protoId1)
                     .append(" Proto 2:").append(pair.protoId2).append("\n");
         });
@@ -71,7 +71,7 @@ public class PrototypesEnsembleModel extends ResultObjectAdapter {
         return sb.toString(); //To change body of generated methods, choose Tools | Templates.
     }
 
-    Map<Long, PairedTriple> getSelectedPairs() {
+    Map<Long, PairedTuple> getSelectedPairs() {
         return selectedPairs;
     }
 

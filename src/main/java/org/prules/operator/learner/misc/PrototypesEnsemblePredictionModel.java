@@ -13,7 +13,7 @@ import com.rapidminer.example.set.ExampleSetUtilities;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.learner.PredictionModel;
-import org.prules.operator.learner.misc.NearestPrototypesOperator.PairedTriple;
+import org.prules.operator.learner.misc.NearestPrototypesOperator.PairedTuple;
 import org.prules.operator.learner.tools.DataIndex;
 import org.prules.operator.learner.tools.IDataIndex;
 
@@ -66,9 +66,9 @@ public class PrototypesEnsemblePredictionModel extends PredictionModel {
             }
             double minSum = Double.MAX_VALUE;
             Long bestPair = (long) -1;
-            for (Entry<Long, PairedTriple> entry : model.getSelectedPairs().entrySet()) {
+            for (Entry<Long, PairedTuple> entry : model.getSelectedPairs().entrySet()) {
                 try {
-                    PairedTriple pair = entry.getValue();
+                    PairedTuple pair = entry.getValue();
                     double sum = distances[pair.protoId1]
                             + distances[pair.protoId2];
                     if (sum < minSum) {
@@ -100,8 +100,8 @@ public class PrototypesEnsemblePredictionModel extends PredictionModel {
     public String toResultString() {
         StringBuilder sb = new StringBuilder();
         model.selectedPairs.entrySet().stream().forEachOrdered(entry -> {
-            PairedTriple pair = entry.getValue();
-            sb.append("Pair:").append(pair.pired)
+            PairedTuple pair = entry.getValue();
+            sb.append("Pair:").append(pair.paired)
                     .append(" Proto 1:").append(pair.protoId1)
                     .append(" Proto 2:").append(pair.protoId2).append("\n");
         });
