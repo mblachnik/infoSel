@@ -8,21 +8,17 @@ import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.set.EditedExampleSet;
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.dataset.Const;
-import org.prules.dataset.InstanceFactory;
+import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import org.prules.dataset.*;
 import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import org.prules.operator.learner.tools.DataIndex;
-import org.prules.tools.math.container.knn.KNNTools;
-//import com.rapidminer.tools.RandomGenerator;
-import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import org.prules.operator.learner.tools.genetic.RandomGenerator;
 import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 import org.prules.tools.math.container.knn.KNNFactory;
-import org.prules.dataset.IInstanceLabels;
-import org.prules.dataset.Instance;
-import org.prules.dataset.Vector;
-import org.prules.dataset.IInstancePrediction;
+import org.prules.tools.math.container.knn.KNNTools;
+
+//import com.rapidminer.tools.RandomGenerator;
 
 /**
  * Class implements MonteCarlo instance selection. It simply randomly selects a
@@ -37,7 +33,7 @@ public class MCInstanceSelectionModel extends AbstractInstanceSelectorModel {
     private final int numberOfPrototypes;
     private final RandomGenerator randomGenerator;
     private final int iterations;
-    IISDecisionFunction loss;
+    private IISDecisionFunction loss;
 
     /**
      * Constructor of MonteCarlo instance selection. It simply randomly selects
@@ -45,11 +41,11 @@ public class MCInstanceSelectionModel extends AbstractInstanceSelectorModel {
      * repeats such procedure for "iterations" times selecting the best subset
      * of instances
      *
-     * @param measure - distance measure
-     * @param populationSize - number of samples to select
-     * @param iterations - number of iterations
+     * @param measure         - distance measure
+     * @param populationSize  - number of samples to select
+     * @param iterations      - number of iterations
      * @param randomGenerator - random number generator
-     * @param loss - decision function
+     * @param loss            - decision function
      */
     public MCInstanceSelectionModel(DistanceMeasure measure, int populationSize, int iterations, RandomGenerator randomGenerator, IISDecisionFunction loss) {
         this.measure = measure;
@@ -63,7 +59,7 @@ public class MCInstanceSelectionModel extends AbstractInstanceSelectorModel {
      * Performs instance selection
      *
      * @param inputExampleSet - example set for which instance selection will be
-     * performed
+     *                        performed
      * @return - index of selected examples
      */
     @Override
@@ -79,15 +75,15 @@ public class MCInstanceSelectionModel extends AbstractInstanceSelectorModel {
         EditedExampleSet workingSet = new EditedExampleSet(exampleSet);
         DataIndex indexWorking = workingSet.getIndex();
 
-        Attributes attributes = exampleSet.getAttributes();        
+        Attributes attributes = exampleSet.getAttributes();
         double errorRateBest = Double.MAX_VALUE;
         DataIndex bestIndex = null;
-        
+
         Vector vector = InstanceFactory.createVector(inputExampleSet);
         IInstancePrediction prediction = InstanceFactory.createPrediction(Double.NaN, null);
         Instance instance = InstanceFactory.createEmptyInstance();
         IInstanceLabels label = InstanceFactory.createInstanceLabels();
-        
+
         for (int i = 0; i < iterations; i++) {
             indexWorking.setAllFalse();
             for (int j = 0; j < numberOfPrototypes; j++) {
@@ -96,10 +92,10 @@ public class MCInstanceSelectionModel extends AbstractInstanceSelectorModel {
             }
 
             double errorRate = 0;
-            ISPRGeometricDataCollection<IInstanceLabels> kNN = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, workingSet, measure);            
+            ISPRGeometricDataCollection<IInstanceLabels> kNN = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, workingSet, measure);
             for (Example ex : exampleSet) {
-                vector.setValues(ex);                
-                double predictedLabel = KNNTools.predictOneNearestNeighbor(vector, kNN);     
+                vector.setValues(ex);
+                double predictedLabel = KNNTools.predictOneNearestNeighbor(vector, kNN);
                 prediction.setLabel(predictedLabel);
                 label.set(ex);
                 instance.put(Const.VECTOR, vector);
@@ -119,5 +115,4 @@ public class MCInstanceSelectionModel extends AbstractInstanceSelectorModel {
         }
         return bestIndex;
     }
-
 }

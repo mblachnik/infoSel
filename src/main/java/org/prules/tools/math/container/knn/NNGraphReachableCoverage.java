@@ -5,16 +5,6 @@
  */
 package org.prules.tools.math.container.knn;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import org.prules.dataset.Const;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.dataset.Vector;
@@ -23,19 +13,21 @@ import org.prules.tools.math.container.DoubleIntContainer;
 import org.prules.tools.math.container.DoubleObjectContainer;
 import org.prules.tools.math.container.PairContainer;
 
+import java.util.*;
+import java.util.Map.Entry;
+
 /**
- *
  * @author Marcin
  */
 public class NNGraphReachableCoverage implements INNGraph {
 
-    int k;
-    Map<Integer, Set<Integer>> coverage;
-    Map<Integer, List<DoubleIntContainer>> reachable;
-    Map<Integer, List<DoubleIntContainer>> enemies;
-    Map<Integer, Set<Integer>> enemyAssociate;
-    ISPRClassGeometricDataCollection<IInstanceLabels> samples;
-    IDataIndex index;
+    private int k;
+    private Map<Integer, Set<Integer>> coverage;
+    private Map<Integer, List<DoubleIntContainer>> reachable;
+    private Map<Integer, List<DoubleIntContainer>> enemies;
+    private Map<Integer, Set<Integer>> enemyAssociate;
+    private ISPRClassGeometricDataCollection<IInstanceLabels> samples;
+    private IDataIndex index;
 
     public NNGraphReachableCoverage(ISPRClassGeometricDataCollection<IInstanceLabels> samples) {
         this.k = samples.size();
@@ -62,12 +54,12 @@ public class NNGraphReachableCoverage implements INNGraph {
         enemies = new HashMap(samples.size());
         enemyAssociate = new HashMap(samples.size());
         for (int i = 0; i < samples.size(); i++) {
-            coverage.put(i, new HashSet<>(k+1));
+            coverage.put(i, new HashSet<>(k + 1));
             //reachable.put(i, new LinkedList<DoubleIntContainer>());
-            reachable.put(i, new ArrayList<>(k+1));
+            reachable.put(i, new ArrayList<>(k + 1));
             //enemies.put(i, new LinkedList<DoubleIntContainer>());
-            enemies.put(i, new ArrayList<>(k+1));
-            enemyAssociate.put(i, new HashSet<>(k+1));
+            enemies.put(i, new ArrayList<>(k + 1));
+            enemyAssociate.put(i, new HashSet<>(k + 1));
         }
     }
 
@@ -83,12 +75,12 @@ public class NNGraphReachableCoverage implements INNGraph {
     }
 
     @Override
-    public final void calculateGraph() {        
+    public final void calculateGraph() {
         //The other elements are cleared in calculateGraphForInstance
-         for (int i = 0; i < samples.size(); i++) {
+        for (int i = 0; i < samples.size(); i++) {
             coverage.get(i).clear();
             enemyAssociate.get(i).clear();
-         }
+        }
         for (int id : index) {
             calculateGraphForInstance(id);
         }
@@ -150,26 +142,26 @@ public class NNGraphReachableCoverage implements INNGraph {
     @Override
     public void remove(int nodeId) {
         //Turn of the instance
-        index.set(nodeId, false);     
-        
+        index.set(nodeId, false);
+
         //DoubleObjectContainer<IInstanceLabels>[] resTmp;
-        //Get the associate elements which pointo to the instance being deleted (nodeId)                
-        for (int enemyID  : enemyAssociate.get(nodeId)) {            
+        //Get the associate elements which point to the instance being deleted (nodeId)
+        for (int enemyID : enemyAssociate.get(nodeId)) {
             //Recalculate its neighbors when instance nodeId will be deleted
-            if (enemyID >= 0){            
-                calculateGraphForInstance(enemyID);               
+            if (enemyID >= 0) {
+                calculateGraphForInstance(enemyID);
             }
-        }        
-        for (Entry<Integer,Set<Integer>> e : enemyAssociate.entrySet()){
+        }
+        for (Entry<Integer, Set<Integer>> e : enemyAssociate.entrySet()) {
             e.getValue().remove(nodeId);
         }
-        
-        for (Entry<Integer,Set<Integer>> e : coverage.entrySet()){
+
+        for (Entry<Integer, Set<Integer>> e : coverage.entrySet()) {
             e.getValue().remove(nodeId);
         }
     }
 
-    
+
     protected void calculateGraphForInstance(int id) {
         Vector vector;
         PairContainer<Collection<DoubleObjectContainer<IInstanceLabels>>, Collection<DoubleObjectContainer<IInstanceLabels>>> resAll;
@@ -193,12 +185,12 @@ public class NNGraphReachableCoverage implements INNGraph {
         double distanceEnemy = Double.POSITIVE_INFINITY;
         int enemyID = -1;
         enemies.get(currentInstanceID).clear();
-        if (resEnemies.size() > 0){
+        if (resEnemies.size() > 0) {
             distanceEnemy = resEnemies.get(0).getFirst();
-            enemyID = (int)resEnemies.get(0).getSecond().getValueAsLong(Const.INDEX_CONTAINER);
-            enemies.get(currentInstanceID).add(new DoubleIntContainer(distanceEnemy, enemyID));            
+            enemyID = (int) resEnemies.get(0).getSecond().getValueAsLong(Const.INDEX_CONTAINER);
+            enemies.get(currentInstanceID).add(new DoubleIntContainer(distanceEnemy, enemyID));
         }
-        reachable.get(currentInstanceID).clear();        
+        reachable.get(currentInstanceID).clear();
         for (DoubleObjectContainer<IInstanceLabels> container : resReachable) {
             IInstanceLabels lab = container.getSecond();
             double distance = container.getFirst();
@@ -210,6 +202,6 @@ public class NNGraphReachableCoverage implements INNGraph {
             } else {
                 break;
             }
-        }                 
+        }
     }
 }

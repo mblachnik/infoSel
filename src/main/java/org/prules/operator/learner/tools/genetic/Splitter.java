@@ -7,10 +7,9 @@
 package org.prules.operator.learner.tools.genetic;
 
 /**
- *
  * @author Marcin
  */
 public class Splitter {
     int min, max;
-    BinaryCoding cooding;
+    BinaryCoding codding;
 }

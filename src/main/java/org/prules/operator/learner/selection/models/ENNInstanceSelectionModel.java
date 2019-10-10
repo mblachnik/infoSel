@@ -7,34 +7,18 @@ package org.prules.operator.learner.selection.models;
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.set.SelectedExampleSet;
-import com.rapidminer.operator.error.AttributeNotFoundError;
-import org.prules.dataset.Const;
-import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
-import org.prules.operator.learner.tools.PRulesUtil;
-import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
-import org.prules.dataset.InstanceFactory;
-import org.prules.tools.math.container.knn.KNNFactory;
-import org.prules.dataset.IInstanceLabels;
-import org.prules.operator.learner.tools.DataWeightIndex;
-import org.prules.operator.learner.tools.IDataIndex;
-import org.prules.operator.learner.tools.IDataWeightIndex;
-import org.prules.tools.math.container.DoubleObjectContainer;
-import org.prules.dataset.Instance;
 import org.prules.dataset.Vector;
-import org.prules.dataset.IInstancePrediction;
-import org.prules.operator.learner.tools.PredictionProblemType;
+import org.prules.dataset.*;
+import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
+import org.prules.operator.learner.tools.*;
+import org.prules.tools.math.container.DoubleObjectContainer;
+import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import org.prules.tools.math.container.knn.ISPRGeometricDataCollectionWithIndex;
+import org.prules.tools.math.container.knn.KNNFactory;
 import org.prules.tools.math.container.knn.KNNTools;
+
+import java.util.*;
 
 /**
  * Class implements ENN Vector selection algorithm
@@ -56,9 +40,9 @@ public class ENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
     /**
      * Constructor for ENN instance selection model.
      *
-     * @param measure - distance measure
-     * @param k - number of nearest neighbors
-     * @param loss - decision function
+     * @param measure    - distance measure
+     * @param k          - number of nearest neighbors
+     * @param loss       - decision function
      * @param weightedNN
      */
     public ENNInstanceSelectionModel(DistanceMeasure measure, int k, IISDecisionFunction loss, boolean weightedNN) {
@@ -74,17 +58,17 @@ public class ENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
      * Constructor for ENN instance selection model. Also supports class weight
      * matrix for inbalanced problems
      *
-     * @param measure - distance measure
-     * @param k - number of nearest neighbors
-     * @param loss - decision function
+     * @param measure     - distance measure
+     * @param k           - number of nearest neighbors
+     * @param loss        - decision function
      * @param classWeight - class weights matrix - table of doubles which
-     * represents importance of each class
+     *                    represents importance of each class
      * @param weightedNN
      */
-    public ENNInstanceSelectionModel(DistanceMeasure measure, int k, IISDecisionFunction loss, 
-            //Map<Double,Double> classWeight, 
-            double[] classWeight, 
-            boolean weightedNN) {
+    public ENNInstanceSelectionModel(DistanceMeasure measure, int k, IISDecisionFunction loss,
+                                     //Map<Double,Double> classWeight,
+                                     double[] classWeight,
+                                     boolean weightedNN) {
         this.measure = measure;
         this.k = k;
         this.loss = loss;
@@ -97,7 +81,7 @@ public class ENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
      * Performs instance selection
      *
      * @param exampleSet - example set for which instance selection will be
-     * performed
+     *                   performed
      * @return - index of selected examples
      */
     @Override
@@ -105,8 +89,8 @@ public class ENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
         Attributes attributes = exampleSet.getAttributes();
         IDataIndex tmpIndex = exampleSet.getIndex();
         IDataWeightIndex index = new DataWeightIndex(tmpIndex);
-        Attribute labelAttribute = attributes.getLabel(); 
-        if (labelAttribute == null){
+        Attribute labelAttribute = attributes.getLabel();
+        if (labelAttribute == null) {
             throw new RuntimeException("Label attribute noe found");
         }
         //DATA STRUCTURE PREPARATION        
@@ -114,9 +98,9 @@ public class ENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
         samples = (ISPRGeometricDataCollectionWithIndex) KNNFactory.initializeKNearestNeighbourFactory(knnType, exampleSet, measure);
         loss.init(samples);
         if (labelAttribute.isNominal()) {
-            index = selectInstances(samples,PredictionProblemType.CLASSIFICATION);
-        } else if (labelAttribute.isNumerical()){
-            index = selectInstances(samples,PredictionProblemType.REGRESSION);
+            index = selectInstances(samples, PredictionProblemType.CLASSIFICATION);
+        } else if (labelAttribute.isNumerical()) {
+            index = selectInstances(samples, PredictionProblemType.REGRESSION);
         }
         return index;
     }
@@ -124,31 +108,33 @@ public class ENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
     /**
      * This method implements the main algorithm. It requires samples data structure as well as prediction type - regression or classification
      * Here by default loss function is initialized
+     *
      * @param samples
      * @param type
-     * @return 
+     * @return
      */
-    public IDataWeightIndex selectInstances(ISPRGeometricDataCollectionWithIndex<IInstanceLabels> samples, PredictionProblemType type) {    
+    public IDataWeightIndex selectInstances(ISPRGeometricDataCollectionWithIndex<IInstanceLabels> samples, PredictionProblemType type) {
         return selectInstances(samples, type, true);
     }
-    
+
     /**
      * This method implements the main algorithm. It requires samples data structure as well as prediction type - regression or classification
      * The last argument allows to swich if the loss function should be initialized
-     * @param samples the data structure
-     * @param type the type of problem classification/regression
+     *
+     * @param samples            the data structure
+     * @param type               the type of problem classification/regression
      * @param lossInitialization switch which allows to set if loss function should be initialized
-     * @return 
+     * @return
      */
     public IDataWeightIndex selectInstances(ISPRGeometricDataCollectionWithIndex<IInstanceLabels> samples, PredictionProblemType type, boolean lossInitialization) {
-        if (lossInitialization){
+        if (lossInitialization) {
             loss.init(samples);
         }
-        int numberOfSamples = samples.size();               
+        int numberOfSamples = samples.size();
         if (storeConfidence) {
             confidence = new double[numberOfSamples];
         }
-        //ENN EDITTING
+        //ENN EDITING
         Vector vector;
         double realLabel;
         double predictedLabel = 0;
@@ -164,19 +150,20 @@ public class ENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
         IDataWeightIndex index = new DataWeightIndex(numberOfSamples);
         switch (type) {
             case CLASSIFICATION:
-                Map<Double,Integer> classCountMap = PRulesUtil.countClassFrequency(samples);
+                Map<Double, Integer> classCountMap = PRulesUtil.countClassFrequency(samples);
                 Set<Double> uniqueLabels = classCountMap.keySet();
-                int numberOfClasses = (int)(Collections.max(uniqueLabels)).doubleValue()+1; //Plus 1 becouse label values starts from 0, so when max=2 there are 3 class labels [0, 1, 2]
+                int numberOfClasses = (int) (Collections.max(uniqueLabels)).doubleValue() + 1;
+                //Plus 1 because label values starts from 0, so when max=2 there are 3 class labels [0, 1, 2]
                 double[] counter = new double[numberOfClasses];
-                if (classWeight == null){
+                if (classWeight == null) {
                     classWeight = new double[numberOfClasses];
-                    for(int i = 0; i < numberOfClasses; i++){
+                    for (int i = 0; i < numberOfClasses; i++) {
                         classWeight[i] = 1.0;
                     }
-                }                
+                }
                 int iteration = 0;
                 while (sampleIterator.hasNext() && labelIterator.hasNext()) {
-                    
+
                     //Reset counter
                     Arrays.fill(counter, 0);
                     Collection<DoubleObjectContainer<IInstanceLabels>> res;
@@ -197,10 +184,11 @@ public class ENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
                         } else {
                             w = 1;
                         }
-                        counter[(int)idx] += w;
+                        counter[(int) idx] += w;
                         sum += w;
                     }
-                    //counter[(int) realLabel]--; //here we have to subtract distanceRate because we took k+1 neighbours as the dataset containes the query instance for which distance = 0, so the 1/(1+dist) = 1;
+                    //counter[(int) realLabel]--; //here we have to subtract distanceRate because we took k+1 neighbours
+                    // as the data set contains the query instance for which distance = 0, so the 1/(1+dist) = 1;
                     //sum--;   //as above              
                     //Normalizing counter
                     //First we normalize counter to 0-1 range, then apply weights
@@ -215,10 +203,10 @@ public class ENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
                         counter[i] /= norm;
                     }
                     predictedLabel = KNNTools.getMostFrequentValue(counter);
-     
+
                     if (storeConfidence) {
 //                        confidence[instanceIndex] = counterMap.get(predictedLabel);
-                        confidence[instanceIndex] = counter[(int)predictedLabel];
+                        confidence[instanceIndex] = counter[(int) predictedLabel];
                     }
                     prediction.setLabel(predictedLabel);
                     prediction.setConfidence(counter);
@@ -230,7 +218,7 @@ public class ENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
                     if (lossValue > 0 && classCount > 1) {
                         index.set(instanceIndex, false, lossValue);
                         classCount--;
-                        classCountMap.put(realLabel,classCount);
+                        classCountMap.put(realLabel, classCount);
                     }
                     index.setWeight(instanceIndex, lossValue);
                     instanceIndex++;
@@ -253,7 +241,7 @@ public class ENNInstanceSelectionModel extends AbstractInstanceSelectorModel {
                         sum++;
                     }
                     //predictedLabel -= realLabel;  //here we have to subtract distanceRate because we took k+1 neighbours 					            
-                    //sum--; //here we have to subtract because nearest neighbors includ itself, see line above                
+                    //sum--; //here we have to subtract because nearest neighbors include itself, see line above
                     predictedLabel /= sum;
                     prediction.setLabel(predictedLabel);
                     instance.put(Const.VECTOR, vector);

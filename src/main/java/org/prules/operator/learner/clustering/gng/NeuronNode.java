@@ -12,10 +12,10 @@ public class NeuronNode {
 
     protected double[] values;
     protected List<NeuronNode> neighbors = new ArrayList<>();
-    protected Map<NeuronNode, Integer> ages = new HashMap<>();
-    protected double localError;
+    private Map<NeuronNode, Integer> ages = new HashMap<>();
+    private double localError;
     protected double dist;
-    protected int maxAge;
+    private int maxAge;
 
     public NeuronNode(double[] values, int maxAge) {
         this.values = values;
@@ -73,7 +73,7 @@ public class NeuronNode {
         this.localError = localError;
     }
 
-    public Map<NeuronNode, Integer> getAges() {
+    private Map<NeuronNode, Integer> getAges() {
         return ages;
     }
 

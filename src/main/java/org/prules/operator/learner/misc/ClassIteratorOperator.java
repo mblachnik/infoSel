@@ -15,22 +15,16 @@ import com.rapidminer.operator.OperatorChain;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.learner.CapabilityProvider;
-import org.prules.operator.learner.tools.DataIndex;
-import org.prules.operator.learner.tools.PRulesUtil;
 import com.rapidminer.operator.ports.InputPort;
 import com.rapidminer.operator.ports.OutputPort;
-import com.rapidminer.operator.ports.metadata.CapabilityPrecondition;
-import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
-import com.rapidminer.operator.ports.metadata.ExampleSetPassThroughRule;
-import com.rapidminer.operator.ports.metadata.MetaData;
-import com.rapidminer.operator.ports.metadata.PassThroughRule;
-import com.rapidminer.operator.ports.metadata.SetRelation;
-import com.rapidminer.operator.ports.metadata.SubprocessTransformRule;
+import com.rapidminer.operator.ports.metadata.*;
+import org.prules.operator.learner.tools.DataIndex;
+import org.prules.operator.learner.tools.PRulesUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author Marcin
  */
 public class ClassIteratorOperator extends OperatorChain {
@@ -43,7 +37,6 @@ public class ClassIteratorOperator extends OperatorChain {
     //CollectingPortPairExtender outExtender = new CollectingPortPairExtender("out", getSubprocess(0).getInnerSinks(), getOutputPorts());
 
     /**
-     * 
      * @param description
      */
     public ClassIteratorOperator(OperatorDescription description) {
@@ -64,7 +57,7 @@ public class ClassIteratorOperator extends OperatorChain {
                         return false;
                 }
             }
-            }, exampleSetInputPort));
+        }, exampleSetInputPort));
         prototypesInnerSourcePort.addPrecondition(new CapabilityPrecondition(new CapabilityProvider() {
             @Override
             public boolean supportsCapability(OperatorCapability capability) {
@@ -77,25 +70,25 @@ public class ClassIteratorOperator extends OperatorChain {
                     case MISSING_VALUES:
                         return true;
                     default:
-                        return false; 
+                        return false;
                 }
             }
-            }, prototypesInnerSourcePort));
+        }, prototypesInnerSourcePort));
         getTransformer().addRule(new ExampleSetPassThroughRule(exampleSetInputPort, exampleInnerSourcePort, SetRelation.EQUAL));
         getTransformer().addRule(new ExampleSetPassThroughRule(exampleSetInputPort, exampleSetOutputPort, SetRelation.EQUAL));
         getTransformer().addRule(new SubprocessTransformRule(getSubprocess(0)));
         getTransformer().addRule(new PassThroughRule(prototypesInnerSourcePort, prototypesOutputPort, false) {
-                    @Override
-                    public MetaData modifyMetaData(MetaData metaData) {
-                        if (metaData instanceof ExampleSetMetaData) {
-                            //Tutaj trzeba dodac przetwarzanie metadanych dot. zbioru prototypów
-                            return metaData;                            
-                        } else {
-                            return metaData;
-                        }
-                    }
-                });
-        
+            @Override
+            public MetaData modifyMetaData(MetaData metaData) {
+                if (metaData instanceof ExampleSetMetaData) {
+                    //Tutaj trzeba dodac przetwarzanie metadanych dot. zbioru prototypów
+                    return metaData;
+                } else {
+                    return metaData;
+                }
+            }
+        });
+
     }
 
     @Override
@@ -105,15 +98,15 @@ public class ClassIteratorOperator extends OperatorChain {
         Attribute label = attributes.getLabel();
         NominalMapping classLabels = label.getMapping();
         int classNumber = classLabels.size();
-        boolean[][] indexes = new boolean[classNumber][exampleSet.size()];        
+        boolean[][] indexes = new boolean[classNumber][exampleSet.size()];
         int j = 0;
-        for(Example example : exampleSet){            
-            indexes[(int)example.getLabel()][j] = true;
+        for (Example example : exampleSet) {
+            indexes[(int) example.getLabel()][j] = true;
             j++;
         }
-        List<ExampleSet> extractedSets = new ArrayList<ExampleSet>(classNumber);        
-        for (int i=0; i<classNumber; i++){                                                
-            SelectedExampleSet oneClassExampleSet = new SelectedExampleSet(exampleSet, new DataIndex(indexes[i]));            
+        List<ExampleSet> extractedSets = new ArrayList<ExampleSet>(classNumber);
+        for (int i = 0; i < classNumber; i++) {
+            SelectedExampleSet oneClassExampleSet = new SelectedExampleSet(exampleSet, new DataIndex(indexes[i]));
             exampleInnerSourcePort.deliver(oneClassExampleSet);
             getSubprocess(0).execute();
             inApplyLoop();
@@ -121,7 +114,7 @@ public class ClassIteratorOperator extends OperatorChain {
             extractedSets.add(extractedPrototypes);
         }
         ExampleSet outputSet = PRulesUtil.combineExampleSets(extractedSets);
-        prototypesOutputPort.deliver(outputSet);  
+        prototypesOutputPort.deliver(outputSet);
         exampleSetOutputPort.deliver(exampleSet);
     }
 }
@@ -149,14 +142,14 @@ import com.rapidminer.operator.ports.metadata.AttributeMetaData;
 import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
 import com.rapidminer.operator.ports.metadata.ExampleSetPassThroughRule;
 import com.rapidminer.operator.ports.metadata.SetRelation;
-import com.rapidminer.operator.ports.metadata.SubprocessTransformRule;
+import com.rapidminer.operator.ports.metadata.SubProcessTransformRule;
 import com.rapidminer.parameter.UndefinedParameterError;
 
 public class MultipleLabelIterator extends OperatorChain {
 
 	private final InputPort exampleSetInput = getInputPorts().createPort("example set");
-	private final OutputPort exampleInnerSource = getSubprocess(0).getInnerSources().createPort("example set");
-	CollectingPortPairExtender outExtender = new CollectingPortPairExtender("out", getSubprocess(0).getInnerSinks(), getOutputPorts());
+	private final OutputPort exampleInnerSource = getSubProcess(0).getInnerSources().createPort("example set");
+	CollectingPortPairExtender outExtender = new CollectingPortPairExtender("out", getSubProcess(0).getInnerSinks(), getOutputPorts());
 
 	public MultipleLabelIterator(OperatorDescription description) {
 		super(description, "Iteration");
@@ -176,7 +169,7 @@ public class MultipleLabelIterator extends OperatorChain {
 				return metaData;
 			}
 		});
-		getTransformer().addRule(new SubprocessTransformRule(getSubprocess(0)));
+		getTransformer().addRule(new SubProcessTransformRule(getSubProcess(0)));
 		getTransformer().addRule(outExtender.makePassThroughRule());
 	}
 
@@ -195,7 +188,7 @@ public class MultipleLabelIterator extends OperatorChain {
 			cloneSet.getAttributes().setLabel(labels[i]);
 			exampleInnerSource.deliver(cloneSet);
 
-			getSubprocess(0).execute();
+			getSubProcess(0).execute();
 			outExtender.collect();            
 			inApplyLoop();
 		}
@@ -216,5 +209,4 @@ public class MultipleLabelIterator extends OperatorChain {
 		return result;
 	}
 }
-
  */

@@ -1,18 +1,19 @@
 package org.prules.operator.learner.selection;
 
-import org.prules.operator.learner.selection.models.IB3InstanceSelectionModel;
-import java.util.List;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
-import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeDouble;
 import com.rapidminer.parameter.ParameterTypeInt;
 import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
+import org.prules.operator.learner.selection.models.IB3InstanceSelectionModel;
+
+import java.util.List;
 
 /**
  * This class is used to provide IB3 instance selection operator It use
@@ -77,7 +78,7 @@ public class IB3InstanceSelectionOperator extends AbstractInstanceSelectorOperat
         int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
         try {
             measureType = measureHelper.getSelectedMeasureType();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:

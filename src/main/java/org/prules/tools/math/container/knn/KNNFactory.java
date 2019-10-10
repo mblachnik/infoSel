@@ -8,14 +8,14 @@ package org.prules.tools.math.container.knn;
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.AttributeRole;
 import com.rapidminer.example.ExampleSet;
-import org.prules.dataset.Const;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import java.util.HashMap;
-import java.util.Map;
+import org.prules.dataset.Const;
 import org.prules.dataset.IInstanceLabels;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- *
  * @author Marcin
  */
 public class KNNFactory {
@@ -37,10 +37,10 @@ public class KNNFactory {
     /**
      * Returns nearest neighbor data structure
      *
-     * @param type - type of the structure
-     * @param exampleSet - dataset
+     * @param type             - type of the structure
+     * @param exampleSet       - dataset
      * @param storedAttributes - which attributes to store
-     * @param measure - distance measure
+     * @param measure          - distance measure
      * @return
      */
     public static ISPRGeometricDataCollection<IInstanceLabels> initializeKNearestNeighbourFactory(GeometricCollectionTypes type, ExampleSet exampleSet, Map<Attribute, String> storedAttributes, DistanceMeasure measure) {
@@ -50,7 +50,7 @@ public class KNNFactory {
                 samples = new LinearList(exampleSet, storedAttributes, measure);
                 break;
             case CACHED_LINEAR_SEARCH:
-                samples = new SimpleNNCachedLineraList(exampleSet, storedAttributes, measure);
+                samples = new SimpleNNCachedLinearList(exampleSet, storedAttributes, measure);
                 break;
             case BALL_TREE_SEARCH:
                 samples = new BallTree(exampleSet, storedAttributes, measure);
@@ -65,11 +65,11 @@ public class KNNFactory {
     /**
      * Returns nearest neighbor data structure
      *
-     * @param type - type of the structure
-     * @param exampleSet - dataset
-     * @param attribute - attribute to store
+     * @param type            - type of the structure
+     * @param exampleSet      - dataset
+     * @param attribute       - attribute to store
      * @param storedValueName - name in the store
-     * @param measure - distance measure
+     * @param measure         - distance measure
      * @return
      */
     public static ISPRGeometricDataCollection<IInstanceLabels> initializeKNearestNeighbourFactory(GeometricCollectionTypes type, ExampleSet exampleSet, Attribute attribute, String storedValueName, DistanceMeasure measure) {

@@ -1,37 +1,37 @@
 package org.prules.operator.learner.clustering.models;
 
-import java.util.Iterator;
-
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import org.prules.dataset.InstanceFactory;
 import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import java.util.ArrayList;
+import org.prules.dataset.InstanceFactory;
 import org.prules.dataset.Vector;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 /**
- *
  * @author Marcin
  */
 public class CFCMModel extends AbstractBatchModel {
 
-    boolean nextItertion = false;
-    double m;
-    double minGain;
-    int iteration, numberOfIterations, numberOfPrototypes;
-    RandomGenerator randomGenerator;    
-    
+    private boolean nextIteration = false;
+    private double m;
+    private double minGain;
+    private int iteration, numberOfIterations, numberOfPrototypes;
+    private RandomGenerator randomGenerator;
+
 
     /**
      * Constructor of the model
-     * @param distance - distance measure
-     * @param m - fuzziness parameter
-     * @param maxIterations - number of iterations
-     * @param minGain - minimal gain required to perform new iteration
-     * @param randomGenerator - random number generators
-     * @param numberOfPrototypes - number of clusters     
+     *
+     * @param distance           - distance measure
+     * @param m                  - fuzziness parameter
+     * @param maxIterations      - number of iterations
+     * @param minGain            - minimal gain required to perform new iteration
+     * @param randomGenerator    - random number generators
+     * @param numberOfPrototypes - number of clusters
      */
     public CFCMModel(DistanceMeasure distance, double m, int maxIterations, double minGain, RandomGenerator randomGenerator, int numberOfPrototypes) {
         super(distance);
@@ -45,12 +45,13 @@ public class CFCMModel extends AbstractBatchModel {
 
     /**
      * Method executed by the super class to check if next iteration should be performed
+     *
      * @return
      */
     @Override
     public boolean nextIteration() {
         iteration++;
-        return nextItertion && (iteration < numberOfIterations);
+        return nextIteration && (iteration < numberOfIterations);
     }
 
     @Override
@@ -100,13 +101,13 @@ public class CFCMModel extends AbstractBatchModel {
             }
             prototypeIndex++;
         }
-        
+
         Iterator<Example> trainingSetIterator = trainingSet.iterator();
         Iterator<double[]> partitionMatrixIterator = partitionMatrix.iterator();
         while (trainingSetIterator.hasNext() && partitionMatrixIterator.hasNext()) {
             Example example = trainingSetIterator.next();
             double[] partitionMatrixEntry = partitionMatrixIterator.next();
-            
+
             double sum = 0;
             for (prototypeIndex = 0; prototypeIndex < numberOfPrototypes; prototypeIndex++) {
                 sum += partitionMatrixEntry[prototypeIndex];
@@ -118,19 +119,20 @@ public class CFCMModel extends AbstractBatchModel {
                 partitionMatrixEntry[prototypeIndex] = weight * v / sum;
             }
         }
-        int size = costFunctionValue.size();        
-        double gain = costFunctionValue.get(size-1) - costFunctionValue.get(size-2);
+        int size = costFunctionValue.size();
+        double gain = costFunctionValue.get(size - 1) - costFunctionValue.get(size - 2);
         if (Math.abs(gain) < minGain) {
-            nextItertion = false;
-        } else {            
-            nextItertion = true;
+            nextIteration = false;
+        } else {
+            nextIteration = true;
             costFunctionValue.add(objFun);
         }
     }
-    
+
     /**
      * Method executed by the superclass before the main loop starts. Used to initialize
      * partition matrix
+     *
      * @param trainingSet
      */
     @Override
@@ -139,7 +141,7 @@ public class CFCMModel extends AbstractBatchModel {
         prototypes = new ArrayList<>(numberOfPrototypes);
         for (int i = 0; i < numberOfPrototypes; i++) {
             prototypes.add(InstanceFactory.createVector(new double[numberOfAttributes]));
-        } 
+        }
         resetPartitionMatrix(trainingSet);
         int i;
         //partition matrix initialization				     
@@ -147,7 +149,7 @@ public class CFCMModel extends AbstractBatchModel {
         Iterator<double[]> partitionMatrixIterator = partitionMatrix.iterator();
         while (trainingSetIterator.hasNext() && partitionMatrixIterator.hasNext()) {
             Example example = trainingSetIterator.next();
-            double[] partitionMatrixEntry = partitionMatrixIterator.next();                    
+            double[] partitionMatrixEntry = partitionMatrixIterator.next();
             double sum = 0;
             for (i = 0; i < numberOfPrototypes; i++) {
                 double value = randomGenerator.nextDouble();
@@ -161,13 +163,12 @@ public class CFCMModel extends AbstractBatchModel {
                 value *= weight;
                 partitionMatrixEntry[i] = value / sum;
             }
-        }                
+        }
     }
 
 
-    
 //    /**
-//     * This method first calculates partition matrix for given dataset, then 
+//     * This method first calculates partition matrix for given data set, then
 //     * it return output based on the maximum value of partition matrix
 //     * @param trainingSet
 //     * @return 

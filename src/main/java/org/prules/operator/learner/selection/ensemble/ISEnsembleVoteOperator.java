@@ -12,13 +12,6 @@ import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.example.set.SortedExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
-import org.prules.operator.AbstractPrototypeBasedOperatorChain;
-import org.prules.operator.learner.classifiers.IS_KNNClassificationModel;
-import org.prules.operator.learner.classifiers.PredictionType;
-import org.prules.operator.learner.classifiers.VotingType;
-import org.prules.operator.learner.tools.DataIndex;
-import org.prules.tools.math.container.knn.GeometricCollectionTypes;
-import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
@@ -26,44 +19,45 @@ import com.rapidminer.operator.ValueDouble;
 import com.rapidminer.operator.ports.InputPortExtender;
 import com.rapidminer.operator.ports.OutputPort;
 import com.rapidminer.operator.ports.OutputPortExtender;
-import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
-import com.rapidminer.operator.ports.metadata.ExampleSetPrecondition;
-import com.rapidminer.operator.ports.metadata.GeneratePredictionModelTransformationRule;
-import com.rapidminer.operator.ports.metadata.MDInteger;
-import com.rapidminer.operator.ports.metadata.SubprocessTransformRule;
+import com.rapidminer.operator.ports.metadata.*;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeBoolean;
 import com.rapidminer.parameter.ParameterTypeDouble;
 import com.rapidminer.tools.Ontology;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
-import com.rapidminer.tools.math.similarity.DistanceMeasures;
 import com.rapidminer.tools.math.similarity.mixed.MixedEuclideanDistance;
+import org.prules.dataset.IInstanceLabels;
+import org.prules.operator.AbstractPrototypeBasedOperatorChain;
+import org.prules.operator.learner.classifiers.IS_KNNClassificationModel;
+import org.prules.operator.learner.classifiers.PredictionType;
+import org.prules.operator.learner.classifiers.VotingType;
+import org.prules.operator.learner.tools.DataIndex;
+import org.prules.tools.math.container.knn.GeometricCollectionTypes;
+import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
+import org.prules.tools.math.container.knn.KNNFactory;
+
 import java.util.HashMap;
 import java.util.List;
-import org.prules.tools.math.container.knn.KNNFactory;
-import org.prules.dataset.IInstanceLabels;
 
 /**
- *
  * @author Marcin
  */
 public class ISEnsembleVoteOperator extends AbstractPrototypeBasedOperatorChain {
 
-    public static final String PARAMETER_THRESHOLD = "Acceptance threshold";
-    public static final String PARAMETER_ADD_WEIGHTS = "Add weight attribute";
+    private static final String PARAMETER_THRESHOLD = "Acceptance threshold";
+    private static final String PARAMETER_ADD_WEIGHTS = "Add weight attribute";
 
     /**
      *
      */
-    protected OutputPortExtender subprocessInputExtender  = new OutputPortExtender("training set", getSubprocess(0).getInnerSources());
-    protected InputPortExtender  subprocessOutputExtender = new InputPortExtender("base model", getSubprocess(0).getInnerSinks(), new ExampleSetMetaData(), 2);
+    private OutputPortExtender subProcessInputExtender = new OutputPortExtender("training set", getSubprocess(0).getInnerSources());
+    private InputPortExtender subProcessOutputExtender = new InputPortExtender("base model", getSubprocess(0).getInnerSinks(), new ExampleSetMetaData(), 2);
     /**
      *
      */
     protected final OutputPort modelOutputPort = getOutputPorts().createPort("model");
 
-    private int numberOfInstancesBeaforeSelection;
+    private int numberOfInstancesBeforeSelection;
     private int numberOfInstancesAfterSelection;
     private int compression;
     //protected DistanceMeasureHelper measureHelper;
@@ -75,24 +69,24 @@ public class ISEnsembleVoteOperator extends AbstractPrototypeBasedOperatorChain 
     }
 
     private void init() {
-        subprocessInputExtender.start();
-        subprocessOutputExtender.start();
+        subProcessInputExtender.start();
+        subProcessOutputExtender.start();
 
         exampleSetInputPort.addPrecondition(new ExampleSetPrecondition(exampleSetInputPort, Attributes.ID_NAME, Ontology.ATTRIBUTE_VALUE));
-        getTransformer().addRule(subprocessInputExtender.makePassThroughRule(exampleSetInputPort));
-        //getTransformer().addRule(new ExampleSetPassThroughRule(exampleSetInputPort, subprocessInputExtender, SetRelation.EQUAL));
+        getTransformer().addRule(subProcessInputExtender.makePassThroughRule(exampleSetInputPort));
+        //getTransformer().addRule(new ExampleSetPassThroughRule(exampleSetInputPort, subProcessInputExtender, SetRelation.EQUAL));
         //getTransformer().addRule(new PassThroughRule(exampleSetInputPort,exampleInnerSourcePort,true));    
         getTransformer().addRule(new SubprocessTransformRule(getSubprocess(0)));
         //prototypeExampleSetOutput.addPrecondition(new SimplePrecondition(predictionModelInputInnerSourcePort, new MetaData(PredictionModel.class)));
-        //subprocessOutputExtender.addPrecondition(new ExampleSetPrecondition(prototypeExampleSetOutput));
+        //subProcessOutputExtender.addPrecondition(new ExampleSetPrecondition(prototypeExampleSetOutput));
         //getTransformer().addRule(new GenerateModelTransformationRule(exampleSetInputPort, modelOutputPort, IS_KNNClassificationModel.class));
         getTransformer().addRule(new GeneratePredictionModelTransformationRule(exampleSetInputPort, modelOutputPort, IS_KNNClassificationModel.class));
 
-        addValue(new ValueDouble("Instances_beafore_selection", "Number Of Examples in the training set") {
+        addValue(new ValueDouble("Instances_before_selection", "Number Of Examples in the training set") {
 
             @Override
             public double getDoubleValue() {
-                return numberOfInstancesBeaforeSelection;
+                return numberOfInstancesBeforeSelection;
             }
         });
         addValue(new ValueDouble("Instances_after_selection", "Number Of Examples after selection") {
@@ -125,9 +119,9 @@ public class ISEnsembleVoteOperator extends AbstractPrototypeBasedOperatorChain 
         HashMap<Double, Double> idCounter = new HashMap<Double, Double>(trainingSet.size());
 
         //Performing bootstrap validation
-        subprocessInputExtender.deliverToAll(trainingSet, false);
+        subProcessInputExtender.deliverToAll(trainingSet, false);
         getSubprocess(0).execute();
-        List<ExampleSet> resultsList = subprocessOutputExtender.getData(ExampleSet.class, false);
+        List<ExampleSet> resultsList = subProcessOutputExtender.getData(ExampleSet.class, false);
         if (resultsList != null) {
             int iterations = resultsList.size();
             double step = 1.0 / iterations;
@@ -162,7 +156,7 @@ public class ISEnsembleVoteOperator extends AbstractPrototypeBasedOperatorChain 
             for (Example example : output) {
                 double id = example.getId();
                 Double valueO = idCounter.get(id);
-                double value = valueO == null ? 0 : valueO.doubleValue();
+                double value = valueO == null ? 0 : valueO;
                 example.setWeight(value);
 
             }
@@ -173,8 +167,9 @@ public class ISEnsembleVoteOperator extends AbstractPrototypeBasedOperatorChain 
             for (Example e : trainingSet) {
                 double id = e.getId();
                 Double valueO = idCounter.get(id);
-                double value = valueO == null ? Double.NaN : valueO.doubleValue();
-                if ((Double.isNaN(value)) || (value < threshold)) { //Unselect vectors not included in idCounter or those which don't fulfill threshold requirements
+                double value = valueO == null ? Double.NaN : valueO;
+                //Unselected vectors not included in idCounter or those which don't fulfill threshold requirements
+                if ((Double.isNaN(value)) || (value < threshold)) {
                     index.set(i, false);
                 }
                 i++;
@@ -185,9 +180,9 @@ public class ISEnsembleVoteOperator extends AbstractPrototypeBasedOperatorChain 
             DistanceMeasure distance = new MixedEuclideanDistance();
             distance.init(output);
             //if (output.getAttributes().getLabel().isNominal()) {
-                ISPRGeometricDataCollection<IInstanceLabels> samples = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, output, distance);
-                IS_KNNClassificationModel<IInstanceLabels> model = new IS_KNNClassificationModel<>(output, samples, 1, VotingType.MAJORITY, PredictionType.Classification);
-                modelOutputPort.deliver(model);
+            ISPRGeometricDataCollection<IInstanceLabels> samples = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, output, distance);
+            IS_KNNClassificationModel<IInstanceLabels> model = new IS_KNNClassificationModel<>(output, samples, 1, VotingType.MAJORITY, PredictionType.Classification);
+            modelOutputPort.deliver(model);
             //} else if (output.getAttributes().getLabel().isNumerical()) {
             //    ISPRGeometricDataCollection<IntDoubleContainer> samples = KNNTools.initializeGeneralizedKNearestNeighbour(output, distance);
             //    //GeometricDataCollection<Integer> samples = KNNTools.initializeKNearestNeighbour(output, distance);
@@ -196,9 +191,9 @@ public class ISEnsembleVoteOperator extends AbstractPrototypeBasedOperatorChain 
             //}
         }
         //IS selection statistics
-        numberOfInstancesBeaforeSelection = trainingSet.size();
+        numberOfInstancesBeforeSelection = trainingSet.size();
         numberOfInstancesAfterSelection = output.size();
-        compression = numberOfInstancesAfterSelection / numberOfInstancesBeaforeSelection;
+        compression = numberOfInstancesAfterSelection / numberOfInstancesBeforeSelection;
         return output;
     }
 
@@ -206,10 +201,10 @@ public class ISEnsembleVoteOperator extends AbstractPrototypeBasedOperatorChain 
      * Returns number of prototypes displayed in the MataData related with prototypeOutput
      *
      * @return
-     */    
+     */
     @Override
     public MDInteger getNumberOfPrototypesMetaData() {
-        return new MDInteger();        
+        return new MDInteger();
     }
 
     @Override
@@ -239,6 +234,4 @@ public class ISEnsembleVoteOperator extends AbstractPrototypeBasedOperatorChain 
         types.add(type);
         return types;
     }
-    
-    
 }

@@ -9,49 +9,45 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import org.prules.operator.learner.weighting.models.AbstractNoiseEstimatorModel;
-import org.prules.operator.learner.weighting.models.DeltaTestNoiseModel;
-import org.prules.operator.learner.weighting.models.VarianceNoiseModel;
-import com.rapidminer.operator.OperatorCapability;
-import com.rapidminer.operator.OperatorDescription;
-import com.rapidminer.operator.OperatorException;
-import com.rapidminer.operator.ProcessSetupError;
-import com.rapidminer.operator.ValueDouble;
+import com.rapidminer.operator.*;
 import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
 import com.rapidminer.operator.ports.metadata.MetaData;
 import com.rapidminer.operator.ports.metadata.SimpleMetaDataError;
 import com.rapidminer.operator.ports.metadata.SimplePrecondition;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeInt;
-//import com.rapidminer.tools.Ontology;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import org.prules.operator.learner.weighting.models.AbstractNoiseEstimatorModel;
+import org.prules.operator.learner.weighting.models.VarianceNoiseModel;
+
 import java.util.List;
 
+//import com.rapidminer.tools.Ontology;
+
 /**
- *
  * @author Marcin
  */
 public class NNEVarianceOperator extends AbstractWeightingOperator {
-    
-    public static final String PARAMETER_K = "k";    
-    private DistanceMeasureHelper measureHelper = new DistanceMeasureHelper(this); 
-    
+
+    public static final String PARAMETER_K = "k";
+    private DistanceMeasureHelper measureHelper = new DistanceMeasureHelper(this);
+
     private int k;
-    double nne;
-   //private boolean transformWeights;
+    private double nne;
+    //private boolean transformWeights;
 
 
     public NNEVarianceOperator(OperatorDescription description) {
-        super(description,Ontology.ATTRIBUTE_NOISE,Ontology.ATTRIBUTE_NOISE);        
+        super(description, Ontology.ATTRIBUTE_NOISE, Ontology.ATTRIBUTE_NOISE);
         addValue(new ValueDouble("Nonparametric Noise Estimation", "The level of noise") {
             @Override
             public double getDoubleValue() {
                 return nne;
             }
         });
-        
+
         exampleSetInputPort.addPrecondition(
                 new SimplePrecondition(exampleSetInputPort, new MetaData(), true) {
 
@@ -65,29 +61,29 @@ public class NNEVarianceOperator extends AbstractWeightingOperator {
                                     break;
                                 case YES:
                                     if (!emd.getLabelMetaData().isNumerical()) {
-                                        exampleSetInputPort.addError(new SimpleMetaDataError(ProcessSetupError.Severity.WARNING, exampleSetInputPort, "special_attribute_has_wrong_type", emd.getLabelMetaData().getName() ,Attributes.LABEL_NAME, com.rapidminer.tools.Ontology.VALUE_TYPE_NAMES[com.rapidminer.tools.Ontology.NUMERICAL]));
+                                        exampleSetInputPort.addError(new SimpleMetaDataError(ProcessSetupError.Severity.WARNING, exampleSetInputPort, "special_attribute_has_wrong_type", emd.getLabelMetaData().getName(), Attributes.LABEL_NAME, com.rapidminer.tools.Ontology.VALUE_TYPE_NAMES[com.rapidminer.tools.Ontology.NUMERICAL]));
                                     }
                             }
                         }
                     }
                 }
         );
-    }    
-    
+    }
+
     @Override
-    public void processExamples(ExampleSet exampleSet) throws OperatorException {                
-        DistanceMeasure distance = measureHelper.getInitializedMeasure(exampleSet); 
-        k = getParameterAsInt(PARAMETER_K);                
-        AbstractNoiseEstimatorModel model = new VarianceNoiseModel(distance, k);        
+    public void processExamples(ExampleSet exampleSet) throws OperatorException {
+        DistanceMeasure distance = measureHelper.getInitializedMeasure(exampleSet);
+        k = getParameterAsInt(PARAMETER_K);
+        AbstractNoiseEstimatorModel model = new VarianceNoiseModel(distance, k);
         double[] noise = model.run(exampleSet).getFirst();
         nne = model.getNNE();
-        Attributes attributes = exampleSet.getAttributes();        
+        Attributes attributes = exampleSet.getAttributes();
         Attribute weightAttribute = attributes.getSpecial(Ontology.ATTRIBUTE_NOISE);
-        int i = 0;        
-        for (Example example : exampleSet){
+        int i = 0;
+        for (Example example : exampleSet) {
             example.setValue(weightAttribute, noise[i]);
-            i ++;
-        }     
+            i++;
+        }
     }
 
     @Override
@@ -95,7 +91,7 @@ public class NNEVarianceOperator extends AbstractWeightingOperator {
         int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
         try {
             measureType = measureHelper.getSelectedMeasureType();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:
@@ -106,22 +102,22 @@ public class NNEVarianceOperator extends AbstractWeightingOperator {
                 return (measureType == DistanceMeasures.MIXED_MEASURES_TYPE)
                         || (measureType == DistanceMeasures.DIVERGENCES_TYPE)
                         || (measureType == DistanceMeasures.NUMERICAL_MEASURES_TYPE);
-            case NUMERICAL_LABEL:            
+            case NUMERICAL_LABEL:
                 return true;
             default:
                 return false;
         }
     }
-    
+
     @Override
     public List<ParameterType> getParameterTypes() {
         List<ParameterType> types = super.getParameterTypes();
         ParameterType type = new ParameterTypeInt(PARAMETER_K, "The number of nearest neighbors.", 3, Integer.MAX_VALUE, 10);
         type.setExpert(false);
-        types.add(type);                
-        
+        types.add(type);
+
         types.addAll(DistanceMeasures.getParameterTypes(this));
 
         return types;
-    }    
+    }
 }

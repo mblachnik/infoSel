@@ -3,11 +3,11 @@ package org.prules.operator.learner.classifiers.neuralnet.models;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
  * @author Marcin
  */
 public class LVQ1Model extends AbstractLVQModel {
@@ -18,26 +18,24 @@ public class LVQ1Model extends AbstractLVQModel {
     private final double initialAlpha;
 
     /**
-     * 
      * @param prototypes
      * @param iterations
      * @param measure
      * @param alpha
-     * @param alphaNegative
      * @throws OperatorException
      */
     public LVQ1Model(ExampleSet prototypes, int iterations, DistanceMeasure measure, double alpha) throws OperatorException {
         super(prototypes);
         this.iterations = iterations;
-        this.currentIteration = 0;        
-        this.alpha = alpha;        
+        this.currentIteration = 0;
+        this.alpha = alpha;
         this.initialAlpha = alpha;
         this.measure = measure;
         this.measure.init(prototypes);
     }
 
     /**
-     * 
+     *
      */
     @Override
     public void update() {
@@ -65,21 +63,20 @@ public class LVQ1Model extends AbstractLVQModel {
                 value -= alpha * (exampleValues[i] - value);
                 prototypeValues[selectedPrototype][i] = value;
             }
-        }        
+        }
     }
 
     /**
-     * 
      * @return
      */
     @Override
     public boolean nextIteration(ExampleSet trainingSet) {
         currentIteration++;
-        alpha = LVQTools.learingRateUpdateRule(alpha, currentIteration, iterations, initialAlpha);        
+        alpha = LVQTools.learningRateUpdateRule(alpha, currentIteration, iterations, initialAlpha);
         return currentIteration < iterations;
     }
-    
-        /**
+
+    /**
      * Returns total number of iterations (maximum number of iterations)
      *
      * @return

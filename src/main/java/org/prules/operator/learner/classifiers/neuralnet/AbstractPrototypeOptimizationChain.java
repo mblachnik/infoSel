@@ -5,34 +5,29 @@
 package org.prules.operator.learner.classifiers.neuralnet;
 
 //import history.OldAbstractPRulesOperator;
+
 import com.rapidminer.example.ExampleSet;
+import com.rapidminer.operator.AbstractModel;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.learner.CapabilityProvider;
-import org.prules.operator.AbstractPrototypeBasedOperatorChain;
-import org.prules.operator.learner.classifiers.IS_KNNClassificationModel;
-import org.prules.operator.learner.classifiers.PredictionType;
-import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
-import org.prules.operator.learner.selection.models.RandomInstanceSelectionModel;
 import com.rapidminer.operator.ports.InputPort;
 import com.rapidminer.operator.ports.OutputPort;
-import com.rapidminer.operator.ports.metadata.ExampleSetPrecondition;
-import org.prules.operator.learner.tools.PRulesUtil;
-import com.rapidminer.operator.AbstractModel;
 import com.rapidminer.operator.ports.Port;
-import com.rapidminer.operator.ports.metadata.CapabilityPrecondition;
-import com.rapidminer.operator.ports.metadata.DistanceMeasurePrecondition;
-import com.rapidminer.operator.ports.metadata.ExampleSetPassThroughRule;
-import com.rapidminer.operator.ports.metadata.GeneratePredictionModelTransformationRule;
-import com.rapidminer.operator.ports.metadata.IsConnectedPrecondition;
-import com.rapidminer.operator.ports.metadata.SetRelation;
-import com.rapidminer.operator.ports.metadata.SubprocessTransformRule;
+import com.rapidminer.operator.ports.metadata.*;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeInt;
 import com.rapidminer.parameter.PortProvider;
 import com.rapidminer.parameter.conditions.PortConnectedCondition;
 import com.rapidminer.tools.RandomGenerator;
+import org.prules.operator.AbstractPrototypeBasedOperatorChain;
+import org.prules.operator.learner.classifiers.IS_KNNClassificationModel;
+import org.prules.operator.learner.classifiers.PredictionType;
+import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
+import org.prules.operator.learner.selection.models.RandomInstanceSelectionModel;
+import org.prules.operator.learner.tools.PRulesUtil;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -50,19 +45,19 @@ public abstract class AbstractPrototypeOptimizationChain extends AbstractPrototy
     /**
      *
      */
-    protected final OutputPort exampleInnerSourcePort = getSubprocess(0).getInnerSources().createPort("example Set");
+    private final OutputPort exampleInnerSourcePort = getSubprocess(0).getInnerSources().createPort("example Set");
     /**
      *
      */
-    protected final InputPort initialPrototypesSourcePort = getSubprocess(0).getInnerSinks().createPort("codebooks");
+    final InputPort initialPrototypesSourcePort = getSubprocess(0).getInnerSinks().createPort("codeBooks");
     /**
      *
      */
-    //protected final OutputPort initialPrototyoesOutputPort = getOutputPorts().createPassThroughPort("Initial Prototpes");    
+    //protected final OutputPort initialPrototypesOutputPort = getOutputPorts().createPassThroughPort("Initial Prototypes");
 
     protected final OutputPort modelOutputPort = getOutputPorts().createPort("model");
 
-    protected final PredictionType predictionType;
+    private final PredictionType predictionType;
 
     /**
      * Constructor
@@ -70,8 +65,8 @@ public abstract class AbstractPrototypeOptimizationChain extends AbstractPrototy
      * @param description
      * @param predictionType
      */
-    public AbstractPrototypeOptimizationChain(OperatorDescription description, PredictionType predictionType) {
-        super(description, "Initialize_codebooks");//
+    AbstractPrototypeOptimizationChain(OperatorDescription description, PredictionType predictionType) {
+        super(description, "Initialize_codeBooks");//
         this.predictionType = predictionType;
         exampleSetInputPort.addPrecondition(new DistanceMeasurePrecondition(exampleSetInputPort, this));
         exampleSetInputPort.addPrecondition(new CapabilityPrecondition(new CapabilityProvider() {
@@ -89,27 +84,24 @@ public abstract class AbstractPrototypeOptimizationChain extends AbstractPrototy
                         return false;
                 }
             }
-        }, exampleSetInputPort));        
-        initialPrototypesSourcePort.addPrecondition(new IsConnectedPrecondition(initialPrototypesSourcePort, new CapabilityPrecondition(new CapabilityProvider() {
-            @Override
-            public boolean supportsCapability(OperatorCapability capability) {
-                switch (capability) {
-                    case BINOMINAL_ATTRIBUTES:
-                    case POLYNOMINAL_ATTRIBUTES:
-                    case NUMERICAL_ATTRIBUTES:
-                    case POLYNOMINAL_LABEL:
-                    case BINOMINAL_LABEL:
-                    case MISSING_VALUES:
-                        return true;
-                    default:
-                        return false;
-                }
+        }, exampleSetInputPort));
+        initialPrototypesSourcePort.addPrecondition(new IsConnectedPrecondition(initialPrototypesSourcePort, new CapabilityPrecondition(capability -> {
+            switch (capability) {
+                case BINOMINAL_ATTRIBUTES:
+                case POLYNOMINAL_ATTRIBUTES:
+                case NUMERICAL_ATTRIBUTES:
+                case POLYNOMINAL_LABEL:
+                case BINOMINAL_LABEL:
+                case MISSING_VALUES:
+                    return true;
+                default:
+                    return false;
             }
         }, initialPrototypesSourcePort)));
         initialPrototypesSourcePort.addPrecondition(new IsConnectedPrecondition(initialPrototypesSourcePort, new ExampleSetPrecondition(exampleSetInputPort)));
         initialPrototypesSourcePort.addPrecondition(new IsConnectedPrecondition(initialPrototypesSourcePort, new DistanceMeasurePrecondition(initialPrototypesSourcePort, this)));
-        getTransformer().addRule(new GeneratePredictionModelTransformationRule(exampleSetInputPort, modelOutputPort, IS_KNNClassificationModel.class));        
-        getTransformer().addRule(new ExampleSetPassThroughRule(exampleSetInputPort, exampleInnerSourcePort, SetRelation.EQUAL));        
+        getTransformer().addRule(new GeneratePredictionModelTransformationRule(exampleSetInputPort, modelOutputPort, IS_KNNClassificationModel.class));
+        getTransformer().addRule(new ExampleSetPassThroughRule(exampleSetInputPort, exampleInnerSourcePort, SetRelation.EQUAL));
         getTransformer().addRule(new SubprocessTransformRule(getSubprocess(0)));
         //initialPrototypesSourcePort. 
         addPrototypeTransformationRule();
@@ -126,22 +118,22 @@ public abstract class AbstractPrototypeOptimizationChain extends AbstractPrototy
     public ExampleSet processExamples(ExampleSet trainingSet) throws OperatorException {
         exampleInnerSourcePort.deliver(trainingSet);
         this.getSubprocess(0).execute();
-        ExampleSet codebooksInitialization = initialPrototypesSourcePort.getDataOrNull(ExampleSet.class);
-        ExampleSet codebooks;
-        if (codebooksInitialization == null) {
+        ExampleSet codeBooksInitialization = initialPrototypesSourcePort.getDataOrNull(ExampleSet.class);
+        ExampleSet codeBooks;
+        if (codeBooksInitialization == null) {
             int numberOfNeurons = getParameterAsInt(PARAMETER_NUMBER_OF_NEURONS);
             if (numberOfNeurons == 0) {
                 numberOfNeurons = trainingSet.size() / 10;
             }
             RandomGenerator randomGenerator = RandomGenerator.getRandomGenerator(this);
             AbstractInstanceSelectorModel isModel = new RandomInstanceSelectionModel(numberOfNeurons, true, randomGenerator);
-            codebooks = PRulesUtil.duplicateExampleSet(isModel.run(trainingSet));
+            codeBooks = PRulesUtil.duplicateExampleSet(isModel.run(trainingSet));
         } else {
-            codebooks = PRulesUtil.duplicateExampleSet(codebooksInitialization);
+            codeBooks = PRulesUtil.duplicateExampleSet(codeBooksInitialization);
         }
-        AbstractModel model = optimize(trainingSet, codebooks);
+        AbstractModel model = optimize(trainingSet, codeBooks);
         modelOutputPort.deliver(model);
-        return codebooks;
+        return codeBooks;
     }
 
     /**
@@ -149,11 +141,11 @@ public abstract class AbstractPrototypeOptimizationChain extends AbstractPrototy
      * optimization algorithm
      *
      * @param trainingSet
-     * @param codebooks
+     * @param codeBooks
      * @return
      * @throws OperatorException
      */
-    public abstract AbstractModel optimize(ExampleSet trainingSet, ExampleSet codebooks) throws OperatorException;
+    public abstract AbstractModel optimize(ExampleSet trainingSet, ExampleSet codeBooks) throws OperatorException;
 
     @Override
     public List<ParameterType> getParameterTypes() {
@@ -182,13 +174,13 @@ public abstract class AbstractPrototypeOptimizationChain extends AbstractPrototy
         types.addAll(parameters);
         return types;
     }
-    
+
     /**
      * Returns the handle to the Model output port
      *
      * @return output port
      */
-    public OutputPort getModelOutputPort(){
+    public OutputPort getModelOutputPort() {
         return modelOutputPort;
     }
 }

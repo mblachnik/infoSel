@@ -7,17 +7,15 @@ package org.prules.operator.learner.misc;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import java.util.List;
 
 /**
- *
  * @author Marcin
  */
-public class AssymetricGroupDistance implements GroupSimilarity {
+public class AsymmetricGroupDistance implements GroupSimilarity {
 
-    DistanceMeasure measure;
+    private DistanceMeasure measure;
 
-    public AssymetricGroupDistance(DistanceMeasure measure) {
+    AsymmetricGroupDistance(DistanceMeasure measure) {
         this.measure = measure;
     }
 
@@ -29,9 +27,9 @@ public class AssymetricGroupDistance implements GroupSimilarity {
             double distance = Double.MAX_VALUE;
             for (Example e2 : exampleSet2) {
                 double tmpDist = measure.calculateDistance(e1, e2);
-                if (tmpDist < distance){
+                if (tmpDist < distance) {
                     distance = tmpDist;
-                }                
+                }
             }
             totalDistance += distance;
         }

@@ -10,23 +10,24 @@ import com.rapidminer.operator.clustering.ClusterModel;
 
 /**
  * General base cluster model returned as IOObject for clustering methods implemented in this library
+ *
  * @author Marcin
  */
-public abstract class IS_ClusterModel extends ClusterModel{
-    
-    public IS_ClusterModel(ExampleSet exampleSet, int k, boolean addClusterAsLabel, boolean removeUnknown) {
+public abstract class IS_ClusterModel extends ClusterModel {
+
+    IS_ClusterModel(ExampleSet exampleSet, int k, boolean addClusterAsLabel, boolean removeUnknown) {
         super(exampleSet, k, addClusterAsLabel, removeUnknown);
     }
-    
+
     /**
-     * Apply clustering model and label examples. If setClusterAssigment is set to true it also 
+     * Apply clustering model and label examples. If setClusterAssignment is set to true it also
      * calculates statistics required by RapidMiner clustering based models.
-     * Usually apply method from ClusterModel calls this method with setClusterAssigment set to false
+     * Usually apply method from ClusterModel calls this method with setClusterAssignment set to false
      * The setClusterAssignments derives from RapidMiner clusterModel support.
      *
      * @param trainingSet
      * @param setClusterAssignments if true then performs some of the steps required by RapidMiner base model
      * @return
-     */    
+     */
     public abstract ExampleSet apply(ExampleSet trainingSet, boolean setClusterAssignments);
 }

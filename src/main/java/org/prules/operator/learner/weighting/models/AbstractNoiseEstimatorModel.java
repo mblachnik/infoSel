@@ -10,20 +10,23 @@ import org.prules.tools.math.container.PairContainer;
 
 /**
  * Abstract method for all noise estimators
+ *
  * @author Marcin
  */
 public abstract class AbstractNoiseEstimatorModel {
-    
+
     /**
      * Method used to execute noise estimator. For each instance in exampleSet it calculates residual level of noise
-     * @param exampleSet 
-     * @return  return a table of noise level values
+     *
+     * @param exampleSet
+     * @return return a table of noise level values
      */
-    public abstract PairContainer<double[],double[]> run(ExampleSet exampleSet);  
-    
+    public abstract PairContainer<double[], double[]> run(ExampleSet exampleSet);
+
     /**
      * Returns the level of noise in the data. Note that first run(...) method needs to be called, otherwise you get NaN.
-     * @return 
+     *
+     * @return
      */
     public abstract double getNNE();
 }

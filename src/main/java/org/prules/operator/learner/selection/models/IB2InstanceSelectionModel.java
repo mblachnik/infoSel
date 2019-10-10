@@ -8,19 +8,15 @@ import com.rapidminer.example.Example;
 import com.rapidminer.example.set.EditedExampleSet;
 import com.rapidminer.example.set.ISPRExample;
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.dataset.Const;
+import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import org.prules.dataset.*;
 import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import org.prules.operator.learner.tools.DataIndex;
 import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
-import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import java.util.Collection;
-import org.prules.dataset.InstanceFactory;
 import org.prules.tools.math.container.knn.KNNFactory;
-import org.prules.dataset.IInstanceLabels;
-import org.prules.dataset.Instance;
-import org.prules.dataset.Vector;
-import org.prules.dataset.IInstancePrediction;
+
+import java.util.Collection;
 
 /**
  * Implementation of IB2 algorithm
@@ -30,27 +26,27 @@ import org.prules.dataset.IInstancePrediction;
 public class IB2InstanceSelectionModel extends AbstractInstanceSelectorModel {
 
     private DistanceMeasure distance;
-    private IISDecisionFunction loss;    
+    private IISDecisionFunction loss;
 
     /**
      * Constructor for IB2 algorithm - algorithm is similar to CNN except it
      * preforms only single iteration
      *
      * @param distance - distance measure
-     * @param loss - decision function
+     * @param loss     - decision function
      * @param modifier - allows for instance modification on the fly, for
-     * example by random noise. Can be null.
+     *                 example by random noise. Can be null.
      */
     public IB2InstanceSelectionModel(DistanceMeasure distance, IISDecisionFunction loss) {
         this.distance = distance;
-        this.loss = loss;        
+        this.loss = loss;
     }
 
     /**
      * Performs instance selection
      *
      * @param exampleSet - example set for which instance selection will be
-     * performed
+     *                   performed
      * @return - index of selected examples
      */
     @Override

@@ -7,9 +7,8 @@
 package org.prules.operator.learner.selection.weka;
 
 /**
- *
  * @author Marcin
  */
-public class MIlgorithm {
-    
+public class MIAlgorithm {
+
 }

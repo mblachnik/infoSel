@@ -4,26 +4,29 @@
  */
 package org.prules.operator.learner.tools;
 
-import org.prules.tools.math.BasicMath;
-import java.util.Arrays;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
+import org.prules.tools.math.BasicMath;
+
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 /**
  * This class is a binary index which allows to set true/false if given element is enebled or disabled for example in array or matrix or ExampleSet
+ *
  * @author Marcin
  */
 public class DataWeightIndex implements IDataWeightIndex {
 
-    double[] weights;
-    boolean[] index;
-    int length = -1;
+    private double[] weights;
+    private boolean[] index;
+    private int length = -1;
 
     /**
      * Weight attribute from ExampleSet is converted into binary index. If weight is 0 the instance is marked as absent
+     *
      * @param examples
      * @return
      */
@@ -44,17 +47,19 @@ public class DataWeightIndex implements IDataWeightIndex {
 
     /**
      * Constructor which initialize DataIndex with specific binary index
+     *
      * @param index
      * @param weights
      */
     public DataWeightIndex(boolean[] index, double[] weights) {
         this.index = index;
-        this.weights = weights;        
+        this.weights = weights;
         length = BasicMath.sum(index);
     }
 
     /**
-     * Constructor which set all instances as present. 
+     * Constructor which set all instances as present.
+     *
      * @param indexSize - number of elements in the structure
      */
     public DataWeightIndex(int indexSize) {
@@ -67,6 +72,7 @@ public class DataWeightIndex implements IDataWeightIndex {
 
     /**
      * Copy constructor
+     *
      * @param index
      */
     public DataWeightIndex(DataWeightIndex index) {
@@ -74,46 +80,49 @@ public class DataWeightIndex implements IDataWeightIndex {
         this.weights = index.weights.clone();
         this.length = index.length;
     }
-    
+
     /**
      * Copy constructor
+     *
      * @param index
      */
     public DataWeightIndex(IDataWeightIndex index) {
         this.index = new boolean[index.size()];
         this.weights = new double[index.size()];
         this.length = index.getLength();
-        for(int i=0; i<index.size(); i++){
-            this.weights[i] = index.getWeight(i);            
-            this.index[i] = index.get(i);            
-        }                 
+        for (int i = 0; i < index.size(); i++) {
+            this.weights[i] = index.getWeight(i);
+            this.index[i] = index.get(i);
+        }
     }
-    
+
     /**
      * Copy constructor
+     *
      * @param index
      */
     public DataWeightIndex(IDataIndex index) {
         this.index = new boolean[index.size()];
         this.weights = new double[index.size()];
         this.length = index.getLength();
-        for(int i=0; i<index.size(); i++){
-            this.weights[i] = Double.NaN;            
-            this.index[i] = index.get(i);            
-        }                 
+        for (int i = 0; i < index.size(); i++) {
+            this.weights[i] = Double.NaN;
+            this.index[i] = index.get(i);
+        }
     }
 
     /**
      * Set specific index into true/false
+     *
      * @param i
      * @param value
      */
     @Override
     public void set(int i, boolean value) {
-        if ((index[i] == false) && value) {
+        if ((!index[i]) && value) {
             length++;
             index[i] = true;
-        } else if ((index[i] == true) && !value) {
+        } else if ((index[i]) && !value) {
             length--;
             index[i] = false;
         }
@@ -121,16 +130,18 @@ public class DataWeightIndex implements IDataWeightIndex {
 
     /**
      * The same as set but if "i" is out range add new field in the binary index
+     *
      * @param i
      * @param value
      */
     @Override
     public void add(int i, boolean value) {
-        add(i,value,Double.NaN);
+        add(i, value, Double.NaN);
     }
 
     /**
      * add to the end of index new value
+     *
      * @param value
      */
     @Override
@@ -140,6 +151,7 @@ public class DataWeightIndex implements IDataWeightIndex {
 
     /**
      * mremove i'th value from binary index (it realocates memory)
+     *
      * @param i
      */
     @Override
@@ -159,6 +171,7 @@ public class DataWeightIndex implements IDataWeightIndex {
 
     /**
      * reads the index at position i
+     *
      * @param i
      * @return
      */
@@ -169,6 +182,7 @@ public class DataWeightIndex implements IDataWeightIndex {
 
     /**
      * Return handle to binary index. The booleans array is now shared
+     *
      * @return @deprecated
      */
     @Deprecated
@@ -178,7 +192,8 @@ public class DataWeightIndex implements IDataWeightIndex {
     }
 
     /**
-     * sets external index. 
+     * sets external index.
+     *
      * @param index
      * @deprecated
      */
@@ -190,38 +205,40 @@ public class DataWeightIndex implements IDataWeightIndex {
 
     /**
      * returns new DataIndex to all elements marked as active (selected)
+     *
      * @return
      */
     @Override
     public DataWeightIndex getIndex() {
-        boolean[] tmpindex;
-        tmpindex = new boolean[length];
-        Arrays.fill(tmpindex, true);
+        boolean[] tmpIndex;
+        tmpIndex = new boolean[length];
+        Arrays.fill(tmpIndex, true);
         double[] weights = new double[length];
         int j = 0;
-        for(int i=0; i<this.weights.length; i++){
-            if (this.index[i]){
+        for (int i = 0; i < this.weights.length; i++) {
+            if (this.index[i]) {
                 weights[j] = this.weights[i];
                 j++;
             }
         }
-        return new DataWeightIndex(tmpindex,weights);
+        return new DataWeightIndex(tmpIndex, weights);
     }
 
     /**
-     * Acquire new index to all selected elements, such that all these elements 
+     * Acquire new index to all selected elements, such that all these elements
      * which were set to true in the original data would now have new index value.
      * Size of input dataindex must be equal to this.length()
+     *
      * @param index
      */
     public void setIndex(IDataWeightIndex index) {
-        if (length == index.size()) {  
-            Iterator<Integer> ite = this.iterator();          
-            int j=0;
-            while(ite.hasNext()){
+        if (length == index.size()) {
+            Iterator<Integer> ite = this.iterator();
+            int j = 0;
+            while (ite.hasNext()) {
                 int i = ite.next();
-                this.index[i] = index.get(j);  
-                this.weights[i] = index.getWeight(j);  
+                this.index[i] = index.get(j);
+                this.weights[i] = index.getWeight(j);
                 j++;
             }
         } else {
@@ -229,25 +246,26 @@ public class DataWeightIndex implements IDataWeightIndex {
         }
         length = index.getLength();
     }
-    
+
     /**
-     * Acquire new index to all selected elements, such that all these elements 
+     * Acquire new index to all selected elements, such that all these elements
      * which were set to true in the original data would now have new index value.
-     * Size of input dataindex must be equal to this.length()
+     * Size of input data index must be equal to this.length()
+     *
      * @param index
      */
     @Override
     public void setIndex(IDataIndex index) {
-        if (index instanceof IDataWeightIndex){
-            setIndex((IDataWeightIndex)index);
+        if (index instanceof IDataWeightIndex) {
+            setIndex((IDataWeightIndex) index);
             return;
-        } 
-        if (length == index.size()) {  
-            Iterator<Integer> ite = this.iterator();          
-            int j=0;
-            while(ite.hasNext()){
+        }
+        if (length == index.size()) {
+            Iterator<Integer> ite = this.iterator();
+            int j = 0;
+            while (ite.hasNext()) {
                 int i = ite.next();
-                this.index[i] = index.get(j++);                
+                this.index[i] = index.get(j++);
             }
         } else {
             throw new RuntimeException("Indexes doesn't much");
@@ -256,7 +274,7 @@ public class DataWeightIndex implements IDataWeightIndex {
     }
 
     /*
-     * Create a clon by inserting "index" a colling {@link #DataIndex(boolean[])}
+     * Create a clone by inserting "index" a colling {@link #DataIndex(boolean[])}
      */
     @Override
     public Object clone() {
@@ -265,6 +283,7 @@ public class DataWeightIndex implements IDataWeightIndex {
 
     /**
      * Total number of elements in the index (both selected and unselected)
+     *
      * @return
      */
     @Override
@@ -274,6 +293,7 @@ public class DataWeightIndex implements IDataWeightIndex {
 
     /**
      * Number of elements indexed true
+     *
      * @return
      */
     @Override
@@ -283,11 +303,12 @@ public class DataWeightIndex implements IDataWeightIndex {
 
     /**
      * Returns index of the original base data structure
+     *
      * @param i
      * @return
      */
     @Override
-    public int getOryginalIndex(int i) {
+    public int getOriginalIndex(int i) {
         int m = -1;
         int an = index.length;
         for (int k = 0; k < an; k++) {
@@ -321,7 +342,8 @@ public class DataWeightIndex implements IDataWeightIndex {
 
     /**
      * Iterator over elements
-     * @return 
+     *
+     * @return
      */
     @Override
     public ListIterator<Integer> iterator() {
@@ -330,8 +352,9 @@ public class DataWeightIndex implements IDataWeightIndex {
 
     /**
      * Iterator over elements which starts from index
+     *
      * @param index
-     * @return 
+     * @return
      */
     @Override
     public ListIterator<Integer> iterator(int index) {
@@ -357,7 +380,7 @@ public class DataWeightIndex implements IDataWeightIndex {
 
     @Override
     public void add(boolean value, double weight) {
-        add(index.length,value,weight);
+        add(index.length, value, weight);
     }
 
     @Override
@@ -367,7 +390,7 @@ public class DataWeightIndex implements IDataWeightIndex {
 
     @Override
     public void set(int i, boolean value, double weight) {
-        set(i,value);
+        set(i, value);
         weights[i] = weight;
     }
 
@@ -378,7 +401,8 @@ public class DataWeightIndex implements IDataWeightIndex {
 
     /**
      * Implementation of the iterator
-     * @return 
+     *
+     * @return
      */
     private class Itr implements ListIterator<Integer> {
 
@@ -401,23 +425,25 @@ public class DataWeightIndex implements IDataWeightIndex {
                 if (index[i]) {
                     indexes[j] = i;
                     j++;
-                    if (j>indexes.length) break;
+                    if (j > indexes.length) break;
                 }
             }
         }
 
         /**
          * Returns true if next element appears in the data structure
-         * @return 
+         *
+         * @return
          */
         @Override
         public boolean hasNext() {
             return iteratorState < length - 1;
         }
-        
+
         /**
          * Returns index of the next element
-         * @return 
+         *
+         * @return
          */
         @Override
         public Integer next() {
@@ -430,7 +456,8 @@ public class DataWeightIndex implements IDataWeightIndex {
 
         /**
          * Returns index of the prevoius element
-         * @return 
+         *
+         * @return
          */
         @Override
         public Integer previous() {
@@ -443,7 +470,8 @@ public class DataWeightIndex implements IDataWeightIndex {
 
         /**
          * Returns true if previous element exist
-         * @return 
+         *
+         * @return
          */
         @Override
         public boolean hasPrevious() {
@@ -453,7 +481,8 @@ public class DataWeightIndex implements IDataWeightIndex {
         /**
          * Returns index of the next element similar to {@link #next()}, but this
          * method don't use Integer class returning the primitive int
-         * @return 
+         *
+         * @return
          */
         @Override
         public int nextIndex() {
@@ -466,7 +495,8 @@ public class DataWeightIndex implements IDataWeightIndex {
         /**
          * Returns index of the previous element similar to {@link #previous()}, but this
          * method don't use Integer class returning the primitive int
-         * @return 
+         *
+         * @return
          */
         @Override
         public int previousIndex() {
@@ -478,7 +508,8 @@ public class DataWeightIndex implements IDataWeightIndex {
 
         /**
          * Not implemented
-         * @param e 
+         *
+         * @param e
          */
         @Override
         public void set(Integer e) {
@@ -487,7 +518,8 @@ public class DataWeightIndex implements IDataWeightIndex {
 
         /**
          * Not implemented
-         * @param e 
+         *
+         * @param e
          */
         @Override
         public void add(Integer e) {
@@ -505,22 +537,22 @@ public class DataWeightIndex implements IDataWeightIndex {
     }
 
     /**
-     * Makes an inverse of selected elements    
-    */
+     * Makes an inverse of selected elements
+     */
     @Override
-    public void negate(){
-        for(int i=0; i<index.length; i++){
+    public void negate() {
+        for (int i = 0; i < index.length; i++) {
             index[i] = !index[i];
         }
         length = BasicMath.sum(index);
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + Arrays.hashCode(index);
-        result = prime * result + Arrays.hashCode(weights);        
+        result = prime * result + Arrays.hashCode(weights);
         return result;
     }
 
@@ -534,7 +566,7 @@ public class DataWeightIndex implements IDataWeightIndex {
         }
         if (getClass() != obj.getClass()) {
             return false;
-        }        
+        }
         DataWeightIndex other = (DataWeightIndex) obj;
         if (length != other.length) {
             return false;
@@ -544,22 +576,22 @@ public class DataWeightIndex implements IDataWeightIndex {
         }
         return Arrays.equals(weights, other.weights);
     }
-    
+
     /**
      * Returns and index of selected elements
-     * @return 
-     */    
+     *
+     * @return
+     */
     @Override
-    public int[] getAsInt(){
+    public int[] getAsInt() {
         int[] tab = new int[length];
         int j = 0;
-        for (int i=0; i<index.length; i++){
-            if (index[i]){
-                tab[j]=i;
+        for (int i = 0; i < index.length; i++) {
+            if (index[i]) {
+                tab[j] = i;
                 j++;
             }
         }
         return tab;
     }
-    
 }

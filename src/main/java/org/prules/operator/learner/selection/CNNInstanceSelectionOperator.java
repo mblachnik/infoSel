@@ -5,12 +5,12 @@ import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
-import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
-import org.prules.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
-import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
-import org.prules.operator.learner.selection.models.CNNInstanceSelectionGeneralModel;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
+import org.prules.operator.learner.selection.models.CNNInstanceSelectionGeneralModel;
+import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
+import org.prules.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
 
 /**
  * This class is used to provide Condensed Nearest Neighbor instance selection
@@ -23,6 +23,7 @@ import com.rapidminer.tools.math.similarity.DistanceMeasures;
 public class CNNInstanceSelectionOperator extends AbstractInstanceSelectorOperator {
 
     //private final CNNInstanceSelection cnnInstanceSelection;
+
     /**
      * Default RapidMiner constructor
      *
@@ -59,7 +60,7 @@ public class CNNInstanceSelectionOperator extends AbstractInstanceSelectorOperat
         int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
         try {
             measureType = measureHelper.getSelectedMeasureType();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:

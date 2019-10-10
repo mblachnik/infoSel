@@ -8,9 +8,11 @@ package org.prules.operator.learner.selection.models.decisionfunctions;
 /**
  * IISLocalDecisionFunction extends IISDecisionFunction, and is used to identify all
  * decision functions which use local noise estimation
+ *
  * @author Marcin
  */
-public interface IISLocalDecisionFunction extends IISDecisionFunction{
+public interface IISLocalDecisionFunction extends IISDecisionFunction {
     void setK(int k);
+
     int getK();
 }

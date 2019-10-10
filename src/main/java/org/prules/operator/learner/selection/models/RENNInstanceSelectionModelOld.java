@@ -8,18 +8,19 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.set.SelectedExampleSet;
+import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import org.prules.dataset.IInstanceLabels;
 import org.prules.dataset.InstanceFactory;
+import org.prules.dataset.Vector;
 import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
-import org.prules.tools.math.container.knn.KNNTools;
+import org.prules.operator.learner.tools.IDataIndex;
 import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
-import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import org.prules.tools.math.container.knn.KNNFactory;
+import org.prules.tools.math.container.knn.KNNTools;
+
 import java.util.Arrays;
 import java.util.Collection;
-import org.prules.tools.math.container.knn.KNNFactory;
-import org.prules.dataset.IInstanceLabels;
-import org.prules.operator.learner.tools.IDataIndex;
-import org.prules.dataset.Vector;
 
 /**
  * Class implements repeated ENN algorithm (RENN). It repeats ENN algorithm
@@ -38,23 +39,23 @@ public class RENNInstanceSelectionModelOld extends AbstractInstanceSelectorModel
      * Constructor of repeated ENN algorithm (RENN). It repeats ENN algorithm
      * until any instance can be marked for removal
      *
-     * @param measure - distance measure
-     * @param k - number of nearest neighbors
-     * @param loss - loss function
+     * @param measure  - distance measure
+     * @param k        - number of nearest neighbors
+     * @param loss     - loss function
      * @param modifier - instance modifier, if null it does nothing, one can set here an instance modifier which on the fly changes instance considered for removal
      */
     public RENNInstanceSelectionModelOld(DistanceMeasure measure, int k, IISDecisionFunction loss, int maxIterations) {
         this.k = k;
         this.measure = measure;
         this.loss = loss;
-        this.maxIterations = maxIterations;                
+        this.maxIterations = maxIterations;
     }
 
     /**
      * Performs instance selection
      *
      * @param exampleSet - example set for which instance selection will be
-     * performed
+     *                   performed
      * @return - index of selected examples
      */
     @Override
@@ -65,8 +66,8 @@ public class RENNInstanceSelectionModelOld extends AbstractInstanceSelectorModel
         ISPRGeometricDataCollection<IInstanceLabels> samples = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, exampleSet, measure);
         loss.init(samples);
         int numberOfClasses = label.getMapping().size();
-        int maxIterations = this.maxIterations < 0 ? Integer.MAX_VALUE : this.maxIterations;        
-        //ENN EDITTING
+        int maxIterations = this.maxIterations < 0 ? Integer.MAX_VALUE : this.maxIterations;
+        //ENN EDITING
         Vector values = InstanceFactory.createVector(exampleSet);
         int[] counter = new int[numberOfClasses];
         IDataIndex mainIndex = exampleSet.getIndex();
@@ -77,23 +78,23 @@ public class RENNInstanceSelectionModelOld extends AbstractInstanceSelectorModel
             IDataIndex index = exampleSet.getIndex();
             for (Example example : exampleSet) {
                 Arrays.fill(counter, 0);
-                Collection<IInstanceLabels> res;                
-                values.setValues(example);                
+                Collection<IInstanceLabels> res;
+                values.setValues(example);
                 res = samples.getNearestValues(k + 1, values);
                 double sum = 0;
                 for (IInstanceLabels i : res) {
-                    counter[(int)i.getLabel()]++;
+                    counter[(int) i.getLabel()]++;
                     sum++;
                 }
-                counter[(int) example.getLabel()] --; //here we have to subtract distanceRate because we took k+1 neighbours 					            
-                sum--; //here we have to subtract because nearest neighbors includ itself, see line above
+                counter[(int) example.getLabel()]--; //here we have to subtract distanceRate because we took k+1 neighbours
+                sum--; //here we have to subtract because nearest neighbors include itself, see line above
                 int mostFrequent = KNNTools.getMostFrequentValue(counter);
                 if (example.getLabel() != mostFrequent) {
                     index.set(instanceIndex, false);
                     breakLoop = true;
                 }
                 instanceIndex++;
-            }            
+            }
             exampleSet.setIndex(index);
             mainIndex.setIndex(index);
             for (int i = index.size() - 1; i > -1; i--) {

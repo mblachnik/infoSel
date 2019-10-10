@@ -4,16 +4,14 @@
  */
 package org.prules.tools.math.container.knn;
 
-import com.rapidminer.tools.container.Tupel;
+import org.prules.tools.math.container.DoubleObjectContainer;
+
 import java.io.Serializable;
 import java.util.Collection;
-import org.prules.tools.math.container.DoubleObjectContainer;
-import org.prules.dataset.IInstanceLabels;
 
 /**
- *
- * @author Marcin
  * @param <T>
+ * @author Marcin
  */
 public interface ISPRCachedGeometricDataCollection<T extends Serializable> extends ISPRGeometricDataCollection<T> {
 

@@ -5,9 +5,8 @@
 package org.prules.operator.learner.classifiers;
 
 /**
- *
  * @author Marcin
  */
-public enum VotingType {    
+public enum VotingType {
     MAJORITY, LINEAR, GAUSSIAN, EXPONENTIAL
 }

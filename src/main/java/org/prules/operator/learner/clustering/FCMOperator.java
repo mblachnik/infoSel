@@ -1,14 +1,10 @@
 package org.prules.operator.learner.clustering;
 
-import java.util.List;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.UserError;
-import org.prules.operator.learner.clustering.models.AbstractBatchModel;
-import org.prules.operator.learner.clustering.models.FCMModel;
-import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
 import com.rapidminer.operator.ports.metadata.MDInteger;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeDouble;
@@ -18,11 +14,14 @@ import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.prules.operator.learner.clustering.models.AbstractBatchModel;
+import org.prules.operator.learner.clustering.models.FCMModel;
+
+import java.util.List;
 
 /**
  * Class which implements Fuzzy C-means clustering operator
+ *
  * @author Marcin
  */
 public class FCMOperator extends AbstractPrototypeClusteringBatchOperator {
@@ -33,22 +32,22 @@ public class FCMOperator extends AbstractPrototypeClusteringBatchOperator {
     /**
      * Identification string for operator parameter responsible for fuzzynes parameter
      */
-    public static final String PARAMETER_FUZZYNES = "Fuzzynes";
+    private static final String PARAMETER_FUZZYNES = "Fuzzynes";
     /**
-     *Identification string for operator parameter responsible for minimal gain during clustering
+     * Identification string for operator parameter responsible for minimal gain during clustering
      */
-    public static final String PARAMETER_MIN_GAIN = "MinGain";
+    private static final String PARAMETER_MIN_GAIN = "MinGain";
     /**
-     *Identification string for operator parameter responsible for number of clusters
+     * Identification string for operator parameter responsible for number of clusters
      */
-    public static final String PARAMETER_NUMBER_OF_CLUSTERS = "Clusters";
+    static final String PARAMETER_NUMBER_OF_CLUSTERS = "Clusters";
 
-    int c; //Number of clusters
-    double m; //Fuzzynes values
-    DistanceMeasureHelper measureHelper;
-    int numberOfIteration;
-    double minGain; //Minimum improvement of optimization process    
-    
+    private int c; //Number of clusters
+    private double m; //Fuzzynes values
+    private DistanceMeasureHelper measureHelper;
+    private int numberOfIteration;
+    private double minGain; //Minimum improvement of optimization process
+
 
     /**
      * Constructor of FCM Operator
@@ -56,7 +55,7 @@ public class FCMOperator extends AbstractPrototypeClusteringBatchOperator {
      * @param description
      */
     public FCMOperator(OperatorDescription description) {
-        super(description);        
+        super(description);
         c = 3; //Number of clusters
         m = 2; //Fuzzynes values
         numberOfIteration = 50;
@@ -84,23 +83,23 @@ public class FCMOperator extends AbstractPrototypeClusteringBatchOperator {
         }
         m = getParameterAsDouble(PARAMETER_FUZZYNES);
         minGain = getParameterAsDouble(PARAMETER_MIN_GAIN);
-        numberOfIteration = getParameterAsInt(PARAMETER_ITERATION_NUMBER);        
+        numberOfIteration = getParameterAsInt(PARAMETER_ITERATION_NUMBER);
         DistanceMeasure distance = measureHelper.getInitializedMeasure(trainingSet);
-        AbstractBatchModel batchModel = new FCMModel(distance, m, numberOfIteration, minGain, RandomGenerator.getRandomGenerator(this), c);        
-        batchModel.train(trainingSet);        
+        AbstractBatchModel batchModel = new FCMModel(distance, m, numberOfIteration, minGain, RandomGenerator.getRandomGenerator(this), c);
+        batchModel.train(trainingSet);
         return batchModel;
     }
 
     /**
      * Returns number of prototypes
      *
-     * @return     
-     * @throws com.rapidminer.parameter.UndefinedParameterError     
-     */    
+     * @return
+     * @throws com.rapidminer.parameter.UndefinedParameterError
+     */
     @Override
-    public MDInteger getNumberOfPrototypesMetaData() throws UndefinedParameterError {        
-            c = this.getParameterAsInt(PARAMETER_NUMBER_OF_CLUSTERS);
-            return new MDInteger(c);        
+    public MDInteger getNumberOfPrototypesMetaData() throws UndefinedParameterError {
+        c = this.getParameterAsInt(PARAMETER_NUMBER_OF_CLUSTERS);
+        return new MDInteger(c);
     }
 
     /**
@@ -115,7 +114,7 @@ public class FCMOperator extends AbstractPrototypeClusteringBatchOperator {
         int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
         try {
             measureType = measureHelper.getSelectedMeasureType();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:
@@ -163,6 +162,4 @@ public class FCMOperator extends AbstractPrototypeClusteringBatchOperator {
 
         return types;
     }
-
-    
 }

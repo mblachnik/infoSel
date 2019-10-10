@@ -3,11 +3,11 @@ package org.prules.operator.learner.classifiers.neuralnet.models;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author Marcin
  */
 public class LVQ2ModelMy extends AbstractLVQModel {
@@ -19,20 +19,18 @@ public class LVQ2ModelMy extends AbstractLVQModel {
     private final double initialAlpha;
 
     /**
-     *
      * @param prototypes
      * @param iterations
      * @param measure
      * @param alpha
-     * @param alphaNegative
      * @throws OperatorException
      */
     public LVQ2ModelMy(ExampleSet prototypes, int iterations,
-            DistanceMeasure measure, double alpha) throws OperatorException {
+                       DistanceMeasure measure, double alpha) throws OperatorException {
         super(prototypes);
         this.iterations = iterations;
-        this.currentIteration = 0;        
-        this.alpha = alpha;        
+        this.currentIteration = 0;
+        this.alpha = alpha;
         this.initialAlpha = alpha;
         this.measure = measure;
         this.measure.init(prototypes);
@@ -76,16 +74,15 @@ public class LVQ2ModelMy extends AbstractLVQModel {
     }
 
     /**
-     *
      * @return
      */
     @Override
     public boolean nextIteration(ExampleSet trainingSet) {
         currentIteration++;
-        alpha = LVQTools.learingRateUpdateRule(alpha, currentIteration, iterations, initialAlpha);        
+        alpha = LVQTools.learningRateUpdateRule(alpha, currentIteration, iterations, initialAlpha);
         return currentIteration < iterations;
     }
-    
+
     /**
      * Returns total number of iterations (maximum number of iterations)
      *

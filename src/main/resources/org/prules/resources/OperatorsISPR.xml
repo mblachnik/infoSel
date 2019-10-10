@@ -164,7 +164,7 @@
                 </operator>   
                 <operator>
                     <key>meta_noise_sel</key>
-                    <class>org.prules.operator.learner.selection.ensemble.ISEnsembleNoisOperator</class>
+                    <class>org.prules.operator.learner.selection.ensemble.ISEnsembleNoiseOperator</class>
                 </operator>  
             </group>
         </group>

@@ -6,27 +6,23 @@ package org.prules.operator.learner.selection.models;
 
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import java.util.List;
-import org.prules.tools.math.container.knn.KNNFactory;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.operator.learner.selection.models.decisionfunctions.ISClassDecisionFunction;
 import org.prules.operator.learner.selection.models.tools.DropBasicModel;
-import org.prules.operator.learner.tools.DataIndex;
 import org.prules.operator.learner.tools.IDataIndex;
 import org.prules.operator.learner.tools.PredictionProblemType;
-import org.prules.tools.math.container.knn.INNGraph;
-import org.prules.tools.math.container.knn.ISPRClassGeometricDataCollection;
-import org.prules.tools.math.container.knn.KNNTools;
-import org.prules.tools.math.container.knn.NNGraphReachableCoverage;
+import org.prules.tools.math.container.knn.*;
+
+import java.util.List;
 
 /**
- * Class implements modified ICF instance selection algorithm. 
- * It is very similar to ICF algorithm, but the main difference is that instated of 
- * single pruning step here instances are removed iteratively one by one always 
+ * Class implements modified ICF instance selection algorithm.
+ * It is very similar to ICF algorithm, but the main difference is that instated of
+ * single pruning step here instances are removed iteratively one by one always
  * recalculating coverage and reachability. Here the computational complexity is high n^3
  * It is identical to ICF2 algorithm but samples are removed in the same order as in Drop3 algorithm
+ *
  * @author Marcin
  */
 
@@ -41,7 +37,7 @@ public class ICF21InstanceSelectionModel extends AbstractInstanceSelectorModel {
      * Constructor for Drop1 instance selection model.
      *
      * @param measure - distance measure
-     * @param k - number of nearest neighbors
+     * @param k       - number of nearest neighbors
      */
     public ICF21InstanceSelectionModel(DistanceMeasure measure, int k) {
         this.measure = measure;
@@ -52,7 +48,7 @@ public class ICF21InstanceSelectionModel extends AbstractInstanceSelectorModel {
      * Performs instance selection
      *
      * @param exampleSet - example set for which instance selection will be
-     * performed
+     *                   performed
      * @return - index of selected examples
      */
     @Override
@@ -67,7 +63,7 @@ public class ICF21InstanceSelectionModel extends AbstractInstanceSelectorModel {
 
     /**
      * Performs instance selection
-     *
+     * <p>
      * This method implements to true algorithm, while the one with ExampleSet
      * as input calls that one to perform instance selection
      *
@@ -80,21 +76,21 @@ public class ICF21InstanceSelectionModel extends AbstractInstanceSelectorModel {
         ISPRClassGeometricDataCollection<IInstanceLabels> samplesSelected;
         samplesSelected = KNNTools.takeSelected(samples, indexENN); //Here we remove useless samples      
 
-        INNGraph nnGraph = new NNGraphReachableCoverage(samplesSelected);                
+        INNGraph nnGraph = new NNGraphReachableCoverage(samplesSelected);
         boolean nextIteration;
         List<Integer> order;
         //do {
-            //Create naturaln order
-            nextIteration = false;
-            order = DropBasicModel.orderSamplesByEnemies(nnGraph,-1);
-            for (int i : order) {
-                int reachable = nnGraph.getNeighbors(i).size();
-                int coverage = nnGraph.getAssociates(i).size();
-                if (reachable > coverage) {                    
-                    nnGraph.remove(i);
-                    nextIteration = true;
-                }
-            }          
+        //Create natural order
+        nextIteration = false;
+        order = DropBasicModel.orderSamplesByEnemies(nnGraph, -1);
+        for (int i : order) {
+            int reachable = nnGraph.getNeighbors(i).size();
+            int coverage = nnGraph.getAssociates(i).size();
+            if (reachable > coverage) {
+                nnGraph.remove(i);
+                nextIteration = true;
+            }
+        }
         //} while (nextIteration);
         indexENN.setIndex(nnGraph.getIndex());
         return indexENN;

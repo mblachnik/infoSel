@@ -4,46 +4,30 @@
  */
 package org.prules.operator.learner.classifiers.neuralnet;
 
-import org.prules.operator.learner.classifiers.neuralnet.models.SLVQ1Model;
-import org.prules.operator.learner.classifiers.neuralnet.models.LVQ1Model;
-import org.prules.operator.learner.classifiers.neuralnet.models.OLVQModel;
-import org.prules.operator.learner.classifiers.neuralnet.models.WLVQModel;
-import java.util.List;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.UserError;
-import org.prules.operator.learner.classifiers.IS_KNNClassificationModel;
-import org.prules.operator.learner.classifiers.PredictionType;
-import org.prules.operator.learner.classifiers.VotingType;
-import org.prules.operator.learner.classifiers.neuralnet.models.GLVQModel;
-import org.prules.operator.learner.classifiers.neuralnet.models.LVQ2Model;
-import org.prules.operator.learner.classifiers.neuralnet.models.LVQNeighborhoodTypes;
-import org.prules.operator.learner.classifiers.neuralnet.models.LVQTypes;
-import org.prules.operator.learner.classifiers.neuralnet.models.SNGModel;
-import org.prules.operator.learner.classifiers.neuralnet.models.WTMLVQModel;
-import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
 import com.rapidminer.operator.ports.metadata.MDInteger;
-import com.rapidminer.parameter.ParameterType;
-import com.rapidminer.parameter.ParameterTypeBoolean;
-import com.rapidminer.parameter.ParameterTypeCategory;
-import com.rapidminer.parameter.ParameterTypeDouble;
-import com.rapidminer.parameter.ParameterTypeInt;
-import com.rapidminer.parameter.UndefinedParameterError;
+import com.rapidminer.parameter.*;
 import com.rapidminer.parameter.conditions.EqualTypeCondition;
 import com.rapidminer.tools.LogService;
-import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
-import java.util.stream.Collectors;
-import org.prules.tools.math.container.knn.KNNFactory;
 import org.prules.dataset.IInstanceLabels;
-import org.prules.operator.learner.classifiers.neuralnet.models.AbstractLVQModel;
-import org.prules.operator.learner.classifiers.neuralnet.models.LVQ21Model;
-import org.prules.operator.learner.classifiers.neuralnet.models.LVQ3Model;
+import org.prules.operator.learner.classifiers.IS_KNNClassificationModel;
+import org.prules.operator.learner.classifiers.PredictionType;
+import org.prules.operator.learner.classifiers.VotingType;
+import org.prules.operator.learner.classifiers.neuralnet.models.*;
+import org.prules.tools.math.container.knn.GeometricCollectionTypes;
+import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
+import org.prules.tools.math.container.knn.KNNFactory;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * LVQ Operator which provides a set of LVQ neuralNetwork GLVQ algorithm - based
@@ -63,36 +47,36 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
     /**
      * Initial value of update rate
      */
-    public static final String PARAMETER_UPDATE_RATE = "Alpha";
+    private static final String PARAMETER_UPDATE_RATE = "Alpha";
     /**
      * Type of LVQ algorithm
      */
-    public static final String PARAMETER_LVQ_TYPE = "LVQ_type";
+    private static final String PARAMETER_LVQ_TYPE = "LVQ_type";
     /**
      * Parameter for LVQ 2 and 3
      */
-    public static final String PARAMETER_WINDOW = "window";
+    private static final String PARAMETER_WINDOW = "window";
     /**
      * Parameter for LVQ3
      */
-    public static final String PARAMETER_EPSILON = "epsilon";
+    private static final String PARAMETER_EPSILON = "epsilon";
 
     /**
      * Parameter for WTM based methods such as SNG WTM_LVQ
      */
-    public static final String PARAMETER_LVQ_NEIGHBOURHOOD = "Neihbourhood";
+    private static final String PARAMETER_LVQ_NEIGHBOURHOOD = "Neighbourhood";
 
     /**
      * Neighborhood parameter for WTM based algorithms
      */
-    public static final String PARAMETER_LAMBDA = "Lambda";
-    
+    private static final String PARAMETER_LAMBDA = "Lambda";
+
     /**
      * Debug mode - store debug values in the log file
      */
-    public static final String PARAMETER_DEBUG = "Debug mode";
+    private static final String PARAMETER_DEBUG = "Debug mode";
 
-    public static final String PARAMETER_CALCDIFF = "Calc dF(u)/du";
+    public static final String PARAMETER_CALC_DIFF = "Calc dF(u)/du";
 
     private DistanceMeasureHelper measureHelper;
     private int numberOfIteration;
@@ -127,16 +111,16 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
      * another operator. This must be new ExampleSet
      *
      * @param trainingSet - training ExampleSet
-     * @param codebooks - initial Codebooks position
-     * @return - kNN model initialized with codebooks. If model output port of
+     * @param codeBooks   - initial CodeBooks position
+     * @return - kNN model initialized with codeBooks. If model output port of
      * the operator is not connected it returns null
      * @throws OperatorException
      */
     @Override
-    public IS_KNNClassificationModel<IInstanceLabels> optimize(ExampleSet trainingSet, ExampleSet codebooks) throws OperatorException {
+    public IS_KNNClassificationModel<IInstanceLabels> optimize(ExampleSet trainingSet, ExampleSet codeBooks) throws OperatorException {
         this.numberOfIteration = getParameterAsInt(PARAMETER_ITERATION_NUMBER);
         DistanceMeasure distance = measureHelper.getInitializedMeasure(trainingSet);
-        distance.init(codebooks.getAttributes(), trainingSet.getAttributes());
+        distance.init(codeBooks.getAttributes(), trainingSet.getAttributes());
         AbstractLVQModel lvqModel = null;
         int idLvqType = getParameterAsInt(PARAMETER_LVQ_TYPE);
         lvqType = LVQTypes.values()[idLvqType];
@@ -144,53 +128,53 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
         switch (lvqType) {
             case LVQ1:
                 this.updateRate = getParameterAsDouble(PARAMETER_UPDATE_RATE);
-                lvqModel = new LVQ1Model(codebooks, numberOfIteration, distance, updateRate);
+                lvqModel = new LVQ1Model(codeBooks, numberOfIteration, distance, updateRate);
                 break;
             case SLVQ:
                 this.updateRate = getParameterAsDouble(PARAMETER_UPDATE_RATE);
-                lvqModel = new SLVQ1Model(codebooks, numberOfIteration, distance, updateRate);
+                lvqModel = new SLVQ1Model(codeBooks, numberOfIteration, distance, updateRate);
                 break;
             case LVQ2:
                 this.updateRate = getParameterAsDouble(PARAMETER_UPDATE_RATE);
-                lvqModel = new LVQ2Model(codebooks, numberOfIteration, distance, updateRate);
+                lvqModel = new LVQ2Model(codeBooks, numberOfIteration, distance, updateRate);
                 break;
             case LVQ21:
                 this.updateRate = getParameterAsDouble(PARAMETER_UPDATE_RATE);
                 window = getParameterAsDouble(PARAMETER_WINDOW);
-                lvqModel = new LVQ21Model(codebooks, numberOfIteration, distance, updateRate, window);
+                lvqModel = new LVQ21Model(codeBooks, numberOfIteration, distance, updateRate, window);
                 break;
             case LVQ3:
                 this.updateRate = getParameterAsDouble(PARAMETER_UPDATE_RATE);
                 window = getParameterAsDouble(PARAMETER_WINDOW);
                 epsilon = getParameterAsDouble(PARAMETER_EPSILON);
-                lvqModel = new LVQ3Model(codebooks, numberOfIteration, distance, updateRate, window, epsilon);
+                lvqModel = new LVQ3Model(codeBooks, numberOfIteration, distance, updateRate, window, epsilon);
                 break;
             case WLVQ:
                 this.updateRate = getParameterAsDouble(PARAMETER_UPDATE_RATE);
                 if (trainingSet.getAttributes().getWeight() == null) {
                     throw new UserError(this, "WLVQ algorithm requires instances weight attribute.");
                 }
-                lvqModel = new WLVQModel(codebooks, numberOfIteration, distance, updateRate);
+                lvqModel = new WLVQModel(codeBooks, numberOfIteration, distance, updateRate);
                 break;
             case OLVQ:
                 updateRate = getParameterAsDouble(PARAMETER_UPDATE_RATE);
-                lvqModel = new OLVQModel(codebooks, numberOfIteration, distance, updateRate);
+                lvqModel = new OLVQModel(codeBooks, numberOfIteration, distance, updateRate);
                 break;
             case GLVQ:
                 this.updateRate = getParameterAsDouble(PARAMETER_UPDATE_RATE);
-                lvqModel = new GLVQModel(codebooks, numberOfIteration, distance, updateRate);
+                lvqModel = new GLVQModel(codeBooks, numberOfIteration, distance, updateRate);
                 break;
             case WTM_LVQ:
                 this.updateRate = getParameterAsDouble(PARAMETER_UPDATE_RATE);
                 lambda = getParameterAsDouble(PARAMETER_LAMBDA);
                 idLvqNeighborhood = getParameterAsInt(PARAMETER_LVQ_NEIGHBOURHOOD);
                 lvqNeighborhoodType = LVQNeighborhoodTypes.values()[idLvqNeighborhood];
-                lvqModel = new WTMLVQModel(codebooks, numberOfIteration, distance, this.updateRate, lambda, lvqNeighborhoodType);
+                lvqModel = new WTMLVQModel(codeBooks, numberOfIteration, distance, this.updateRate, lambda, lvqNeighborhoodType);
                 break;
             case SNG:
                 this.updateRate = getParameterAsDouble(PARAMETER_UPDATE_RATE);
                 lambda = getParameterAsDouble(PARAMETER_LAMBDA);
-                lvqModel = new SNGModel(codebooks, numberOfIteration, distance, this.updateRate, lambda);
+                lvqModel = new SNGModel(codeBooks, numberOfIteration, distance, this.updateRate, lambda);
                 break;
             //case LVQ21SGD
             default:
@@ -203,26 +187,25 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
         if (getParameterAsBoolean(PARAMETER_DEBUG)) {
             String commaSeparatedValues;
             //Log cost function
-            commaSeparatedValues = lvqModel.getCostFunctionValues().stream().map(i -> i.toString()).collect(Collectors.joining(";"));
+            commaSeparatedValues = lvqModel.getCostFunctionValues().stream().map(Object::toString).collect(Collectors.joining(";"));
             this.log("CostFunction: " + commaSeparatedValues, LogService.MINIMUM);
             List<Double> rates;
             //Log learning rates
             rates = (List<Double>) lvqModel.getStoredValue(AbstractLVQModel.LEARNING_RATE_KEY);
             if (rates != null) {
-                commaSeparatedValues = rates.stream().map(i -> i.toString()).collect(Collectors.joining(";"));
+                commaSeparatedValues = rates.stream().map(Object::toString).collect(Collectors.joining(";"));
                 this.log("LearningRate: " + commaSeparatedValues, LogService.MINIMUM);
             }
             //Log lambda rates
             rates = (List<Double>) lvqModel.getStoredValue(AbstractLVQModel.LAMBDA_RATE_KEY);
             if (rates != null) {
-                commaSeparatedValues = rates.stream().map(i -> i.toString()).collect(Collectors.joining(";"));
+                commaSeparatedValues = rates.stream().map(Object::toString).collect(Collectors.joining(";"));
                 this.log("LambdaRate: " + commaSeparatedValues, LogService.MINIMUM);
             }
         }
         if (this.modelOutputPort.isConnected()) {
-            ISPRGeometricDataCollection<IInstanceLabels> knn = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, codebooks, distance);
-            IS_KNNClassificationModel<IInstanceLabels> model = new IS_KNNClassificationModel<>(codebooks, knn, 1, VotingType.MAJORITY, PredictionType.Classification);
-            return model;
+            ISPRGeometricDataCollection<IInstanceLabels> knn = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, codeBooks, distance);
+            return new IS_KNNClassificationModel<>(codeBooks, knn, 1, VotingType.MAJORITY, PredictionType.Classification);
         }
         return null;
     }
@@ -257,7 +240,7 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
         int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
         try {
             measureType = measureHelper.getSelectedMeasureType();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:
@@ -333,8 +316,8 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
         types.add(type);
 
         types.addAll(DistanceMeasures.getParameterTypes(this));
-        
-        type = new ParameterTypeBoolean(PARAMETER_DEBUG, "Debug mode. Recorded values are stored in a RapidMiner log", false );
+
+        type = new ParameterTypeBoolean(PARAMETER_DEBUG, "Debug mode. Recorded values are stored in a RapidMiner log", false);
         types.add(type);
         return types;
     }

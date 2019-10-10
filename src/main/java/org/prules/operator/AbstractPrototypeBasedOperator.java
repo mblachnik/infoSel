@@ -1,16 +1,11 @@
 package org.prules.operator;
 
-import org.prules.operator.AbstractPRulesBasicOperator;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.ValueDouble;
 import com.rapidminer.operator.ports.OutputPort;
-import com.rapidminer.operator.ports.metadata.DistanceMeasurePrecondition;
-import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
-import com.rapidminer.operator.ports.metadata.MDInteger;
-import com.rapidminer.operator.ports.metadata.MetaData;
-import com.rapidminer.operator.ports.metadata.PassThroughRule;
+import com.rapidminer.operator.ports.metadata.*;
 import com.rapidminer.parameter.UndefinedParameterError;
 
 /**
@@ -25,13 +20,13 @@ public abstract class AbstractPrototypeBasedOperator extends AbstractPRulesBasic
     /**
      * Output port which is used to return selected prototypes
      */
-    protected final OutputPort prototypesOutputPort = getOutputPorts().createPort("prototypes");  
+    protected final OutputPort prototypesOutputPort = getOutputPorts().createPort("prototypes");
     /**
      * Output port which returns an initial ExampleSet
-     */    
-    protected double numberOfInstancesBeaforeSelection = -1;
-    protected double numberOfInstancesAfterSelection = -1;
-    protected double compression = -1;
+     */
+    private double numberOfInstancesBeforeSelection = -1;
+    private double numberOfInstancesAfterSelection = -1;
+    private double compression = -1;
 
     /**
      * Constructor of the AbstractPRulesOperator class.
@@ -40,7 +35,7 @@ public abstract class AbstractPrototypeBasedOperator extends AbstractPRulesBasic
      */
     public AbstractPrototypeBasedOperator(OperatorDescription description) {
         super(description);//
-        exampleSetInputPort.addPrecondition(new DistanceMeasurePrecondition(exampleSetInputPort, this));        
+        exampleSetInputPort.addPrecondition(new DistanceMeasurePrecondition(exampleSetInputPort, this));
         getTransformer().addRule(new PassThroughRule(exampleSetInputPort, prototypesOutputPort, true) {
 
             @Override
@@ -48,8 +43,7 @@ public abstract class AbstractPrototypeBasedOperator extends AbstractPRulesBasic
                 if (metaData instanceof ExampleSetMetaData) {
                     try {
                         ExampleSetMetaData exampleSetMetaData = (ExampleSetMetaData) metaData;
-                        ExampleSetMetaData exampleSetMetaDataFinal = AbstractPrototypeBasedOperator.this.modifyPrototypeOutputMetaData(exampleSetMetaData);
-                        return exampleSetMetaDataFinal;
+                        return AbstractPrototypeBasedOperator.this.modifyPrototypeOutputMetaData(exampleSetMetaData);
                     } catch (UndefinedParameterError ex) {
                         return metaData;
                     }
@@ -58,11 +52,11 @@ public abstract class AbstractPrototypeBasedOperator extends AbstractPRulesBasic
                 }
             }
         });
-        addValue(new ValueDouble("Instances_beafore_selection", "Number Of Examples in the training set") {
+        addValue(new ValueDouble("Instances_before_selection", "Number Of Examples in the training set") {
 
             @Override
             public double getDoubleValue() {
-                return numberOfInstancesBeaforeSelection;
+                return numberOfInstancesBeforeSelection;
             }
         });
         addValue(new ValueDouble("Instances_after_selection", "Number Of Examples after selection") {
@@ -72,7 +66,7 @@ public abstract class AbstractPrototypeBasedOperator extends AbstractPRulesBasic
                 return numberOfInstancesAfterSelection;
             }
         });
-        addValue(new ValueDouble("Compression", "Compressin = #Instances_after_selection/#Instances_beafore_selection") {
+        addValue(new ValueDouble("Compression", "Compressing = #Instances_after_selection/#Instances_beafore_selection") {
 
             @Override
             public double getDoubleValue() {
@@ -90,12 +84,12 @@ public abstract class AbstractPrototypeBasedOperator extends AbstractPRulesBasic
      */
     @Override
     public void executeOperator(ExampleSet trainingSet) throws OperatorException {
-        numberOfInstancesBeaforeSelection = trainingSet.size();
+        numberOfInstancesBeforeSelection = trainingSet.size();
         ExampleSet outputSet = processExamples(trainingSet);
         prototypesOutputPort.deliver(outputSet);
-        exampleSetOutputPort.deliver(trainingSet);  
+        exampleSetOutputPort.deliver(trainingSet);
         numberOfInstancesAfterSelection = outputSet.size();
-        compression = numberOfInstancesAfterSelection / numberOfInstancesBeaforeSelection;
+        compression = numberOfInstancesAfterSelection / numberOfInstancesBeforeSelection;
     }
 
     /**
@@ -114,6 +108,7 @@ public abstract class AbstractPrototypeBasedOperator extends AbstractPRulesBasic
      * @throws UndefinedParameterError
      */
     public abstract MDInteger getNumberOfPrototypesMetaData() throws UndefinedParameterError;
+
     /**
      * Used to define the metadata properties of prototypeOutput
      *
@@ -122,12 +117,12 @@ public abstract class AbstractPrototypeBasedOperator extends AbstractPRulesBasic
      * @throws UndefinedParameterError
      */
     protected ExampleSetMetaData modifyPrototypeOutputMetaData(ExampleSetMetaData prototypeOutputMetaData)
-            throws UndefinedParameterError {   
-         try { 
+            throws UndefinedParameterError {
+        try {
             prototypeOutputMetaData.setNumberOfExamples(getNumberOfPrototypesMetaData());
-        } catch (UndefinedParameterError e){
+        } catch (UndefinedParameterError e) {
             prototypeOutputMetaData.setNumberOfExamples(new MDInteger());
-        }                
+        }
         return prototypeOutputMetaData;
     }
 }

@@ -7,20 +7,19 @@ package org.prules.dataset;
  */
 
 /**
- *
  * @author Marcin
  */
 public class InstanceBasic extends GenericContainer implements Instance {
-    
-    protected InstanceBasic(){
-        this(null,null);
+
+    protected InstanceBasic() {
+        this(null, null);
     }
 
-    protected InstanceBasic(Vector vector, IInstanceLabels labels){
+    InstanceBasic(Vector vector, IInstanceLabels labels) {
         this.put(Const.VECTOR, vector);
         this.put(Const.LABELS, labels);
     }
-    
+
     @Override
     public IInstanceLabels getLabels() {
         return this.get(Const.LABELS);
@@ -28,13 +27,13 @@ public class InstanceBasic extends GenericContainer implements Instance {
 
     @Override
     public void setLabels(IInstanceLabels labels) {
-        this.put(Const.LABELS, labels );
+        this.put(Const.LABELS, labels);
     }
 
-   
+
     @Override
     public IInstancePrediction getPrediction() {
-        return (IInstancePrediction)this.get(Const.PREDICTION);
+        return (IInstancePrediction) this.get(Const.PREDICTION);
     }
 
     @Override
@@ -44,12 +43,11 @@ public class InstanceBasic extends GenericContainer implements Instance {
 
     @Override
     public Vector getVector() {
-        return (Vector)this.get(Const.VECTOR);
+        return (Vector) this.get(Const.VECTOR);
     }
 
     @Override
     public void setVector(Vector vector) {
         this.put(Const.VECTOR, vector);
-    }        
-    
+    }
 }

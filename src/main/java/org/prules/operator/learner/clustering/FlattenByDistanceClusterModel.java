@@ -22,11 +22,6 @@
  */
 package org.prules.operator.learner.clustering;
 
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.PriorityQueue;
-
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.Operator;
 import com.rapidminer.operator.OperatorDescription;
@@ -43,6 +38,11 @@ import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeBoolean;
 import com.rapidminer.parameter.ParameterTypeDouble;
 
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.PriorityQueue;
+
 /**
  * Creates a flat cluster model from a hierarchical one by expanding nodes in
  * the order of their distance until the desired number of clusters is reached.
@@ -52,9 +52,9 @@ import com.rapidminer.parameter.ParameterTypeDouble;
 public class FlattenByDistanceClusterModel extends Operator {
     //public static final String PARAMETER_NUMBER_OF_CLUSTER = "number_of_clusters";
 
-    public static final String PARAMETER_MAXIMUM_DISTANCE = "maximum_distance_threshold";
-    public static final String PARAMETER_REMOVE_UNLABELED = "remove_unlabeled";
-    public static final String PARAMETER_ADD_AS_LABEL = "add_as_label";
+    private static final String PARAMETER_MAXIMUM_DISTANCE = "maximum_distance_threshold";
+    private static final String PARAMETER_REMOVE_UNLABELED = "remove_unlabeled";
+    private static final String PARAMETER_ADD_AS_LABEL = "add_as_label";
     private InputPort hierarchicalInput = getInputPorts().createPort("hierarchical", HierarchicalClusterModel.class);
     private InputPort exampleSetInput = getInputPorts().createPort("example set", ExampleSet.class);
     private OutputPort flatOutput = getOutputPorts().createPort("flat");
@@ -77,9 +77,9 @@ public class FlattenByDistanceClusterModel extends Operator {
         HierarchicalClusterNode root = model.getRootNode();
         //int numberOfClusters = getParameterAsInt(PARAMETER_NUMBER_OF_CLUSTER);
         double maxDistance = getParameterAsDouble(PARAMETER_MAXIMUM_DISTANCE);
-        int size = (int) Math.ceil(exampleSet.size() / 3); //Just a gues
+        int size = (int) Math.ceil(exampleSet.size() / 3.0); //Just a guess
         // creating priorityQueue using reversing comparator
-        PriorityQueue<HierarchicalClusterNode> queue = new PriorityQueue<HierarchicalClusterNode>(size, new Comparator<HierarchicalClusterNode>() {
+        PriorityQueue<HierarchicalClusterNode> queue = new PriorityQueue<>(size, new Comparator<HierarchicalClusterNode>() {
             public int compare(HierarchicalClusterNode o1, HierarchicalClusterNode o2) {
                 int value = -1 * Double.compare(o1.getDistance(), o2.getDistance());
                 if (value != 0) {
@@ -91,7 +91,7 @@ public class FlattenByDistanceClusterModel extends Operator {
         });
 
         // Iteratively descend within graph by splitting at greatest node until queue is full or enough leafs are collected
-        LinkedList<HierarchicalClusterNode> leafs = new LinkedList<HierarchicalClusterNode>();
+        LinkedList<HierarchicalClusterNode> leafs = new LinkedList<>();
         queue.add(root);
         double nodeDistance = root.getDistance();
         //while (queue.size() < numberOfClusters - leafs.size()) {

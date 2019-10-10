@@ -4,22 +4,19 @@
  */
 package org.prules.operator.learner.selection.models;
 
-import org.prules.operator.learner.selection.models.tools.DropBasicModel;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import org.prules.tools.math.container.knn.KNNFactory;
 import org.prules.dataset.IInstanceLabels;
+import org.prules.operator.learner.selection.models.tools.DropBasicModel;
 import org.prules.operator.learner.tools.DataIndex;
 import org.prules.operator.learner.tools.IDataIndex;
 import org.prules.tools.math.container.DoubleIntContainer;
-import org.prules.tools.math.container.knn.INNGraph;
-import org.prules.tools.math.container.knn.ISPRClassGeometricDataCollection;
-import org.prules.tools.math.container.knn.NNGraphWithoutAssocuateUpdates;
+import org.prules.tools.math.container.knn.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Class implements Drop5 instance selection algorithm for details see Wilson,
@@ -38,7 +35,7 @@ public class Drop5InstanceSelectionModel extends AbstractInstanceSelectorModel {
      * Constructor for ENN instance selection model.
      *
      * @param measure - distance measure
-     * @param k - number of nearest neighbors
+     * @param k       - number of nearest neighbors
      */
     public Drop5InstanceSelectionModel(DistanceMeasure measure, int k) {
         this.measure = measure;
@@ -49,7 +46,7 @@ public class Drop5InstanceSelectionModel extends AbstractInstanceSelectorModel {
      * Performs instance selection
      *
      * @param exampleSet - example set for which instance selection will be
-     * performed
+     *                   performed
      * @return - index of selected examples
      */
     @Override
@@ -69,18 +66,18 @@ public class Drop5InstanceSelectionModel extends AbstractInstanceSelectorModel {
      * @return - index of selected examples
      */
     public IDataIndex selectInstances(ISPRClassGeometricDataCollection<IInstanceLabels> samples) {
-        //Reorder samples according to distance to nearest enymy
+        //Reorder samples according to distance to nearest enemy
         List<Integer> order;
         List<DoubleIntContainer> sampleOrderList = new ArrayList<>(samples.size());
         INNGraph nnGraph;
-        nnGraph = new NNGraphWithoutAssocuateUpdates(samples, k);
-        order = DropBasicModel.orderSamplesByEnemies(nnGraph); //Order from nearest to furhterest enemie
+        nnGraph = new NNGraphWithoutAssociateUpdates(samples, k);
+        order = DropBasicModel.orderSamplesByEnemies(nnGraph); //Order from nearest to furthers enemy
         //Execute DropModel
         order = DropBasicModel.execute(nnGraph, order);
         //Prepare results
         int oldSize;
         do {
-              oldSize = order.size();
+            oldSize = order.size();
 //            sampleOrderList.clear();
 //            for (int i : order) {
 //                List<DoubleIntContainer> enemies = nnGraph.getEnemies(i);
@@ -95,7 +92,7 @@ public class Drop5InstanceSelectionModel extends AbstractInstanceSelectorModel {
 //            for (DoubleIntContainer i : sampleOrderList) {
 //                order.add(i.getSecond());
 //            }
-            order = DropBasicModel.orderSamplesByEnemies(nnGraph,-1); //Order from furthest to nearest enemie
+            order = DropBasicModel.orderSamplesByEnemies(nnGraph, -1); //Order from furthest to nearest enemy
             order = DropBasicModel.execute(nnGraph, order);
         } while (oldSize > order.size());
         boolean[] binIndex = new boolean[samples.size()];

@@ -6,14 +6,13 @@
 package org.prules.operator.learner.classifiers.neuralnet.models;
 
 /**
- *
  * @author Marcin
  */
 public enum LVQNeighborhoodTypes {
-    EUCLIDIAN,GAUSSIAN;
-    
+    EUCLIDEAN, GAUSSIAN;
+
     private static final String[] typeNames;
-    
+
     static {
         LVQNeighborhoodTypes[] fields = LVQNeighborhoodTypes.values();
         typeNames = new String[fields.length];
@@ -23,8 +22,8 @@ public enum LVQNeighborhoodTypes {
             i++;
         }
     }
-    
-    public static String[] typeNames() {        
+
+    public static String[] typeNames() {
         return typeNames;
     }
 }

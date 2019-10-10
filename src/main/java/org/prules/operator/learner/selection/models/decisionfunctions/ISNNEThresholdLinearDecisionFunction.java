@@ -6,17 +6,18 @@ package org.prules.operator.learner.selection.models.decisionfunctions;
 
 import com.rapidminer.example.AttributeRole;
 import com.rapidminer.example.ExampleSet;
-import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 import com.rapidminer.operator.OperatorCapability;
-import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import org.prules.operator.learner.weighting.Ontology;
 import com.rapidminer.operator.ProcessSetupError;
 import com.rapidminer.operator.ports.metadata.AttributeMetaData;
 import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
-import java.util.ArrayList;
-import java.util.List;
+import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.dataset.Instance;
+import org.prules.operator.learner.weighting.Ontology;
+import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ISLocalThresholdLinearDecisionFunction is an implementation of
@@ -33,7 +34,7 @@ public class ISNNEThresholdLinearDecisionFunction extends AbstractISDecisionFunc
     private double threshold = 0;
     private boolean blockInit = false;
 
-    public ISNNEThresholdLinearDecisionFunction() {
+    ISNNEThresholdLinearDecisionFunction() {
 
     }
 
@@ -71,8 +72,7 @@ public class ISNNEThresholdLinearDecisionFunction extends AbstractISDecisionFunc
         double var = instance.getLabels().getValueAsDouble(Ontology.ATTRIBUTE_NOISE);
         double err = Math.abs(real - predicted);
         var = var < 0 ? 0 : var; //We can't do sqrt of negative values so we change it to 0.
-        double value = (err) > Math.sqrt(var) * threshold ? 1 : 0;
-        return value;
+        return (err) > Math.sqrt(var) * threshold ? 1 : 0;
     }
 
     @Override
@@ -120,5 +120,4 @@ public class ISNNEThresholdLinearDecisionFunction extends AbstractISDecisionFunc
         }
         return errors;
     }
-
 }

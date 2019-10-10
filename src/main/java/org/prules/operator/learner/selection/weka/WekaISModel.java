@@ -6,21 +6,20 @@
 package org.prules.operator.learner.selection.weka;
 
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
-import org.prules.operator.learner.tools.DataIndex;
-import java.util.Vector;
 import main.core.algorithm.Algorithm;
+import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
 import org.prules.operator.learner.tools.IDataIndex;
 
+import java.util.Vector;
+
 /**
- *
  * @author Marcin
  */
 public class WekaISModel extends AbstractInstanceSelectorModel {
 
-    Algorithm isAlgorithm;
+    private Algorithm isAlgorithm;
 
-    public WekaISModel(Algorithm isAlgorithm) {
+    WekaISModel(Algorithm isAlgorithm) {
         this.isAlgorithm = isAlgorithm;
     }
 

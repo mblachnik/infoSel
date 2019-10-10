@@ -5,20 +5,20 @@
  */
 package org.prules.dataset;
 
-import java.util.HashSet;
-import java.util.Set;
 import org.prules.operator.learner.weighting.Ontology;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
- *
  * @author Marcin
  */
 public class Const {
-    private static final Set<String> labelsSet = new HashSet<>();    
+    private static final Set<String> labelsSet = new HashSet<>();
     /**
      * Used to store label values.  Type double
      */
-    public static final String LABEL = "label"; 
+    public static final String LABEL = "label";
     /**
      * Used to store cluster assignment.  Type double
      */
@@ -29,7 +29,7 @@ public class Const {
     public static final String WEIGHT = "weight";
     /**
      * Used for naming element which stores example id. (Usually ExampleSet ID) Type int
-     */    
+     */
     public static final String ID = "id";
     /**
      * Used for naming element which store noise level for given example. Type double
@@ -37,7 +37,7 @@ public class Const {
     public static final String NOISE = Ontology.ATTRIBUTE_NOISE;
     /**
      * Used for naming element which stores distance values. Type double
-     */    
+     */
     public static final String DISTANCE = "distance";
     /**
      * Used for naming element which stores internal index of parent data structure. Type long
@@ -46,7 +46,7 @@ public class Const {
     /**
      * Used for naming element which stores index in example set. Usually = INDEX_CONTAINER but could be different.  Type long
      */
-    public static final String INDEX_EXAMPLESET = "index_exampleset";
+    public static final String INDEX_EXAMPLE_SET = "index_exampleSet";
     /**
      * Used for naming element which stores example prediction. Type {@see IValuesStorePrediction}
      */
@@ -54,7 +54,7 @@ public class Const {
     /**
      * Used for naming element which stores example prediction confidence. Type double[]
      */
-    public static final String CONFIDENCE = "confidence";    
+    public static final String CONFIDENCE = "confidence";
     /**
      * Used for naming element which stores example vector values. Type {@see IVector}
      */
@@ -75,20 +75,20 @@ public class Const {
      * Used for naming element which stores labeling part of an instance. Equivalent to special attributes in RapidMiner. Type {@see IValuesStoreLabels}
      */
     public static final String LABELS = "labels";
-    
-    static{
+
+    static {
         labelsSet.add(LABEL);
         labelsSet.add(CLUSTER);
         labelsSet.add(WEIGHT);
         labelsSet.add(ID);
         labelsSet.add(NOISE);
         labelsSet.add(INDEX_CONTAINER);
-        labelsSet.add(INDEX_EXAMPLESET);
+        labelsSet.add(INDEX_EXAMPLE_SET);
         labelsSet.add(PREDICTION);
         labelsSet.add(CONFIDENCE);
     }
-    
-    public static Set<String> labelsKeySet(){                
+
+    static Set<String> labelsKeySet() {
         return labelsSet;
     }
 }

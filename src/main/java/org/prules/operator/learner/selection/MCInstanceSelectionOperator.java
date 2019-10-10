@@ -5,19 +5,20 @@
 package org.prules.operator.learner.selection;
 
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
-import org.prules.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
-import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
-import org.prules.operator.learner.selection.models.MCInstanceSelectionModel;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
-import org.prules.operator.learner.tools.genetic.RMRandomGenerator;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeInt;
 import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
+import org.prules.operator.learner.selection.models.MCInstanceSelectionModel;
+import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
+import org.prules.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
+import org.prules.operator.learner.tools.genetic.RMRandomGenerator;
+
 import java.util.List;
 
 /**
@@ -33,7 +34,7 @@ public class MCInstanceSelectionOperator extends AbstractInstanceSelectorOperato
     /**
      * The parameter name for &quot;The used number of nearest neighbors.&quot;
      */
-    public static final String PARAMETER_PROTOTYPES_NUMBER = "Number of prototypes";
+    private static final String PARAMETER_PROTOTYPES_NUMBER = "Number of prototypes";
     /**
      *
      */
@@ -63,7 +64,7 @@ public class MCInstanceSelectionOperator extends AbstractInstanceSelectorOperato
         int s = getParameterAsInt(PARAMETER_ITERATION_NUMBER);
         RandomGenerator randomGenerator = RandomGenerator.getRandomGenerator(this);
         IISDecisionFunction loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(this, exampleSet);
-        return new MCInstanceSelectionModel(measure, p, s, new RMRandomGenerator(randomGenerator), loss);        
+        return new MCInstanceSelectionModel(measure, p, s, new RMRandomGenerator(randomGenerator), loss);
     }
 
     /**
@@ -77,7 +78,7 @@ public class MCInstanceSelectionOperator extends AbstractInstanceSelectorOperato
         int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
         try {
             measureType = measureHelper.getSelectedMeasureType();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:

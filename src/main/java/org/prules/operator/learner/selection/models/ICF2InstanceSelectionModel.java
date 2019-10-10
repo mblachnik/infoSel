@@ -6,18 +6,13 @@ package org.prules.operator.learner.selection.models;
 
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import org.prules.tools.math.container.knn.KNNFactory;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.operator.learner.selection.models.decisionfunctions.ISClassDecisionFunction;
 import org.prules.operator.learner.tools.DataIndex;
 import org.prules.operator.learner.tools.IDataIndex;
 import org.prules.operator.learner.tools.PredictionProblemType;
-import org.prules.tools.math.container.knn.INNGraph;
-import org.prules.tools.math.container.knn.ISPRClassGeometricDataCollection;
-import org.prules.tools.math.container.knn.KNNTools;
-import org.prules.tools.math.container.knn.NNGraphReachableCoverage;
+import org.prules.tools.math.container.knn.*;
 
 /**
  * Class implements Drop1 instance selection algorithm for details see Wilson,
@@ -37,7 +32,7 @@ public class ICF2InstanceSelectionModel extends AbstractInstanceSelectorModel {
      * Constructor for Drop1 instance selection model.
      *
      * @param measure - distance measure
-     * @param k - number of nearest neighbors
+     * @param k       - number of nearest neighbors
      */
     public ICF2InstanceSelectionModel(DistanceMeasure measure, int k) {
         this.measure = measure;
@@ -48,7 +43,7 @@ public class ICF2InstanceSelectionModel extends AbstractInstanceSelectorModel {
      * Performs instance selection
      *
      * @param exampleSet - example set for which instance selection will be
-     * performed
+     *                   performed
      * @return - index of selected examples
      */
     @Override
@@ -63,7 +58,7 @@ public class ICF2InstanceSelectionModel extends AbstractInstanceSelectorModel {
 
     /**
      * Performs instance selection
-     *
+     * <p>
      * This method implements to true algorithm, while the one with ExampleSet
      * as input calls that one to perform instance selection
      *
@@ -81,18 +76,18 @@ public class ICF2InstanceSelectionModel extends AbstractInstanceSelectorModel {
         IDataIndex myIndex = new DataIndex(index);
         boolean nextIteration;
         //do {
-            //Create naturaln order
-            nextIteration = false;
-            
-            for (int i : index) {
-                int reachable = nnGraph.getNeighbors(i).size();
-                int coverage = nnGraph.getAssociates(i).size();
-                if (reachable > coverage) {
-                    myIndex.set(i, false);
-                    nnGraph.remove(i);
-                    nextIteration = true;
-                }
-            }          
+        //Create natural order
+        nextIteration = false;
+
+        for (int i : index) {
+            int reachable = nnGraph.getNeighbors(i).size();
+            int coverage = nnGraph.getAssociates(i).size();
+            if (reachable > coverage) {
+                myIndex.set(i, false);
+                nnGraph.remove(i);
+                nextIteration = true;
+            }
+        }
         //} while (nextIteration);
         indexENN.setIndex(index);
         return indexENN;

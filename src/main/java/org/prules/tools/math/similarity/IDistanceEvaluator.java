@@ -10,13 +10,14 @@ import org.prules.dataset.Instance;
 import org.prules.dataset.Vector;
 
 /**
- *
  * @author Marcin
  */
-public interface IDistanceEvaluator {    
-    
-    DistanceMeasure getDistance() ;
+public interface IDistanceEvaluator {
+
+    DistanceMeasure getDistance();
+
     double evaluateDistance(Instance values1, Instance values2);
+
     double evaluateDistance(Vector values1, Vector values2);
-    
+
 }

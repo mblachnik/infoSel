@@ -3,11 +3,11 @@ package org.prules.operator.learner.classifiers.neuralnet.models;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author Marcin
  */
 public class LVQ21Model extends AbstractLVQModel {
@@ -20,21 +20,19 @@ public class LVQ21Model extends AbstractLVQModel {
     private final double window;
 
     /**
-     *
      * @param prototypes
      * @param iterations
      * @param measure
      * @param alpha
-     * @param alphaNegative
      * @param window
      * @throws OperatorException
      */
     public LVQ21Model(ExampleSet prototypes, int iterations,
-            DistanceMeasure measure, double alpha, double window) throws OperatorException {
+                      DistanceMeasure measure, double alpha, double window) throws OperatorException {
         super(prototypes);
         this.iterations = iterations;
-        this.currentIteration = 0;        
-        this.alpha = alpha;        
+        this.currentIteration = 0;
+        this.alpha = alpha;
         this.initialAlpha = alpha;
         this.measure = measure;
         this.measure.init(prototypes);
@@ -76,7 +74,7 @@ public class LVQ21Model extends AbstractLVQModel {
                     selectedPrototypeNr1 = selectedPrototypeNr2;
                     selectedPrototypeNr2 = prototype;
                 }
-                if (minDist1 / minDist2 > window)  {
+                if (minDist1 / minDist2 > window) {
                     for (i = 0; i < getAttributesSize(); i++) {
                         double trainValue = exampleValues[i];
                         double value1 = prototypeValues[selectedPrototypeNr1][i];
@@ -92,17 +90,16 @@ public class LVQ21Model extends AbstractLVQModel {
     }
 
     /**
-     *
      * @return
      */
     @Override
     public boolean nextIteration(ExampleSet trainingSet) {
         currentIteration++;
-        alpha = LVQTools.learingRateUpdateRule(alpha, currentIteration, iterations, initialAlpha);        
+        alpha = LVQTools.learningRateUpdateRule(alpha, currentIteration, iterations, initialAlpha);
         return currentIteration < iterations;
     }
-    
-        /**
+
+    /**
      * Returns total number of iterations (maximum number of iterations)
      *
      * @return

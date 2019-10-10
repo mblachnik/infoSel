@@ -6,15 +6,14 @@
 package org.prules.dataset;
 
 /**
- *
  * @author Marcin
  */
 public interface IInstancePrediction extends IGenericContainer {
     double getLabel();
-    
+
     void setLabel(double value);
-    
+
     double[] getConfidence();
-    
+
     void setConfidence(double[] confidence);
 }

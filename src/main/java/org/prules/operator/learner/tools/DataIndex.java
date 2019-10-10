@@ -4,25 +4,28 @@
  */
 package org.prules.operator.learner.tools;
 
-import org.prules.tools.math.BasicMath;
-import java.util.Arrays;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
+import org.prules.tools.math.BasicMath;
+
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 /**
  * This class is a binary index which allows to set true/false if given element is enebled or disabled for example in array or matrix or ExampleSet
+ *
  * @author Marcin
  */
 public class DataIndex implements IDataIndex {
 
-    boolean[] index;
-    int length = -1;
+    private boolean[] index;
+    private int length = -1;
 
     /**
      * Weight attribute from ExampleSet is converted into binary index. If weight is 0 the instance is marked as absent
+     *
      * @param examples
      * @return
      */
@@ -42,6 +45,7 @@ public class DataIndex implements IDataIndex {
 
     /**
      * Constructor which initialize DataIndex with specific binary index
+     *
      * @param index
      */
     public DataIndex(boolean[] index) {
@@ -50,7 +54,8 @@ public class DataIndex implements IDataIndex {
     }
 
     /**
-     * Constructor which set all instances as present. 
+     * Constructor which set all instances as present.
+     *
      * @param indexSize - number of elements in the structure
      */
     public DataIndex(int indexSize) {
@@ -61,36 +66,39 @@ public class DataIndex implements IDataIndex {
 
     /**
      * Copy constructor
+     *
      * @param index
      */
     public DataIndex(DataIndex index) {
         this.index = index.index.clone();
         this.length = index.length;
     }
-    
+
     /**
      * Copy constructor
+     *
      * @param index
      */
     public DataIndex(IDataIndex index) {
         this.index = new boolean[index.size()];
         this.length = index.getLength();
-        for(int i : index){
+        for (int i : index) {
             this.index[i] = true;
-        }                 
+        }
     }
 
     /**
      * Set specific index into true/false
+     *
      * @param i
      * @param value
      */
     @Override
     public void set(int i, boolean value) {
-        if ((index[i] == false) && value) {
+        if ((!index[i]) && value) {
             length++;
             index[i] = true;
-        } else if ((index[i] == true) && !value) {
+        } else if ((index[i]) && !value) {
             length--;
             index[i] = false;
         }
@@ -98,6 +106,7 @@ public class DataIndex implements IDataIndex {
 
     /**
      * The same as set but if "i" is out range add new field in the binary index
+     *
      * @param i
      * @param value
      */
@@ -116,6 +125,7 @@ public class DataIndex implements IDataIndex {
 
     /**
      * add to the end of index new value
+     *
      * @param value
      */
     @Override
@@ -125,6 +135,7 @@ public class DataIndex implements IDataIndex {
 
     /**
      * mremove i'th value from binary index (it realocates memory)
+     *
      * @param i
      */
     @Override
@@ -140,6 +151,7 @@ public class DataIndex implements IDataIndex {
 
     /**
      * reads the index at position i
+     *
      * @param i
      * @return
      */
@@ -150,6 +162,7 @@ public class DataIndex implements IDataIndex {
 
     /**
      * Return handle to binary index. The booleans array is now shared
+     *
      * @return @deprecated
      */
     @Deprecated
@@ -159,7 +172,8 @@ public class DataIndex implements IDataIndex {
     }
 
     /**
-     * sets external index. 
+     * sets external index.
+     *
      * @param index
      * @deprecated
      */
@@ -171,20 +185,22 @@ public class DataIndex implements IDataIndex {
 
     /**
      * returns new DataIndex to all elements marked as active (selected)
+     *
      * @return
      */
     @Override
     public DataIndex getIndex() {
-        boolean[] tmpindex;
-        tmpindex = new boolean[length];
-        Arrays.fill(tmpindex, true);
-        return new DataIndex(tmpindex);
+        boolean[] tmpIndex;
+        tmpIndex = new boolean[length];
+        Arrays.fill(tmpIndex, true);
+        return new DataIndex(tmpIndex);
     }
 
     /**
-     * Acquire new index to all selected elements, such that all these elements 
+     * Acquire new index to all selected elements, such that all these elements
      * which were set to true in the original data would now have new index value.
      * Size of input dataindex must be equal to this.length()
+     *
      * @param index
      */
     public void setIndex(DataIndex index) {
@@ -201,19 +217,20 @@ public class DataIndex implements IDataIndex {
         }
         length = index.length;
     }
-    
+
     /**
-     * Acquire new index to all selected elements, such that all these elements 
+     * Acquire new index to all selected elements, such that all these elements
      * which were set to true in the original data would now have new index value.
-     * Size of input dataindex must be equal to this.length()
+     * Size of input data index must be equal to this.length()
+     *
      * @param index
      */
     @Override
     public void setIndex(IDataIndex index) {
-        if (length == index.size()) {  
-            Iterator<Integer> ite = this.iterator();          
-            int j=0;
-            while(ite.hasNext()){
+        if (length == index.size()) {
+            Iterator<Integer> ite = this.iterator();
+            int j = 0;
+            while (ite.hasNext()) {
                 int i = ite.next();
                 this.index[i] = index.get(j++);
             }
@@ -233,6 +250,7 @@ public class DataIndex implements IDataIndex {
 
     /**
      * Total number of elements in the index (both selected and unselected)
+     *
      * @return
      */
     @Override
@@ -242,6 +260,7 @@ public class DataIndex implements IDataIndex {
 
     /**
      * Number of elements indexed true
+     *
      * @return
      */
     @Override
@@ -251,11 +270,12 @@ public class DataIndex implements IDataIndex {
 
     /**
      * Returns index of the original base data structure
+     *
      * @param i
      * @return
      */
     @Override
-    public int getOryginalIndex(int i) {
+    public int getOriginalIndex(int i) {
         int m = -1;
         int an = index.length;
         for (int k = 0; k < an; k++) {
@@ -289,7 +309,8 @@ public class DataIndex implements IDataIndex {
 
     /**
      * Iterator over elements
-     * @return 
+     *
+     * @return
      */
     @Override
     public ListIterator<Integer> iterator() {
@@ -298,8 +319,9 @@ public class DataIndex implements IDataIndex {
 
     /**
      * Iterator over elements which starts from index
+     *
      * @param index
-     * @return 
+     * @return
      */
     @Override
     public ListIterator<Integer> iterator(int index) {
@@ -308,7 +330,8 @@ public class DataIndex implements IDataIndex {
 
     /**
      * Implementation of the iterator
-     * @return 
+     *
+     * @return
      */
     private class Itr implements ListIterator<Integer> {
 
@@ -331,23 +354,25 @@ public class DataIndex implements IDataIndex {
                 if (index[i]) {
                     indexes[j] = i;
                     j++;
-                    if (j>indexes.length) break;
+                    if (j > indexes.length) break;
                 }
             }
         }
 
         /**
          * Returns true if next element appears in the data structure
-         * @return 
+         *
+         * @return
          */
         @Override
         public boolean hasNext() {
             return iteratorState < length - 1;
         }
-        
+
         /**
          * Returns index of the next element
-         * @return 
+         *
+         * @return
          */
         @Override
         public Integer next() {
@@ -359,8 +384,9 @@ public class DataIndex implements IDataIndex {
         }
 
         /**
-         * Returns index of the prevoius element
-         * @return 
+         * Returns index of the previous element
+         *
+         * @return
          */
         @Override
         public Integer previous() {
@@ -373,7 +399,8 @@ public class DataIndex implements IDataIndex {
 
         /**
          * Returns true if previous element exist
-         * @return 
+         *
+         * @return
          */
         @Override
         public boolean hasPrevious() {
@@ -383,7 +410,8 @@ public class DataIndex implements IDataIndex {
         /**
          * Returns index of the next element similar to {@link #next()}, but this
          * method don't use Integer class returning the primitive int
-         * @return 
+         *
+         * @return
          */
         @Override
         public int nextIndex() {
@@ -396,7 +424,8 @@ public class DataIndex implements IDataIndex {
         /**
          * Returns index of the previous element similar to {@link #previous()}, but this
          * method don't use Integer class returning the primitive int
-         * @return 
+         *
+         * @return
          */
         @Override
         public int previousIndex() {
@@ -408,7 +437,8 @@ public class DataIndex implements IDataIndex {
 
         /**
          * Not implemented
-         * @param e 
+         *
+         * @param e
          */
         @Override
         public void set(Integer e) {
@@ -417,7 +447,8 @@ public class DataIndex implements IDataIndex {
 
         /**
          * Not implemented
-         * @param e 
+         *
+         * @param e
          */
         @Override
         public void add(Integer e) {
@@ -435,16 +466,16 @@ public class DataIndex implements IDataIndex {
     }
 
     /**
-     * Makes an inverse of selected elements    
-    */
+     * Makes an inverse of selected elements
+     */
     @Override
-    public void negate(){
-        for(int i=0; i<index.length; i++){
+    public void negate() {
+        for (int i = 0; i < index.length; i++) {
             index[i] = !index[i];
         }
         length = BasicMath.sum(index);
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -471,21 +502,20 @@ public class DataIndex implements IDataIndex {
         }
         return length == other.length;
     }
-    
+
     /**
      * Returns and index of selected elements
-     */    
+     */
     @Override
-    public int[] getAsInt(){
+    public int[] getAsInt() {
         int[] tab = new int[length];
         int j = 0;
-        for (int i=0; i<index.length; i++){
-            if (index[i]){
-                tab[j]=i;
+        for (int i = 0; i < index.length; i++) {
+            if (index[i]) {
+                tab[j] = i;
                 j++;
             }
         }
         return tab;
     }
-    
 }

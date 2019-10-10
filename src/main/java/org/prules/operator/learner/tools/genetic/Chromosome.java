@@ -5,24 +5,21 @@
 package org.prules.operator.learner.tools.genetic;
 
 import org.prules.tools.math.container.DoubleDoubleContainer;
-import com.rapidminer.tools.container.Pair;
 
 /**
- *
  * @author Marcin
  */
 public class Chromosome {
 
     boolean[] chromosome;
     //GeneticSplitter splitter;
-    RandomGenerator random;
-    DoubleDoubleContainer[] bitMutationProbabilities; //This parameter describes the chance that the certain bit will be mutated according to its value. For example we may prefare the mutation from 1 to 0 and reduce the probability of mutation from 0 to 1. Now it is possible. The first element describes the mutation from 1 to 0, and the second from 0 to 1
+    private RandomGenerator random;
+    private DoubleDoubleContainer[] bitMutationProbabilities; //This parameter describes the chance that the certain bit will be mutated according to its value. For example we may prefare the mutation from 1 to 0 and reduce the probability of mutation from 0 to 1. Now it is possible. The first element describes the mutation from 1 to 0, and the second from 0 to 1
 
     /**
-     *
      * @param size
      */
-    public Chromosome(int size) {
+    Chromosome(int size) {
         chromosome = new boolean[size];
         bitMutationProbabilities = new DoubleDoubleContainer[size];
         for (int i = 0; i < bitMutationProbabilities.length; i++) {
@@ -31,7 +28,6 @@ public class Chromosome {
     }
 
     /**
-     *
      * @param chromosome
      */
     public Chromosome(Chromosome chromosome) {
@@ -43,17 +39,16 @@ public class Chromosome {
     public void setBitMutationProbabilities(DoubleDoubleContainer[] bitMutationProbabilities) {
         this.bitMutationProbabilities = bitMutationProbabilities;
     }
-    
+
     public void setBitMutationProbabilities(int bitId, DoubleDoubleContainer bitMutationProbabilities) {
         this.bitMutationProbabilities[bitId] = bitMutationProbabilities;
     }
 
     /**
-     *
      * @param id
      * @return
      */
-    public boolean mutateBit(int id) {
+    private boolean mutateBit(int id) {
         boolean chk = false;
         double mutationProb = chromosome[id] ? bitMutationProbabilities[id].getFirst() : bitMutationProbabilities[id].getSecond();
         double val = random.nextDouble();
@@ -63,32 +58,32 @@ public class Chromosome {
         }
         return chk;
     }
-    
+
     /**
-     * This method mutates single bit of the chromosome. The bit is identified by random. 
+     * This method mutates single bit of the chromosome. The bit is identified by random.
      */
-    public void mutateBit(){
+    public void mutateBit() {
         int id;
-        do{
+        do {
             id = random.nextInteger(this.chromosome.length);
-        } while( !mutateBit(id));
+        } while (!mutateBit(id));
     }
 
     /**
      * This method assure mutation of a signle bit in range from start to end bit
+     *
      * @param startBit - first bit
-     * @param endBit - last bit 
+     * @param endBit   - last bit
      */
     public void mutateBit(int startBit, int endBit) {
         int id;
         int range = endBit - startBit;
-        do{
+        do {
             id = random.nextInteger(range);
-        } while( !mutateBit(startBit + id));
+        } while (!mutateBit(startBit + id));
     }
-    
+
     /**
-     *
      * @param id
      */
     public void setBit(int id) {
@@ -96,7 +91,6 @@ public class Chromosome {
     }
 
     /**
-     *
      * @param id
      */
     public void resetBit(int id) {
@@ -104,7 +98,6 @@ public class Chromosome {
     }
 
     /**
-     *
      * @param id
      * @param val
      */
@@ -113,7 +106,6 @@ public class Chromosome {
     }
 
     /**
-     *
      * @param id
      * @return
      */
@@ -122,7 +114,6 @@ public class Chromosome {
     }
 
     /**
-     *
      * @return
      */
     public boolean[] getChromosome() {
@@ -130,7 +121,6 @@ public class Chromosome {
     }
 
     /**
-     *
      * @param random
      */
     public void setRandomGenerator(RandomGenerator random) {
@@ -140,7 +130,7 @@ public class Chromosome {
     /**
      *
      */
-    public void randomize() {        
+    public void randomize() {
         for (int i = 0; i < chromosome.length; i++) {
             mutateBit(random.nextInteger(this.chromosome.length));
         }

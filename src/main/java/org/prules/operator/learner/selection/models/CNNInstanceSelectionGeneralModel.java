@@ -8,22 +8,18 @@ import com.rapidminer.example.Example;
 import com.rapidminer.example.set.EditedExampleSet;
 import com.rapidminer.example.set.ISPRExample;
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.dataset.Const;
-import org.prules.operator.learner.tools.DataIndex;
+import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import org.prules.dataset.*;
 import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
+import org.prules.operator.learner.tools.DataIndex;
 import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
-import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import java.util.Collection;
-import org.prules.dataset.InstanceFactory;
 import org.prules.tools.math.container.knn.KNNFactory;
-import org.prules.dataset.IInstanceLabels;
-import org.prules.dataset.Instance;
-import org.prules.dataset.Vector;
-import org.prules.dataset.IInstancePrediction;
+
+import java.util.Collection;
 
 /**
- * Class implements Condenced NN instance selection algorithm.
+ * Class implements Condensed NN instance selection algorithm.
  *
  * @author Marcin
  */
@@ -31,13 +27,13 @@ public class CNNInstanceSelectionGeneralModel extends AbstractInstanceSelectorMo
 
     private final DistanceMeasure distance;
     private final IISDecisionFunction loss;
-    private ISPRGeometricDataCollection<IInstanceLabels> model;    
+    private ISPRGeometricDataCollection<IInstanceLabels> model;
 
     /**
      * Constructor of Condensed NN instance selection algorithms
      *
      * @param distance - distance function
-     * @param loss - loss function
+     * @param loss     - loss function
      */
     public CNNInstanceSelectionGeneralModel(DistanceMeasure distance, IISDecisionFunction loss) {
         this.distance = distance;
@@ -48,7 +44,7 @@ public class CNNInstanceSelectionGeneralModel extends AbstractInstanceSelectorMo
      * Performs instance selection
      *
      * @param exampleSet - example set for which instance selection will be
-     * performed
+     *                   performed
      * @return - index of selected examples
      */
     @Override
@@ -64,15 +60,15 @@ public class CNNInstanceSelectionGeneralModel extends AbstractInstanceSelectorMo
         selectedIndex.set(i, true);
         trainingIndex.set(i, false);
         ISPRGeometricDataCollection<IInstanceLabels> nn = KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, selectedSet, distance);
-        boolean isModiffied = true;
+        boolean isModified = true;
         int attributeSize = exampleSet.getAttributes().size();
         Vector vector = InstanceFactory.createVector(trainingSet);
         IInstancePrediction prediction = InstanceFactory.createPrediction(Double.NaN, null);
         Instance instance = InstanceFactory.createEmptyInstance();
         IInstanceLabels label = InstanceFactory.createInstanceLabels();
 
-        while (isModiffied) {
-            isModiffied = false;
+        while (isModified) {
+            isModified = false;
             for (Example firstInstance : trainingSet) {
                 vector.setValues(firstInstance);
                 Collection<IInstanceLabels> result = nn.getNearestValues(1, vector);
@@ -81,13 +77,13 @@ public class CNNInstanceSelectionGeneralModel extends AbstractInstanceSelectorMo
                 prediction.setLabel(predictedLabel);
                 instance.put(Const.VECTOR, vector);
                 instance.put(Const.LABELS, label);
-                instance.put(Const.PREDICTION, prediction);                
+                instance.put(Const.PREDICTION, prediction);
                 if (loss.getValue(instance) > 0) {
                     i = ((ISPRExample) firstInstance).getIndex();
                     selectedIndex.set(i, true);
                     trainingIndex.set(i, false);
                     nn.add((Vector) vector.clone(), InstanceFactory.createInstaceLabels(firstInstance));
-                    isModiffied = true;
+                    isModified = true;
                 }
             }
         }

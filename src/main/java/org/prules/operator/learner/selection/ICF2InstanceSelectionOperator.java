@@ -7,18 +7,20 @@ import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeInt;
-import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
-import java.util.List;
+import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
 import org.prules.operator.learner.selection.models.ICF2InstanceSelectionModel;
+
+import java.util.List;
 
 
 /**
- * Class implements modified ICF instance selection algorithm. 
- * It is very similaar to ICF algorithm, but the main difference is that instated of 
- * single prunning step here instances are removed iteratively one by one always 
+ * Class implements modified ICF instance selection algorithm.
+ * It is very similaar to ICF algorithm, but the main difference is that instated of
+ * single prunning step here instances are removed iteratively one by one always
  * recalculating coverage and reachability. Here the computational complexity is high n^3
+ *
  * @author Marcin
  */
 public class ICF2InstanceSelectionOperator extends AbstractInstanceSelectorOperator {
@@ -26,7 +28,6 @@ public class ICF2InstanceSelectionOperator extends AbstractInstanceSelectorOpera
     public static final String PARAMETER_K = "k";
 
     /**
-     *
      * @param description
      */
     public ICF2InstanceSelectionOperator(OperatorDescription description) {
@@ -40,7 +41,7 @@ public class ICF2InstanceSelectionOperator extends AbstractInstanceSelectorOpera
 
     @Override
     public boolean isDistanceBased() {
-        return true;        
+        return true;
     }
 
     @Override
@@ -48,7 +49,7 @@ public class ICF2InstanceSelectionOperator extends AbstractInstanceSelectorOpera
         return false;
     }
 
-    
+
     /**
      * Method used to configure and initialize instance selection model.
      *
@@ -60,7 +61,7 @@ public class ICF2InstanceSelectionOperator extends AbstractInstanceSelectorOpera
     public AbstractInstanceSelectorModel configureInstanceSelectionModel(SelectedExampleSet exampleSet) throws OperatorException {
         DistanceMeasure distance = measureHelper.getInitializedMeasure(exampleSet);
         int k = getParameterAsInt(PARAMETER_K);
-        return new ICF2InstanceSelectionModel(distance,k);
+        return new ICF2InstanceSelectionModel(distance, k);
     }
 
     @Override
@@ -68,7 +69,7 @@ public class ICF2InstanceSelectionOperator extends AbstractInstanceSelectorOpera
         int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
         try {
             measureType = measureHelper.getSelectedMeasureType();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:
@@ -87,7 +88,7 @@ public class ICF2InstanceSelectionOperator extends AbstractInstanceSelectorOpera
                 return false;
         }
     }
-    
+
     /**
      * Operator configuration parameters
      *
@@ -99,7 +100,7 @@ public class ICF2InstanceSelectionOperator extends AbstractInstanceSelectorOpera
 
         ParameterType type = new ParameterTypeInt(PARAMETER_K, "The number of nearest neighbors.", 1, Integer.MAX_VALUE, 3);
         type.setExpert(false);
-        types.add(type);       
+        types.add(type);
         return types;
     }
 }

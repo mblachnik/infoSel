@@ -4,14 +4,14 @@
  */
 package org.prules.operator.learner.selection;
 
-import org.prules.operator.learner.selection.models.ELHInstanceSelectionModel;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
-import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
+import org.prules.operator.learner.selection.models.ELHInstanceSelectionModel;
 
 /**
  * This class is used to provide Encoding Length Heuristic instance selection
@@ -61,7 +61,7 @@ public class ELHInstanceSelectionOperator extends AbstractInstanceSelectorOperat
         int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
         try {
             measureType = measureHelper.getSelectedMeasureType();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:

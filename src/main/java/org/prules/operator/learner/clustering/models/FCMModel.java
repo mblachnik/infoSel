@@ -1,36 +1,36 @@
 package org.prules.operator.learner.clustering.models;
 
-import java.util.Iterator;
-
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import org.prules.dataset.InstanceFactory;
-import org.prules.tools.math.container.knn.KNNTools;
 import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import java.util.ArrayList;
+import org.prules.dataset.InstanceFactory;
 import org.prules.dataset.Vector;
+import org.prules.tools.math.container.knn.KNNTools;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
- *
  * @author Marcin
  */
 public class FCMModel extends AbstractBatchModel {
 
-    boolean nextItertion = false;
-    double m;
-    double minGain;
-    int iteration, numberOfIterations, numberOfPrototypes;
-    RandomGenerator randomGenerator;    
+    private boolean nextIteration = false;
+    private double m;
+    private double minGain;
+    private int iteration, numberOfIterations, numberOfPrototypes;
+    private RandomGenerator randomGenerator;
 
     /**
      * Constructor of the model
-     * @param distance - distance measure
-     * @param m - fuzziness parameter
-     * @param maxIterations - number of iterations
-     * @param minGain - minimal gain required to perform new iteration
-     * @param randomGenerator - random number generators
+     *
+     * @param distance           - distance measure
+     * @param m                  - fuzziness parameter
+     * @param maxIterations      - number of iterations
+     * @param minGain            - minimal gain required to perform new iteration
+     * @param randomGenerator    - random number generators
      * @param numberOfPrototypes - number of clusters
      */
     public FCMModel(DistanceMeasure distance, double m, int maxIterations, double minGain, RandomGenerator randomGenerator, int numberOfPrototypes) {
@@ -45,17 +45,19 @@ public class FCMModel extends AbstractBatchModel {
 
     /**
      * Method returns true if next iteration of the clustering algorithm should be performed
+     *
      * @return
      */
     @Override
     public boolean nextIteration() {
         iteration++;
-        return nextItertion && (iteration < numberOfIterations);
+        return nextIteration && (iteration < numberOfIterations);
     }
 
     /**
      * Update prototype posiotion based on partition matrix
-     * @param trainingSet 
+     *
+     * @param trainingSet
      */
     @Override
     public void updatePrototypes(ExampleSet trainingSet) {
@@ -87,9 +89,10 @@ public class FCMModel extends AbstractBatchModel {
 
     /**
      * Based on prototypes calculates partition matrix
-     * @param trainingSet     
+     *
+     * @param trainingSet
      */
-    
+
     @Override
     public void updatePartitionMatrix(ExampleSet trainingSet) {
         double objFun = 0;
@@ -104,37 +107,38 @@ public class FCMModel extends AbstractBatchModel {
             int prototypeIndex = 0;
             double sum = 0;
             for (Vector prototype : prototypes) {
-                double d = distance.calculateDistance(exampleValues, prototype.getValues());              
+                double d = distance.calculateDistance(exampleValues, prototype.getValues());
                 double mf = partitionMatrixEntry[prototypeIndex];
-                objFun += Math.pow(d, 2) * mf; //It is only here becouse in else section the distance is 0 so 0^2*mf = 0
+                objFun += Math.pow(d, 2) * mf; //It is only here because in else section the distance is 0 so 0^2*mf = 0
                 //mf = Math.pow(mf, m);
                 double v = d == 0 ? Double.MAX_VALUE : Math.pow(d, exp);
-                sum += v;                
-                partitionMatrixEntry[prototypeIndex] = v;                
+                sum += v;
+                partitionMatrixEntry[prototypeIndex] = v;
                 prototypeIndex++;
             }
-            for (prototypeIndex = 0; prototypeIndex < numberOfPrototypes; prototypeIndex++) {                
-                double v = partitionMatrixEntry[prototypeIndex];                
+            for (prototypeIndex = 0; prototypeIndex < numberOfPrototypes; prototypeIndex++) {
+                double v = partitionMatrixEntry[prototypeIndex];
                 partitionMatrixEntry[prototypeIndex] = v / sum;
             }
-        }    
+        }
         costFunctionValue.add(objFun);
         int size = costFunctionValue.size();
-        double gain = costFunctionValue.get(size-1) - costFunctionValue.get(size-2);
-        nextItertion = !(Math.abs(gain) < minGain);
+        double gain = costFunctionValue.get(size - 1) - costFunctionValue.get(size - 2);
+        nextIteration = !(Math.abs(gain) < minGain);
     }
 
     /**
      * Method executed before main training used to initialize data
+     *
      * @param trainingSet
      */
     @Override
-    public void initialize(ExampleSet trainingSet) {  
+    public void initialize(ExampleSet trainingSet) {
         int numberOfAttributes = trainingSet.getAttributes().size();
         prototypes = new ArrayList<>(numberOfPrototypes);
         for (int i = 0; i < numberOfPrototypes; i++) {
             prototypes.add(InstanceFactory.createVector(new double[numberOfAttributes]));
-        }  
+        }
         resetPartitionMatrix(trainingSet);
         int i;
         //partition matrix initialization				     
@@ -149,18 +153,18 @@ public class FCMModel extends AbstractBatchModel {
                 double value = partitionMatrixEntry[i];
                 partitionMatrixEntry[i] = value / sum;
             }
-        }			
+        }
     }
-    
+
     @Override
     public void finalizeTraining() {
     }
-            
+
 //    /**
 //     * Calculates clustering results based on partition matrix
 //     *
-//     * @param trainingSet - dataset to cluster
-//     * @return index of assigment given example from exampleSet to cluster
+//     * @param trainingSet - data set to cluster
+//     * @return index of assignment given example from exampleSet to cluster
 //     */
 //    @Override
 //    public int[] getClusterAssignments(ExampleSet trainingSet) {

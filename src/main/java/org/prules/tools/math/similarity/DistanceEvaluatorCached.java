@@ -6,20 +6,20 @@
 package org.prules.tools.math.similarity;
 
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import java.util.HashMap;
-import java.util.Map;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.dataset.Instance;
 import org.prules.dataset.Vector;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- *
  * @author Marcin
  */
 public class DistanceEvaluatorCached implements IDistanceEvaluator {
 
-    final DistanceMeasure distance;
-    final Map<Integer, Double> map;
+    private final DistanceMeasure distance;
+    private final Map<Integer, Double> map;
 
     public DistanceEvaluatorCached(DistanceMeasure distance, int cacheSize) {
         this.distance = distance;
@@ -37,9 +37,9 @@ public class DistanceEvaluatorCached implements IDistanceEvaluator {
         IInstanceLabels l2 = values1.getLabels();
         int id1 = l1.getId();
         int id2 = l2.getId();
-        double dist = 0;
+        double dist;
         if (id1 >= 0 && id2 >= 0) {
-            int id = (int) 0.5 * (id1 + id2) * (id1 + id2 + 1) + id2;
+            int id = (int) (0.5 * (id1 + id2) * (id1 + id2 + 1) + id2);
             if (map.containsKey(id)) {
                 dist = map.get(id);
             } else {

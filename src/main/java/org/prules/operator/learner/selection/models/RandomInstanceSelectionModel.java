@@ -6,16 +6,11 @@
 package org.prules.operator.learner.selection.models;
 
 import com.rapidminer.example.set.SelectedExampleSet;
-import com.rapidminer.parameter.ParameterType;
-import org.prules.operator.learner.tools.DataIndex;
-import org.prules.operator.learner.tools.PRulesUtil;
 import com.rapidminer.tools.RandomGenerator;
-import java.util.List;
-import java.util.Random;
 import org.prules.operator.learner.tools.IDataIndex;
+import org.prules.operator.learner.tools.PRulesUtil;
 
 /**
- *
  * @author Marcin
  */
 public class RandomInstanceSelectionModel extends AbstractInstanceSelectorModel {
@@ -28,8 +23,7 @@ public class RandomInstanceSelectionModel extends AbstractInstanceSelectorModel 
         this.stratifiedSelection = stratifiedSelection;
         this.randomGenerator = randomGenerator;
     }
-    
-    
+
 
     @Override
     public IDataIndex selectInstances(SelectedExampleSet exampleSet) {
@@ -41,15 +35,12 @@ public class RandomInstanceSelectionModel extends AbstractInstanceSelectorModel 
         if (stratifiedSelection) {
             //index = PRulesUtil.stratifiedSelectionOfFirstSamplesFromEachClass(exampleSet, sampleSize, randomGenerator);
             index = PRulesUtil.stratifiedSelection(exampleSet, sampleSize, randomGenerator);
-        } else {               
-            int[] ints = PRulesUtil.randomPermutation(exampleSet.size(), randomGenerator);     
-            for (int i = 0; i < sampleSize; i++) {                
+        } else {
+            int[] ints = PRulesUtil.randomPermutation(exampleSet.size(), randomGenerator);
+            for (int i = 0; i < sampleSize; i++) {
                 index.set(ints[i], true);
             }
         }
         return index;
     }
-    
-
-
 }

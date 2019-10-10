@@ -9,11 +9,13 @@ import com.rapidminer.example.ExampleSet;
 /**
  * An interface for any instance Selection implementation.
  * It allows for separation between RapidMiner core and method implementation
+ *
  * @author Marcin
  */
 public interface PRulesModel<T> {
     /**
      * This method implements the pure algorithm based on the trainingData
+     *
      * @param exampleSet - training set
      * @return - resultant set
      */

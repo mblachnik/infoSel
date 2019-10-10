@@ -6,15 +6,11 @@
 package org.prules.operator.learner.classifiers.neuralnet.models;
 
 /**
- *
  * @author Marcin
  */
-public class HyperbolicLearningRateUpdateRule implements LearningRateUpdateRule{
-
-    
+public class HyperbolicLearningRateUpdateRule implements LearningRateUpdateRule {
     @Override
     public double update(double learningRate) {
-        return learningRate/(1+learningRate);
+        return learningRate / (1 + learningRate);
     }
-    
 }

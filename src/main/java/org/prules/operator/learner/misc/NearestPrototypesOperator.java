@@ -23,30 +23,29 @@ import com.rapidminer.tools.OperatorService;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import org.prules.tools.math.BasicMath;
 
 import java.util.*;
-
 import java.util.Map.Entry;
 
-import org.prules.tools.math.BasicMath;
-import org.prules.tools.math.container.DoubleIntContainer;
 /**
- * The class implements NearestPrototypeBatchOperator. It takes the prototypes 
- * and for each training vector it identifies two closest prototypes from opposite classes. 
- * This allows to mark all training vectors with appropriate pair of prototypes. 
- * This allows to split the training data along the decision boundary. As an output it adds 
- * three new attributes to the training data: batch which indicates data subsets 
+ * The class implements NearestPrototypeBatchOperator. It takes the prototypes
+ * and for each training vector it identifies two closest prototypes from opposite classes.
+ * This allows to mark all training vectors with appropriate pair of prototypes.
+ * This allows to split the training data along the decision boundary. As an output it adds
+ * three new attributes to the training data: batch which indicates data subsets
  * which belong to a single pair, and two additional attributes ID_Proto_1 and ID_Proto_2
  * which indicates respectively index of closest prototype from same class label and opposite
- * class label respectively. This operator also returns PrototypeEnsembleModel which 
+ * class label respectively. This operator also returns PrototypeEnsembleModel which
  * contains information on prototypes and its labels and additional information require to finally build ensemble etc.
+ *
  * @author Marcin
  */
 public class NearestPrototypesOperator extends Operator implements CapabilityProvider {
 
-    public static final String PARAMETER_MIN_COUNT_FACTOR = "Min. counts factor";    
-    public static final String PARAMETER_MINIMUM_SUPPORT = "Min. support";
-    
+    private static final String PARAMETER_MIN_COUNT_FACTOR = "Min. counts factor";
+    private static final String PARAMETER_MINIMUM_SUPPORT = "Min. support";
+
     /**
      * Input data - training set
      */
@@ -62,7 +61,7 @@ public class NearestPrototypesOperator extends Operator implements CapabilityPro
     /**
      * Model representing prototypes and its relations
      */
-    private OutputPort modelOutputPort = this.getOutputPorts().createPort("piredModels");
+    private OutputPort modelOutputPort = this.getOutputPorts().createPort("pairedModels");
     /**
      * Distance measure helper for creating appropriate distance measure
      */
@@ -128,12 +127,13 @@ public class NearestPrototypesOperator extends Operator implements CapabilityPro
             }
         }, prototypesInputPort));
         getTransformer().addPassThroughRule(exampleSetInputPort, exampleSetOutputPort);
-        getTransformer().addGenerationRule(modelOutputPort, PrototypesEnsembeleModel.class);
+        getTransformer().addGenerationRule(modelOutputPort, PrototypesEnsembleModel.class);
     }
 
     /**
      * Main method which performs all calculations
-     * @throws OperatorException 
+     *
+     * @throws OperatorException
      */
     @Override
     public void doWork() throws OperatorException {
@@ -162,14 +162,14 @@ public class NearestPrototypesOperator extends Operator implements CapabilityPro
         //Main loop
         Attributes attributesExampleSet = exampleSet.getAttributes();
         Attributes attributesPrototypes = prototypeSet.getAttributes();
-        int labelsNum = attributesExampleSet.getLabel().getMapping().size(); //Numer of labels
+        int labelsNum = attributesExampleSet.getLabel().getMapping().size(); //Number of labels
         int numberOfAttributesInExampleSet = attributesExampleSet.size();
         double[] valuesExample = new double[numberOfAttributesInExampleSet];
         double[][] example2ProtoDistances = new double[exampleSet.size()][prototypeSet.size()];
         int exampleIndex = 0;
-        PiredTriple[] examplesNearestPair = new PiredTriple[exampleSet.size()]; //Data structure used to store selected prototypes for given training sample. It contains three elements pired value, id_nearest_prototype, id_nearest_enemy
+        PairedTuple[] examplesNearestPair = new PairedTuple[exampleSet.size()]; //Data structure used to store selected prototypes for given training sample. It contains three elements paired value, id_nearest_prototype, id_nearest_enemy
         Map<Long, int[]> counterMap = new HashMap<>(); //Counter used to count frequency of prototypes pair
-        double[] labels = new double[exampleSet.size()]; //Here use use array to store labels as it is much facter then iterating over exampleSet
+        double[] labels = new double[exampleSet.size()]; //Here use use array to store labels as it is much faster then iterating over exampleSet
         double[][] prototypes = new double[prototypeSet.size()][numberOfAttributesInExampleSet];
         double[] prototypesLabel = new double[prototypeSet.size()];
         List<String> prototypeAttributeNames = new ArrayList<>(numberOfAttributesInExampleSet);
@@ -192,7 +192,7 @@ public class NearestPrototypesOperator extends Operator implements CapabilityPro
             prototypeIndex++;
         }
         //</editor-fold>        
-        Map<Long, PiredTriple> selectedPairs = new HashMap<>();
+        Map<Long, PairedTuple> selectedPairs = new HashMap<>();
         for (Example example : exampleSet) {
             //<editor-fold defaultstate="collapsed" desc="Extract values of example for the distance calculations">
             {
@@ -216,20 +216,20 @@ public class NearestPrototypesOperator extends Operator implements CapabilityPro
                 //Store distances
                 protoDistances[prototypeIndex] = currDistance;
                 if (prototypesLabel[prototypeIndex] == example.getLabel()) {
-                    if (currDistance < minDistanceNeigbor){
+                    if (currDistance < minDistanceNeigbor) {
                         neighborId = prototypeIndex;
                         minDistanceNeigbor = currDistance;
                     }
                 } else {
-                    if (currDistance < minDistanceEnemy){
+                    if (currDistance < minDistanceEnemy) {
                         enemyId = prototypeIndex;
                         minDistanceEnemy = currDistance;
-                    }                    
+                    }
                 }
-                if (currDistance < minDistance) minDistance = currDistance;                
+                if (currDistance < minDistance) minDistance = currDistance;
                 prototypeIndex++;
             }
-            long pair = neighborId < enemyId ? BasicMath.pair((long) neighborId, (long) enemyId) : BasicMath.pair((long) enemyId, (long) neighborId);
+            long pair = neighborId < enemyId ? BasicMath.pair(neighborId, enemyId) : BasicMath.pair(enemyId, neighborId);
             //<editor-fold desc="Count class distribution for given pair">                                    
             int label = (int) labels[exampleIndex];
             if ((counts = counterMap.get(pair)) == null) {
@@ -238,14 +238,14 @@ public class NearestPrototypesOperator extends Operator implements CapabilityPro
             }
             counts[label]++;
             //</editor-fold>                                                
-            PiredTriple nearestPair;
+            PairedTuple nearestPair;
             if (examplesNearestPair[exampleIndex] != null) {
                 nearestPair = examplesNearestPair[exampleIndex];
             } else {
-                nearestPair = new PiredTriple();
+                nearestPair = new PairedTuple();
                 examplesNearestPair[exampleIndex] = nearestPair;
             }
-            nearestPair.pired = pair;
+            nearestPair.paired = pair;
             nearestPair.protoId1 = neighborId;
             nearestPair.protoId2 = enemyId;
             //</editor-fold>                                    
@@ -277,34 +277,35 @@ public class NearestPrototypesOperator extends Operator implements CapabilityPro
             }
         }
         //</editor-fold>
-        minCounts = (int) (minFactor * max) > minSupport ? (int) (minFactor * max) : minSupport; //If minFactor is less restrictive then take minSupport (always take more restrictive rule)
+        minCounts = Math.max((int) (minFactor * max), minSupport); //If minFactor is less restrictive then take minSupport (always take more restrictive rule)
         //<editor-fold defaultstate="collapsed" desc="Creates selectedPairs map which contains unique pairs and corresponding prototype IDs">
-        for (PiredTriple pired : examplesNearestPair) {
-            if (!selectedPairs.containsKey(pired.pired)) {
+        for (PairedTuple pairedTuple : examplesNearestPair) {
+            if (!selectedPairs.containsKey(pairedTuple.paired)) {
                 //If given pair does not exists in the map put it and preserve protoId order, such that protoId1 is smaller id than the protoId2
-                PiredTriple tmpPair = new PiredTriple(pired);
-                if (pired.protoId2 < pired.protoId1) {
-                    tmpPair.protoId1 = pired.protoId2;
-                    tmpPair.protoId2 = pired.protoId1;
+                PairedTuple tmpPair = new PairedTuple(pairedTuple);
+                if (pairedTuple.protoId2 < pairedTuple.protoId1) {
+                    tmpPair.protoId1 = pairedTuple.protoId2;
+                    tmpPair.protoId2 = pairedTuple.protoId1;
                 }
-                //tmpPair.isPure = pureSubset.contains(pired.pired);
-                selectedPairs.put(tmpPair.pired, tmpPair);
+                //tmpPair.isPure = pureSubset.contains(pairedTuple.pairedTuple);
+                selectedPairs.put(tmpPair.paired, tmpPair);
             }
         }
         //</editor-fold>
-        // <editor-fold desc=" ${Searching for new nearest prototypes if current pair is not so common. Appears not enough often. Finish when all frequences fulfills the minCOunts condition} ">                        
+        // <editor-fold desc=" ${Searching for new nearest prototypes if current pair is not so common. Appears not enough often. Finish when all frequencies fulfills
+        // the minCounts condition} ">
         while (min < minCounts) {
             exampleIndex = 0;
             //<editor-fold desc="For each training sample check if it belongs to least frequent pair, then update pair">
-            for (PiredTriple pairs : examplesNearestPair) {
-                //If sample with given exampleId belongs to the least frequent batch group then reassigne it to other olready existing group
-                if (pairs.pired == minId) {
+            for (PairedTuple pairs : examplesNearestPair) {
+                //If sample with given exampleId belongs to the least frequent batch group then reassign it to other already existing group
+                if (pairs.paired == minId) {
                     //If old counter is almost empty (has less then one element remove key)                
-                    counts = counterMap.get(pairs.pired);
+                    counts = counterMap.get(pairs.paired);
                     int label = (int) labels[exampleIndex];
                     //<editor-fold defaultstate="collapsed" desc="Get hits count for given sample. New we have a distribution of samples per class">
                     if (Arrays.stream(counts).sum() <= 1) {
-                        counterMap.remove(pairs.pired);
+                        counterMap.remove(pairs.paired);
                     } else { //Otherwise decrease counter
                         counts[label]--;
                     }
@@ -313,11 +314,11 @@ public class NearestPrototypesOperator extends Operator implements CapabilityPro
                     double minDist = Double.MAX_VALUE;
                     long minPair = -1;
                     //<editor-fold defaultstate="collapsed" desc="Identify two closest prototypes from existing pairs (new group/pair is not constructed)">
-                    for (Entry<Long, PiredTriple> entry : selectedPairs.entrySet()) {
+                    for (Entry<Long, PairedTuple> entry : selectedPairs.entrySet()) {
                         if (entry.getKey() != minId) {
-                            PiredTriple piredTriple = entry.getValue();
-                            double dist = protoDistances[piredTriple.protoId1] + protoDistances[piredTriple.protoId2];
-                            long pair = piredTriple.pired;
+                            PairedTuple pairedTuple = entry.getValue();
+                            double dist = protoDistances[pairedTuple.protoId1] + protoDistances[pairedTuple.protoId2];
+                            long pair = pairedTuple.paired;
                             if (dist < minDist) {
                                 minDist = dist;
                                 minPair = pair;
@@ -326,15 +327,15 @@ public class NearestPrototypesOperator extends Operator implements CapabilityPro
                     }
                     //</editor-fold>
                     //<editor-fold defaultstate="collapsed" desc="Update selectedPair">
-                    PiredTriple tmpPired = selectedPairs.get(minPair);
-                    if (prototypesLabel[tmpPired.protoId1] == label) {
-                        pairs.set(minPair, tmpPired.protoId1, tmpPired.protoId2);
+                    PairedTuple tmpPaired = selectedPairs.get(minPair);
+                    if (prototypesLabel[tmpPaired.protoId1] == label) {
+                        pairs.set(minPair, tmpPaired.protoId1, tmpPaired.protoId2);
                     } else {
-                        pairs.set(minPair, tmpPired.protoId2, tmpPired.protoId1);
+                        pairs.set(minPair, tmpPaired.protoId2, tmpPaired.protoId1);
                     }
                     //</editor-fold>
                     //Increase counter of a new pair
-                    counts = counterMap.get(pairs.pired);
+                    counts = counterMap.get(pairs.paired);
                     counts[label]++;
                 }
                 exampleIndex++;
@@ -371,22 +372,22 @@ public class NearestPrototypesOperator extends Operator implements CapabilityPro
         exampleIndex = 0;
         ExampleSet outputSet = exampleSet;
         for (Example example : exampleSet) {
-            PiredTriple pired = examplesNearestPair[exampleIndex];
-//            if (!selectedPairs.containsKey(pired.pired)) {
+            PairedTuple paired = examplesNearestPair[exampleIndex];
+//            if (!selectedPairs.containsKey(paired.paired)) {
 //                //If given pair does not exists in the map put it and preserve protoId order, such that protoId1 is smaller id than the protoId2
-//                PiredTriple tmpPair = new PiredTriple(pired);
-//                if (pired.protoId2 < pired.protoId1) {
-//                    tmpPair.protoId1 = pired.protoId2;
-//                    tmpPair.protoId2 = pired.protoId1;
+//                PairedTriple tmpPair = new PairedTriple(paired);
+//                if (paired.protoId2 < paired.protoId1) {
+//                    tmpPair.protoId1 = paired.protoId2;
+//                    tmpPair.protoId2 = paired.protoId1;
 //                }                
-//                selectedPairs.put(tmpPair.pired, tmpPair);
+//                selectedPairs.put(tmpPair.paired, tmpPair);
 //            }
-            example.setValue(idProto1, pired.protoId1);
-            example.setValue(idProto2, pired.protoId2);
-            example.setValue(idPair, pired.pired);
+            example.setValue(idProto1, paired.protoId1);
+            example.setValue(idProto2, paired.protoId2);
+            example.setValue(idPair, paired.paired);
             exampleIndex++;
         }
-        PrototypesEnsembeleModel model = new PrototypesEnsembeleModel(prototypes, labels, prototypeAttributeNames, distance, selectedPairs);
+        PrototypesEnsembleModel model = new PrototypesEnsembleModel(prototypes, labels, prototypeAttributeNames, distance, selectedPairs);
         //Return data
         this.exampleSetOutputPort.deliver(outputSet);
         this.modelOutputPort.deliver(model);
@@ -397,7 +398,7 @@ public class NearestPrototypesOperator extends Operator implements CapabilityPro
         int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
         try {
             measureType = measureHelper.getSelectedMeasureType();
-        } catch (UndefinedParameterError e) {
+        } catch (UndefinedParameterError ignored) {
         }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:
@@ -430,48 +431,47 @@ public class NearestPrototypesOperator extends Operator implements CapabilityPro
         return types;
     }
 
-    static class PiredTriple {
+    static class PairedTuple {
 
-        long pired = -1;
+        long paired = -1;
         int protoId1 = -1;
         int protoId2 = -1;
         boolean isPure = false;
 
-        public PiredTriple(long pired, int protoId1, int protoId2) {
-            set(pired, protoId1, protoId2, false);
+        public PairedTuple(long paired, int protoId1, int protoId2) {
+            set(paired, protoId1, protoId2, false);
         }
 
-        public PiredTriple(long pired, int protoId1, int protoId2, boolean isPure) {
-            set(pired, protoId1, protoId2, isPure);
+        public PairedTuple(long paired, int protoId1, int protoId2, boolean isPure) {
+            set(paired, protoId1, protoId2, isPure);
         }
 
-        public PiredTriple(PiredTriple pair) {
+        PairedTuple(PairedTuple pair) {
             this.set(pair);
         }
 
-        public PiredTriple() {
+        PairedTuple() {
         }
 
-        final void set(PiredTriple pair) {
-            this.pired = pair.pired;
+        final void set(PairedTuple pair) {
+            this.paired = pair.paired;
             this.protoId1 = pair.protoId1;
             this.protoId2 = pair.protoId2;
             this.isPure = pair.isPure;
         }
 
-        final void set(long pired, int protoId1, int protoId2) {
-            this.pired = pired;
+        final void set(long paired, int protoId1, int protoId2) {
+            this.paired = paired;
             this.protoId1 = protoId1;
             this.protoId2 = protoId2;
             this.isPure = false;
         }
 
-        final void set(long pired, int protoId1, int protoId2, boolean isPure) {
-            this.pired = pired;
+        final void set(long paired, int protoId1, int protoId2, boolean isPure) {
+            this.paired = paired;
             this.protoId1 = protoId1;
             this.protoId2 = protoId2;
             this.isPure = isPure;
         }
-
     }
 }

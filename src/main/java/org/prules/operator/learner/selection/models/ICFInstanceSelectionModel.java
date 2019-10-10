@@ -6,19 +6,15 @@ package org.prules.operator.learner.selection.models;
 
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.set.SelectedExampleSet;
-import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import java.util.Map;
-import org.prules.tools.math.container.knn.KNNFactory;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.operator.learner.selection.models.decisionfunctions.ISClassDecisionFunction;
 import org.prules.operator.learner.tools.IDataIndex;
 import org.prules.operator.learner.tools.PRulesUtil;
 import org.prules.operator.learner.tools.PredictionProblemType;
-import org.prules.tools.math.container.knn.INNGraph;
-import org.prules.tools.math.container.knn.ISPRClassGeometricDataCollection;
-import org.prules.tools.math.container.knn.KNNTools;
-import org.prules.tools.math.container.knn.NNGraphReachableCoverage;
+import org.prules.tools.math.container.knn.*;
+
+import java.util.Map;
 
 /**
  * Class implements Drop1 instance selection algorithm for details see Wilson,
@@ -38,7 +34,7 @@ public class ICFInstanceSelectionModel extends AbstractInstanceSelectorModel {
      * Constructor for ICF instance selection model.
      *
      * @param measure - distance measure
-     * @param k - number of nearest neighbors
+     * @param k       - number of nearest neighbors
      */
     public ICFInstanceSelectionModel(DistanceMeasure measure, int k) {
         this(measure, k, Integer.MAX_VALUE);
@@ -47,12 +43,12 @@ public class ICFInstanceSelectionModel extends AbstractInstanceSelectorModel {
     /**
      * Constructor for ICF instance selection model.
      *
-     * @param measure - distance measure
-     * @param k - number of nearest neighbors
+     * @param measure       - distance measure
+     * @param k             - number of nearest neighbors
      * @param maxIterations - maximum number of iterations of the main loop. THe
-     * number of iterations depends on the data distribution and in extreme
-     * cases it can remove single instance in single iteration that may be very
-     * time
+     *                      number of iterations depends on the data distribution and in extreme
+     *                      cases it can remove single instance in single iteration that may be very
+     *                      time
      */
     public ICFInstanceSelectionModel(DistanceMeasure measure, int k, int maxIterations) {
         this.measure = measure;
@@ -64,7 +60,7 @@ public class ICFInstanceSelectionModel extends AbstractInstanceSelectorModel {
      * Performs instance selection
      *
      * @param exampleSet - example set for which instance selection will be
-     * performed
+     *                   performed
      * @return - index of selected examples
      */
     @Override
@@ -79,7 +75,7 @@ public class ICFInstanceSelectionModel extends AbstractInstanceSelectorModel {
 
     /**
      * Performs instance selection
-     *
+     * <p>
      * This method implements to true algorithm, while the one with ExampleSet
      * as input calls that one to perform instance selection
      *
@@ -98,7 +94,7 @@ public class ICFInstanceSelectionModel extends AbstractInstanceSelectorModel {
         int iterations = 0;
         Map<Double, Integer> classCountMap = PRulesUtil.countClassFrequency(samplesSelected);
         do {
-            //Create naturaln order
+            //Create natural order
             nextIteration = false;
             for (int i : index) {
                 int reachable = nnGraph.getNeighbors(i).size();
@@ -107,11 +103,11 @@ public class ICFInstanceSelectionModel extends AbstractInstanceSelectorModel {
                     IInstanceLabels tmpILabel = samplesSelected.getStoredValue(i);
                     double tmpLabel = tmpILabel.getLabel();
                     int classCount = classCountMap.get(tmpLabel);
-                    if ( classCount > 1) {
+                    if (classCount > 1) {
                         index.set(i, false);
                         nextIteration = true;
-                        classCount --;
-                        classCountMap.put(tmpLabel,classCount);
+                        classCount--;
+                        classCountMap.put(tmpLabel, classCount);
                     }
                 }
             }

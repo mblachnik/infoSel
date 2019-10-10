@@ -12,51 +12,48 @@ import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.example.table.NominalMapping;
 import com.rapidminer.example.table.PolynominalMapping;
+import com.rapidminer.tools.Ontology;
+import org.prules.dataset.IInstanceLabels;
 import org.prules.dataset.InstanceFactory;
-import org.prules.dataset.VectorDense;
+import org.prules.dataset.Vector;
 import org.prules.operator.learner.classifiers.VotingType;
-import org.prules.tools.math.container.knn.KNNTools;
 import org.prules.operator.learner.tools.PRulesUtil;
 import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
-import com.rapidminer.tools.Ontology;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import org.prules.dataset.IInstanceLabels;
-import org.prules.dataset.Vector;
+import org.prules.tools.math.container.knn.KNNTools;
+
+import java.util.*;
 
 /**
  * Information Selection IOObject used for cluster assigment for all type of clustering algorithms based on prototypes
+ *
  * @author Marcin
  */
 public class IS_PrototypeClusterModel extends IS_ClusterModel {
 
     private static final long serialVersionUID = -6292869962412072573L;
-    final Map<Integer, String> clusterNamesMap;
-    final ISPRGeometricDataCollection<IInstanceLabels> samples;
-    final VotingType weightedNN;
-    final List<String> trainingAttributeNames;
-    final int numberOfClusters;
-    final boolean addCluster;
+    private final Map<Integer, String> clusterNamesMap;
+    private final ISPRGeometricDataCollection<IInstanceLabels> samples;
+    private final VotingType weightedNN;
+    private final List<String> trainingAttributeNames;
+    private final int numberOfClusters;
+    private final boolean addCluster;
 
     /**
      * Constructor of prototype based clustering model.
      *
-     * @param trainingSet - training data set (used to extract attribute
-     * information)
-     * @param model - clustering model. An ISPRGemoetricDataCollection structure
-     * for efficient search for nearest prototype
-     * @param numberOfClusters - number of clusters
+     * @param trainingSet       - training data set (used to extract attribute
+     *                          information)
+     * @param model             - clustering model. An ISPRGemoetricDataCollection structure
+     *                          for efficient search for nearest prototype
+     * @param numberOfClusters  - number of clusters
      * @param addClusterAsLabel - required by RM ClusterModel - type of
-     * attribute which should have labels
-     * @param clusterNamesMap - hashMap of pairs cluster id, cluster name
-     * @param addCluster - if true then new attribute containing clustering
-     * results will be added. If false the algorithm can be used to identify
-     * cluster centers only
+     *                          attribute which should have labels
+     * @param clusterNamesMap   - hashMap of pairs cluster id, cluster name
+     * @param addCluster        - if true then new attribute containing clustering
+     *                          results will be added. If false the algorithm can be used to identify
+     *                          cluster centers only
      */
-    public IS_PrototypeClusterModel(ExampleSet trainingSet, ISPRGeometricDataCollection<IInstanceLabels> model, int numberOfClusters, Map<Integer, String> clusterNamesMap, boolean addClusterAsLabel, boolean addCluster) {
+    IS_PrototypeClusterModel(ExampleSet trainingSet, ISPRGeometricDataCollection<IInstanceLabels> model, int numberOfClusters, Map<Integer, String> clusterNamesMap, boolean addClusterAsLabel, boolean addCluster) {
         super(trainingSet, numberOfClusters, addClusterAsLabel, false);
         samples = model;
         weightedNN = VotingType.MAJORITY;
@@ -142,7 +139,7 @@ public class IS_PrototypeClusterModel extends IS_ClusterModel {
     public int[] getClusterAssignments(ExampleSet exampleSet) {
         int[] predictions = new int[exampleSet.size()];
         Attributes attributes = exampleSet.getAttributes();
-        int attributesNumber = trainingAttributeNames.size();        
+        int attributesNumber = trainingAttributeNames.size();
         int j = 0;
         double[] counter;
         counter = new double[numberOfClusters];
@@ -155,7 +152,7 @@ public class IS_PrototypeClusterModel extends IS_ClusterModel {
             int mostFrequentIndex;
             // counting frequency of labels
             Arrays.fill(counter, 0);
-            KNNTools.doNNVotes(counter,instance, samples, 1, weightedNN);
+            KNNTools.doNNVotes(counter, instance, samples, 1, weightedNN);
             // finding most frequent class
             mostFrequentIndex = KNNTools.getMostFrequentValue(counter);
             // setting prediction

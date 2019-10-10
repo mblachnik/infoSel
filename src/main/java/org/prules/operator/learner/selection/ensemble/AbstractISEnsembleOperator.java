@@ -11,6 +11,22 @@ import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
+import com.rapidminer.operator.OperatorCapability;
+import com.rapidminer.operator.OperatorDescription;
+import com.rapidminer.operator.OperatorException;
+import com.rapidminer.operator.ValueDouble;
+import com.rapidminer.operator.ports.InputPort;
+import com.rapidminer.operator.ports.OutputPort;
+import com.rapidminer.operator.ports.metadata.*;
+import com.rapidminer.parameter.ParameterType;
+import com.rapidminer.parameter.ParameterTypeBoolean;
+import com.rapidminer.parameter.ParameterTypeDouble;
+import com.rapidminer.parameter.ParameterTypeInt;
+import com.rapidminer.tools.Ontology;
+import com.rapidminer.tools.RandomGenerator;
+import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import com.rapidminer.tools.math.similarity.mixed.MixedEuclideanDistance;
+import org.prules.dataset.IInstanceLabels;
 import org.prules.operator.AbstractPrototypeBasedOperatorChain;
 import org.prules.operator.learner.classifiers.IS_KNNClassificationModel;
 import org.prules.operator.learner.classifiers.PredictionType;
@@ -20,54 +36,33 @@ import org.prules.tools.math.container.BoundedPriorityQueue;
 import org.prules.tools.math.container.DoubleIntContainer;
 import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
-import com.rapidminer.operator.OperatorCapability;
-import com.rapidminer.operator.OperatorDescription;
-import com.rapidminer.operator.OperatorException;
-import com.rapidminer.operator.ValueDouble;
-import com.rapidminer.operator.ports.InputPort;
-import com.rapidminer.operator.ports.OutputPort;
-import com.rapidminer.operator.ports.metadata.ExampleSetPassThroughRule;
-import com.rapidminer.operator.ports.metadata.ExampleSetPrecondition;
-import com.rapidminer.operator.ports.metadata.GeneratePredictionModelTransformationRule;
-import com.rapidminer.operator.ports.metadata.MDInteger;
-import com.rapidminer.operator.ports.metadata.SetRelation;
-import com.rapidminer.operator.ports.metadata.SubprocessTransformRule;
-import com.rapidminer.parameter.ParameterType;
-import com.rapidminer.parameter.ParameterTypeBoolean;
-import com.rapidminer.parameter.ParameterTypeDouble;
-import com.rapidminer.parameter.ParameterTypeInt;
-import com.rapidminer.tools.Ontology;
-import com.rapidminer.tools.RandomGenerator;
-import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import com.rapidminer.tools.math.similarity.mixed.MixedEuclideanDistance;
+import org.prules.tools.math.container.knn.KNNFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.prules.tools.math.container.knn.KNNFactory;
-import org.prules.dataset.IInstanceLabels;
 
 /**
- *
  * @author Marcin
  */
 public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedOperatorChain {
 
-    public static final String PARAMETER_ITERATIOINS = "Number of iterations";
-    public static final String PARAMETER_THRESHOLD = "Acceptance threshold";
-    public static final String PARAMETER_ADD_WEIGHTS = "Add weight attribute";
-    public static final String PARAMETER_NORMALIZE_WEIGHTS = "Normalize weights";
+    private static final String PARAMETER_ITERATIONS = "Number of iterations";
+    private static final String PARAMETER_THRESHOLD = "Acceptance threshold";
+    private static final String PARAMETER_ADD_WEIGHTS = "Add weight attribute";
+    private static final String PARAMETER_NORMALIZE_WEIGHTS = "Normalize weights";
 
     /**
      *
      */
-    protected final OutputPort exampleInnerSourcePort = getSubprocess(0).getInnerSources().createPort("exampleSet");
+    private final OutputPort exampleInnerSourcePort = getSubprocess(0).getInnerSources().createPort("exampleSet");
     /**
      *
      */
     //protected final InputPort prototypeExampleSetOutput = getSubprocess(0).getInnerSinks().createPort("Output Example Set");
-    protected final InputPort prototypeExampleSetOutput = getSubprocess(0).getInnerSinks().createPort("output example set");
+    private final InputPort prototypeExampleSetOutput = getSubprocess(0).getInnerSinks().createPort("output example set");
     /**
      *
      */
@@ -78,9 +73,9 @@ public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedO
     private int currentIteration;
     int iterations;
     //protected DistanceMeasureHelper measureHelper;
-    int minimumSamplesPerClass = 1;
+    private int minimumSamplesPerClass = 1;
 
-    public AbstractISEnsembleOperator(OperatorDescription description) {
+    AbstractISEnsembleOperator(OperatorDescription description) {
         super(description, "Selection");
         //measureHelper = new DistanceMeasureHelper(this);
         init();
@@ -96,7 +91,7 @@ public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedO
         //getTransformer().addRule(new GenerateModelTransformationRule(exampleSetInputPort, modelOutputPort, IS_KNNClassificationModel.class));
         getTransformer().addRule(new GeneratePredictionModelTransformationRule(exampleSetInputPort, modelOutputPort, IS_KNNClassificationModel.class));
         exampleSetInputPort.addPrecondition(new ExampleSetPrecondition(exampleSetInputPort, Attributes.ID_NAME, Ontology.ATTRIBUTE_VALUE));
-        addValue(new ValueDouble("Instances_beafore_selection", "Number Of Examples in the training set") {
+        addValue(new ValueDouble("Instances_before_selection", "Number Of Examples in the training set") {
 
             @Override
             public double getDoubleValue() {
@@ -110,7 +105,7 @@ public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedO
                 return numberOfInstancesAfterSelection;
             }
         });
-        addValue(new ValueDouble("Compression", "Compressin = #Instances_after_selection/#Instances_beafore_selection") {
+        addValue(new ValueDouble("Compression", "Compression = #Instances_after_selection/#Instances_beafore_selection") {
 
             @Override
             public double getDoubleValue() {
@@ -126,9 +121,9 @@ public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedO
      * This si main method responsible for meta instance selection. It iterates
      * over single subprocess and counts how many times given example was
      * selected within subprocess. Each time it is executed prepareExampleSet
-     * method is called to adjust specific properties of dataset used in single
+     * method is called to adjust specific properties of data set used in single
      * iteration of instance selection. The prepareExampleSet may implement
-     * bagging then subset of examples is returned, randum feature subset or
+     * bagging then subset of examples is returned, random feature subset or
      * noise addition
      *
      * @param trainingSet
@@ -143,7 +138,7 @@ public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedO
             return null;
         }
         double threshold = getParameterAsDouble(PARAMETER_THRESHOLD);
-        iterations = getParameterAsInt(PARAMETER_ITERATIOINS);
+        iterations = getParameterAsInt(PARAMETER_ITERATIONS);
         Map<Double, Double> idCounter = new HashMap<>(trainingSet.size());
         //int[] mapping;
 
@@ -151,11 +146,11 @@ public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedO
         //Performing bootstrap validation
         try {
             for (currentIteration = 0; currentIteration < iterations; currentIteration++) {
-                ExampleSet trainingSubSet = preprocessExampleSet(trainingSet);
+                ExampleSet trainingSubSet = preProcessExampleSet(trainingSet);
                 exampleInnerSourcePort.deliver(trainingSubSet);
                 getSubprocess(0).execute();
                 ExampleSet resultSet = prototypeExampleSetOutput.getDataOrNull(ExampleSet.class);
-                resultSet = postprocessExampleSet(resultSet);
+                resultSet = postProcessExampleSet(resultSet);
                 if (resultSet != null) {
                     double value;
                     for (Example e : resultSet) {
@@ -219,15 +214,16 @@ public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedO
             /* Below is a code which supports minority class in classification problems. 
             It may happen that from certain class no instances will be selected 
             and according to the threshold all of the samples from minority class will be removed. To avoid such situation 
-            we guarantii that minimum samples per class will remain in the training set.                                    
+            we guarantee that minimum samples per class will remain in the training set.
              */
-            List<BoundedPriorityQueue<DoubleIntContainer>> labelReprezentationTable = null; //List which would contain most frequent representative of each class
-            int[] isLabelRepresented = null; //table which is used to identify classes which are not peprezented by any prototype. If value is false than this class is not represented
-            if (labelAttr.isNominal()) { //apply above checks  only for classification provlems
-                labelReprezentationTable = new ArrayList<>();
+            List<BoundedPriorityQueue<DoubleIntContainer>> labelRepresentationTable = null; //List which would contain most frequent representative of each class
+            int[] isLabelRepresented = null;
+            //table which is used to identify classes which are not presented by any prototype. If value is false than this class is not represented
+            if (labelAttr.isNominal()) { //apply above checks  only for classification problems
+                labelRepresentationTable = new ArrayList<>();
                 isLabelRepresented = new int[labelAttr.getMapping().size()];
                 for (int ii = 0; ii < labelAttr.getMapping().size(); ii++) {
-                    labelReprezentationTable.add(new BoundedPriorityQueue<DoubleIntContainer>(minimumSamplesPerClass));
+                    labelRepresentationTable.add(new BoundedPriorityQueue<DoubleIntContainer>(minimumSamplesPerClass));
                     isLabelRepresented[ii] = 0;
                 }
             }
@@ -237,7 +233,7 @@ public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedO
                 Double valueO = idCounter.get(id);
                 double value = valueO == null ? 0 : valueO;
                 if (labelAttr.isNominal()) { //For classification problems
-                    BoundedPriorityQueue<DoubleIntContainer> queue = labelReprezentationTable.get((int) e.getValue(labelAttr));
+                    BoundedPriorityQueue<DoubleIntContainer> queue = labelRepresentationTable.get((int) e.getValue(labelAttr));
                     DoubleIntContainer container = queue.getEmptyContainer();
                     if (container == null) {
                         container = new DoubleIntContainer(-value, i);
@@ -247,12 +243,12 @@ public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedO
                     }
                     queue.add(container); //Add given instance as representative for current class label. We add "-value" as values are sorted in ascending order, in our case greater means better
 
-                    if (condition(value, threshold)) { //Unselect vectors not included in idCounter or those which don't fulfill threshold requirements
+                    if (condition(value, threshold)) { //Unselected vectors not included in idCounter or those which don't fulfill threshold requirements
                         index.set(i, false);
                     } else {
                         isLabelRepresented[(int) e.getValue(labelAttr)]++;
                     }
-                } else if (condition(value, threshold)) { //Unselect vectors not included in idCounter or those which don't fulfill threshold requirements
+                } else if (condition(value, threshold)) { //Unselected vectors not included in idCounter or those which don't fulfill threshold requirements
                     index.set(i, false);
                 }
                 i++;
@@ -260,7 +256,7 @@ public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedO
             if (labelAttr.isNominal()) {
                 for (int ii = 0; ii < isLabelRepresented.length; ii++) {
                     if (isLabelRepresented[ii] < minimumSamplesPerClass) {
-                        for (DoubleIntContainer container : labelReprezentationTable.get(ii)) {
+                        for (DoubleIntContainer container : labelRepresentationTable.get(ii)) {
                             int idx = container.second; //Here we identify instance with highest rate from particular ii class which now is not represented in prototypes
                             index.set(idx, true);
                         }
@@ -307,14 +303,15 @@ public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedO
      * Condition which has to be fulfield to accept, reject an instance. By
      * default it is value<threshold but it can be overwitten by other
      * condition. @param value - current weight @param threshold
-     *
+     * <p>
      * -
      * threshold. @return
+     *
      * @param value
      * @param threshold
-     * @return 
+     * @return
      */
-    public boolean condition(double value, double threshold) {
+    private boolean condition(double value, double threshold) {
         return (Double.isNaN(value)) || (value < threshold);
     }
 
@@ -324,10 +321,10 @@ public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedO
      * is responsible for diversity of the datasets used in the subprocess
      *
      * @param trainingSet
-     * @return 
+     * @return
      * @throws com.rapidminer.operator.OperatorException
      */
-    protected ExampleSet preprocessExampleSet(ExampleSet trainingSet) throws OperatorException {
+    protected ExampleSet preProcessExampleSet(ExampleSet trainingSet) throws OperatorException {
         return trainingSet;
     }
 
@@ -341,7 +338,7 @@ public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedO
      * @return
      * @throws OperatorException
      */
-    protected ExampleSet postprocessExampleSet(ExampleSet resultSet) throws OperatorException {
+    protected ExampleSet postProcessExampleSet(ExampleSet resultSet) throws OperatorException {
         return resultSet;
     }
 
@@ -350,24 +347,24 @@ public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedO
      * called before the main loop of iterations starts. It is used for example
      * to initialize SplittedExampleSet etc.
      *
-     * @param examploeSet
+     * @param exampleSet
      * @throws com.rapidminer.operator.OperatorException
      */
-    protected void initializeProcessExamples(ExampleSet examploeSet) throws OperatorException {
+    protected void initializeProcessExamples(ExampleSet exampleSet) throws OperatorException {
     }
 
     /**
      * This method is used to finalize method called processExamples. It is
      * called after the main loop of iterations of meta instance selection. It
-     * is used for example to clean all references to SplittedExampleSet which
+     * is used for example to clean all references to SlittedExampleSet which
      * are stored as parameters of sub class etc.
      */
     protected void finalizeProcessExamples() {
     }
 
     /**
-     * Returns number of current iteration of subprocess execution. It starts
-     * from 0 upto getParameterAsInt(PARAMETER_ITERATIOINS)
+     * Returns number of current iteration of subProcess execution. It starts
+     * from 0 upto getParameterAsInt(PARAMETER_ITERATIONS)
      *
      * @return
      */
@@ -409,15 +406,15 @@ public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedO
         types.add(type);
         type = new ParameterTypeBoolean(PARAMETER_NORMALIZE_WEIGHTS, "Convert weights to have max value = 1, and other values are converted proportional", false);
         type.setExpert(true);
-        type.registerDependencyCondition(new com.rapidminer.parameter.conditions.BooleanParameterCondition(this,PARAMETER_ADD_WEIGHTS,false,true));
+        type.registerDependencyCondition(new com.rapidminer.parameter.conditions.BooleanParameterCondition(this, PARAMETER_ADD_WEIGHTS, false, true));
         types.add(type);
         type = new ParameterTypeDouble(PARAMETER_THRESHOLD, "Acceptance threshold", 1e-10, 1, 0.8);
         type.setExpert(false);
-        type.registerDependencyCondition(new com.rapidminer.parameter.conditions.BooleanParameterCondition(this,PARAMETER_ADD_WEIGHTS,false,false));
-        types.add(type);        
-        type = new ParameterTypeInt(PARAMETER_ITERATIOINS, "Number of iterations", 1, 10000, 10);
+        type.registerDependencyCondition(new com.rapidminer.parameter.conditions.BooleanParameterCondition(this, PARAMETER_ADD_WEIGHTS, false, false));
+        types.add(type);
+        type = new ParameterTypeInt(PARAMETER_ITERATIONS, "Number of iterations", 1, 10000, 10);
         type.setExpert(false);
-        types.add(type);        
+        types.add(type);
         types.addAll(RandomGenerator.getRandomGeneratorParameters(this));
         return types;
     }

@@ -6,11 +6,10 @@
 package org.prules.operator.learner.classifiers.neuralnet.models;
 
 /**
- *
  * @author Marcin
  */
-public class SimpleLearningRateUpdateRule implements LearningRateUpdateRule{
-    private final int iterations;    
+public class SimpleLearningRateUpdateRule implements LearningRateUpdateRule {
+    private final int iterations;
     private final double alphaInit;
     private int iteration;
 
@@ -19,12 +18,12 @@ public class SimpleLearningRateUpdateRule implements LearningRateUpdateRule{
         this.iteration = 0;
         this.alphaInit = alphaInit;
     }
-    
+
     @Override
     public double update(double learningRate) {
         learningRate -= learningRate * 10 / iterations;
         iteration++;
         return learningRate;
     }
-    
+
 }

@@ -6,13 +6,12 @@
 package org.prules.operator.learner.classifiers.neuralnet.models;
 
 /**
- *
  * @author Marcin
  */
-public class LinearLearningRateUpdateRule implements LearningRateUpdateRule{
-    int iterations;
-    int iteration;
-    double initialLearningRate;
+public class LinearLearningRateUpdateRule implements LearningRateUpdateRule {
+    private int iterations;
+    private int iteration;
+    private double initialLearningRate;
 
     public LinearLearningRateUpdateRule(double initialLearningRate, int iterations) {
         this.iterations = iterations;
@@ -25,6 +24,4 @@ public class LinearLearningRateUpdateRule implements LearningRateUpdateRule{
         iteration++;
         return learningRate;
     }
-    
-    
 }

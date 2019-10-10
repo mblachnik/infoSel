@@ -10,59 +10,57 @@ import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
-import org.prules.operator.learner.selection.models.decisionfunctions.ISClassDecisionFunction;
-import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
-import org.prules.operator.learner.selection.ENNInstanceSelectionOperator;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeBoolean;
 import com.rapidminer.parameter.ParameterTypeInt;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
-import java.util.List;
+import org.prules.operator.learner.selection.ENNInstanceSelectionOperator;
 import org.prules.operator.learner.selection.models.ENNInstanceSelectionModel;
+import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
+import org.prules.operator.learner.selection.models.decisionfunctions.ISClassDecisionFunction;
+
+import java.util.List;
 
 /**
- *
  * @author Marcin
  */
-public class ENNWeightingOperator  extends AbstractWeightingOperator {
+public class ENNWeightingOperator extends AbstractWeightingOperator {
     /*
-    public static final String PARAMETER_TRANSFORM_WEIGHTS = "Wether to nonlineary transform weights";
+    public static final String PARAMETER_TRANSFORM_WEIGHTS = "Whatever  to nonlinear transform weights";
     public static final String PARAMETER_MEAN = "Mean value of weights transformer";
     public static final String PARAMETER_GAMMA = "Gamma value of weights transformer";
     */
-    public static final String PARAMETER_WEIGHTED_NN = "weighted_vote";
-    
-    private DistanceMeasureHelper measureHelper = new DistanceMeasureHelper(this); 
+    private static final String PARAMETER_WEIGHTED_NN = "weighted_vote";
+
+    private DistanceMeasureHelper measureHelper = new DistanceMeasureHelper(this);
     private int k;
-   //private boolean transformWeights;
-    
-    
-    
+    //private boolean transformWeights;
+
 
     public ENNWeightingOperator(OperatorDescription description) {
         super(description);
     }
-    
-    
-     @Override
-    public void processExamples(ExampleSet exampleSet) throws OperatorException {        
-        DistanceMeasure distance = measureHelper.getInitializedMeasure(exampleSet); 
-        k = getParameterAsInt(ENNInstanceSelectionOperator.PARAMETER_K);        
+
+
+    @Override
+    public void processExamples(ExampleSet exampleSet) throws OperatorException {
+        DistanceMeasure distance = measureHelper.getInitializedMeasure(exampleSet);
+        k = getParameterAsInt(ENNInstanceSelectionOperator.PARAMETER_K);
         IISDecisionFunction loss = new ISClassDecisionFunction();
         boolean weightedNN = getParameterAsBoolean(PARAMETER_WEIGHTED_NN);
         ENNInstanceSelectionModel model = new ENNInstanceSelectionModel(distance, k, loss, weightedNN);
         model.setStoreConfidence(true);
         model.run(exampleSet);
-        Attribute weights = exampleSet.getAttributes().getWeight();        
+        Attribute weights = exampleSet.getAttributes().getWeight();
         int i = 0;
         double[] confidence = model.getConfidence();
 
-        for (Example example : exampleSet){
+        for (Example example : exampleSet) {
             example.setValue(weights, confidence[i]);
-            i ++;
-        }             
+            i++;
+        }
     }
 
     @Override
@@ -88,7 +86,7 @@ public class ENNWeightingOperator  extends AbstractWeightingOperator {
                 return false;
         }
     }
-    
+
     @Override
     public List<ParameterType> getParameterTypes() {
         List<ParameterType> types = super.getParameterTypes();
@@ -96,27 +94,27 @@ public class ENNWeightingOperator  extends AbstractWeightingOperator {
         type.setExpert(false);
         types.add(type);
         /*
-        type = new ParameterTypeBoolean(PARAMETER_TRANSFORM_WEIGHTS, "Wether to nonlinearly transform weights", false);
+        type = new ParameterTypeBoolean(PARAMETER_TRANSFORM_WEIGHTS, "Whatever  to nonlinear transform weights", false);
         type.setExpert(false);
         types.add(type);
         
-        type = new ParameterTypeDouble(PARAMETER_MEAN, "Mean value of gausian weights transformer", Double.MIN_VALUE, Double.MAX_VALUE, 0.5);
+        type = new ParameterTypeDouble(PARAMETER_MEAN, "Mean value of gaussian weights transformer", Double.MIN_VALUE, Double.MAX_VALUE, 0.5);
         type.setExpert(false);
         type.registerDependencyCondition(new BooleanParameterCondition(this, PARAMETER_TRANSFORM_WEIGHTS, true, true));                
         types.add(type);
         
-        type = new ParameterTypeDouble(PARAMETER_GAMMA, "Mean value of gausian weights transformer", Double.MIN_VALUE, Double.MAX_VALUE, 0.5);
+        type = new ParameterTypeDouble(PARAMETER_GAMMA, "Mean value of gaussian weights transformer", Double.MIN_VALUE, Double.MAX_VALUE, 0.5);
         type.setExpert(false);
         type.registerDependencyCondition(new BooleanParameterCondition(this, PARAMETER_TRANSFORM_WEIGHTS, true, true));
         types.add(type);
         */
-        
+
         type = new ParameterTypeBoolean(PARAMETER_WEIGHTED_NN, "Use of weighted vote in nearest neighbor search.", false);
         type.setExpert(true);
         types.add(type);
-        
+
         types.addAll(DistanceMeasures.getParameterTypes(this));
 
         return types;
-    }   
+    }
 }

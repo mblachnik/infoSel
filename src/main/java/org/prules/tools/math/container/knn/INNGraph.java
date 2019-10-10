@@ -5,15 +5,14 @@
  */
 package org.prules.tools.math.container.knn;
 
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.operator.learner.tools.IDataIndex;
 import org.prules.tools.math.container.DoubleIntContainer;
 
+import java.util.List;
+import java.util.Set;
+
 /**
- *
  * @author Marcin
  */
 public interface INNGraph {
@@ -50,31 +49,35 @@ public interface INNGraph {
     List<DoubleIntContainer> getNeighbors(int nodeId);
 
     /**
-     * 
+     *
      */
     void calculateGraph();
 
     /**
      * Remove given node
-     * @param nodeId 
+     *
+     * @param nodeId
      */
-    void remove(int nodeId);      
-    
+    void remove(int nodeId);
+
     /**
      * Returns input data used to construct the data structure
-     * @return 
+     *
+     * @return
      */
     ISPRClassGeometricDataCollection<IInstanceLabels> getSamples();
-    
+
     /**
      * returns the value of k for kNN
-     * @return 
+     *
+     * @return
      */
     int getK();
-    
+
     /**
      * Returns number of samples in input data
-     * @return 
+     *
+     * @return
      */
     int size();
 }

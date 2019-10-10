@@ -1,15 +1,10 @@
 package org.prules.operator.learner.clustering;
 
-import java.util.List;
 import com.rapidminer.example.ExampleSet;
-import static org.prules.operator.learner.clustering.FCMOperator.PARAMETER_NUMBER_OF_CLUSTERS;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.UserError;
-import org.prules.operator.learner.clustering.models.AbstractBatchModel;
-import org.prules.operator.learner.clustering.models.CFCMModel;
-import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
 import com.rapidminer.operator.ports.metadata.MDInteger;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeDouble;
@@ -19,9 +14,14 @@ import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import org.prules.operator.learner.clustering.models.AbstractBatchModel;
+import org.prules.operator.learner.clustering.models.CFCMModel;
+
+import java.util.List;
 
 /**
  * Class which implements Conditional Fuzzy C-means clustering operator
+ *
  * @author Marcin
  */
 public class CFCMOperator extends AbstractPrototypeClusteringBatchOperator {
@@ -33,21 +33,21 @@ public class CFCMOperator extends AbstractPrototypeClusteringBatchOperator {
     /**
      *
      */
-    public static final String PARAMETER_FUZZYNES = "Fuzzynes";
+    private static final String PARAMETER_FUZZYNES = "Fuzzynes";
     /**
      *
      */
-    public static final String PARAMETER_MIN_GAIN = "MinGain";
+    private static final String PARAMETER_MIN_GAIN = "MinGain";
     /**
      *
      */
     public static final String PARAMETER_NUMBER_OF_CLUSTERS = "Clusters";
 
-    int c; //Number of clusters
-    double m; //Fuzzynes values
-    DistanceMeasureHelper measureHelper;
-    int numberOfIteration;
-    double minGain; //Minimum improvement of optimization process    
+    private int c; //Number of clusters
+    private double m; //Fuzzynes values
+    private DistanceMeasureHelper measureHelper;
+    private int numberOfIteration;
+    private double minGain; //Minimum improvement of optimization process
 
     /**
      * Constructor of FCM operator
@@ -83,23 +83,23 @@ public class CFCMOperator extends AbstractPrototypeClusteringBatchOperator {
         }
         m = getParameterAsDouble(PARAMETER_FUZZYNES);
         minGain = getParameterAsDouble(PARAMETER_MIN_GAIN);
-        numberOfIteration = getParameterAsInt(PARAMETER_ITERATION_NUMBER);        
-        DistanceMeasure distance = measureHelper.getInitializedMeasure(trainingSet);        
-        AbstractBatchModel batchModel = new CFCMModel(distance, m, numberOfIteration, minGain, RandomGenerator.getRandomGenerator(this), c);        
+        numberOfIteration = getParameterAsInt(PARAMETER_ITERATION_NUMBER);
+        DistanceMeasure distance = measureHelper.getInitializedMeasure(trainingSet);
+        AbstractBatchModel batchModel = new CFCMModel(distance, m, numberOfIteration, minGain, RandomGenerator.getRandomGenerator(this), c);
         batchModel.train(trainingSet);
         return batchModel;
     }
 
-     /**
+    /**
      * Returns number of prototypes
      *
-     * @return     
-     * @throws com.rapidminer.parameter.UndefinedParameterError     
-     */    
+     * @return
+     * @throws com.rapidminer.parameter.UndefinedParameterError
+     */
     @Override
     public MDInteger getNumberOfPrototypesMetaData() throws UndefinedParameterError {
         c = this.getParameterAsInt(PARAMETER_NUMBER_OF_CLUSTERS);
-        return new MDInteger(c);        
+        return new MDInteger(c);
     }
 
     /**
@@ -114,7 +114,7 @@ public class CFCMOperator extends AbstractPrototypeClusteringBatchOperator {
         int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
         try {
             measureType = measureHelper.getSelectedMeasureType();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:

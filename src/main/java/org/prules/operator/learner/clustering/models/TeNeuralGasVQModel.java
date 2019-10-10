@@ -1,13 +1,12 @@
 package org.prules.operator.learner.clustering.models;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 import com.rapidminer.example.ExampleSet;
-import org.prules.operator.learner.classifiers.neuralnet.models.LVQTools;
-import org.prules.operator.learner.clustering.models.AbstractVQModel;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import org.prules.operator.learner.classifiers.neuralnet.models.LVQTools;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by Łukasz Migdałek on 2016-07-13.
@@ -56,7 +55,7 @@ public class TeNeuralGasVQModel extends AbstractVQModel {
         double g;
 
         //obliczenie odległości między wektorem zwycięzcą a pozostałymi oraz adaptacja wag zgodnie z regułą WTM
-        for (Neuron prototypePair : distanceTable) {                                    
+        for (Neuron prototypePair : distanceTable) {
             g = Math.exp(-1 * ((j + 1) / lambda));
 
             for (i = 0; i < getAttributesSize(); i++) {
@@ -72,7 +71,7 @@ public class TeNeuralGasVQModel extends AbstractVQModel {
     @Override
     public boolean nextIteration() {
         currentIteration++;
-        alpha = LVQTools.learingRateUpdateRule(alpha, currentIteration, iterations, initialAlpha);
+        alpha = LVQTools.learningRateUpdateRule(alpha, currentIteration, iterations, initialAlpha);
         lambda = LVQTools.lambdaRateUpdateRule(lambda, currentIteration, iterations, initialLambda);
         return currentIteration < iterations;
     }

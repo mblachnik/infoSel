@@ -9,6 +9,21 @@ import com.rapidminer.example.set.SortedExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
+import com.rapidminer.operator.ProcessSetupError;
+import com.rapidminer.operator.ProcessSetupError.Severity;
+import com.rapidminer.operator.UserError;
+import com.rapidminer.operator.error.AttributeNotFoundError;
+import com.rapidminer.operator.ports.OutputPort;
+import com.rapidminer.operator.ports.metadata.*;
+import com.rapidminer.parameter.ParameterType;
+import com.rapidminer.parameter.ParameterTypeBoolean;
+import com.rapidminer.parameter.UndefinedParameterError;
+import com.rapidminer.tools.Ontology;
+import com.rapidminer.tools.RandomGenerator;
+import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
+import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import org.prules.dataset.IInstanceLabels;
 import org.prules.operator.AbstractPrototypeBasedOperator;
 import org.prules.operator.learner.classifiers.IS_KNNClassificationModel;
 import org.prules.operator.learner.classifiers.PredictionType;
@@ -16,42 +31,15 @@ import org.prules.operator.learner.classifiers.VotingType;
 import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
 import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import org.prules.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
-import org.prules.operator.learner.tools.DataIndex;
-import org.prules.tools.math.container.knn.KNNTools;
+import org.prules.operator.learner.tools.IDataIndex;
 import org.prules.tools.math.container.knn.GeometricCollectionTypes;
-import com.rapidminer.operator.ports.OutputPort;
-import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
-import com.rapidminer.operator.ports.metadata.GeneratePredictionModelTransformationRule;
-import com.rapidminer.operator.ports.metadata.MDInteger;
-import com.rapidminer.parameter.ParameterType;
-import com.rapidminer.parameter.ParameterTypeBoolean;
-import com.rapidminer.parameter.UndefinedParameterError;
-import com.rapidminer.tools.RandomGenerator;
 import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
-import com.rapidminer.operator.OperatorCapability;
-import com.rapidminer.operator.ProcessSetupError;
-import com.rapidminer.operator.UserError;
-import com.rapidminer.operator.ports.metadata.AttributeMetaData;
-import com.rapidminer.operator.ports.metadata.ExampleSetPrecondition;
-import com.rapidminer.operator.ports.metadata.MetaData;
-import com.rapidminer.operator.ports.metadata.ParameterConditionedPrecondition;
-import com.rapidminer.operator.ports.metadata.SimpleMetaDataError;
-import com.rapidminer.operator.ports.metadata.SimplePrecondition;
-import com.rapidminer.tools.Ontology;
-import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
-import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import org.prules.tools.math.container.knn.KNNFactory;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import org.prules.tools.math.container.knn.KNNFactory;
-import com.rapidminer.operator.ProcessSetupError.Severity;
-import com.rapidminer.operator.error.AttributeNotFoundError;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.prules.dataset.IInstanceLabels;
-import org.prules.operator.learner.tools.IDataIndex;
 
 /**
  * Abstract class which should be used as a base for any instance selection
@@ -64,9 +52,9 @@ import org.prules.operator.learner.tools.IDataIndex;
  */
 public abstract class AbstractInstanceSelectorOperator extends AbstractPrototypeBasedOperator {
 
-    public static final String PARAMETER_RANDOMIZE_EXAMPLES = "randomize_examples";
-    public static final String PARAMETER_ADD_WEIGHTS = "add weight attribute";
-    public static final String PARAMETER_INVERSE_SELECTION = "inverse selection";
+    private static final String PARAMETER_RANDOMIZE_EXAMPLES = "randomize_examples";
+    private static final String PARAMETER_ADD_WEIGHTS = "add weight attribute";
+    private static final String PARAMETER_INVERSE_SELECTION = "inverse selection";
     int sampleSize = -1;
     protected DistanceMeasureHelper measureHelper;
     protected final OutputPort modelOutputPort = getOutputPorts().createPort("model");
@@ -88,7 +76,7 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPrototype
      */
     private void init() {
         //isDistanceBasedMethod = true;
-        if (isDistanceBased()){
+        if (isDistanceBased()) {
             measureHelper = new DistanceMeasureHelper(this);
         }
         //getTransformer().addRule(new GenerateModelTransformationRule(exampleSetInputPort, modelOutputPort, IS_KNNClassificationModel.class));
@@ -99,37 +87,37 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPrototype
         exampleSetInputPort.addPrecondition(
                 new SimplePrecondition(exampleSetInputPort, null, false) {
 
-            @Override
-            public void makeAdditionalChecks(MetaData received) {
-                if (received instanceof ExampleSetMetaData) {
-                    ExampleSetMetaData emd = (ExampleSetMetaData) received;
-                    switch (emd.hasSpecial(Attributes.LABEL_NAME)) {
-                        case NO:
-                        case UNKNOWN:
-                            return;
-                        case YES:
-                            if (useDecisionFunction()) {
-                                IISDecisionFunction loss;
-                                try {
-                                    loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(currentOperator, null);
-                                    List<List<String>> errors = loss.makeAdditionalChecks(emd);
-                                    for (List<String> error : errors){  
-                                        String errorType = error.get(0);                                        
-                                        String errorI18nKey = error.get(1);
-                                        error.remove(0);
-                                        error.remove(0);
-                                        Object[] params = error.toArray();
-                                        Severity severity = ProcessSetupError.Severity.valueOf(errorType);                                        
-                                        exampleSetInputPort.addError(new SimpleMetaDataError(severity , exampleSetInputPort, errorI18nKey, params));
+                    @Override
+                    public void makeAdditionalChecks(MetaData received) {
+                        if (received instanceof ExampleSetMetaData) {
+                            ExampleSetMetaData emd = (ExampleSetMetaData) received;
+                            switch (emd.hasSpecial(Attributes.LABEL_NAME)) {
+                                case NO:
+                                case UNKNOWN:
+                                    return;
+                                case YES:
+                                    if (useDecisionFunction()) {
+                                        IISDecisionFunction loss;
+                                        try {
+                                            loss = ISDecisionFunctionHelper.getConfiguredISDecisionFunction(currentOperator, null);
+                                            List<List<String>> errors = loss.makeAdditionalChecks(emd);
+                                            for (List<String> error : errors) {
+                                                String errorType = error.get(0);
+                                                String errorI18nKey = error.get(1);
+                                                error.remove(0);
+                                                error.remove(0);
+                                                Object[] params = error.toArray();
+                                                Severity severity = ProcessSetupError.Severity.valueOf(errorType);
+                                                exampleSetInputPort.addError(new SimpleMetaDataError(severity, exampleSetInputPort, errorI18nKey, params));
+                                            }
+                                        } catch (OperatorException ex) {
+                                            currentOperator.getLog().logWarning("Exception in loss functin configuration.");
+                                        }
                                     }
-                                } catch (OperatorException ex) {
-                                    currentOperator.getLog().logWarning("Exception in loss functin configuration.");
-                                }
                             }
+                        }
                     }
                 }
-            }
-        }
         );
 
         getTransformer().addRule(new GeneratePredictionModelTransformationRule(exampleSetInputPort, modelOutputPort, IS_KNNClassificationModel.class));
@@ -155,15 +143,15 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPrototype
          * trainingSet.getExampleTable().addAttribute(weightsAttribute); trainingSet.getAttributes().setWeight(weightsAttribute);
          * for (Example example : trainingSet){ example.setWeight(1); } }
          */
-        if (isLabelRequired()){
-            if (trainingSet.getAttributes().getLabel()==null){
-                throw new AttributeNotFoundError(this,"","label");
+        if (isLabelRequired()) {
+            if (trainingSet.getAttributes().getLabel() == null) {
+                throw new AttributeNotFoundError(this, "", "label");
             }
-                
+
         }
         if (isSampleRandomize()) {
-            boolean shufleExamples = getParameterAsBoolean(PARAMETER_RANDOMIZE_EXAMPLES);
-            if (shufleExamples) { //We can shuffle examples ony if we don't use initial geometricCollection. Order of examples in both in GemoetricCollection and ExampleSet must be equal            
+            boolean shuffleExamples = getParameterAsBoolean(PARAMETER_RANDOMIZE_EXAMPLES);
+            if (shuffleExamples) { //We can shuffle examples ony if we don't use initial geometricCollection. Order of examples in both in GemoetricCollection and ExampleSet must be equal
                 ArrayList<Integer> indicesCollection = new ArrayList<Integer>(trainingSet.size());
                 for (int i = 0; i < trainingSet.size(); i++) {
                     indicesCollection.add(i);
@@ -231,9 +219,7 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPrototype
             sortedTrainingSet.getAttributes().setWeight(weights);
             ExampleSet sortedPrototypesSet = new SortedExampleSet(output, idAttribute, SortedExampleSet.INCREASING);
             Iterator<Example> trainingIterator = sortedTrainingSet.iterator();
-            Iterator<Example> prototypeIterator = sortedPrototypesSet.iterator();
-            while (prototypeIterator.hasNext()) {
-                Example prototypeExample = prototypeIterator.next();
+            for (Example prototypeExample : sortedPrototypesSet) {
                 while (trainingIterator.hasNext()) {
                     Example trainingExample = trainingIterator.next();
                     if (prototypeExample.getId() == trainingExample.getId()) {
@@ -275,12 +261,13 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPrototype
      * Method allows to set if label attribute is required by the instance selection operator.
      * By default label attribute is required, if ovverriden and method returns false then
      * no checks are made according to label existance.
-     * @return 
+     *
+     * @return
      */
-    public boolean isLabelRequired(){
+    private boolean isLabelRequired() {
         return true;
     }
-    
+
     /**
      * Method returns information of particular instance selection algorithm
      * utilize decision function or not. If true (default) then user has access
@@ -304,7 +291,7 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPrototype
     @Override
     public MDInteger getNumberOfPrototypesMetaData() throws UndefinedParameterError {
         return new MDInteger();
-    }        
+    }
 
     /**
      * Whenever ones would like to implement self instance selection algorithm
@@ -332,8 +319,7 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPrototype
         }
         return null;
     }
-    
-    
+
 
     /**
      * Setting and configuring operator parameters
@@ -367,5 +353,4 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPrototype
         }
         return types;
     }
-
 }

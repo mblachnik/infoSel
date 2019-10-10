@@ -1,7 +1,5 @@
 package org.prules.operator.learner.clustering.models;
 
-import java.util.*;
-
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
@@ -10,12 +8,17 @@ import com.rapidminer.example.set.SimpleExampleSet;
 import com.rapidminer.example.table.DataRowFactory;
 import com.rapidminer.example.table.ExampleTable;
 import com.rapidminer.example.table.MemoryExampleTable;
-import org.prules.operator.learner.clustering.gng.NeuronNode;
-import org.prules.operator.learner.clustering.models.gng.comparators.DistanceComparator;
-import org.prules.operator.learner.clustering.models.gng.comparators.LocalErrorComparator;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.mixed.MixedEuclideanDistance;
+import org.prules.operator.learner.clustering.gng.NeuronNode;
+import org.prules.operator.learner.clustering.models.gng.comparators.DistanceComparator;
+import org.prules.operator.learner.clustering.models.gng.comparators.LocalErrorComparator;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Łukasz Migdałek on 2016-07-29.
@@ -112,28 +115,28 @@ public class GNG_VQ_Model extends AbstractVQModel {
             attributesList.add(attr);
         }
 
-        ExampleTable codebooksTable = new MemoryExampleTable(attributesList, new DataRowFactory(DataRowFactory.TYPE_DOUBLE_ARRAY, '.'), neurons.size());
-        ExampleSet codebooksSet = new SimpleExampleSet(codebooksTable, attributesList);
-        Iterator<Example> codebookExampleIterator = codebooksSet.iterator();
-        //Rewrite codebooks to codebooks ExampleSet
-        Attributes codebookAttributes = codebooksSet.getAttributes();
-        int codebookIndex = 0;
+        ExampleTable codeBooksTable = new MemoryExampleTable(attributesList, new DataRowFactory(DataRowFactory.TYPE_DOUBLE_ARRAY, '.'), neurons.size());
+        ExampleSet codeBooksSet = new SimpleExampleSet(codeBooksTable, attributesList);
+        Iterator<Example> codeBookExampleIterator = codeBooksSet.iterator();
+        //Rewrite codeBooks to codeBooks ExampleSet
+        Attributes codeBookAttributes = codeBooksSet.getAttributes();
+        int codeBookIndex = 0;
 
-        while (codebookExampleIterator.hasNext()) {
-            Example codebookExample = codebookExampleIterator.next();
+        while (codeBookExampleIterator.hasNext()) {
+            Example codeBookExample = codeBookExampleIterator.next();
             i = 0;
-            if (codebookExample != null) {
-                for (Attribute a : codebookAttributes) {
-                    codebookExample.setValue(a, prototypeValues[codebookIndex][i]);
+            if (codeBookExample != null) {
+                for (Attribute a : codeBookAttributes) {
+                    codeBookExample.setValue(a, prototypeValues[codeBookIndex][i]);
                     i++;
                 }
-//            codebookExample.setLabel(codebookIndex);
+//            codeBookExample.setLabel(codeBookIndex);
 
             }
-            codebookIndex++;
+            codeBookIndex++;
 
         }
-        return codebooksSet;
+        return codeBooksSet;
     }
 
     @Override
@@ -148,7 +151,7 @@ public class GNG_VQ_Model extends AbstractVQModel {
         calcDistances();
 
         // Sort by distance
-        Collections.sort(neurons, new DistanceComparator());
+        neurons.sort(new DistanceComparator());
 
         if (neurons.size() >= 2) {
             NeuronNode winner = neurons.get(0);
@@ -191,11 +194,11 @@ public class GNG_VQ_Model extends AbstractVQModel {
         LocalErrorComparator comparator = new LocalErrorComparator();
 
         // Find neuron with highest error (Eq)
-        Collections.sort(neurons, comparator);
+        neurons.sort(comparator);
         NeuronNode neuronEq = neurons.get(0);
 
         // Find neighbour with highest error (Ef)
-        Collections.sort(neuronEq.getNeighbors(), comparator);
+        neuronEq.getNeighbors().sort(comparator);
         NeuronNode neuronEf = neuronEq.getNeighbors().get(0);
 
         //Set weight for new neuron
@@ -276,5 +279,4 @@ public class GNG_VQ_Model extends AbstractVQModel {
         }
         return nextIteration;
     }
-
 }

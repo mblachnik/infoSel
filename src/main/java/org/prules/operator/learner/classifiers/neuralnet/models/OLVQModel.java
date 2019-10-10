@@ -3,21 +3,21 @@ package org.prules.operator.learner.classifiers.neuralnet.models;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
  * @author Marcin
  */
 public class OLVQModel extends AbstractLVQModel {
 
-    DistanceMeasure measure;
-    int currentIteration, iterations;
-    double alphas[], alpha;
+    private DistanceMeasure measure;
+    private int currentIteration, iterations;
+    private double[] alphas;
+    private double alpha;
 
     /**
-     * 
      * @param prototypes
      * @param iterations
      * @param measure
@@ -38,7 +38,7 @@ public class OLVQModel extends AbstractLVQModel {
     }
 
     /**
-     * 
+     *
      */
     @Override
     public void update() {
@@ -75,7 +75,6 @@ public class OLVQModel extends AbstractLVQModel {
     }
 
     /**
-     * 
      * @return
      */
     @Override
@@ -83,7 +82,7 @@ public class OLVQModel extends AbstractLVQModel {
         currentIteration++;
         return currentIteration < iterations;
     }
-    
+
     /**
      * Returns total number of iterations (maximum number of iterations)
      *

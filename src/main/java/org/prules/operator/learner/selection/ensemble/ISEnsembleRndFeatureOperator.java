@@ -13,6 +13,7 @@ import com.rapidminer.operator.OperatorException;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeDouble;
 import com.rapidminer.tools.RandomGenerator;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -34,41 +35,41 @@ import java.util.Set;
  */
 public class ISEnsembleRndFeatureOperator extends AbstractISEnsembleOperator {
 
-    public static final String PARAMETER_RATIO = "Sampling ratio";
-    ArrayList<Attribute> list;
-    double ratio;
-    transient RandomGenerator random;
+    private static final String PARAMETER_RATIO = "Sampling ratio";
+    private ArrayList<Attribute> list;
+    private double ratio;
+    private transient RandomGenerator random;
 
     public ISEnsembleRndFeatureOperator(OperatorDescription description) {
         super(description);
     }
-    
+
     @Override
-    public void initializeProcessExamples(ExampleSet trainingSet) throws OperatorException{
-        super.initializeProcessExamples(trainingSet);
+    public void initializeProcessExamples(ExampleSet exampleSet) throws OperatorException {
+        super.initializeProcessExamples(exampleSet);
         ratio = getParameterAsDouble(PARAMETER_RATIO);
         random = RandomGenerator.getRandomGenerator(this);
-        Attributes attributes = trainingSet.getAttributes();
-        list = new ArrayList<>(attributes.size());        
+        Attributes attributes = exampleSet.getAttributes();
+        list = new ArrayList<>(attributes.size());
         for (Attribute attribute : attributes) {
             list.add(attribute);
         }
     }
 
     @Override
-    protected ExampleSet preprocessExampleSet(ExampleSet trainingSet) {
+    protected ExampleSet preProcessExampleSet(ExampleSet trainingSet) {
         ExampleSet trainingSubSet = (ExampleSet) trainingSet.clone();
         Attributes attributes = trainingSubSet.getAttributes();
         int size = attributes.size();
-        int sizeToRemove = (int) Math.round(size * (1-ratio));                        
+        int sizeToRemove = (int) Math.round(size * (1 - ratio));
         Set<Integer> idxSet = random.nextIntSetWithRange(0, size, sizeToRemove);
-        for (int i : idxSet) {            
+        for (int i : idxSet) {
             attributes.remove(list.get(i));
         }
         return trainingSubSet;
     }
-    
-   /**
+
+    /**
      * FInalize ensemble instance selection
      */
     @Override
@@ -85,5 +86,4 @@ public class ISEnsembleRndFeatureOperator extends AbstractISEnsembleOperator {
         types.add(type);
         return types;
     }
-
 }

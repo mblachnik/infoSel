@@ -7,7 +7,6 @@ package org.prules.tools.math.container;
 import java.io.Serializable;
 
 /**
- *
  * @param <N>
  * @param <M>
  * @author Marcin
@@ -29,7 +28,6 @@ public class PairContainer<N, M> implements Serializable {
     public M second;
 
     /**
-     *
      * @param valueA
      * @param valueB
      */

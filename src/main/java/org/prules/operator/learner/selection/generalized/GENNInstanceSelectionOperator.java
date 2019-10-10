@@ -1,9 +1,6 @@
 package org.prules.operator.learner.selection.generalized;
 
-import java.util.List;
-
 import com.rapidminer.example.set.SelectedExampleSet;
-import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
@@ -11,12 +8,12 @@ import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeBoolean;
 import com.rapidminer.parameter.ParameterTypeDouble;
 import com.rapidminer.parameter.ParameterTypeInt;
-import com.rapidminer.tools.Ontology;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
 
+import java.util.List;
+
 /**
- *
  * @author Marcin
  */
 public class GENNInstanceSelectionOperator extends AbstractInstanceSelectorChain {
@@ -28,26 +25,25 @@ public class GENNInstanceSelectionOperator extends AbstractInstanceSelectorChain
     /**
      *
      */
-    public static final String PARAMETER_MAX_ERROR = "max error";
+    private static final String PARAMETER_MAX_ERROR = "max error";
     /**
      *
      */
-    public static final String PARAMETER_RELATIVE_ERROR = "relative error";
+    private static final String PARAMETER_RELATIVE_ERROR = "relative error";
     /**
      *
      */
-    public static final String PARAMETER_TRAIN_ON_SUBSET = "use subset";
+    private static final String PARAMETER_TRAIN_ON_SUBSET = "use subset";
     /**
      *
      */
     public static double vkNN = 1.0;
-    
+
     /**
-     *
      * @param description
      */
     public GENNInstanceSelectionOperator(OperatorDescription description) {
-        super(description,false);        
+        super(description, false);
     }
 
     //  @Override
@@ -56,8 +52,8 @@ public class GENNInstanceSelectionOperator extends AbstractInstanceSelectorChain
 //types.add(new ParameterTypeDouble(PARAMETER_maxdY, "max_dY", 0.02, 2.0, 0.3, false));
 //return types;
 //}
+
     /**
-     *
      * @param exampleSet
      * @return
      * @throws OperatorException
@@ -70,11 +66,11 @@ public class GENNInstanceSelectionOperator extends AbstractInstanceSelectorChain
         double max_error = getParameterAsDouble(PARAMETER_MAX_ERROR);
         boolean relativeError = getParameterAsBoolean(PARAMETER_RELATIVE_ERROR);
         boolean trainOnSubset = getParameterAsBoolean(PARAMETER_RELATIVE_ERROR);
-        GENNInstanceSelectionModel m = new GENNInstanceSelectionModel(measure, k, max_error ,relativeError,trainOnSubset, this);
-        SelectedExampleSet output = (SelectedExampleSet)m.run(exampleSet); 
+        GENNInstanceSelectionModel m = new GENNInstanceSelectionModel(measure, k, max_error, relativeError, trainOnSubset, this);
+        SelectedExampleSet output = (SelectedExampleSet) m.run(exampleSet);
         if (m.isException())
-            throw (OperatorException)m.getException();
-        sampleSize = output.size();                
+            throw (OperatorException) m.getException();
+        sampleSize = output.size();
         return output;
     }
 
@@ -119,7 +115,7 @@ public class GENNInstanceSelectionOperator extends AbstractInstanceSelectorChain
         types.add(type1);
         types.add(type2);
         types.add(type3);
-        types.add(type4);        
+        types.add(type4);
 
         return types;
     }

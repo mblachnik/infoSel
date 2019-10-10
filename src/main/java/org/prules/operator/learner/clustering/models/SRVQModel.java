@@ -1,12 +1,11 @@
 package org.prules.operator.learner.clustering.models;
 
-import java.util.Random;
-
 import com.rapidminer.example.ExampleSet;
-import org.prules.operator.learner.clustering.models.AbstractVQModel;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.mixed.MixedEuclideanDistance;
+
+import java.util.Random;
 
 /**
  * Created by Łukasz Migdałek on 2016-07-13.
@@ -18,14 +17,14 @@ public class SRVQModel extends AbstractVQModel {
     protected int currentIteration;
     private final double p;
     private double alpha;
-    protected double temperature;
-    protected double temperatureRate = 0.89;
+    double temperature;
+    double temperatureRate = 0.89;
     private final double initialAlpha;
     private final DistanceMeasure measure;
-    protected MixedEuclideanDistance euclideanDistance;
+    MixedEuclideanDistance euclideanDistance;
     protected double sum = Double.MAX_VALUE;
 
-    public SRVQModel(ExampleSet prototypes, int iterations, DistanceMeasure measure, double alpha, double temperature, double temperatureRate) throws OperatorException {
+    SRVQModel(ExampleSet prototypes, int iterations, DistanceMeasure measure, double alpha, double temperature, double temperatureRate) throws OperatorException {
         super(prototypes);
         this.temperature = temperature;
         this.iterations = iterations;
@@ -101,5 +100,4 @@ public class SRVQModel extends AbstractVQModel {
         double p = random.nextDouble();
         return pi > p ? 1 : 0;
     }
-
 }
