@@ -15,6 +15,38 @@ repositories {
     jcenter()
     maven { url 'https://maven.rapidminer.com/content/groups/public/' }
 }
+//Setting properties
+def EXTENSIONS_PATH = '\\.RapidMiner\\extensions\\'
+def PROP_HOME = 'paths.homeDirDebug'
+def PROP_HOME_DEBUG = 'paths.homeDir'
+def PROP_PROGRAM = 'paths.RapidMiner'
+def PROP_RM_VERSION = 'rapidminer.version'
+import java.nio.file.Paths
+
+Properties props = new Properties()
+def propFile = file('user.properties')
+def usersHomeDirDebug = Paths.get(System.getProperty('user.home'))
+def usersHomeDir = usersHomeDirDebug
+def rapidMinerDir = 'C:/Program Files/RapidMiner/RapidMiner Studio'
+def rapidminerVer = '9.0.0'
+if (propFile.canRead()) {
+    props.load(new FileInputStream(propFile))
+
+    if (props != null) {
+        if (props.containsKey("$PROP_HOME_DEBUG") && !props["$PROP_HOME_DEBUG"].toString().isBlank()) {
+            usersHomeDirDebug = props["$PROP_HOME_DEBUGo"]
+        }
+        if (props.containsKey("$PROP_HOME") && !props["$PROP_HOME"].toString().isBlank()) {
+            usersHomeDir = props["$PROP_HOME"]
+        }
+        if (props.containsKey("$PROP_PROGRAM") && !props["$PROP_PROGRAM"].toString().isBlank()) {
+            rapidMinerDir = props["$PROP_PROGRAM"]
+        }
+        if (props.containsKey("$PROP_RM_VERSION") && !props["$PROP_RM_VERSION"].toString().isBlank()) {
+            rapidminerVer = props["$PROP_RM_VERSION"]
+        }
+    }
+}
 
 extensionConfig {
     // The extension name
@@ -47,36 +79,8 @@ extensionConfig {
 
     // define RapidMiner version and extension dependencies
     dependencies {
-        rapidminer '9.0.0'
+        rapidminer "$rapidminerVer"
         //extension namespace: 'text', version: '8.1.0'
-    }
-}
-
-//Setting properties
-def EXTENSIONS_PATH = '\\.RapidMiner\\extensions\\'
-def PROP_HOME = 'paths.homeDirDebug'
-def PROP_HOME_DEBUG = 'paths.homeDir'
-def PROP_PROGRAM = 'paths.RapidMiner'
-import java.nio.file.Paths
-
-Properties props = new Properties()
-def propFile = file('user.properties')
-def usersHomeDirDebug = Paths.get(System.getProperty('user.home'))
-def  usersHomeDir = usersHomeDirDebug
-def  rapidMinerDir = 'C:/Program Files/RapidMiner/RapidMiner Studio'
-if (propFile.canRead()) {
-    props.load(new FileInputStream(propFile))
-
-    if (props != null) {
-        if (props.containsKey('$PROP_HOME_DEBUG') && !props['$PROP_HOME_DEBUG'].toString().isBlank()) {
-            usersHomeDirDebug = props['$PROP_HOME_DEBUGo']
-        }
-        if (props.containsKey('$PROP_HOME') && !props['$PROP_HOME'].toString().isBlank()) {
-            usersHomeDir = props['$PROP_HOME']
-        }
-        if (props.containsKey('$PROP_PROGRAM') && !props['$PROP_PROGRAM'].toString().isBlank()) {
-            rapidMinerDir = props['$PROP_PROGRAM']
-        }
     }
 }
 
@@ -89,6 +93,7 @@ dependencies {
     //Java 9+ libraries
     compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
     compile group: 'org.openjfx', name: 'javafx-base', version: '13'
+
     compile group: 'javax.xml.ws', name: 'jaxws-api', version: '2.3.1'
 
     compile files('lib/Infosel.jar')
@@ -106,23 +111,21 @@ dependencies {
 
 task copyPluginDebug(type: Copy, dependsOn: jar) {
     description 'Copy jar file into RapidMiner extensions folder'
-    println("$usersHomeDirDebug")
-    println("$rapidMinerDir/lib")
-    ["$usersHomeDirDebug"].each { dest ->
-        copy { //Copy only files for debug. For full version required is install
-            from jar
-            into dest + "$EXTENSIONS_PATH"
-        }
+    copy { //Copy only files for debug. For full version required is install
+        from jar
+        into "$usersHomeDirDebug" + "$EXTENSIONS_PATH"
     }
 }
 
 task copyPlugin(type: Copy, dependsOn: installExtension) {
     description 'Copy jar file into RapidMiner extensions folder'
-    ["$usersHomeDir", "$usersHomeDirDebug"].each { dest ->
-        copy {
-            from jar
-            into dest + "$EXTENSIONS_PATH"
-        }
+    copy {
+        from jar
+        into "$usersHomeDir" + "$EXTENSIONS_PATH"
+    }
+    copy {
+        from jar
+        into "$usersHomeDirDebug" + "$EXTENSIONS_PATH"
     }
 }
 
@@ -139,4 +142,8 @@ task debug(type: JavaExec, dependsOn: copyPluginDebug) {
     classpath = configurations.runtime
     jvmArgs = ["-Duser.home=$usersHomeDirDebug"]
     debug true
+}
+task wrapperInit(type: Wrapper) {
+    gradleVersion = '4.8.1'
+    description 'Sets correct versions of gradle for project'
 }
