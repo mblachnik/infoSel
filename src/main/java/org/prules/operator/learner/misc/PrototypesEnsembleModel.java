@@ -9,7 +9,7 @@ import com.rapidminer.operator.ResultObjectAdapter;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import lombok.Getter;
 import lombok.Setter;
-import org.prules.operator.learner.misc.NearestPrototypesOperator.PairedTuple;
+import org.prules.operator.learner.misc.NearestPrototypesOperator.PrototypeTuple;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,10 +27,10 @@ public class PrototypesEnsembleModel extends ResultObjectAdapter {
     double[][] prototypes;
     double[] labels;
     List<String> attributes;
-    Map<Long, PairedTuple> selectedPairs;
+    Map<Long, PrototypeTuple> selectedPairs;
     private DistanceMeasure measure;
 
-    PrototypesEnsembleModel(double[][] prototypes, double[] labels, List<String> attributes, DistanceMeasure measure, Map<Long, PairedTuple> selectedPairs) {
+    PrototypesEnsembleModel(double[][] prototypes, double[] labels, List<String> attributes, DistanceMeasure measure, Map<Long, PrototypeTuple> selectedPairs) {
         this.prototypes = prototypes;
         this.labels = labels;
         this.attributes = attributes;
@@ -48,10 +48,8 @@ public class PrototypesEnsembleModel extends ResultObjectAdapter {
     public String toResultString() {
         StringBuilder sb = new StringBuilder();
         selectedPairs.entrySet().stream().forEachOrdered(entry -> {
-            PairedTuple pair = entry.getValue();
-            sb.append("Pair:").append(pair.paired)
-                    .append(" Proto 1:").append(pair.protoId1)
-                    .append(" Proto 2:").append(pair.protoId2).append("\n");
+            PrototypeTuple tuple = entry.getValue();
+            sb.append(tuple.toString()).append("\n");
         });
         sb.append("=====================================\n");
         sb.append("=========== Prototypes ==============\n");
@@ -71,7 +69,7 @@ public class PrototypesEnsembleModel extends ResultObjectAdapter {
         return sb.toString(); //To change body of generated methods, choose Tools | Templates.
     }
 
-    Map<Long, PairedTuple> getSelectedPairs() {
+    Map<Long, PrototypeTuple> getSelectedPairs() {
         return selectedPairs;
     }
 

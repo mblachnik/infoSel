@@ -13,7 +13,7 @@ import com.rapidminer.example.set.ExampleSetUtilities;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.learner.PredictionModel;
-import org.prules.operator.learner.misc.NearestPrototypesOperator.PairedTuple;
+import org.prules.operator.learner.misc.NearestPrototypesOperator.PrototypeTuple;
 import org.prules.operator.learner.tools.DataIndex;
 import org.prules.operator.learner.tools.IDataIndex;
 
@@ -66,11 +66,11 @@ public class PrototypesEnsemblePredictionModel extends PredictionModel {
             }
             double minSum = Double.MAX_VALUE;
             Long bestPair = (long) -1;
-            for (Entry<Long, PairedTuple> entry : model.getSelectedPairs().entrySet()) {
+            for (Entry<Long, PrototypeTuple> entry : model.getSelectedPairs().entrySet()) {
                 try {
-                    PairedTuple pair = entry.getValue();
-                    double sum = distances[pair.protoId1]
-                            + distances[pair.protoId2];
+                    PrototypeTuple pair = entry.getValue();
+                    double sum = distances[pair.getPrototypeId1()]
+                            + distances[pair.getPrototypeId2()];
                     if (sum < minSum) {
                         minSum = sum;
                         bestPair = entry.getKey();
@@ -100,10 +100,8 @@ public class PrototypesEnsemblePredictionModel extends PredictionModel {
     public String toResultString() {
         StringBuilder sb = new StringBuilder();
         model.selectedPairs.entrySet().stream().forEachOrdered(entry -> {
-            PairedTuple pair = entry.getValue();
-            sb.append("Pair:").append(pair.paired)
-                    .append(" Proto 1:").append(pair.protoId1)
-                    .append(" Proto 2:").append(pair.protoId2).append("\n");
+            PrototypeTuple tuple = entry.getValue();
+            sb.append(tuple.toString()).append("\n");
         });
         sb.append("=====================================\n");
         sb.append("=========== Prototypes ==============\n");

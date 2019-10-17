@@ -96,7 +96,7 @@ public class BatchLoopOperator extends OperatorChain {
             exampleIndex++;
         }
         modelsMap = new HashMap<>();
-        for (Entry<Long, NearestPrototypesOperator.PairedTuple> entry : inputModel.getSelectedPairs().entrySet()) {
+        for (Entry<Long, NearestPrototypesOperator.PrototypeTuple> entry : inputModel.getSelectedPairs().entrySet()) {
             Long pair = entry.getKey();
             if (pairsMap.containsKey(pair)) {
                 idx = pairsMap.get(pair);

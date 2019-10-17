@@ -39,33 +39,116 @@ import java.util.Map.Entry;
  * class label respectively. This operator also returns PrototypeEnsembleModel which
  * contains information on prototypes and its labels and additional information require to finally build ensemble etc.
  *
- * @author Marcin
+ * @author Marcin, Paweł
  */
 public class NearestPrototypesOperator extends Operator implements CapabilityProvider {
-
+    //<editor-fold desc="Static data" defaultState="collapsed" >
     private static final String PARAMETER_MIN_COUNT_FACTOR = "Min. counts factor";
     private static final String PARAMETER_MINIMUM_SUPPORT = "Min. support";
+    private static final String NAME_ATTRIBUTE_ID_1 = "ID_Proto_1";
+    private static final String NAME_ATTRIBUTE_ID_2 = "ID_Proto_2";
+    private static final String NAME_ATTRIBUTE_ID_PAIR = "ID_Proto_Pair";
+    private static final String PORT_INPUT_EXAMPLE = "example set";
+    private static final String PORT_INPUT_PROTOTYPES = "prototypes";
+    private static final String PORT_OUTPUT_PROTOTYPES = "example set";
+    private static final String PORT_OUTPUT_TUPLES = "pairedModels";
+    private static final Attribute ATTRIBUTE_ID_PROTO_1 = AttributeFactory.createAttribute(NAME_ATTRIBUTE_ID_1, Ontology.NUMERICAL);
+    private static final Attribute ATTRIBUTE_ID_PROTO_2 = AttributeFactory.createAttribute(NAME_ATTRIBUTE_ID_2, Ontology.NUMERICAL);
+    private static final Attribute ATTRIBUTE_ID_PAIR = AttributeFactory.createAttribute(NAME_ATTRIBUTE_ID_PAIR, Ontology.NUMERICAL);
+    //</editor-fold>
 
+    //<editor-fold desc="Private fields" defaultState="collapsed" >
     /**
      * Input data - training set
      */
-    private InputPort exampleSetInputPort = this.getInputPorts().createPort("example set");
+    private InputPort exampleSetInputPort = this.getInputPorts().createPort(PORT_INPUT_EXAMPLE);
     /**
      * Input data - prototypes
      */
-    private InputPort prototypesInputPort = this.getInputPorts().createPort("prototypes");
+    private InputPort prototypesInputPort = this.getInputPorts().createPort(PORT_INPUT_PROTOTYPES);
     /**
      * example set with three additional attributes as described in class description
      */
-    private OutputPort exampleSetOutputPort = this.getOutputPorts().createPort("example set");
+    private OutputPort exampleSetOutputPort = this.getOutputPorts().createPort(PORT_OUTPUT_PROTOTYPES);
     /**
      * Model representing prototypes and its relations
      */
-    private OutputPort modelOutputPort = this.getOutputPorts().createPort("pairedModels");
+    private OutputPort modelOutputPort = this.getOutputPorts().createPort(PORT_OUTPUT_TUPLES);
     /**
      * Distance measure helper for creating appropriate distance measure
      */
     private DistanceMeasureHelper measureHelper = new DistanceMeasureHelper(this);
+    /**
+     * Factor of minimum data count of batch
+     */
+    private double minFactor;
+    /**
+     * Minimum data count of batch
+     */
+    private int minSupport;
+    /**
+     * Training data set
+     */
+    private ExampleSet exampleSet;
+    /**
+     * Distance measure data
+     */
+    private DistanceMeasure distanceMeasure;
+    /**
+     * Attributes of training set
+     */
+    private Attributes attributesExampleSet;
+    /**
+     * Counter used to count frequency of prototypes pair
+     */
+    private Map<Long, int[]> countersMap = new HashMap<>();
+    /**
+     * Attributes of prototypes set
+     */
+    private List<String> prototypeAttributeNames;
+    /**
+     * Number of label
+     */
+    private int labelsNum;
+    /**
+     * Values of example Values
+     */
+    private double[][] examplesAttrValues;
+    /**
+     * Map example to Prototype distance
+     */
+    private double[][] example2ProtoDistances;
+    /**
+     * Array of labels of training set for faster iteration
+     */
+    private double[] examplesLabels;
+    /**
+     * Values of prototypes Values
+     */
+    private double[][] prototypesAttrValues;
+    /**
+     * Array of labels of prototypes set for faster iteration
+     */
+    private double[] prototypesLabel;
+    /**
+     * Array of nearest tuples
+     */
+    private PrototypeTuple[] examplesNearestTuples;
+    /**
+     * Map of unique prototype tuples
+     */
+    private Map<Long, PrototypeTuple> uniqueTuples;
+    /**
+     * Size of smallest prototype tuple
+     */
+    private int smallestTupleSize;
+    /**
+     * Id of smallest prototype tuple
+     */
+    private long smallestTupleId;
+    //</editor-fold>
+
+    //<editor-fold desc="Constructor" defaultState="collapsed" >
 
     /**
      * <p>
@@ -76,7 +159,7 @@ public class NearestPrototypesOperator extends Operator implements CapabilityPro
      * methods of {@link OperatorService}.
      * </p>
      *
-     * @param description
+     * @param description Operator description
      */
     public NearestPrototypesOperator(OperatorDescription description) {
         super(description);
@@ -129,60 +212,53 @@ public class NearestPrototypesOperator extends Operator implements CapabilityPro
         getTransformer().addPassThroughRule(exampleSetInputPort, exampleSetOutputPort);
         getTransformer().addGenerationRule(modelOutputPort, PrototypesEnsembleModel.class);
     }
+    //</editor-fold>
+
+    // <editor-fold desc="Set up stage" defaultState="collapsed" >
 
     /**
-     * Main method which performs all calculations
+     * Sets up configuration variables for process computation
      *
      * @throws OperatorException
      */
-    @Override
-    public void doWork() throws OperatorException {
-        //Set Logger
-        //Logger logger = Logger.getLogger(NearestPrototypesOperator.class.getName());
-        //Get data
-        double minFactor = getParameterAsDouble(PARAMETER_MIN_COUNT_FACTOR);
-        int minSupport = getParameterAsInt(PARAMETER_MINIMUM_SUPPORT);
-        //boolean detectPureSubsets = getParameterAsBoolean(PARAMETER_DETECT_PURE_SUBSETS);        
-        ExampleSet exampleSet = this.exampleSetInputPort.getDataOrNull(ExampleSet.class);
+    private void setup() throws OperatorException {
+        minFactor = getParameterAsDouble(PARAMETER_MIN_COUNT_FACTOR);
+        minSupport = getParameterAsInt(PARAMETER_MINIMUM_SUPPORT);
+        exampleSet = this.exampleSetInputPort.getDataOrNull(ExampleSet.class);
+        //Prototypes data set
         ExampleSet prototypeSet = this.prototypesInputPort.getDataOrNull(ExampleSet.class);
         exampleSet = (ExampleSet) exampleSet.clone();
-        //Create attributes
-        Attribute idProto1 = AttributeFactory.createAttribute("ID_Proto_1", Ontology.NUMERICAL);
-        Attribute idProto2 = AttributeFactory.createAttribute("ID_Proto_2", Ontology.NUMERICAL);
-        Attribute idPair = AttributeFactory.createAttribute("ID_Proto_Pair", Ontology.NUMERICAL);
         //Add attributes to table
-        exampleSet.getExampleTable().addAttribute(idProto1);
-        exampleSet.getExampleTable().addAttribute(idProto2);
-        exampleSet.getExampleTable().addAttribute(idPair);
+        exampleSet.getExampleTable().addAttribute(ATTRIBUTE_ID_PROTO_1);
+        exampleSet.getExampleTable().addAttribute(ATTRIBUTE_ID_PROTO_2);
+        exampleSet.getExampleTable().addAttribute(ATTRIBUTE_ID_PAIR);
         //Add attributes as Special
-        exampleSet.getAttributes().setSpecialAttribute(idProto1, "id_pair_1");
-        exampleSet.getAttributes().setSpecialAttribute(idProto2, "id_pair_2");
-        exampleSet.getAttributes().setSpecialAttribute(idPair, Attributes.BATCH_NAME);
-        DistanceMeasure distance = measureHelper.getInitializedMeasure(exampleSet);
-        //Main loop
-        Attributes attributesExampleSet = exampleSet.getAttributes();
+        exampleSet.getAttributes().setSpecialAttribute(ATTRIBUTE_ID_PROTO_1, NAME_ATTRIBUTE_ID_1);
+        exampleSet.getAttributes().setSpecialAttribute(ATTRIBUTE_ID_PROTO_2, NAME_ATTRIBUTE_ID_2);
+        exampleSet.getAttributes().setSpecialAttribute(ATTRIBUTE_ID_PAIR, Attributes.BATCH_NAME);
+        //Get distance measures
+        distanceMeasure = measureHelper.getInitializedMeasure(exampleSet);
+        //Attributes of prototypes set
+        attributesExampleSet = exampleSet.getAttributes();
         Attributes attributesPrototypes = prototypeSet.getAttributes();
-        int labelsNum = attributesExampleSet.getLabel().getMapping().size(); //Number of labels
+        //Arrays and maps
+        labelsNum = attributesExampleSet.getLabel().getMapping().size();
         int numberOfAttributesInExampleSet = attributesExampleSet.size();
-        double[] valuesExample = new double[numberOfAttributesInExampleSet];
-        double[][] example2ProtoDistances = new double[exampleSet.size()][prototypeSet.size()];
-        int exampleIndex = 0;
-        PairedTuple[] examplesNearestPair = new PairedTuple[exampleSet.size()]; //Data structure used to store selected prototypes for given training sample. It contains three elements paired value, id_nearest_prototype, id_nearest_enemy
-        Map<Long, int[]> counterMap = new HashMap<>(); //Counter used to count frequency of prototypes pair
-        double[] labels = new double[exampleSet.size()]; //Here use use array to store labels as it is much faster then iterating over exampleSet
-        double[][] prototypes = new double[prototypeSet.size()][numberOfAttributesInExampleSet];
-        double[] prototypesLabel = new double[prototypeSet.size()];
-        List<String> prototypeAttributeNames = new ArrayList<>(numberOfAttributesInExampleSet);
-        int prototypeIndex = 0;
-        int[] counts;
-        //<editor-fold defaultstate="collapsed" desc="Create list of attributes">
+        examplesAttrValues = new double[exampleSet.size()][numberOfAttributesInExampleSet];
+        example2ProtoDistances = new double[exampleSet.size()][prototypeSet.size()];
+        examplesLabels = new double[exampleSet.size()];
+        prototypesAttrValues = new double[prototypeSet.size()][numberOfAttributesInExampleSet];
+        prototypesLabel = new double[prototypeSet.size()];
+        prototypeAttributeNames = new ArrayList<>(numberOfAttributesInExampleSet);
+        //Create list of attributes
         for (Attribute attr : attributesExampleSet) {
             prototypeAttributeNames.add(attr.getName());
         }
-        //</editor-fold>
-        //<editor-fold defaultstate="collapsed" desc="For each prototype from the training set covert it into double[], such that the final set of prototypes if double[][]">
+        //For each prototype from the training set convert it into double[],
+        // such that the final set of prototypes if double[][]
+        int prototypeIndex = 0;
         for (Example prototypeExample : prototypeSet) {
-            double[] prototype = prototypes[prototypeIndex];
+            double[] prototype = prototypesAttrValues[prototypeIndex];
             int i = 0;
             for (String attrName : prototypeAttributeNames) {
                 Attribute prototypeAttribute = attributesPrototypes.get(attrName);
@@ -191,206 +267,242 @@ public class NearestPrototypesOperator extends Operator implements CapabilityPro
             prototypesLabel[prototypeIndex] = prototypeExample.getLabel();
             prototypeIndex++;
         }
-        //</editor-fold>        
-        Map<Long, PairedTuple> selectedPairs = new HashMap<>();
+        //Init table of neatest tuples
+        examplesNearestTuples = new PrototypeTuple[exampleSet.size()];
+        //Init map of counters
+        countersMap = new HashMap<>();
+        //Init map of unique tuple
+        uniqueTuples = new HashMap<>();
+        //init others
+        smallestTupleSize = Integer.MAX_VALUE;
+        //The id of the minimum value
+        smallestTupleId = -1;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Compute stage" defaultState="collapsed" >
+
+    /**
+     * Computes PrototypeTuples for each Example in exampleSet
+     */
+    private void compute() {
+        int exampleIndex = 0;
         for (Example example : exampleSet) {
-            //<editor-fold defaultstate="collapsed" desc="Extract values of example for the distance calculations">
-            {
-                int i = 0;
-                for (Attribute attrName : attributesExampleSet) {
-                    valuesExample[i++] = example.getValue(attrName);
-                }
+            int i = 0;
+            for (Attribute attrName : attributesExampleSet) {
+                examplesAttrValues[exampleIndex][i++] = example.getValue(attrName);
             }
-            //</editor-fold>       
-            //<editor-fold defaultstate="collapsed" desc="For each prototype calculate distances to example and store it in example2ProtoDistances matrix. ALso update counter for given pair">            
-            double[] protoDistances = example2ProtoDistances[exampleIndex];
-            prototypeIndex = 0;
-            int neighborId = -1;
-            int enemyId = -1;
-            double minDistance = Double.MAX_VALUE;
-            double minDistanceNeigbor = Double.MAX_VALUE;
-            double minDistanceEnemy = Double.MAX_VALUE;
-            for (double[] prototype : prototypes) {
-                //Get distance                
-                double currDistance = distance.calculateDistance(valuesExample, prototype);
-                //Store distances
-                protoDistances[prototypeIndex] = currDistance;
-                if (prototypesLabel[prototypeIndex] == example.getLabel()) {
-                    if (currDistance < minDistanceNeigbor) {
-                        neighborId = prototypeIndex;
-                        minDistanceNeigbor = currDistance;
-                    }
-                } else {
-                    if (currDistance < minDistanceEnemy) {
-                        enemyId = prototypeIndex;
-                        minDistanceEnemy = currDistance;
-                    }
-                }
-                if (currDistance < minDistance) minDistance = currDistance;
-                prototypeIndex++;
-            }
-            long pair = neighborId < enemyId ? BasicMath.pair(neighborId, enemyId) : BasicMath.pair(enemyId, neighborId);
-            //<editor-fold desc="Count class distribution for given pair">                                    
-            int label = (int) labels[exampleIndex];
-            if ((counts = counterMap.get(pair)) == null) {
-                counts = new int[labelsNum];
-                counterMap.put(pair, counts);
-            }
-            counts[label]++;
-            //</editor-fold>                                                
-            PairedTuple nearestPair;
-            if (examplesNearestPair[exampleIndex] != null) {
-                nearestPair = examplesNearestPair[exampleIndex];
-            } else {
-                nearestPair = new PairedTuple();
-                examplesNearestPair[exampleIndex] = nearestPair;
-            }
-            nearestPair.paired = pair;
-            nearestPair.protoId1 = neighborId;
-            nearestPair.protoId2 = enemyId;
-            //</editor-fold>                                    
-            labels[exampleIndex] = example.getLabel();
+            PrototypeTuple prototypeTuple = createPrototypeTuple(example2ProtoDistances[exampleIndex], exampleIndex, example);
+
+            calculateTupleDist(exampleIndex, example, prototypeTuple);
             exampleIndex++;
         }
-        //<editor-fold defaultstate="collapsed" desc="Determine maximum value of the counter, minimum value and indekx of the minimum value. Also examples which belong to a batch which is clear (all samples belong to a single class ) are added to pureSet variable.">
-        int minCounts; //The the minimum avaliable number of counts for given pair of prototypes
-        long minId = -1; //The id of the minimum value
-        int min = Integer.MAX_VALUE; //Minimum value
-        int max = 0;
-        for (Entry<Long, int[]> e : counterMap.entrySet()) {
-            counts = e.getValue();
-            int sumi = 0;
-            int maxi = 0;
-            for (int c : counts) {
-                sumi += c;
-                if (c > maxi) {
-                    maxi = c;
+    }
+
+    /**
+     * Method to calculate for each prototype distances to example and store it in example2ProtoDistances matrix
+     *
+     * @param prototypesDistances Distances of prototypes
+     * @param exampleIndex        Id of training element for what we compute {@link PrototypeTuple}
+     * @param example             Training element for what we compute {@link PrototypeTuple}
+     * @return {@link PrototypeTuple}
+     */
+    private PrototypeTuple createPrototypeTuple(double[] prototypesDistances, int exampleIndex, Example example) {
+        double minDistanceNeighbor = Double.MAX_VALUE;
+        double minDistanceEnemy = Double.MAX_VALUE;
+        double minDistance = Double.MAX_VALUE;
+        int prototypeIndex = 0;
+        int neighborId = -1;
+        int enemyId = -1;
+
+        for (double[] prototype : prototypesAttrValues) {
+            //Get distance
+            double currentDistance = distanceMeasure.calculateDistance(examplesAttrValues[exampleIndex], prototype);
+            //Store distances
+            prototypesDistances[prototypeIndex] = currentDistance;
+            if (prototypesLabel[prototypeIndex] == example.getLabel()) {
+                if (currentDistance < minDistanceNeighbor) {
+                    neighborId = prototypeIndex;
+                    minDistanceNeighbor = currentDistance;
+                }
+            } else {
+                if (currentDistance < minDistanceEnemy) {
+                    enemyId = prototypeIndex;
+                    minDistanceEnemy = currentDistance;
                 }
             }
-            //if (sumi - maxi == 0) pureSubset.add(e.getKey());
-            if (sumi > max) {
-                max = sumi;
-            }
-            if (sumi < min) {
-                min = sumi;
-                minId = e.getKey();
-            }
+            if (currentDistance < minDistance) minDistance = currentDistance;
+            prototypeIndex++;
         }
-        //</editor-fold>
-        minCounts = Math.max((int) (minFactor * max), minSupport); //If minFactor is less restrictive then take minSupport (always take more restrictive rule)
-        //<editor-fold defaultstate="collapsed" desc="Creates selectedPairs map which contains unique pairs and corresponding prototype IDs">
-        for (PairedTuple pairedTuple : examplesNearestPair) {
-            if (!selectedPairs.containsKey(pairedTuple.paired)) {
-                //If given pair does not exists in the map put it and preserve protoId order, such that protoId1 is smaller id than the protoId2
-                PairedTuple tmpPair = new PairedTuple(pairedTuple);
-                if (pairedTuple.protoId2 < pairedTuple.protoId1) {
-                    tmpPair.protoId1 = pairedTuple.protoId2;
-                    tmpPair.protoId2 = pairedTuple.protoId1;
-                }
-                //tmpPair.isPure = pureSubset.contains(pairedTuple.pairedTuple);
-                selectedPairs.put(tmpPair.paired, tmpPair);
-            }
+        return new PrototypeTuple(neighborId, enemyId);
+    }
+
+    /**
+     * Method to calculate counters for created  {@link PrototypeTuple}
+     *
+     * @param exampleIndex   Index of training element
+     * @param example        Training element for what we computed {@link PrototypeTuple}
+     * @param prototypeTuple Tuple to be counted
+     */
+    private void calculateTupleDist(int exampleIndex, Example example, PrototypeTuple prototypeTuple) {
+        int[] counter;
+        int label = (int) examplesLabels[exampleIndex];
+        if ((counter = countersMap.get(prototypeTuple.getPairId())) == null) {
+            counter = new int[labelsNum];
+            countersMap.put(prototypeTuple.getPairId(), counter);
         }
-        //</editor-fold>
-        // <editor-fold desc=" ${Searching for new nearest prototypes if current pair is not so common. Appears not enough often. Finish when all frequencies fulfills
-        // the minCounts condition} ">
-        while (min < minCounts) {
-            exampleIndex = 0;
-            //<editor-fold desc="For each training sample check if it belongs to least frequent pair, then update pair">
-            for (PairedTuple pairs : examplesNearestPair) {
-                //If sample with given exampleId belongs to the least frequent batch group then reassign it to other already existing group
-                if (pairs.paired == minId) {
-                    //If old counter is almost empty (has less then one element remove key)                
-                    counts = counterMap.get(pairs.paired);
-                    int label = (int) labels[exampleIndex];
-                    //<editor-fold defaultstate="collapsed" desc="Get hits count for given sample. New we have a distribution of samples per class">
-                    if (Arrays.stream(counts).sum() <= 1) {
-                        counterMap.remove(pairs.paired);
+        counter[label]++;
+        if (examplesNearestTuples[exampleIndex] != null) {
+            examplesNearestTuples[exampleIndex].set(prototypeTuple);
+        } else {
+            examplesNearestTuples[exampleIndex] = new PrototypeTuple(prototypeTuple);
+        }
+        examplesLabels[exampleIndex] = example.getLabel();
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Optimize stage" defaultState="collapsed" >
+
+    /**
+     * Method to optimize computed results
+     */
+    private void optimize() {
+        int minimalSize = computeMinimal();
+        createUniqueTupleMap();
+
+        while (smallestTupleSize < minimalSize) {
+            int exampleIndex = 0;
+            //For each training sample check if it belongs to least frequent pair, then update pair
+            for (PrototypeTuple tuple : examplesNearestTuples) {
+                //If sample with given exampleId belongs to the least frequent batch group,
+                // then reassign it to other already existing group
+                if (tuple.getPairId() == smallestTupleId) {
+                    //If old counter is almost empty (has less then one element remove key)
+                    int[] counter = countersMap.get(tuple.getPairId());
+                    int label = (int) examplesLabels[exampleIndex];
+                    //Get hits count for given sample. New we have a distribution of samples per class
+                    if (Arrays.stream(counter).sum() <= 1) {
+                        countersMap.remove(tuple.getPairId());
                     } else { //Otherwise decrease counter
-                        counts[label]--;
+                        counter[label]--;
                     }
-                    //</editor-fold>
+
                     double[] protoDistances = example2ProtoDistances[exampleIndex];
                     double minDist = Double.MAX_VALUE;
-                    long minPair = -1;
-                    //<editor-fold defaultstate="collapsed" desc="Identify two closest prototypes from existing pairs (new group/pair is not constructed)">
-                    for (Entry<Long, PairedTuple> entry : selectedPairs.entrySet()) {
-                        if (entry.getKey() != minId) {
-                            PairedTuple pairedTuple = entry.getValue();
-                            double dist = protoDistances[pairedTuple.protoId1] + protoDistances[pairedTuple.protoId2];
-                            long pair = pairedTuple.paired;
+                    long minPairId = -1;
+                    //Identify two closest prototypes from existing pairs (new group/pair is not constructed)
+                    for (Entry<Long, PrototypeTuple> entry : uniqueTuples.entrySet()) {
+                        if (entry.getKey() != smallestTupleId) {
+                            PrototypeTuple prototypeTuple = entry.getValue();
+                            double dist = protoDistances[prototypeTuple.getPrototypeId1()] + protoDistances[prototypeTuple.getPrototypeId2()];
+                            long pairId = prototypeTuple.getPairId();
                             if (dist < minDist) {
                                 minDist = dist;
-                                minPair = pair;
+                                minPairId = pairId;
                             }
                         }
                     }
-                    //</editor-fold>
-                    //<editor-fold defaultstate="collapsed" desc="Update selectedPair">
-                    PairedTuple tmpPaired = selectedPairs.get(minPair);
-                    if (prototypesLabel[tmpPaired.protoId1] == label) {
-                        pairs.set(minPair, tmpPaired.protoId1, tmpPaired.protoId2);
-                    } else {
-                        pairs.set(minPair, tmpPaired.protoId2, tmpPaired.protoId1);
-                    }
-                    //</editor-fold>
+                    //Update unique pairs
+                    PrototypeTuple tmpTuple = uniqueTuples.get(minPairId);
+                    tuple.set(tmpTuple);
+
                     //Increase counter of a new pair
-                    counts = counterMap.get(pairs.paired);
-                    counts[label]++;
+                    counter = countersMap.get(tuple.getPairId());
+                    counter[label]++;
                 }
                 exampleIndex++;
             }
-            selectedPairs.remove(minId);
-            //</editor-fold>
-            //<editor-fold defaultstate="collapsed" desc="Again determine minID and min counts.  Warning if we find a subset of examples which all belong to a single class we keep that subset and store it in pureSubset set. In later stage if any example falls into this pair then they will be automatically classified to the majority class.">
-            min = Integer.MAX_VALUE;
-            max = -1;
-            minId = -1;
-            for (Entry<Long, int[]> e : counterMap.entrySet()) {
-                //if (pureSubset.contains(e.getKey()) || ignoredPairsSet.contains(e.getKey())) continue;
-                counts = e.getValue();
-                int sumi = 0;
-                int maxi = 0;
-                for (int c : counts) {
-                    sumi += c;
-                    if (c > maxi) {
-                        maxi = c;
-                    }
-                }
-                if (sumi > max) {
-                    max = sumi;
-                }
-                if (sumi < min) {
-                    min = sumi;
-                    minId = e.getKey();
+            uniqueTuples.remove(smallestTupleId);
+
+            //Again determine minID and min counts.
+            // Warning if we find a subset of examples which all belong to a single class we keep that subset
+            // and store it in pureSubset set. In later stage if any example falls into this pair then they
+            // will be automatically classified to the majority class.
+            minimalSize = computeMinimal();
+        }
+    }
+
+    /**
+     * Method creates unique pairs map which contains unique pairs and corresponding prototype IDs
+     */
+    private void createUniqueTupleMap() {
+        for (PrototypeTuple prototypeTuple : examplesNearestTuples) {
+            //If given pair does not exists in the map put it
+            if (!uniqueTuples.containsKey(prototypeTuple.getPairId())) {
+                PrototypeTuple tmpTuple = new PrototypeTuple(prototypeTuple);
+                uniqueTuples.put(tmpTuple.getPairId(), tmpTuple);
+            }
+        }
+    }
+
+    /**
+     * Method to Determine maximum value of the counter, minimum value and index of the minimum value.
+     * Also examples which belong to a batch which is clear (all samples belong to a single class)
+     * are added to pureSet variable.
+     *
+     * @return int minimum counter size
+     */
+    private int computeMinimal() {
+        //The the minimum available number of counts for given pair of prototypes
+        int max = 0;
+        for (Entry<Long, int[]> e : countersMap.entrySet()) {
+            int[] counter = e.getValue();
+            int counterSum = 0;
+            int maxi = 0;
+            for (int value : counter) {
+                counterSum += value;
+                if (value > maxi) {
+                    maxi = value;
                 }
             }
-            //</editor-fold>
+            if (counterSum > max) {
+                max = counterSum;
+            }
+            if (counterSum < smallestTupleSize) {
+                smallestTupleSize = counterSum;
+                smallestTupleId = e.getKey();
+            }
         }
-        // </editor-fold>
+        //If minFactor is less restrictive then take minSupport (always take more restrictive rule)
+        return Math.max((int) (minFactor * max), minSupport);
+    }
+    //</editor-fold>
 
-        exampleIndex = 0;
+    //<editor-fold desc="Delivery stage" defaultState="collapsed" >
+
+    /**
+     * Method run at the end, delivers computed data from operator
+     */
+    private void deliver() {
+        int exampleIndex = 0;
         ExampleSet outputSet = exampleSet;
         for (Example example : exampleSet) {
-            PairedTuple paired = examplesNearestPair[exampleIndex];
-//            if (!selectedPairs.containsKey(paired.paired)) {
-//                //If given pair does not exists in the map put it and preserve protoId order, such that protoId1 is smaller id than the protoId2
-//                PairedTriple tmpPair = new PairedTriple(paired);
-//                if (paired.protoId2 < paired.protoId1) {
-//                    tmpPair.protoId1 = paired.protoId2;
-//                    tmpPair.protoId2 = paired.protoId1;
-//                }                
-//                selectedPairs.put(tmpPair.paired, tmpPair);
-//            }
-            example.setValue(idProto1, paired.protoId1);
-            example.setValue(idProto2, paired.protoId2);
-            example.setValue(idPair, paired.paired);
+            PrototypeTuple tuple = examplesNearestTuples[exampleIndex];
+            example.setValue(ATTRIBUTE_ID_PROTO_1, tuple.prototypeId1);
+            example.setValue(ATTRIBUTE_ID_PROTO_2, tuple.prototypeId2);
+            example.setValue(ATTRIBUTE_ID_PAIR, tuple.getPairId());
             exampleIndex++;
         }
-        PrototypesEnsembleModel model = new PrototypesEnsembleModel(prototypes, labels, prototypeAttributeNames, distance, selectedPairs);
+        PrototypesEnsembleModel model = new PrototypesEnsembleModel(prototypesAttrValues, examplesLabels, prototypeAttributeNames, distanceMeasure, uniqueTuples);
         //Return data
         this.exampleSetOutputPort.deliver(outputSet);
         this.modelOutputPort.deliver(model);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Operator methods" defaultState="collapsed" >
+
+    /**
+     * Main method which performs all calculations
+     *
+     * @throws OperatorException
+     */
+    @Override
+    public void doWork() throws OperatorException {
+        setup();
+        compute();
+        optimize();
+        deliver();
     }
 
     @Override
@@ -425,53 +537,123 @@ public class NearestPrototypesOperator extends Operator implements CapabilityPro
         types.add(type);
         type = new ParameterTypeInt(PARAMETER_MINIMUM_SUPPORT, "Minimum number of samples in a single batch. It it has lower number of samples it will be removed and the samples will be redistributed into another batches", 0, Integer.MAX_VALUE, 20);
         types.add(type);
-        //type = new ParameterTypeBoolean(PARAMETER_DETECT_PURE_SUBSETS,"Detect pure subsets and keep them (for examples falling into this pair label will be determined without training a model) ",false);
-        //types.add(type);        
         types.addAll(DistanceMeasures.getParameterTypes(this));
         return types;
     }
+    //</editor-fold>
 
-    static class PairedTuple {
+    //<editor-fold desc="PrototypeTuple Class" defaultState="collapsed" >
+    static class PrototypeTuple {
+        /**
+         * Id of pair
+         */
+        private long pairId;
+        /**
+         * Smaller id of pair
+         */
+        private int prototypeId1;
+        /**
+         * Seconds Id of pair(bigger)
+         */
+        private int prototypeId2;
 
-        long paired = -1;
-        int protoId1 = -1;
-        int protoId2 = -1;
-        boolean isPure = false;
-
-        public PairedTuple(long paired, int protoId1, int protoId2) {
-            set(paired, protoId1, protoId2, false);
+        /**
+         * Base Constructor
+         * Class will self decide which number is smaller
+         *
+         * @param prototypeId1 id of first prototype
+         * @param prototypeId2 id of second prototype
+         */
+        PrototypeTuple(int prototypeId1, int prototypeId2) {
+            if (prototypeId1 < prototypeId2) {
+                this.prototypeId1 = prototypeId1;
+                this.prototypeId2 = prototypeId2;
+            } else {
+                this.prototypeId1 = prototypeId2;
+                this.prototypeId2 = prototypeId1;
+            }
+            pairId = BasicMath.pair(this.prototypeId1, this.prototypeId2);
         }
 
-        public PairedTuple(long paired, int protoId1, int protoId2, boolean isPure) {
-            set(paired, protoId1, protoId2, isPure);
+        /**
+         * Copy constructor
+         *
+         * @param tuple other {@link PrototypeTuple}
+         */
+        @SuppressWarnings("CopyConstructorMissesField")
+        PrototypeTuple(PrototypeTuple tuple) {
+            this(tuple.prototypeId1, tuple.prototypeId2);
         }
 
-        PairedTuple(PairedTuple pair) {
-            this.set(pair);
+        /**
+         * Method to set data from other tuple
+         *
+         * @param tuple from which to copy fields
+         */
+        final void set(PrototypeTuple tuple) {
+            this.pairId = tuple.pairId;
+            this.prototypeId1 = tuple.prototypeId1;
+            this.prototypeId2 = tuple.prototypeId2;
         }
 
-        PairedTuple() {
+        /**
+         * Method to set data from specific Ids,
+         * will self decide which number is smaller and generate pairId
+         *
+         * @param id1 first id
+         * @param id2 second id
+         */
+        public void set(int id1, int id2) {
+            if (id1 < id2) {
+                this.prototypeId1 = id1;
+                this.prototypeId2 = id2;
+            } else {
+                this.prototypeId1 = id2;
+                this.prototypeId2 = id1;
+            }
+            pairId = BasicMath.pair(prototypeId1, prototypeId2);
         }
 
-        final void set(PairedTuple pair) {
-            this.paired = pair.paired;
-            this.protoId1 = pair.protoId1;
-            this.protoId2 = pair.protoId2;
-            this.isPure = pair.isPure;
+        /**
+         * Getter for pair Id
+         *
+         * @return long
+         */
+        long getPairId() {
+            return pairId;
         }
 
-        final void set(long paired, int protoId1, int protoId2) {
-            this.paired = paired;
-            this.protoId1 = protoId1;
-            this.protoId2 = protoId2;
-            this.isPure = false;
+        /**
+         * Getter for smaller prototype
+         *
+         * @return int
+         */
+        int getPrototypeId1() {
+            return prototypeId1;
         }
 
-        final void set(long paired, int protoId1, int protoId2, boolean isPure) {
-            this.paired = paired;
-            this.protoId1 = protoId1;
-            this.protoId2 = protoId2;
-            this.isPure = isPure;
+        /**
+         * Getter for bigger prototype
+         *
+         * @return int
+         */
+        int getPrototypeId2() {
+            return prototypeId2;
+        }
+
+        /**
+         * Method for faster printing Class data
+         *
+         * @return string with object summary
+         */
+        @Override
+        public String toString() {
+            return "PrototypeTuple{" +
+                    "pairId=" + pairId +
+                    ", protoId1=" + prototypeId1 +
+                    ", protoId2=" + prototypeId2 +
+                    '}';
         }
     }
+    //</editor-fold>
 }
