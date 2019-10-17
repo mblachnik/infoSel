@@ -27,26 +27,42 @@ import java.util.stream.IntStream;
  * A class implementing Ensembles based on nearest prototypes local competence models.
  * For given testing vector it searches for a pair of nearest prototypes and applies corresponding prediction model
  *
- * @author Marcin
+ * @author Marcin, Paweł
  */
 public class PrototypesEnsemblePredictionModel extends PredictionModel {
-
+    //<editor-fold desc="Private fields" defaultState="collapsed" >
     /**
-     * PrototypesEnsembleModel which contains information's such as: prototypes
-     * position, labels, a map which allows to decode pair into the prototypes
+     * PrototypesEnsembleModel which contains information's such as:
+     * -> prototypes
+     * -> position
+     * -> labels
+     * -> map decoding pair into the prototypes
      */
     private PrototypesEnsembleModel model;
     /**
      * It maps given pair into prediction model
      */
     private Map<Long, PredictionModel> predictionModelsMap;
+    //</editor-fold>
 
+    //<editor-fold desc="Constructor" defaultState="collapsed" >
     PrototypesEnsemblePredictionModel(PrototypesEnsembleModel model, Map<Long, PredictionModel> predictionModelsMap, ExampleSet trainingExampleSet, ExampleSetUtilities.SetsCompareOption sizeCompareOperator, ExampleSetUtilities.TypesCompareOption typeCompareOperator) {
         super(trainingExampleSet, sizeCompareOperator, typeCompareOperator);
         this.model = model;
         this.predictionModelsMap = predictionModelsMap;
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Model Methods" defaultState="collapsed" >
+
+    /**
+     * Method to create model of trained experts
+     *
+     * @param exampleSet     set of training data
+     * @param predictedLabel label for which perform inner model prediction
+     * @return ExampleSet
+     * @throws OperatorException
+     */
     @Override
     public ExampleSet performPrediction(ExampleSet exampleSet, Attribute predictedLabel) throws OperatorException {
         double[] exampleValues = new double[model.getAttributes().size()];
@@ -96,10 +112,18 @@ public class PrototypesEnsemblePredictionModel extends PredictionModel {
         return exampleSet;
     }
 
+    /**
+     * Method to create text with data to create model
+     *
+     * @return String text showing data of model
+     */
     @Override
     public String toResultString() {
         StringBuilder sb = new StringBuilder();
-        model.selectedPairs.entrySet().stream().forEachOrdered(entry -> {
+        sb.append("=====================================\n");
+        sb.append("===========  PairTuples =============\n");
+        sb.append("=====================================\n");
+        model.getSelectedPairs().entrySet().stream().forEachOrdered(entry -> {
             PrototypeTuple tuple = entry.getValue();
             sb.append(tuple.toString()).append("\n");
         });
@@ -107,17 +131,18 @@ public class PrototypesEnsemblePredictionModel extends PredictionModel {
         sb.append("=========== Prototypes ==============\n");
         sb.append("=====================================\n");
         int i = 0;
-        model.attributes.stream().forEach(str -> sb.append(str).append(" | "));
+        model.getAttributes().stream().forEach(str -> sb.append(str).append(" | "));
         sb.append("Label \n");
-        IntStream.range(0, model.prototypes.length).forEachOrdered(idx -> {
-            double[] row = model.prototypes[idx];
+        IntStream.range(0, model.getPrototypes().length).forEachOrdered(idx -> {
+            double[] row = model.getPrototypes()[idx];
             sb.append("id").append(idx).append(" | ");
             Arrays.stream(row).forEach(element -> {
                 sb.append(element).append(" | ");
             });
-            sb.append(model.labels[idx]);
+            sb.append(model.getLabels()[idx]);
             sb.append("\n");
         });
         return sb.toString(); //To change body of generated methods, choose Tools | Templates.
     }
+    //</editor-fold>
 }
