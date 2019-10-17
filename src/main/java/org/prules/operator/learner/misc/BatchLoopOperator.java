@@ -33,8 +33,8 @@ import java.util.Map.Entry;
  */
 public class BatchLoopOperator extends OperatorChain {
     //<editor-fold desc="Static data" defaultState="collapsed" >
-    private static final String PORT_INPUT_EXAMPLE = "example set";
-    private static final String PORT_INPUT_MODEL = "prototype model";
+    private static final String PORT_INPUT_EXAMPLE = NearestPrototypesOperator.PORT_OUTPUT_PROTOTYPES;
+    private static final String PORT_INPUT_MODEL =  NearestPrototypesOperator.PORT_OUTPUT_TUPLES;
     private static final String PORT_INNER_INPUT_EXAMPLE = "example set";
     private static final String PORT_INNER_INPUT_MODEL = "prediction model";
     private static final String PORT_OUTPUT_MODEL = "prediction model";
@@ -128,14 +128,12 @@ public class BatchLoopOperator extends OperatorChain {
         IDataIndex idx;
         for (Example example : exampleSet) {
             double pairId = example.getValue(attr);
-            if (pairsMap.containsKey((long) pairId)) {
-                idx = pairsMap.get((long) pairId);
-            } else {
+            if (!pairsMap.containsKey((long) pairId)) {
                 idx = new DataIndex(exampleSet.size());
                 idx.setAllFalse();
                 pairsMap.put((long) pairId, idx);
             }
-            idx.set(exampleIndex, true);
+            pairsMap.get((long) pairId).set(exampleIndex, true);
             exampleIndex++;
         }
     }
@@ -146,25 +144,23 @@ public class BatchLoopOperator extends OperatorChain {
      * @throws OperatorException
      */
     private void trainExperts() throws OperatorException {
-        IDataIndex idx;
         for (Entry<Long, NearestPrototypesOperator.PrototypeTuple> entry : inputModel.getSelectedPairs().entrySet()) {
-            Long pair = entry.getKey();
+            long pair = entry.getKey();
             if (pairsMap.containsKey(pair)) {
-                idx = pairsMap.get(pair);
-            } else {
-                continue;
-            }
-            //Select samples from given batch
-            SelectedExampleSet selectedExampleSet = new SelectedExampleSet(exampleSet);
-            selectedExampleSet.setIndex(idx);
-            //And deliver these samples to train a model
-            exampleInnerSourcePort.deliver(selectedExampleSet);
-            //Execute inner process (train the model)
-            getSubprocess(0).execute();
-            inApplyLoop();
+                IDataIndex idx = pairsMap.get(pair);
 
-            PredictionModel model = predictionModelInnerSourcePort.getData(PredictionModel.class);
-            modelsMap.put(pair, model);
+                //Select samples from given batch
+                SelectedExampleSet selectedExampleSet = new SelectedExampleSet(exampleSet);
+                selectedExampleSet.setIndex(idx);
+                //And deliver these samples to train a model
+                exampleInnerSourcePort.deliver(selectedExampleSet);
+                //Execute inner process (train the model)
+                getSubprocess(0).execute();
+                inApplyLoop();
+
+                PredictionModel model = predictionModelInnerSourcePort.getData(PredictionModel.class);
+                modelsMap.put(pair, model);
+            }
         }
     }
     //</editor-fold>

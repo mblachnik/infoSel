@@ -107,7 +107,9 @@ public class PrototypesEnsemblePredictionModel extends PredictionModel {
         for (Entry<Long, IDataIndex> entry : subsetMap.entrySet()) {
             SelectedExampleSet subset = new SelectedExampleSet(exampleSet, entry.getValue());
             PredictionModel predictionModel = predictionModelsMap.get(entry.getKey());
-            predictionModel.performPrediction(subset, predictedLabel);
+            if (predictionModel != null) {
+                predictionModel.performPrediction(subset, predictedLabel);
+            }
         }
         return exampleSet;
     }
