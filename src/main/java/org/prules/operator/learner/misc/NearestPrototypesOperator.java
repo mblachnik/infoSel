@@ -54,7 +54,7 @@ public class NearestPrototypesOperator extends Operator implements CapabilityPro
     static final String PORT_OUTPUT_TUPLES = "tuplesModel";
     private static final Attribute ATTRIBUTE_ID_PROTO_1 = AttributeFactory.createAttribute(NAME_ATTRIBUTE_ID_1, Ontology.NUMERICAL);
     private static final Attribute ATTRIBUTE_ID_PROTO_2 = AttributeFactory.createAttribute(NAME_ATTRIBUTE_ID_2, Ontology.NUMERICAL);
-    private static final Attribute ATTRIBUTE_ID_PAIR = AttributeFactory.createAttribute(NAME_ATTRIBUTE_ID_PAIR, Ontology.BINOMINAL);
+    private static final Attribute ATTRIBUTE_ID_PAIR = AttributeFactory.createAttribute(NAME_ATTRIBUTE_ID_PAIR, Ontology.POLYNOMINAL);
     private static final String FACTOR_DESCRIPTION = "Factor indicating minimum number of instances in a single batch. It is multiplied by the max counts.";
     private static final String MINIMUM_NUMBER_SUPPORT_DESCRIPTION = "Minimum number of samples in a single batch. It it has lower number of samples it will be removed and the samples will be redistributed into another batches";
     //</editor-fold>
@@ -389,7 +389,7 @@ public class NearestPrototypesOperator extends Operator implements CapabilityPro
 
                     double[] protoDistances = example2ProtoDistances[exampleIndex];
                     double minDist = Double.MAX_VALUE;
-                    long minPairId = -1;
+                    PrototypeTuple tmpTuple = new PrototypeTuple();
                     //Identify two closest prototypes from existing pairs (new group/pair is not constructed)
                     for (Entry<Long, PrototypeTuple> entry : selectedTuples.entrySet()) {
                         if (entry.getKey() != smallestSizeId) {
@@ -397,15 +397,15 @@ public class NearestPrototypesOperator extends Operator implements CapabilityPro
                             double dist = protoDistances[prototypeTuple.getPrototypeId1()] + protoDistances[prototypeTuple.getPrototypeId2()];
                             if (dist < minDist) {
                                 minDist = dist;
-                                minPairId = prototypeTuple.getPairId();
+                                tmpTuple.set(prototypeTuple);
                             }
                         }
                     }
                     //Increase counter of a new pair
-                    tuple.set(selectedTuples.get(minPairId));
-                    counter = countersMap.get(minPairId);
+                    tuple.set(tmpTuple);
+                    counter = countersMap.get(tmpTuple.getPairId());
                     counter[label]++;
-                    countersMap.put(minPairId, counter);
+                    countersMap.put(tmpTuple.getPairId(), counter);
                 }
                 exampleIndex++;
             }
@@ -581,6 +581,12 @@ public class NearestPrototypesOperator extends Operator implements CapabilityPro
             this.prototypeId1 = tuple.prototypeId1;
             this.prototypeId2 = tuple.prototypeId2;
             this.pairId = tuple.pairId;
+        }
+
+        PrototypeTuple() {
+            this.prototypeId1 = -1;
+            this.prototypeId2 = -1;
+            this.pairId = -1;
         }
 
         /**

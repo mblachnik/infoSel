@@ -30,14 +30,14 @@
         <synopsis>LVQ neural network</synopsis>
         <help>
             LVQ is a neural network which is based on local and competitive learning. 
-            In this network neurons are called codebooks or prototypes. These codebooks 
-            are returned on Prot output port, and they can be used as an input to the 
+            In this network neurons are called codeBooks or prototypes. These codeBooks
+            are returned on Port output port, and they can be used as an input to the
             nearest neighbor classifier.
              &lt;br/&gt; This operator implements standard LVQ algorithms described in: &lt;br/&gt; 
             Kohonen T., Self-Organizing Maps, Springer Verlag, 2001 &lt;br/&gt; 
             (They were implemented based on SOMPack) &lt;ul&gt; 
             &lt;li&gt; LVQ1 &lt;/li&gt; &lt;li&gt; LVQ2 &lt;/li&gt; &lt;li&gt; LVQ2.1 &lt;/li&gt; &lt;li&gt; LVQ3 &lt;/li&gt; &lt;li&gt; OLVQ &lt;/li&gt; &lt;/ul&gt; 
-            This operator also implements more complex LVQ networks such as: &lt;ul&gt; &lt;li&gt; WLVQ - Weighted LVQ in details described in: &lt;br/&gt; Blachnik M., Duch W., LVQ algorithm with instance weighting for generation of prototype-based rules, Neural Networks vol 24(8), Elsevir, pp. 824-830 2011 &lt;/br&gt; It requires weight attribute, which is taken as a source of weights. Weights can be obtained from ENN Weighting operator &lt;/li&gt; &lt;li&gt; SLVQ - a concept of semi supervised LVQ algorithm - very naive implementation which behaves as VQ clustering when labels are not present (NaNs) and if labels are present it performs LVQ update rule&lt;/li&gt; &lt;li&gt; WTM_LVQ - Winer takes most LVQ implementation instead of Winer takes all. If EUCLIDIAN neighborhood is selected then all codebooks which fall into a hyper-sphere defined by the closest prototype and lambda radius are updated using standard LVQ formula.&lt;/br&gt; If GAUSSIAN neighborhood is selected then the neighborhood has vanishing radius defined as g = exp(- (dist^2) / (2 * lambda^2)) and the update rule is defined as {prototype = prototype +/- alpha*g* (example - prototype)} &lt;/li&gt; &lt;li&gt; SNG - Supervised Stochastic Neural Gas. This algorithm is similar to the WTM_LVQ algorithm with GAUSSIAN neighborhood except that instead of directly taking distances between prototypes an order of the distances is considered (1,2,3,4) so {g=exp(- j/lambda) &lt;br/&gt; For details see: &lt;br/&gt; Villmann, Thomas, Barbara Hammer, and Marc Strickert. &quot;Supervised neural gas for learning vector quantization.&quot; Proc. of the 5th German Workshop on Artificial Life (GWAL-5). 2002. &lt;/li&gt; &lt;li&gt; GLVQ - generalized LVQ algorithm. It uses well defined cost function for which gradient can be explicit calculated &lt;br/&gt; For details see: &lt;/br/&gt; Hammer, Barbara, and Thomas Villmann. &quot;Generalized relevance learning vector quantization.&quot; Neural Networks 15.8 (2002): 1059-1068. &lt;/li&gt; &lt;/ul&gt;
+            This operator also implements more complex LVQ networks such as: &lt;ul&gt; &lt;li&gt; WLVQ - Weighted LVQ in details described in: &lt;br/&gt; Blachnik M., Duch W., LVQ algorithm with instance weighting for generation of prototype-based rules, Neural Networks vol 24(8), Elsevir, pp. 824-830 2011 &lt;/br&gt; It requires weight attribute, which is taken as a source of weights. Weights can be obtained from ENN Weighting operator &lt;/li&gt; &lt;li&gt; SLVQ - a concept of semi supervised LVQ algorithm - very naive implementation which behaves as VQ clustering when labels are not present (NaNs) and if labels are present it performs LVQ update rule&lt;/li&gt; &lt;li&gt; WTM_LVQ - Winer takes most LVQ implementation instead of Winer takes all. If EUCLIDIAN neighborhood is selected then all codeBooks which fall into a hyper-sphere defined by the closest prototype and lambda radius are updated using standard LVQ formula.&lt;/br&gt; If GAUSSIAN neighborhood is selected then the neighborhood has vanishing radius defined as g = exp(- (dist^2) / (2 * lambda^2)) and the update rule is defined as {prototype = prototype +/- alpha*g* (example - prototype)} &lt;/li&gt; &lt;li&gt; SNG - Supervised Stochastic Neural Gas. This algorithm is similar to the WTM_LVQ algorithm with GAUSSIAN neighborhood except that instead of directly taking distances between prototypes an order of the distances is considered (1,2,3,4) so {g=exp(- j/lambda) &lt;br/&gt; For details see: &lt;br/&gt; Villmann, Thomas, Barbara Hammer, and Marc Strickert. &quot;Supervised neural gas for learning vector quantization.&quot; Proc. of the 5th German Workshop on Artificial Life (GWAL-5). 2002. &lt;/li&gt; &lt;li&gt; GLVQ - generalized LVQ algorithm. It uses well defined cost function for which gradient can be explicit calculated &lt;br/&gt; For details see: &lt;/br/&gt; Hammer, Barbara, and Thomas Villmann. &quot;Generalized relevance learning vector quantization.&quot; Neural Networks 15.8 (2002): 1059-1068. &lt;/li&gt; &lt;/ul&gt;
             <!--
             This operator implements a set of different LVQ algorithms. It can be used for instance optimization for nearest neighbor classifier. &lt;br/&gt; It implements: &lt;ul&gt; &lt;li&gt; LVQ1 &lt;/li&gt; &lt;li&gt; LVQ2 &lt;/li&gt; &lt;li&gt; LVQ2.1 &lt;/li&gt; &lt;li&gt; LVQ3 &lt;/li&gt; &lt;li&gt; OLVQ &lt;br/&gt; For details of these for algorithm look at &lt;br/&gt; Kohonen T., Self-Organizing Maps, Springer Verlag, 2001 &lt;br/&gt; These are java versions of algorithms implemented in SOMPack &lt;/li&gt; &lt;li&gt; WLVQ &ndash; Weighted LVQ in details described in: &lt;br/&gt; Blachnik M., Duch W., LVQ algorithm with instance weighting for generation of prototype-based rules, Neural Networks vol 24(8), Elsevir, pp. 824-830 2011 &lt;/br&gt; It requires weight attribute, which is taken as a source of weights. Weights can be obtained from ENN Weighting operator &lt;/li&gt; &lt;/ul&gt;
             -->
@@ -52,8 +52,8 @@
         <help>
             This operator implements Vector Quantization (VQ) clustering algorithm. &lt;br/&gt;
             It is a kind of neural network learned on Winner Takes All principle using stochastic gradient algorithm.
-            Neurons of this network are called codebooks, and each codebook represent one cluster center.
-            As a result this neural network returns a set of codebooks position as an ExampleSet. It also offers 
+            Neurons of this network are called codeBooks, and each codeBook represent one cluster center.
+            As a result this neural network returns a set of codeBooks position as an ExampleSet. It also offers
             a model which could be used for clustering new incoming data samples.
             It can be used for instance optimization and clustering. 
                 &lt;br/&gt;
@@ -72,8 +72,8 @@
         <help>
             This operator implements Stochastic Relaxation a Winner Takes Most version of Vector Quantization (VQ) clustering algorithm. &lt;br/&gt;
             It is a kind of neural network learned on Winner Takes Most principle using stochastic gradient algorithm.
-            Neurons of this network are called codebooks, and each codebook represent one cluster center.
-            As a result this neural network returns a set of codebooks position as an ExampleSet. It also offers 
+            Neurons of this network are called codeBooks, and each codeBook represent one cluster center.
+            As a result this neural network returns a set of codeBooks position as an ExampleSet. It also offers
             a model which could be used for clustering new incoming data samples.
             It can be used for instance optimization and clustering. 
                 &lt;br/&gt;
@@ -92,8 +92,8 @@
         <help>
             This operator implements Soft Competition Scheme competitive learning a Winner Takes Most version of Vector Quantization (VQ) clustering algorithm. &lt;br/&gt;
             It is a kind of neural network learned on Winner Takes Most principle using stochastic gradient algorithm.
-            Neurons of this network are called codebooks, and each codebook represent one cluster center.
-            As a result this neural network returns a set of codebooks position as an ExampleSet. It also offers 
+            Neurons of this network are called codeBooks, and each codeBook represent one cluster center.
+            As a result this neural network returns a set of codeBooks position as an ExampleSet. It also offers
             a model which could be used for clustering new incoming data samples.
             It can be used for instance optimization and clustering. 
                 &lt;br/&gt;
@@ -112,9 +112,9 @@
         <help>
             This operator implements Growing Neural Gas  version of Vector Quantization (VQ) clustering algorithm. &lt;br/&gt;
             It is a kind of neural network learned on Winner Takes Most principle using stochastic gradient algorithm.            
-            Neurons of this network are called codebooks, and each codebook represent one cluster center.            
-            As a result this neural network returns a set of codebooks position as an ExampleSet. 
-            THe algorithm automatically determines the number of neurans adding and removing new neurons when needed.
+            Neurons of this network are called codeBooks, and each codeBook represent one cluster center.
+            As a result this neural network returns a set of codeBooks position as an ExampleSet.
+            THe algorithm automatically determines the number of neurons adding and removing new neurons when needed.
             It also offers a model which could be used for clustering new incoming data samples.
             It can be used for instance optimization and clustering. 
                 &lt;br/&gt;
@@ -130,9 +130,9 @@
     <operator>
         <key>NearestPrototypesOperator</key>
         <name>Nearest Prototypes Batch</name>
-        <synopsis>Generates batch attribute out of two nearest prototypes from oposite classes</synopsis>
+        <synopsis>Generates batch attribute out of two nearest prototypes from opposite classes</synopsis>
         <help>
-            For each training example it finds two closest prototypes from oposite classes, and assignes unique identifier for the pair. This identifier constitutes a batch attribute
+            For each training example it finds two closest prototypes from opposite classes, and assignee unique identifier for the pair. This identifier constitutes a batch attribute
         </help> 
         <icon>ispr.png</icon>
     </operator> 
@@ -140,7 +140,7 @@
     <operator>
         <key>BatchLoopOperator</key>
         <name>Loop Batches and Build Ensemble Operator</name>
-        <synopsis>Loop over batches in example set and for each batch trains an independant model. Then all models are combined into EnsemblePredictionModel.</synopsis>
+        <synopsis>Loop over batches in example set and for each batch trains an independent model. Then all models are combined into EnsemblePredictionModel.</synopsis>
         <help>
             
         </help> 
@@ -317,7 +317,7 @@
             &lt;p&gt; Drop2 is an algorithm proposed by D. Randall Wilson, Tony R. Martinez in &lt;i&gt;Instance Pruning Techniques&lt;/i&gt; Machine Learning: Proceedings of the Fourteenth International Conference, Morgan Kaufmann Publishers, San Francisco, CA, pp. 404-411, 1997. &lt;/p&gt;
             &lt;p&gt; This algorithm removes an instance if its removal do not affect classification of other instances. For that purpose for each sample it calculates so called &lt;i&gt;improvement&lt;/i&gt; a measure which tells how many samples were classified correctly with an instance &lt;i&gt; p &lt;/i&gt; and without &lt;i&gt;p&lt;/i&gt;.
             If the result (with - without) is positive instance is kept otherwise it is removed. &lt;/p&gt;
-            &lt;p&gt; Main difference to Drop1 is ordering samples according to nearest enemie - the farthest are considered first. It also uses entire training set to validate the effect of removal of sample &lt;i&gt;p&lt;/i&gt; while in Drop1 it uses only remaining samples after removal. &lt;/p&gt;    
+            &lt;p&gt; Main difference to Drop1 is ordering samples according to nearest enemy - the farthest are considered first. It also uses entire training set to validate the effect of removal of sample &lt;i&gt;p&lt;/i&gt; while in Drop1 it uses only remaining samples after removal. &lt;/p&gt;
         </help>
         <key>drop2_sel</key>
         <icon>ispr.png</icon>
@@ -358,9 +358,9 @@
     </operator>
     <operator>
         <name>Select by ICF</name>
-        <synopsis>Inecremental Case Filtering (ICF) instance selection</synopsis>
+        <synopsis>Incremental Case Filtering (ICF) instance selection</synopsis>
         <help>         
-            &lt;p&gt;ICF is an instance selectin algorithm developed by Brighton and Mellish in "Advances in instance selection for instance-based learning algorithms." Data mining and knowledge discovery 6.2 (2002).&lt;/p&gt;
+            &lt;p&gt;ICF is an instance selection algorithm developed by Brighton and Mellish in "Advances in instance selection for instance-based learning algorithms." Data mining and knowledge discovery 6.2 (2002).&lt;/p&gt;
             &lt;p&gt; It uses a rule which says that: Coverage must be &gt; Rehabilitanty . (for details see the above article). It starts performing ENN algorithm and than for each sample it checks the above rule.&lt;/p&gt;
         </help>
         <key>icf_sel</key>
@@ -574,9 +574,9 @@
     <operator>
         <name>Rank Attributes (Infosel)</name>
         <synopsis>Rank attributes using Infosel++</synopsis>
-        <help>Feature selection based on Infosel++ library, for detaitls see: www.prules.org. This library was written in C++, and this operator is 
+        <help>Feature selection based on Infosel++ library, for details see: www.prules.org. This library was written in C++, and this operator is
             a wrapper for that library. It requires to define name of the feature selection algorithm and its parameters. 
-            For estimation of probability dystribution it library performs internal discretization with one
+            For estimation of probability distribution it library performs internal discretization with one
             of build in methods. All the parameters are given as strings because this allows to keep this library open for new algorithms 
             implemented in it. &lt;/br&gt;
             Remember that this RapidMiner plugin requires to have infosel++.exe. It is not included in this extension. You have to ask for it Jacek Biesiada who recently works at  Cincinnati Children's Hospital Medical Center.
@@ -594,9 +594,9 @@
             have weights equals 1, and features which should be removed have weights equal 0. 
         &lt;br/&gt;
             It was designed because Infosel++ returns feature order, such that 
-            each feature has assigned natural number, and this number represents its importance. However these numbers are whithout 
-            any information if they are ordered from the most relevant to the least one or in the oposit order. The order 
-            depends on the algorithm. For example mi_mi retunrs higher values for more relevant features.                
+            each feature has assigned natural number, and this number represents its importance. However these numbers are without
+            any information if they are ordered from the most relevant to the least one or in the opposite order. The order
+            depends on the algorithm. For example mi_mi returns higher values for more relevant features.
         </help>
         <key>featsel_weightsmodifier</key>
     </operator>
@@ -614,7 +614,7 @@
         <name>Fuzzy C-Means</name>        
         <synopsis>Fuzzy c-Means (FCM)</synopsis>
         <help>
-            Fuzzy c-means clustering algorithm. As a result it aslo returns cluster centers on Proto output port. &lt;br/&gt;
+            Fuzzy c-means clustering algorithm. As a result it also returns cluster centers on Proto output port. &lt;br/&gt;
             For details of this algorithm see: 
         &lt;br/&gt;        
             Bezdek J.C., Pattern Recognition with Fuzzy Objective Function Algorithms, Plenum, New York, 1981 
@@ -628,7 +628,7 @@
         <name>Conditional Fuzzy C-Means</name>
         <synopsis>Conditional Fuzzy c-Means (CFCM)</synopsis>
         <help>Conditional Fuzzy c-means clustering algorithm. This algorithm requires weight attribute which is used as a clustering condition.
-            As a result it aslo returns cluster centers on Proto output port. &lt;br/&gt;
+            As a result it also returns cluster centers on Proto output port. &lt;br/&gt;
             For details of this algorithm see: 
         &lt;br/&gt;
             Pedrycz W., Conditional Fuzzy C-Means, Pattern Recognition Letters, Vol. 17(6), 1996
@@ -645,10 +645,10 @@
             on the frequency of class labels of the nearest instances from the ExampleSet input. 
             &lt;br/&gt;
             When clustering labeled data we often need label also the cluster centers, such that the prototypes could be used for example in classification problems. This operator labels cluster centers based on the data delivered to its ExampleSet input.
-            It creates a Voronoi diagram for the dataset delivered to the prototype input, 
+            It creates a Voronoi diagram for the dataSet delivered to the prototype input,
             then calculates some statistics for each cell based on data delivered 
-            to the exampleSet input (examples of both prototapes and exampleSet must have common attribute space)
-            From this statisitcs it takes the most frequent class label in each cell and set it to the prototype representing given cell.
+            to the exampleSet input (examples of both prototypes and exampleSet must have common attribute space)
+            From this statistics it takes the most frequent class label in each cell and set it to the prototype representing given cell.
         &lt;br/&gt;
             Usually it is used for assigning label to the prototypes (cluster centers) obtained after clustering some labeled exampleset.            
         </help>
@@ -661,13 +661,13 @@
         <name>Loop Label Values</name>
         <synopsis>Iterates over each class label of an example set </synopsis>
         <help> This operator iterates over each value of class label of input example set, allowing to applay 
-            instance processing method (ex. clastering) to each class independent. Finally all example sets delivered 
-            to the output are combined such that the output Prototypes containes concatenation of all instances delivered to the internal output.
+            instance processing method (ex. clustering) to each class independent. Finally all example sets delivered
+            to the output are combined such that the output Prototypes contains concatenation of all instances delivered to the internal output.
             If attribute subset is not consistent then output set contains all possible attributes, and missing values are set to NaN.
             &lt;br/&gt;
             For example it can be used to assign class labels to prototypes (cluster centers) 
             obtained as a result of clustering algorithm, or
-            when having a labeled dataset and someone wants to cluster examples separately for each class label. (labels must be nominal)          
+            when having a labeled dataSet and someone wants to cluster examples separately for each class label. (labels must be nominal)
         </help>
         <!--     <class>org.prules.operator.learner.misc.ClassIteratorOperator</class>-->
         <key>ClassIterator</key>
@@ -678,7 +678,7 @@
         <name>Weight Examples by ENN</name>
         <synopsis>Instance Weighting</synopsis>
         <help>    
-            This algorithm performs ENN algorithm but instead of selecting instances it assignes weight to each instance. 
+            This algorithm performs ENN algorithm but instead of selecting instances it assignee weight to each instance.
             This weight is in range [0,1], and represent the value which can be interpreted as a probability of not being an outlier or noise sample.
             Among other usage, it can be used to train WLVQ network.
         </help>
@@ -718,7 +718,7 @@
         <name>Export Process</name>
         <synopsis>Export the process to a file or a repository</synopsis>
         <help> 
-            This operator makes a copy of the xml process description to a given location. It is a specialy usefull when you run multiple experiments with different modifications, so you can store not only the results log but automatically the corresponding process description. So it is simmilar to Auto-Save As where you can specify the location of the process.
+            This operator makes a copy of the xml process description to a given location. It is a specially useful when you run multiple experiments with different modifications, so you can store not only the results log but automatically the corresponding process description. So it is simmilar to Auto-Save As where you can specify the location of the process.
         </help>
         <!--     <class>org.prules.operator.learner.misc.ProcessExportOperator</class>                -->
         <key>ExportProcess</key>
@@ -729,8 +729,8 @@
         <synopsis>Calculate the distance between group of examples</synopsis>
         <help> 
             This operator splits the input exampleSet according to the "grouping attribute", then it calculates the distance between each of the groups. The
-            distance between groups is calculated as the average of the distance between two closes examples in each group. The returned exampleset is a square matrix 
-            however it is not symetric, because it is calculated ina way where it takes each exampe from one group and finds closest example in the second group. So it
+            distance between groups is calculated as the average of the distance between two closes examples in each group. The returned exampleSet is a square matrix
+            however it is not symmetric, because it is calculated ina way where it takes each example from one group and finds closest example in the second group. So it
             is possible that group A will be mre similar to group B then group B is similar to group A. For example it may happen when examples in group A are a
             subset of examples in group B.
         </help>
@@ -741,7 +741,7 @@
     <operator>
         <key>SubtractExampleSets</key>
         <name>Subtract ExampleSets</name>
-        <help>This operator allows to subtract samples from one example set from the other such that only the remaining samples are left. In oposite to default operator it compares values of the examples not ID attribte</help>
+        <help>This operator allows to subtract samples from one example set from the other such that only the remaining samples are left. In opposite to default operator it compares values of the examples not ID attribte</help>
     </operator>
     <operator>
         <synopsis>Delivers as logging value an input object ID</synopsis>
@@ -833,7 +833,7 @@
         <name>Multidimensional Scalling</name>
         <snortname>MDS</snortname>
         <synopsis>This operator uses special MDS algorithm from MDSJ library to provide a visual
-            representation of the pattern of proximities (i.e., similarities or
+            representation of the pattern of proximity's (i.e., similarities or
             distances) among a set of objects.
         </synopsis>
         <help>An MDS algorithm aims to place an example defined in high dimensional space N > 2 into N'-dimensional space (usually N'=2) such that the between-object distances in the high dimensional (origininal)  space and in the low dimensional space are preserved as accurate as possible.&lt;br&gt; Note that MDSJ library used by the operator is licenced under the Creative Commons License &quot;by-nc-sa&quot; 3.0 regulations. This means that you can: &lt;ul&gt; &lt;li&gt;freely copy, share, and distribute the library at no cost and &lt;/li&gt; &lt;li&gt;re-use the library as a component in your software,&lt;/li&gt; &lt;/ul&gt; as long as you: &lt;ul&gt; &lt;li&gt; include the citation below (by), &lt;/li&gt; &lt;li&gt; do not use MDSJ for any commercial purposes (nc), and &lt;/li&gt; &lt;li&gt; apply these conditions to all your pieces of software that make use of MDSJ (sa).&lt;/li&gt; &lt;/ul&gt; . &lt;br&gt; Citation: &quot;Algorithmics Group. MDSJ: Java Library for Multidimensional Scaling (Version 0.2). Available at http://www.inf.uni-konstanz.de/algo/software/mdsj/. University of Konstanz, 2009.&quot;
@@ -863,7 +863,7 @@ Standard usage scenario includes:
 		Numerical attributes normalization (usually in range [0-1])
 	</li>
 	<li>
-		The VDM transformation of all symbolic attributes, what result in pure numerical dataset.
+		The VDM transformation of all symbolic attributes, what result in pure numerical dataSet.
 	</li>
 	<li>
 		Prediction model training and application
