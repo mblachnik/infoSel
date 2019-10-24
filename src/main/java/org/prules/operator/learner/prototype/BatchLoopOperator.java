@@ -144,7 +144,7 @@ public class BatchLoopOperator extends OperatorChain {
      * @throws OperatorException
      */
     private void trainExperts() throws OperatorException {
-        for (Entry<Long, NearestPrototypesOperator.PrototypeTuple> entry : inputModel.getSelectedPairs().entrySet()) {
+        for (Entry<Long, PrototypeTuple> entry : inputModel.getSelectedPairs().entrySet()) {
             long pair = entry.getKey();
             if (pairsMap.containsKey(pair)) {
                 IDataIndex idx = pairsMap.get(pair);

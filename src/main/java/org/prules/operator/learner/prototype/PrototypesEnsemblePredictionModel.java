@@ -13,7 +13,6 @@ import com.rapidminer.example.set.ExampleSetUtilities;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.learner.PredictionModel;
-import org.prules.operator.learner.prototype.NearestPrototypesOperator.PrototypeTuple;
 import org.prules.operator.learner.tools.DataIndex;
 import org.prules.operator.learner.tools.IDataIndex;
 
