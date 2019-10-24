@@ -32,11 +32,9 @@ import org.prules.operator.learner.prototype.model.interfaces.BatchLoopInterface
 import java.util.List;
 
 /**
- * This operator performs a loop over batch attribute, such that all samples with given
- * batch value are delivered to the input subprocess where a prediction model is trained.
- * As an output the operator returns a local ensemble model with models defined for each batch value, where batch is defined by a pair of prototypes.
+ * This operator is combination of {@link NearestPrototypesOperator} and {@link BatchLoopOperator}
  *
- * @author Marcin, Paweł
+ * @author Paweł
  */
 public class PrototypesEnsembleOperator extends OperatorChain implements BatchLoopInterface, CapabilityProvider {
     //<editor-fold desc="Static data" defaultState="collapsed" >
