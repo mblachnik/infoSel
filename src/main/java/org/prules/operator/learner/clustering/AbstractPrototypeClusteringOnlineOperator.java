@@ -57,7 +57,7 @@ public abstract class AbstractPrototypeClusteringOnlineOperator extends Abstract
     /**
      *
      */
-    final InputPort initialPrototypesSourcePort = getSubprocess(0).getInnerSinks().createPort("codebooks");
+    final InputPort initialPrototypesSourcePort = getSubprocess(0).getInnerSinks().createPort("codeBooks");
     protected final OutputPort modelOutputPort = getOutputPorts().createPort("model");
     double costFunctionValue = Double.NaN;
     Map<Integer, String> clusterNames;
