@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.prules.operator.learner.misc;
+package org.prules.operator.learner.prototype;
 
 import com.rapidminer.operator.ResultObjectAdapter;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import lombok.Getter;
 import lombok.Setter;
-import org.prules.operator.learner.misc.NearestPrototypesOperator.PrototypeTuple;
+import org.prules.operator.learner.prototype.NearestPrototypesOperator.PrototypeTuple;
 
 import java.util.Arrays;
 import java.util.List;

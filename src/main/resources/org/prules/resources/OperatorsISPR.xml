@@ -237,11 +237,11 @@
             </operator>
             <operator>
                 <key>NearestPrototypesOperator</key>
-                <class>org.prules.operator.learner.misc.NearestPrototypesOperator</class>                
+                <class>org.prules.operator.learner.prototype.NearestPrototypesOperator</class>
             </operator>   
              <operator>
                 <key>BatchLoopOperator</key>
-                <class>org.prules.operator.learner.misc.BatchLoopOperator</class>                
+                <class>org.prules.operator.learner.prototype.BatchLoopOperator</class>
             </operator>            
             <operator>
                 <key>ClassIterator</key>

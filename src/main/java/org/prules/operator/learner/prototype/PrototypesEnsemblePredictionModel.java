@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.prules.operator.learner.misc;
+package org.prules.operator.learner.prototype;
 
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
@@ -13,7 +13,7 @@ import com.rapidminer.example.set.ExampleSetUtilities;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.learner.PredictionModel;
-import org.prules.operator.learner.misc.NearestPrototypesOperator.PrototypeTuple;
+import org.prules.operator.learner.prototype.NearestPrototypesOperator.PrototypeTuple;
 import org.prules.operator.learner.tools.DataIndex;
 import org.prules.operator.learner.tools.IDataIndex;
 

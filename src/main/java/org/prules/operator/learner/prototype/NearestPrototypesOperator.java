@@ -1,4 +1,4 @@
-package org.prules.operator.learner.misc;
+package org.prules.operator.learner.prototype;
 
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
