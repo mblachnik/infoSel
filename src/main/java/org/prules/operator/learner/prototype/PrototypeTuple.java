@@ -2,7 +2,7 @@ package org.prules.operator.learner.prototype;
 
 import org.prules.tools.math.BasicMath;
 
-class PrototypeTuple {
+public class PrototypeTuple {
     /**
      * Id of pair
      */
@@ -23,7 +23,7 @@ class PrototypeTuple {
      * @param prototypeId1 id of first prototype
      * @param prototypeId2 id of second prototype
      */
-    PrototypeTuple(int prototypeId1, int prototypeId2) {
+    public PrototypeTuple(int prototypeId1, int prototypeId2) {
         if (prototypeId1 < prototypeId2) {
             this.prototypeId1 = prototypeId1;
             this.prototypeId2 = prototypeId2;
@@ -39,13 +39,13 @@ class PrototypeTuple {
      *
      * @param tuple other {@link PrototypeTuple}
      */
-    PrototypeTuple(PrototypeTuple tuple) {
+    public PrototypeTuple(PrototypeTuple tuple) {
         this.prototypeId1 = tuple.prototypeId1;
         this.prototypeId2 = tuple.prototypeId2;
         this.pairId = tuple.pairId;
     }
 
-    PrototypeTuple() {
+    public PrototypeTuple() {
         this.prototypeId1 = -1;
         this.prototypeId2 = -1;
         this.pairId = -1;
@@ -56,7 +56,7 @@ class PrototypeTuple {
      *
      * @param tuple from which to copy fields
      */
-    final void set(PrototypeTuple tuple) {
+    public final void set(PrototypeTuple tuple) {
         this.set(tuple.getPrototypeId1(), tuple.getPrototypeId2());
     }
 
@@ -83,7 +83,7 @@ class PrototypeTuple {
      *
      * @return long
      */
-    long getPairId() {
+    public long getPairId() {
         return pairId;
     }
 
@@ -92,7 +92,7 @@ class PrototypeTuple {
      *
      * @return int
      */
-    int getPrototypeId1() {
+    public int getPrototypeId1() {
         return prototypeId1;
     }
 
@@ -101,7 +101,7 @@ class PrototypeTuple {
      *
      * @return int
      */
-    int getPrototypeId2() {
+    public int getPrototypeId2() {
         return prototypeId2;
     }
 

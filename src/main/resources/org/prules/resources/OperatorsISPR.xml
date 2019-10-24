@@ -236,14 +236,6 @@
                 <class>org.prules.operator.learner.misc.ClassAssignerOperator</class>                
             </operator>
             <operator>
-                <key>NearestPrototypesOperator</key>
-                <class>org.prules.operator.learner.prototype.NearestPrototypesOperator</class>
-            </operator>   
-             <operator>
-                <key>BatchLoopOperator</key>
-                <class>org.prules.operator.learner.prototype.BatchLoopOperator</class>
-            </operator>            
-            <operator>
                 <key>ClassIterator</key>
                 <class>org.prules.operator.learner.misc.ClassIteratorOperator</class>
                 <replaces>ClassIteratorOperator</replaces>
@@ -276,7 +268,16 @@
             </operator>  
             -->
         </group>
-        
+        <group key="Prototype">
+            <operator>
+                <key>NearestPrototypesOperator</key>
+                <class>org.prules.operator.learner.prototype.NearestPrototypesOperator</class>
+            </operator>
+            <operator>
+                <key>BatchLoopOperator</key>
+                <class>org.prules.operator.learner.prototype.BatchLoopOperator</class>
+            </operator>
+        </group>
         <group key="Weight Examples">
             <operator>
                 <key>ENNWeighting</key>

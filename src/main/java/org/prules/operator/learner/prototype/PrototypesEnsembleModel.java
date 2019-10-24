@@ -30,7 +30,7 @@ public class PrototypesEnsembleModel extends ResultObjectAdapter {
     //</editor-fold>
 
     //<editor-fold desc="Constructor" defaultState="collapsed" >
-    PrototypesEnsembleModel(double[][] prototypes, double[] labels, List<String> attributes, DistanceMeasure measure, Map<Long, PrototypeTuple> selectedPairs) {
+    public PrototypesEnsembleModel(double[][] prototypes, double[] labels, List<String> attributes, DistanceMeasure measure, Map<Long, PrototypeTuple> selectedPairs) {
         this.prototypes = prototypes;
         this.labels = labels;
         this.attributes = attributes;
