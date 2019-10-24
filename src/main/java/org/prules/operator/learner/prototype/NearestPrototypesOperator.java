@@ -37,14 +37,14 @@ import java.util.List;
  */
 public class NearestPrototypesOperator extends Operator implements CapabilityProvider {
     //<editor-fold desc="Static data" defaultState="collapsed" >
-    private static final String PARAMETER_MIN_COUNT_FACTOR = "Min. counts factor";
-    private static final String PARAMETER_MINIMUM_SUPPORT = "Min. support";
-    private static final String PORT_INPUT_EXAMPLE = "example set";
-    private static final String PORT_INPUT_PROTOTYPES = "prototypes";
+    static final String PARAMETER_MIN_COUNT_FACTOR = "Min. counts factor";
+    static final String PARAMETER_MINIMUM_SUPPORT = "Min. support";
+    static final String PORT_INPUT_EXAMPLE = "example set";
+    static final String PORT_INPUT_PROTOTYPES = "prototypes";
     static final String PORT_OUTPUT_PROTOTYPES = "example set";
     static final String PORT_OUTPUT_TUPLES = "tuplesModel";
-    private static final String FACTOR_DESCRIPTION = "Factor indicating minimum number of instances in a single batch. It is multiplied by the max counts.";
-    private static final String MINIMUM_NUMBER_SUPPORT_DESCRIPTION = "Minimum number of samples in a single batch. It it has lower number of samples it will be removed and the samples will be redistributed into another batches";
+    static final String FACTOR_DESCRIPTION = "Factor indicating minimum number of instances in a single batch. It is multiplied by the max counts.";
+    static final String MINIMUM_NUMBER_SUPPORT_DESCRIPTION = "Minimum number of samples in a single batch. It it has lower number of samples it will be removed and the samples will be redistributed into another batches";
     //</editor-fold>
 
     //<editor-fold desc="Private fields" defaultState="collapsed" >

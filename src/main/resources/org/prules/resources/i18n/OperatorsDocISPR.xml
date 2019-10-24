@@ -145,7 +145,17 @@
             
         </help> 
         <icon>ispr.png</icon>
-    </operator> 
+    </operator>
+
+    <operator>
+        <key>PrototypesEnsembleOperator</key>
+        <name>Prototypes Ensemble Operator</name>
+        <synopsis>Generates batch attribute out of two nearest prototypes from opposite classes and next loop over batches in example set and for each batch trains an independent model. Then all models are combined into EnsemblePredictionModel.</synopsis>
+        <help>
+
+        </help>
+        <icon>ispr.png</icon>
+    </operator>
             
     <operator>
         <key>NNE_by_D_test</key>

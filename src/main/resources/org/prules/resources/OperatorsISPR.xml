@@ -277,6 +277,10 @@
                 <key>BatchLoopOperator</key>
                 <class>org.prules.operator.learner.prototype.BatchLoopOperator</class>
             </operator>
+            <operator>
+                <key>PrototypesEnsembleOperator</key>
+                <class>org.prules.operator.learner.prototype.PrototypesEnsembleOperator</class>
+            </operator>
         </group>
         <group key="Weight Examples">
             <operator>
