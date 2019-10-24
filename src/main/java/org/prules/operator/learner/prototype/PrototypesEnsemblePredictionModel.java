@@ -45,7 +45,7 @@ public class PrototypesEnsemblePredictionModel extends PredictionModel {
     //</editor-fold>
 
     //<editor-fold desc="Constructor" defaultState="collapsed" >
-    PrototypesEnsemblePredictionModel(PrototypesEnsembleModel model, Map<Long, PredictionModel> predictionModelsMap, ExampleSet trainingExampleSet, ExampleSetUtilities.SetsCompareOption sizeCompareOperator, ExampleSetUtilities.TypesCompareOption typeCompareOperator) {
+    public PrototypesEnsemblePredictionModel(PrototypesEnsembleModel model, Map<Long, PredictionModel> predictionModelsMap, ExampleSet trainingExampleSet, ExampleSetUtilities.SetsCompareOption sizeCompareOperator, ExampleSetUtilities.TypesCompareOption typeCompareOperator) {
         super(trainingExampleSet, sizeCompareOperator, typeCompareOperator);
         this.model = model;
         this.predictionModelsMap = predictionModelsMap;

@@ -17,6 +17,9 @@ import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.learner.PredictionModel;
 import com.rapidminer.operator.ports.InputPort;
 import com.rapidminer.operator.ports.OutputPort;
+import org.prules.operator.learner.prototype.model.AbstractBatchLoopModel;
+import org.prules.operator.learner.prototype.model.BasicBatchLoopModel;
+import org.prules.operator.learner.prototype.model.interfaces.BatchLoopInterface;
 import org.prules.operator.learner.tools.DataIndex;
 import org.prules.operator.learner.tools.IDataIndex;
 
@@ -31,10 +34,10 @@ import java.util.Map.Entry;
  *
  * @author Marcin, Paweł
  */
-public class BatchLoopOperator extends OperatorChain {
+public class BatchLoopOperator extends OperatorChain implements BatchLoopInterface {
     //<editor-fold desc="Static data" defaultState="collapsed" >
     private static final String PORT_INPUT_EXAMPLE = NearestPrototypesOperator.PORT_OUTPUT_PROTOTYPES;
-    private static final String PORT_INPUT_MODEL =  NearestPrototypesOperator.PORT_OUTPUT_TUPLES;
+    private static final String PORT_INPUT_MODEL = NearestPrototypesOperator.PORT_OUTPUT_TUPLES;
     private static final String PORT_INNER_INPUT_EXAMPLE = "example set";
     private static final String PORT_INNER_INPUT_MODEL = "prediction model";
     private static final String PORT_OUTPUT_MODEL = "prediction model";
@@ -61,27 +64,6 @@ public class BatchLoopOperator extends OperatorChain {
      * The final prediction model ensemble
      */
     private final OutputPort finalModelOutputPort = getOutputPorts().createPort(PORT_OUTPUT_MODEL);
-    /**
-     * input example set
-     */
-    private ExampleSet exampleSet;
-    /**
-     * Input model
-     */
-    private PrototypesEnsembleModel inputModel;
-    /**
-     * List of attributes
-     */
-    private Attribute attr;
-
-    /**
-     * Map of pair Id to model
-     */
-    private Map<Long, PredictionModel> modelsMap;//Map which cantons list of elements which belong to given batch
-    /**
-     * Map of pair Id to Data Index
-     */
-    private Map<Long, IDataIndex> pairsMap;
     //</editor-fold>
 
     //<editor-fold desc="Constructor" defaultState="collapsed" >
@@ -98,85 +80,6 @@ public class BatchLoopOperator extends OperatorChain {
     }
     //</editor-fold>
 
-    // <editor-fold desc="Set up stage" defaultState="collapsed" >
-
-    /**
-     * Sets up configuration variables for process computation
-     *
-     * @throws OperatorException
-     */
-    private void setup() throws OperatorException {
-        //Get example set
-        exampleSet = exampleSetInputPort.getData(ExampleSet.class);
-        //Get model
-        inputModel = prototypesEnsemble.getData(PrototypesEnsembleModel.class);
-        //Get attributes
-        attr = exampleSet.getAttributes().findRoleBySpecialName(Attributes.BATCH_NAME).getAttribute();
-        //Initialize maps
-        modelsMap = new HashMap<>();
-        pairsMap = new HashMap<>();
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Compute stage" defaultState="collapsed" >
-
-    /**
-     * Gets all possible pairs and samples which belong to given pair
-     */
-    private void mapPairs() {
-        int exampleIndex = 0;
-        IDataIndex idx;
-        for (Example example : exampleSet) {
-            double pairId = example.getValue(attr);
-            if (!pairsMap.containsKey((long) pairId)) {
-                idx = new DataIndex(exampleSet.size());
-                idx.setAllFalse();
-                pairsMap.put((long) pairId, idx);
-            }
-            pairsMap.get((long) pairId).set(exampleIndex, true);
-            exampleIndex++;
-        }
-    }
-
-    /**
-     * Train experts in inner sub process
-     *
-     * @throws OperatorException
-     */
-    private void trainExperts() throws OperatorException {
-        for (Entry<Long, PrototypeTuple> entry : inputModel.getSelectedPairs().entrySet()) {
-            long pair = entry.getKey();
-            if (pairsMap.containsKey(pair)) {
-                IDataIndex idx = pairsMap.get(pair);
-
-                //Select samples from given batch
-                SelectedExampleSet selectedExampleSet = new SelectedExampleSet(exampleSet);
-                selectedExampleSet.setIndex(idx);
-                //And deliver these samples to train a model
-                exampleInnerSourcePort.deliver(selectedExampleSet);
-                //Execute inner process (train the model)
-                getSubprocess(0).execute();
-                inApplyLoop();
-
-                PredictionModel model = predictionModelInnerSourcePort.getData(PredictionModel.class);
-                modelsMap.put(pair, model);
-            }
-        }
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Delivery stage" defaultState="collapsed" >
-
-    /**
-     * Method run at the end, delivers created model from operator
-     */
-    private void deliver() {
-        PredictionModel finalModel = new PrototypesEnsemblePredictionModel(inputModel, modelsMap, exampleSet,
-                ExampleSetUtilities.SetsCompareOption.ALLOW_SUPERSET, ExampleSetUtilities.TypesCompareOption.ALLOW_SAME_PARENTS);
-        finalModelOutputPort.deliver(finalModel);
-    }
-    //</editor-fold>
-
     //<editor-fold desc="Operator methods" defaultState="collapsed" >
 
     /**
@@ -189,10 +92,28 @@ public class BatchLoopOperator extends OperatorChain {
      */
     @Override
     public void doWork() throws OperatorException {
-        setup();
-        mapPairs();
-        trainExperts();
-        deliver();
+        //Get example set
+        ExampleSet exampleSet = exampleSetInputPort.getData(ExampleSet.class);
+        //Get model
+        PrototypesEnsembleModel inputModel = prototypesEnsemble.getData(PrototypesEnsembleModel.class);
+        //Compute
+        AbstractBatchLoopModel model = new BasicBatchLoopModel(exampleSet, inputModel, this);
+        model.process();
+        PredictionModel finalModel= model.retrieveModel();
+        finalModelOutputPort.deliver(finalModel);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="BatchLoopInterface implementation" defaultState="collapsed" >
+    @Override
+    public PredictionModel trainExpert(SelectedExampleSet selectedExamples) throws OperatorException {
+        //And deliver these samples to train a model
+        exampleInnerSourcePort.deliver(selectedExamples);
+        //Execute inner process (train the model)
+        getSubprocess(0).execute();
+        inApplyLoop();
+
+        return predictionModelInnerSourcePort.getData(PredictionModel.class);
     }
     //</editor-fold>
 }

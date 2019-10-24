@@ -92,7 +92,7 @@ public class PrototypesEnsembleModel extends ResultObjectAdapter {
      *
      * @return selectedPairs
      */
-    Map<Long, PrototypeTuple> getSelectedPairs() {
+    public Map<Long, PrototypeTuple> getSelectedPairs() {
         return selectedPairs;
     }
 
