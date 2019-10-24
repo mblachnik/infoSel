@@ -71,27 +71,30 @@ public abstract class AbstractNearestProtoModel {
     //</editor-fold>
 
     //<editor-fold desc="Constructor" defaultState="collapsed" >
+
     /**
      * Constructor for AbstractNearestProtoModel
-     * @param examples - training examples
-     * @param prototypes - prototype examples
+     *
+     * @param examples      - training examples
+     * @param prototypes    - prototype examples
      * @param measureHelper - measure helper for retrieving distances between examples
      * @throws OperatorException - on getInitializedMeasure in measureHelper from examples
      */
     public AbstractNearestProtoModel(ExampleSet examples, ExampleSet prototypes, DistanceMeasureHelper measureHelper) throws OperatorException {
         //Copy data
         this.examples = (ExampleSet) examples.clone();
-        this.prototypes = (ExampleSet)prototypes.clone();
+        this.prototypes = (ExampleSet) prototypes.clone();
         //Get distance measures
         this.distanceMeasure = measureHelper.getInitializedMeasure(this.examples);
     }
     //</editor-fold>
 
-    public void process(){
+    public void process() {
         setup();
         compute();
         optimize();
     }
+
     public void setup() {
         //Add attributes to table
         this.examples.getExampleTable().addAttribute(ATTRIBUTE_ID_PROTO_1);
@@ -134,6 +137,7 @@ public abstract class AbstractNearestProtoModel {
     }
 
     //<editor-fold desc="Abstract methods" defaultState="collapsed" >
+
     /**
      * Computes PrototypeTuples for each Example in exampleSet
      */
@@ -146,12 +150,14 @@ public abstract class AbstractNearestProtoModel {
 
     /**
      * Method run at the end, delivers computed model
+     *
      * @return PrototypesEnsembleModel
      */
     public abstract PrototypesEnsembleModel retrieveModel();
 
     /**
      * Method to return output set
+     *
      * @return ExampleSet
      */
     public abstract ExampleSet retrieveOutputSet();

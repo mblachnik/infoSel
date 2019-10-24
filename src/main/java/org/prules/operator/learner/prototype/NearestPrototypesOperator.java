@@ -1,8 +1,5 @@
 package org.prules.operator.learner.prototype;
 
-import com.rapidminer.example.Attribute;
-import com.rapidminer.example.Attributes;
-import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.Operator;
 import com.rapidminer.operator.OperatorCapability;
@@ -23,11 +20,7 @@ import com.rapidminer.tools.math.similarity.DistanceMeasures;
 import org.prules.operator.learner.prototype.model.AbstractNearestProtoModel;
 import org.prules.operator.learner.prototype.model.BasicNearestProtoModel;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 
 /**
  * The class implements NearestPrototypeBatchOperator. It takes the prototypes

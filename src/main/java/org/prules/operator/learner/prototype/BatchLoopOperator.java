@@ -5,11 +5,7 @@
  */
 package org.prules.operator.learner.prototype;
 
-import com.rapidminer.example.Attribute;
-import com.rapidminer.example.Attributes;
-import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.example.set.ExampleSetUtilities;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.operator.OperatorChain;
 import com.rapidminer.operator.OperatorDescription;
@@ -20,12 +16,6 @@ import com.rapidminer.operator.ports.OutputPort;
 import org.prules.operator.learner.prototype.model.AbstractBatchLoopModel;
 import org.prules.operator.learner.prototype.model.BasicBatchLoopModel;
 import org.prules.operator.learner.prototype.model.interfaces.BatchLoopInterface;
-import org.prules.operator.learner.tools.DataIndex;
-import org.prules.operator.learner.tools.IDataIndex;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * This operator performs a loop over batch attribute, such that all samples with given
@@ -99,7 +89,7 @@ public class BatchLoopOperator extends OperatorChain implements BatchLoopInterfa
         //Compute
         AbstractBatchLoopModel model = new BasicBatchLoopModel(exampleSet, inputModel, this);
         model.process();
-        PredictionModel finalModel= model.retrieveModel();
+        PredictionModel finalModel = model.retrieveModel();
         finalModelOutputPort.deliver(finalModel);
     }
     //</editor-fold>

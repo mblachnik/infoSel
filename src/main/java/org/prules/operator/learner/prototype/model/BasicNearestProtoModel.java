@@ -45,13 +45,15 @@ public class BasicNearestProtoModel extends AbstractNearestProtoModel {
     //</editor-fold>
 
     //<editor-fold desc="Constructor" defaultState="collapsed" >
+
     /**
      * Constructor for model
-     * @param examples - training examples
-     * @param prototypes - prototype examples
+     *
+     * @param examples      - training examples
+     * @param prototypes    - prototype examples
      * @param measureHelper - measure helper for retrieving distances between examples
-     * @param minFactor - percentage of biggest size of batch to be minimal size of smallest batch
-     * @param minSupport - min value from biggest size of batch
+     * @param minFactor     - percentage of biggest size of batch to be minimal size of smallest batch
+     * @param minSupport    - min value from biggest size of batch
      * @throws OperatorException - on getInitializedMeasure in measureHelper from examples
      */
     public BasicNearestProtoModel(ExampleSet examples, ExampleSet prototypes, DistanceMeasureHelper measureHelper, double minFactor, int minSupport) throws OperatorException {
