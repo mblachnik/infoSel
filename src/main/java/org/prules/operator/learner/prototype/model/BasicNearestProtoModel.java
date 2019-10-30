@@ -181,6 +181,7 @@ public class BasicNearestProtoModel extends AbstractNearestProtoModel {
                         countersMap.remove(tuple.getPairId());
                     } else { //Otherwise decrease counter
                         counter[label]--;
+                        countersMap.put(smallestSizeId, counter);
                     }
 
                     double[] protoDistances = getExample2ProtoDistances()[exampleIndex];
