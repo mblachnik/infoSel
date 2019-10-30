@@ -158,7 +158,7 @@ public abstract class AbstractPrototypeOptimizationOperator extends AbstractProt
      * is clustering model - namely kNN
      * @throws OperatorException
      */
-    public abstract PredictionModel optimize(ExampleSet trainingSet, ExampleSet codebooks) throws OperatorException;
+    public abstract PredictionModel optimize(ExampleSet trainingSet, ExampleSet codeBooks) throws OperatorException;
 
     public List<ParameterType> getParameterTypes() {
         List<ParameterType> types = super.getParameterTypes();
