@@ -208,10 +208,8 @@ public class PrototypesEnsembleOperator extends OperatorChain implements BatchLo
     public List<ParameterType> getParameterTypes() {
         List<ParameterType> types = super.getParameterTypes();
 
-        ParameterType type = new ParameterTypeDouble(PARAMETER_MIN_COUNT_FACTOR, FACTOR_DESCRIPTION, 0, 1, 0.1);
-        types.add(type);
-        type = new ParameterTypeInt(PARAMETER_MINIMUM_SUPPORT, MINIMUM_NUMBER_SUPPORT_DESCRIPTION, 0, Integer.MAX_VALUE, 20);
-        types.add(type);
+        types.add(new ParameterTypeDouble(PARAMETER_MIN_COUNT_FACTOR, FACTOR_DESCRIPTION, 0, 1, 0.1));
+        types.add(new ParameterTypeInt(PARAMETER_MINIMUM_SUPPORT, MINIMUM_NUMBER_SUPPORT_DESCRIPTION, 0, Integer.MAX_VALUE, 20));
         types.addAll(DistanceMeasures.getParameterTypes(this));
         return types;
     }

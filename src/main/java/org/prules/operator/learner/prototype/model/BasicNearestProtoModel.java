@@ -169,7 +169,9 @@ public class BasicNearestProtoModel extends AbstractNearestProtoModel {
         while (min < minCounts) {
             int exampleIndex = 0;
             //For each training sample check if it belongs to least frequent pair, then update pair
-            for (PrototypeTuple tuple : getExamplesNearestTuples()) {
+            PrototypeTuple[] examplesNearestTuples = getExamplesNearestTuples();
+            for (int i = 0; i <examplesNearestTuples.length; ++i ) {
+                PrototypeTuple tuple = examplesNearestTuples[i];
                 //If sample with given exampleId belongs to the least frequent batch group,
                 // then reassign it to other already existing group
                 if (tuple.getPairId() == smallestSizeId) {
@@ -181,8 +183,8 @@ public class BasicNearestProtoModel extends AbstractNearestProtoModel {
                         countersMap.remove(tuple.getPairId());
                     } else { //Otherwise decrease counter
                         counter[label]--;
+                        countersMap.put(smallestSizeId, counter);
                     }
-
                     double[] protoDistances = getExample2ProtoDistances()[exampleIndex];
                     double minDist = Double.MAX_VALUE;
                     PrototypeTuple tmpTuple = new PrototypeTuple();
@@ -199,6 +201,8 @@ public class BasicNearestProtoModel extends AbstractNearestProtoModel {
                     }
                     //Increase counter of a new pair
                     tuple.set(tmpTuple);
+                    examplesNearestTuples[i] = tuple;
+                    setExamplesNearestTuples(examplesNearestTuples);
                     counter = countersMap.get(tmpTuple.getPairId());
                     counter[label]++;
                     countersMap.put(tmpTuple.getPairId(), counter);

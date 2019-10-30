@@ -192,6 +192,10 @@ public abstract class AbstractNearestProtoModel {
         return examplesNearestTuples;
     }
 
+    void setExamplesNearestTuples(PrototypeTuple[] examplesNearestTuples) {
+        this.examplesNearestTuples = examplesNearestTuples;
+    }
+
     double[][] getExample2ProtoDistances() {
         return example2ProtoDistances;
     }
