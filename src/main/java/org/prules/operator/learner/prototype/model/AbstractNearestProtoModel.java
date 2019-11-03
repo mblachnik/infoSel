@@ -22,7 +22,7 @@ public abstract class AbstractNearestProtoModel {
     private static final String NAME_ATTRIBUTE_ID_PAIR = "ID_Proto_Pair";
     static final Attribute ATTRIBUTE_ID_PROTO_1 = AttributeFactory.createAttribute(NAME_ATTRIBUTE_ID_1, Ontology.NUMERICAL);
     static final Attribute ATTRIBUTE_ID_PROTO_2 = AttributeFactory.createAttribute(NAME_ATTRIBUTE_ID_2, Ontology.NUMERICAL);
-    static final Attribute ATTRIBUTE_ID_PAIR = AttributeFactory.createAttribute(NAME_ATTRIBUTE_ID_PAIR, Ontology.POLYNOMINAL);
+    static final Attribute ATTRIBUTE_ID_PAIR = AttributeFactory.createAttribute(NAME_ATTRIBUTE_ID_PAIR, Ontology.NUMERICAL);
     //</editor-fold>
 
     //<editor-fold desc="Private fields" defaultState="collapsed" >

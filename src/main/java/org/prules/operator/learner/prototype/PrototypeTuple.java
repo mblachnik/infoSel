@@ -40,9 +40,8 @@ public class PrototypeTuple {
      * @param tuple other {@link PrototypeTuple}
      */
     public PrototypeTuple(PrototypeTuple tuple) {
-        this.prototypeId1 = tuple.prototypeId1;
-        this.prototypeId2 = tuple.prototypeId2;
-        this.pairId = tuple.pairId;
+        super();
+        this.set(tuple);
     }
 
     public PrototypeTuple() {

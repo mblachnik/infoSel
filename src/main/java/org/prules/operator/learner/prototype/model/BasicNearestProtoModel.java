@@ -165,12 +165,11 @@ public class BasicNearestProtoModel extends AbstractNearestProtoModel {
         //If minFactor is less restrictive then take minSupport (always take more restrictive rule)
         int minCounts = Math.max((int) (minFactor * biggestSize), minSupport);
         createUniqueTupleMap();
-
+        PrototypeTuple[] examplesNearestTuples = getExamplesNearestTuples();
         while (min < minCounts) {
             int exampleIndex = 0;
             //For each training sample check if it belongs to least frequent pair, then update pair
-            PrototypeTuple[] examplesNearestTuples = getExamplesNearestTuples();
-            for (int i = 0; i <examplesNearestTuples.length; ++i ) {
+            for (int i = 0; i < examplesNearestTuples.length; ++i) {
                 PrototypeTuple tuple = examplesNearestTuples[i];
                 //If sample with given exampleId belongs to the least frequent batch group,
                 // then reassign it to other already existing group
@@ -202,7 +201,6 @@ public class BasicNearestProtoModel extends AbstractNearestProtoModel {
                     //Increase counter of a new pair
                     tuple.set(tmpTuple);
                     examplesNearestTuples[i] = tuple;
-                    setExamplesNearestTuples(examplesNearestTuples);
                     counter = countersMap.get(tmpTuple.getPairId());
                     counter[label]++;
                     countersMap.put(tmpTuple.getPairId(), counter);
@@ -217,11 +215,12 @@ public class BasicNearestProtoModel extends AbstractNearestProtoModel {
             // will be automatically classified to the majority class.
             min = computeDistribution();
         }
+        setExamplesNearestTuples(examplesNearestTuples);
 
         int exampleIndex = 0;
         ExampleSet outputSet = getExamples();
         for (Example example : outputSet) {
-            PrototypeTuple tuple = getExamplesNearestTuples()[exampleIndex];
+            PrototypeTuple tuple = examplesNearestTuples[exampleIndex];
             example.setValue(ATTRIBUTE_ID_PROTO_1, tuple.getPrototypeId1());
             example.setValue(ATTRIBUTE_ID_PROTO_2, tuple.getPrototypeId2());
             example.setValue(ATTRIBUTE_ID_PAIR, tuple.getPairId());
