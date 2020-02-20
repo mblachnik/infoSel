@@ -17,6 +17,10 @@
                 <class>org.prules.operator.learner.classifiers.neuralnet.LVQOperator</class>
                 <replaces>LVQ</replaces>
             </operator>
+            <operator>
+                <key>NearestPrototypeEnsembleOperator</key>
+                <class>org.prules.operator.learner.classifiers.data_splitter.NearestPrototypeEnsembleOperator</class>
+            </operator>
         </group>
         <group key="Select Examples">
             <operator>
@@ -165,7 +169,15 @@
                 <operator>
                     <key>meta_noise_sel</key>
                     <class>org.prules.operator.learner.selection.ensemble.ISEnsembleNoisOperator</class>
-                </operator>  
+                </operator>
+                <operator>
+                    <key>BatchLoopOperator</key>
+                    <class>org.prules.operator.learner.selection.ensemble.BatchLoopOperator</class>
+                </operator>
+                <operator>
+                    <key>NearestPrototypeBatchOperator</key>
+                    <class>org.prules.operator.learner.classifiers.data_splitter.NearestPrototypeBatchOperator</class>
+                </operator>
             </group>
         </group>
         <group key="Feature_reduction">
@@ -235,14 +247,6 @@
                 <key>ClassAssigner</key>
                 <class>org.prules.operator.learner.misc.ClassAssignerOperator</class>                
             </operator>
-            <operator>
-                <key>NearestPrototypesOperator</key>
-                <class>org.prules.operator.learner.misc.NearestPrototypesOperator</class>                
-            </operator>   
-             <operator>
-                <key>BatchLoopOperator</key>
-                <class>org.prules.operator.learner.misc.BatchLoopOperator</class>                
-            </operator>            
             <operator>
                 <key>ClassIterator</key>
                 <class>org.prules.operator.learner.misc.ClassIteratorOperator</class>

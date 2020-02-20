@@ -12,12 +12,13 @@ import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.UserError;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeCategory;
+
 import java.util.List;
+
 import org.prules.operator.learner.selection.AbstractInstanceSelectorOperator;
 import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
 
 /**
- *
  * @author Marcin
  */
 public class KeelISOperator extends AbstractInstanceSelectorOperator {
@@ -33,13 +34,7 @@ public class KeelISOperator extends AbstractInstanceSelectorOperator {
         int intType = getParameterAsInt(KeelISAlgorithms.PARAMETER_IS_ALGORITHM);
         KeelISAlgorithms type = KeelISAlgorithms.valueOf(KeelISAlgorithms.IS_ALGORITHM_TYPES()[intType]);
         AbstractInstanceSelectorModel model = null;
-        switch (type) {
-            case CCIS:
-                model = new KeelISModel(this.getParameterAsString(CONFIGURATION_PARAMETERS), this);
-                break;
-            default:                
-                throw new UserError(this, "Unknown Keel IS model");
-        }
+        model = new KeelISModel(type, this.getParameterAsString(CONFIGURATION_PARAMETERS), this);
         return model;
     }
 

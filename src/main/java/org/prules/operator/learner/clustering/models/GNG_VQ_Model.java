@@ -10,6 +10,7 @@ import com.rapidminer.example.set.SimpleExampleSet;
 import com.rapidminer.example.table.DataRowFactory;
 import com.rapidminer.example.table.ExampleTable;
 import com.rapidminer.example.table.MemoryExampleTable;
+import com.rapidminer.example.utils.ExampleSets;
 import org.prules.operator.learner.clustering.gng.NeuronNode;
 import org.prules.operator.learner.clustering.models.gng.comparators.DistanceComparator;
 import org.prules.operator.learner.clustering.models.gng.comparators.LocalErrorComparator;
@@ -111,9 +112,10 @@ public class GNG_VQ_Model extends AbstractVQModel {
         for (Attribute attr : prototypeAttributes) {
             attributesList.add(attr);
         }
+        ExampleSet codebooksSet = ExampleSets.from(attributesList).withBlankSize(neurons.size()).build();
+        //ExampleTable codebooksTable = new MemoryExampleTable(attributesList, new DataRowFactory(DataRowFactory.TYPE_DOUBLE_ARRAY, '.'), neurons.size());
+        //ExampleSet codebooksSet = new SimpleExampleSet(codebooksTable, attributesList);
 
-        ExampleTable codebooksTable = new MemoryExampleTable(attributesList, new DataRowFactory(DataRowFactory.TYPE_DOUBLE_ARRAY, '.'), neurons.size());
-        ExampleSet codebooksSet = new SimpleExampleSet(codebooksTable, attributesList);
         Iterator<Example> codebookExampleIterator = codebooksSet.iterator();
         //Rewrite codebooks to codebooks ExampleSet
         Attributes codebookAttributes = codebooksSet.getAttributes();

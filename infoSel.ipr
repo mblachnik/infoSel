@@ -20,9 +20,7 @@
       <module name="infoSel.test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
-  <component name="CopyrightManager" default="">
-    <module2copyright />
-  </component>
+  <component name="CopyrightManager" default="" />
   <component name="DependencyValidationManager">
     <option name="SKIP_IMPORT_STATEMENTS" value="false" />
   </component>
@@ -59,6 +57,127 @@
   <component name="JavadocGenerationManager">
     <option name="OTHER_OPTIONS" value="" />
   </component>
+  <component name="Palette2">
+    <group name="Swing">
+      <item class="com.intellij.uiDesigner.HSpacer" tooltip-text="Horizontal Spacer" icon="/com/intellij/uiDesigner/icons/hspacer.png" removable="false" auto-create-binding="false" can-attach-label="false">
+        <default-constraints vsize-policy="1" hsize-policy="6" anchor="0" fill="1" />
+      </item>
+      <item class="com.intellij.uiDesigner.VSpacer" tooltip-text="Vertical Spacer" icon="/com/intellij/uiDesigner/icons/vspacer.png" removable="false" auto-create-binding="false" can-attach-label="false">
+        <default-constraints vsize-policy="6" hsize-policy="1" anchor="0" fill="2" />
+      </item>
+      <item class="javax.swing.JPanel" icon="/com/intellij/uiDesigner/icons/panel.png" removable="false" auto-create-binding="false" can-attach-label="false">
+        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3" />
+      </item>
+      <item class="javax.swing.JScrollPane" icon="/com/intellij/uiDesigner/icons/scrollPane.png" removable="false" auto-create-binding="false" can-attach-label="true">
+        <default-constraints vsize-policy="7" hsize-policy="7" anchor="0" fill="3" />
+      </item>
+      <item class="javax.swing.JButton" icon="/com/intellij/uiDesigner/icons/button.png" removable="false" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="0" hsize-policy="3" anchor="0" fill="1" />
+        <initial-values>
+          <property name="text" value="Button" />
+        </initial-values>
+      </item>
+      <item class="javax.swing.JRadioButton" icon="/com/intellij/uiDesigner/icons/radioButton.png" removable="false" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="0" hsize-policy="3" anchor="8" fill="0" />
+        <initial-values>
+          <property name="text" value="RadioButton" />
+        </initial-values>
+      </item>
+      <item class="javax.swing.JCheckBox" icon="/com/intellij/uiDesigner/icons/checkBox.png" removable="false" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="0" hsize-policy="3" anchor="8" fill="0" />
+        <initial-values>
+          <property name="text" value="CheckBox" />
+        </initial-values>
+      </item>
+      <item class="javax.swing.JLabel" icon="/com/intellij/uiDesigner/icons/label.png" removable="false" auto-create-binding="false" can-attach-label="false">
+        <default-constraints vsize-policy="0" hsize-policy="0" anchor="8" fill="0" />
+        <initial-values>
+          <property name="text" value="Label" />
+        </initial-values>
+      </item>
+      <item class="javax.swing.JTextField" icon="/com/intellij/uiDesigner/icons/textField.png" removable="false" auto-create-binding="true" can-attach-label="true">
+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
+          <preferred-size width="150" height="-1" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JPasswordField" icon="/com/intellij/uiDesigner/icons/passwordField.png" removable="false" auto-create-binding="true" can-attach-label="true">
+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
+          <preferred-size width="150" height="-1" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JFormattedTextField" icon="/com/intellij/uiDesigner/icons/formattedTextField.png" removable="false" auto-create-binding="true" can-attach-label="true">
+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
+          <preferred-size width="150" height="-1" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JTextArea" icon="/com/intellij/uiDesigner/icons/textArea.png" removable="false" auto-create-binding="true" can-attach-label="true">
+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+          <preferred-size width="150" height="50" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JTextPane" icon="/com/intellij/uiDesigner/icons/textPane.png" removable="false" auto-create-binding="true" can-attach-label="true">
+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+          <preferred-size width="150" height="50" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JEditorPane" icon="/com/intellij/uiDesigner/icons/editorPane.png" removable="false" auto-create-binding="true" can-attach-label="true">
+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+          <preferred-size width="150" height="50" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JComboBox" icon="/com/intellij/uiDesigner/icons/comboBox.png" removable="false" auto-create-binding="true" can-attach-label="true">
+        <default-constraints vsize-policy="0" hsize-policy="2" anchor="8" fill="1" />
+      </item>
+      <item class="javax.swing.JTable" icon="/com/intellij/uiDesigner/icons/table.png" removable="false" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+          <preferred-size width="150" height="50" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JList" icon="/com/intellij/uiDesigner/icons/list.png" removable="false" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="6" hsize-policy="2" anchor="0" fill="3">
+          <preferred-size width="150" height="50" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JTree" icon="/com/intellij/uiDesigner/icons/tree.png" removable="false" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+          <preferred-size width="150" height="50" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JTabbedPane" icon="/com/intellij/uiDesigner/icons/tabbedPane.png" removable="false" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3">
+          <preferred-size width="200" height="200" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JSplitPane" icon="/com/intellij/uiDesigner/icons/splitPane.png" removable="false" auto-create-binding="false" can-attach-label="false">
+        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3">
+          <preferred-size width="200" height="200" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JSpinner" icon="/com/intellij/uiDesigner/icons/spinner.png" removable="false" auto-create-binding="true" can-attach-label="true">
+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1" />
+      </item>
+      <item class="javax.swing.JSlider" icon="/com/intellij/uiDesigner/icons/slider.png" removable="false" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1" />
+      </item>
+      <item class="javax.swing.JSeparator" icon="/com/intellij/uiDesigner/icons/separator.png" removable="false" auto-create-binding="false" can-attach-label="false">
+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3" />
+      </item>
+      <item class="javax.swing.JProgressBar" icon="/com/intellij/uiDesigner/icons/progressbar.png" removable="false" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="0" fill="1" />
+      </item>
+      <item class="javax.swing.JToolBar" icon="/com/intellij/uiDesigner/icons/toolbar.png" removable="false" auto-create-binding="false" can-attach-label="false">
+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="0" fill="1">
+          <preferred-size width="-1" height="20" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JToolBar$Separator" icon="/com/intellij/uiDesigner/icons/toolbarSeparator.png" removable="false" auto-create-binding="false" can-attach-label="false">
+        <default-constraints vsize-policy="0" hsize-policy="0" anchor="0" fill="1" />
+      </item>
+      <item class="javax.swing.JScrollBar" icon="/com/intellij/uiDesigner/icons/scrollbar.png" removable="false" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="6" hsize-policy="0" anchor="0" fill="2" />
+      </item>
+    </group>
+  </component>
   <component name="ProjectCodeStyleConfiguration">
     <option name="PREFERRED_PROJECT_CODE_STYLE" value="Default" />
   </component>
@@ -72,6 +191,28 @@
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
+  </component>
+  <component name="RemoteRepositoriesConfiguration">
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Maven Central repository" />
+      <option name="url" value="https://repo1.maven.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jboss.community" />
+      <option name="name" value="JBoss Community repository" />
+      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven" />
+      <option name="name" value="maven" />
+      <option name="url" value="https://maven.rapidminer.com/content/groups/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="BintrayJCenter" />
+      <option name="name" value="BintrayJCenter" />
+      <option name="url" value="https://jcenter.bintray.com/" />
+    </remote-repository>
   </component>
   <component name="SvnBranchConfigurationManager">
     <option name="mySupportsUserInfoFilter" value="true" />
@@ -91,7 +232,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.6.0/a0990e2e812ac6639b6ce955c91b13228500476e/jackson-annotations-2.6.0.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.6.0/9932ce9495cc196f23b40c9935ad42c891bb55db/jackson-annotations-2.6.0-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.6.0/7bcb615d523d88acbc121c92aafeba8d37a83792/jackson-annotations-2.6.0-sources.jar!/" />
       </SOURCES>
@@ -100,7 +243,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.6.6/2eb801df67aacaf5b1deb4ac626e1964508e47b/jackson-core-2.6.6.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.6.6/5ba0ee8ab679176612e81772b7a80550aa2ba8d/jackson-core-2.6.6-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.6.6/8ee54db2ad9ea0e244c38d584150b3d524b13d80/jackson-core-2.6.6-sources.jar!/" />
       </SOURCES>
@@ -109,7 +254,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.6.6/5108dde6049374ba980b360e1ecff49847baba4a/jackson-databind-2.6.6.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.6.6/2f8d2b985f956ba8b7a416f58c25e7ccd41b6d64/jackson-databind-2.6.6-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.6.6/ca843a8233bdac6e7bb0aeb57473c622b9fdee8b/jackson-databind-2.6.6-sources.jar!/" />
       </SOURCES>
@@ -118,7 +265,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fifesoft/autocomplete/2.5.0/54c516bb4f12b3d99cf7a2549150f0c786909064/autocomplete-2.5.0.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fifesoft/autocomplete/2.5.0/83bef6cc510e76b6d049e421cabe21c63d661239/autocomplete-2.5.0-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fifesoft/autocomplete/2.5.0/f4e99c4e14795c0eef3a49fa04f9d1f73b055280/autocomplete-2.5.0-sources.jar!/" />
       </SOURCES>
@@ -127,7 +276,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fifesoft/rsyntaxtextarea/2.5.0/296f142a4ad4bd5e038ea7c48eff7af09dbd9d38/rsyntaxtextarea-2.5.0.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fifesoft/rsyntaxtextarea/2.5.0/e3957eb51472f02792e5a4e5ec7c3de289406c46/rsyntaxtextarea-2.5.0-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fifesoft/rsyntaxtextarea/2.5.0/719605b676f00b03f677153bfedfafebf96e91f5/rsyntaxtextarea-2.5.0-sources.jar!/" />
       </SOURCES>
@@ -136,7 +287,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.haifengl/smile-core/1.5.3/368190164733cfbcff801a2458948950f56ddef1/smile-core-1.5.3.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.haifengl/smile-core/1.5.3/cab366f985a041443ee6bd3b3aa07405c621e77d/smile-core-1.5.3-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.haifengl/smile-core/1.5.3/9a053429905e56ef94f9077b3771f4745504e74f/smile-core-1.5.3-sources.jar!/" />
       </SOURCES>
@@ -145,7 +298,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.haifengl/smile-data/1.5.3/1def00b3bbd461c01e38204e20f26e0dff250085/smile-data-1.5.3.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.haifengl/smile-data/1.5.3/b4065bbb1fd31a02652461d45bc094460840963a/smile-data-1.5.3-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.haifengl/smile-data/1.5.3/12877b8b8b045b7183e98118d52249ca4feeda8f/smile-data-1.5.3-sources.jar!/" />
       </SOURCES>
@@ -154,7 +309,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.haifengl/smile-graph/1.5.3/d4ff8dfa3f06326efd74416c56b4e2328723cd6f/smile-graph-1.5.3.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.haifengl/smile-graph/1.5.3/91c8f339bd40936d43cdb9eccd51c599bad88117/smile-graph-1.5.3-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.haifengl/smile-graph/1.5.3/dd88eae2bce249212d2a6e53f1b6c03220d0fc9/smile-graph-1.5.3-sources.jar!/" />
       </SOURCES>
@@ -163,7 +320,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.haifengl/smile-math/1.5.3/348c0d53bf469d9dba64e0da3dd9813279e9e84c/smile-math-1.5.3.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.haifengl/smile-math/1.5.3/b7e3b420f7a5d8d2cde9b7e31731aa27cf0eaa35/smile-math-1.5.3-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.haifengl/smile-math/1.5.3/64af5514967b5c279dd1a44172b0ed8e679ead59/smile-math-1.5.3-sources.jar!/" />
       </SOURCES>
@@ -179,7 +338,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/annotations/3.0.0/e20984c024b3baf63d06cf481c65c242dcd541de/annotations-3.0.0.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/annotations/3.0.0/936f4430478909ed7b138d42f9ad73c919a87b26/annotations-3.0.0-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/annotations/3.0.0/936f4430478909ed7b138d42f9ad73c919a87b26/annotations-3.0.0-sources.jar!/" />
       </SOURCES>
@@ -188,7 +349,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.h2database/h2/1.4.194/a180e95af52ad8116d52beb5f1d28596dcafa9d8/h2-1.4.194.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.h2database/h2/1.4.194/ce426a430746c3f6ad51a59e885f0e0a439cddd/h2-1.4.194-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.h2database/h2/1.4.194/60aba689ca3459012da9115f68c4dcfcceee51b2/h2-1.4.194-sources.jar!/" />
       </SOURCES>
@@ -197,7 +360,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jgoodies/looks/2.2.2/c8159330e48119d07b346db783cd3a34e9bbf14c/looks-2.2.2.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jgoodies/looks/2.2.2/29e72e5686f7c36a156954ad002a6a259105600e/looks-2.2.2-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jgoodies/looks/2.2.2/4068b1aa68194380464cd3261dc3e3d09a9f4d02/looks-2.2.2-sources.jar!/" />
       </SOURCES>
@@ -206,7 +371,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.lowagie/itext/2.1.7/892bfb3e97074a61123b3b2d7caa2db112750864/itext-2.1.7.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.lowagie/itext/2.1.7/4a0145a7d36b7701b290952ef9b1eb2b69e298a7/itext-2.1.7-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.lowagie/itext/2.1.7/c4a56ee84b87e8737e6b7769fcfeb97019003a14/itext-2.1.7-sources.jar!/" />
       </SOURCES>
@@ -215,7 +382,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.external/alphanumeric-sorting/1.0.1/ec2e77b0d38d60513ac96b70aa74a680e7fa0c9c/alphanumeric-sorting-1.0.1.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.external/alphanumeric-sorting/1.0.1/3acbe7411fe42b9d8cc7d4ee7ec8af397570ff0b/alphanumeric-sorting-1.0.1-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.external/alphanumeric-sorting/1.0.1/b9660c16ed6e5d1d140b56f15ec412582689516e/alphanumeric-sorting-1.0.1-sources.jar!/" />
       </SOURCES>
@@ -238,14 +407,18 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.external/vldocking/1.2.1/35eca571e3d6c77a1bd19463e2d5e72078da4acf/vldocking-1.2.1.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.external/vldocking/1.2.1/e8b7991651b9e209781aa7bf437d2d1f6fdfa071/vldocking-1.2.1-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES />
     </library>
     <library name="Gradle: com.rapidminer.license:rapidminer-license-api:4.0.0">
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.license/rapidminer-license-api/4.0.0/d592b0ccb80bae9c4f2fdf467365be786de493a8/rapidminer-license-api-4.0.0.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.license/rapidminer-license-api/4.0.0/f9a24ca4665c2481c909d6e8018c025fe30e7f9e/rapidminer-license-api-4.0.0-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.license/rapidminer-license-api/4.0.0/c25ebaf18a33cb61378c3d1ec8c333f41f75db8d/rapidminer-license-api-4.0.0-sources.jar!/" />
       </SOURCES>
@@ -254,7 +427,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.license/rapidminer-license-commons/4.0.0/3e4fe30129173bc83b16513fb8131b561df168ba/rapidminer-license-commons-4.0.0.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.license/rapidminer-license-commons/4.0.0/98a89a0ba023428d42b819ed347c706c5c9fd9da/rapidminer-license-commons-4.0.0-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.license/rapidminer-license-commons/4.0.0/4bf2de8f5746148d4e95024bf0b95abdb8e76fa1/rapidminer-license-commons-4.0.0-sources.jar!/" />
       </SOURCES>
@@ -263,7 +438,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.studio/rapidminer-studio-core/8.0.0/a89b2e14463946fc5d9458ca1f78cec158fd3573/rapidminer-studio-core-8.0.0.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.studio/rapidminer-studio-core/8.0.0/38a437d6e0bca2c3a791b52186a5080914825dd3/rapidminer-studio-core-8.0.0-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.studio/rapidminer-studio-core/8.0.0/68d3460d1ba7178b6669950d3dd983884debf20a/rapidminer-studio-core-8.0.0-sources.jar!/" />
       </SOURCES>
@@ -272,7 +449,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.studio/rapidminer-studio-osx-adapter/1.0.1/db976ade7417461247af44ed1414c658db76609a/rapidminer-studio-osx-adapter-1.0.1.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.studio/rapidminer-studio-osx-adapter/1.0.1/40c1c1c9ada8d46865cfe5f4ae75262b4c461dc8/rapidminer-studio-osx-adapter-1.0.1-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.studio/rapidminer-studio-osx-adapter/1.0.1/a6d4dea71e0a97fb4cbac4bb4f3dbaedde3e7496/rapidminer-studio-osx-adapter-1.0.1-sources.jar!/" />
       </SOURCES>
@@ -281,7 +460,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer/rapidminer-api/0.2.1/3a8622d7db96b322cd55dff244d45380ff4e96fe/rapidminer-api-0.2.1.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer/rapidminer-api/0.2.1/d645b0b81f5fc8fb6ff4fde761f091072befcaa8/rapidminer-api-0.2.1-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer/rapidminer-api/0.2.1/e3e802a73a62de259edb6569e47dd9951e7d49f2/rapidminer-api-0.2.1-sources.jar!/" />
       </SOURCES>
@@ -290,7 +471,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.mail/javax.mail/1.6.0/a055c648842c4954c1f7db7254f45d9ad565e278/javax.mail-1.6.0.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.mail/javax.mail/1.6.0/7d158973e7acac11e4b485cf2bbb63d3d8870292/javax.mail-1.6.0-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.mail/javax.mail/1.6.0/835d0bd1271818612c2d6f33764e1687e8a59a41/javax.mail-1.6.0-sources.jar!/" />
       </SOURCES>
@@ -299,7 +482,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.thoughtworks.xstream/xstream/1.4.7/bce3282142b63068260f021fcbe48b72e8d71a1a/xstream-1.4.7.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.thoughtworks.xstream/xstream/1.4.7/c68e42df2f4a306860f6b6fe5cb8d30825b5bd13/xstream-1.4.7-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.thoughtworks.xstream/xstream/1.4.7/5db922f39e8bd8af65d4c4a9471fd94771e273d7/xstream-1.4.7-sources.jar!/" />
       </SOURCES>
@@ -308,7 +493,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.9/9ce04e34240f674bc72680f8b843b1457383161a/commons-codec-1.9.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.9/d103169e712eb2473072d53636b0c3bc380b8afb/commons-codec-1.9-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.9/3f15fff45d57656685abfee9e8302bf14580044c/commons-codec-1.9-sources.jar!/" />
       </SOURCES>
@@ -326,7 +513,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-lang/commons-lang/2.6/ce1edb914c94ebc388f086c6827e8bdeec71ac2/commons-lang-2.6.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-lang/commons-lang/2.6/2519e88918ab30dcdee1b1b66f0a1014b0e055ec/commons-lang-2.6-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-lang/commons-lang/2.6/67313d715fbf0ea4fd0bdb69217fb77f807a8ce5/commons-lang-2.6-sources.jar!/" />
       </SOURCES>
@@ -335,7 +524,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-logging/commons-logging/1.0.4/f029a2aefe2b3e1517573c580f948caac31b1056/commons-logging-1.0.4.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-logging/commons-logging/1.0.4/e6ab582bb54e0eba076f314d98272457261501ee/commons-logging-1.0.4-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-logging/commons-logging/1.0.4/8d3424a318e818f88568dfb3b55c58583364ba9/commons-logging-1.0.4-sources.jar!/" />
       </SOURCES>
@@ -353,7 +544,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/gov.nist.math/jama/1.0.3/8bcf5a314b76cadd68daa37eafe0a46d8909ab47/jama-1.0.3.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/gov.nist.math/jama/1.0.3/8f9a35f61a033918e7bc21a3e1c468bb3f3f430f/jama-1.0.3-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/gov.nist.math/jama/1.0.3/20096c609fe3bfc8eec7654529da763ff1015d32/jama-1.0.3-sources.jar!/" />
       </SOURCES>
@@ -371,7 +564,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/junit/junit/4.12/2973d150c0dc1fefe998f834810d68f278ea58ec/junit-4.12.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/junit/junit/4.12/941a8be4506c65f0a9001c08812fb7da1e505e21/junit-4.12-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/junit/junit/4.12/a6c32b40bf3d76eca54e3c601e5d1470c86fcdfa/junit-4.12-sources.jar!/" />
       </SOURCES>
@@ -416,7 +611,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.collections/collections-generic/4.01/12dddecd8e8c24f5c9453a6d3ecb13b38e59db52/collections-generic-4.01.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.collections/collections-generic/4.01/8798379d8a44077232ff14a10b38119b6e61eaa3/collections-generic-4.01-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.collections/collections-generic/4.01/55fb1e0d2f4ab06573df4df6d9ecf5e7a10aa2d6/collections-generic-4.01-sources.jar!/" />
       </SOURCES>
@@ -425,7 +622,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.jexcelapi/jxl/2.6.12/7faf62e0697f7a88954622dfe8c8de33ed142ac7/jxl-2.6.12.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.jexcelapi/jxl/2.6.12/7a8a8027fb4ec10c102b2d731b26bc12b875f030/jxl-2.6.12-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.jexcelapi/jxl/2.6.12/7e5ce7fe751bac58c5fe9eaf4600fd7f2d1bb112/jxl-2.6.12-sources.jar!/" />
       </SOURCES>
@@ -434,7 +633,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.abego.treelayout/org.abego.treelayout.core/1.0.1/e31e79cba7a5414cf18fa69f3f0a2cf9ee997b61/org.abego.treelayout.core-1.0.1.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.abego.treelayout/org.abego.treelayout.core/1.0.1/709456de700d9389f623b1cba0a098097927722f/org.abego.treelayout.core-1.0.1-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.abego.treelayout/org.abego.treelayout.core/1.0.1/6e1dd6f6efdb453c7b8ba35726c63fbf50cd7142/org.abego.treelayout.core-1.0.1-sources.jar!/" />
       </SOURCES>
@@ -443,7 +644,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.antlr/antlr4-runtime/4.5/29e48af049f17dd89153b83a7ad5d01b3b4bcdda/antlr4-runtime-4.5.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.antlr/antlr4-runtime/4.5/de665bf598dcce18b24e8483f4f374eb28d9ae92/antlr4-runtime-4.5-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.antlr/antlr4-runtime/4.5/d29d705a4ed0f425c878474af4836278862f1db9/antlr4-runtime-4.5-sources.jar!/" />
       </SOURCES>
@@ -452,7 +655,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-lang3/3.9/122c7cee69b53ed4a7681c03d4ee4c0e2765da5/commons-lang3-3.9.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-lang3/3.9/9872098000a4d91f9bbd1ad42859553ccaed0e0c/commons-lang3-3.9-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-lang3/3.9/8f1cb192e229bc4cd1c900c51171d96706e6d195/commons-lang3-3.9-sources.jar!/" />
       </SOURCES>
@@ -461,7 +666,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-math3/3.3/a85dc3aa929de625606270ae69a343cda69b7670/commons-math3-3.3.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-math3/3.3/45e23724043d04c0e4965b4b37fa23f530459c86/commons-math3-3.3-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-math3/3.3/4b633be316e46542307aa640dbad4d82db861225/commons-math3-3.3-sources.jar!/" />
       </SOURCES>
@@ -477,7 +684,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-ooxml/3.13/c364a8f5422d613e3a56db3b4b889f2989d7ee73/poi-ooxml-3.13.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-ooxml/3.13/b7c218f7da30787428cd567a0fbffc48cbaf2a5b/poi-ooxml-3.13-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-ooxml/3.13/a33de037e9c3d7147b56e80425621b97b6f05686/poi-ooxml-3.13-sources.jar!/" />
       </SOURCES>
@@ -486,7 +695,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-scratchpad/3.13/9d763275e6c7fa05d47e2581606748669e88c55/poi-scratchpad-3.13.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-scratchpad/3.13/3bd8bd72cdb89aebf2c3d455fa379ff605d075a0/poi-scratchpad-3.13-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-scratchpad/3.13/d9f81fcfdb07f49e1177cdf50bcad207243788b3/poi-scratchpad-3.13-sources.jar!/" />
       </SOURCES>
@@ -495,7 +706,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi/3.13/f59f504ba8c521e61e25f417ec652fd485010f3/poi-3.13.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi/3.13/4529b696a772510eded33a8c1135c3507abc43cb/poi-3.13-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi/3.13/a400503268b807b06ce712bb99ae47710c21fb55/poi-3.13-sources.jar!/" />
       </SOURCES>
@@ -504,7 +717,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.tika/tika-core/1.11/d37a6b9080c8361e47b2050f69833fd61501ede9/tika-core-1.11.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.tika/tika-core/1.11/6eceaa5484881a09a9bdcf12635754c2e04c2a01/tika-core-1.11-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.tika/tika-core/1.11/2967c4b6b1977e41dc1f61245b61812a4ec9dcbe/tika-core-1.11-sources.jar!/" />
       </SOURCES>
@@ -513,7 +728,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ws.commons.util/ws-commons-util/1.0.2/3f478e6def772c19d1053f61198fa1f6a6119238/ws-commons-util-1.0.2.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ws.commons.util/ws-commons-util/1.0.2/95d0df23b6c1feea10f22c88f905b1640dcedb77/ws-commons-util-1.0.2-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ws.commons.util/ws-commons-util/1.0.2/f978561682c1c405aab6b0abc5d584faeb35933c/ws-commons-util-1.0.2-sources.jar!/" />
       </SOURCES>
@@ -529,7 +746,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.xmlrpc/xmlrpc-client/3.1.3/e486ad917028b52265610206fb5a1e2b5914b94b/xmlrpc-client-3.1.3.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.xmlrpc/xmlrpc-client/3.1.3/3f72eab4350c45f55e0882312290fb1e2298fc7/xmlrpc-client-3.1.3-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.xmlrpc/xmlrpc-client/3.1.3/6977b145e65dfa1194b7dc22ebc6bafd0b271b9f/xmlrpc-client-3.1.3-sources.jar!/" />
       </SOURCES>
@@ -538,7 +757,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.xmlrpc/xmlrpc-common/3.1.3/415daf1f1473a947452588906dc9f5b3575fb44d/xmlrpc-common-3.1.3.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.xmlrpc/xmlrpc-common/3.1.3/5a775e6663c8d8e79ae48920206ed01148b6a2a7/xmlrpc-common-3.1.3-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.xmlrpc/xmlrpc-common/3.1.3/da31e4f56f490476283f38404563108341a5bf22/xmlrpc-common-3.1.3-sources.jar!/" />
       </SOURCES>
@@ -547,7 +768,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcprov-jdk15on/1.50/be504b4901d75cbe129a178f5830e6c358ec214c/bcprov-jdk15on-1.50.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcprov-jdk15on/1.50/31aa31724cc63e70b176e8551a95c23d7daec29e/bcprov-jdk15on-1.50-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcprov-jdk15on/1.50/293fc74de21f7055f7de96850151e37a0b0ceb60/bcprov-jdk15on-1.50-sources.jar!/" />
       </SOURCES>
@@ -556,7 +779,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/2.4.10/4660c69a6fb68c1507d09e3de01e56bc87ffd85d/groovy-all-2.4.10.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/2.4.10/29e57b9738377d8a339ca3c27c40072e35f814f6/groovy-all-2.4.10-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/2.4.10/4cd3ebb112ce901e969f6f85d2a42c22f04854d0/groovy-all-2.4.10-sources.jar!/" />
       </SOURCES>
@@ -565,7 +790,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.freehep/freehep-graphics2d/2.3/4c21a0e24821cb4912853ad623f4bf7b7ffe97b5/freehep-graphics2d-2.3.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.freehep/freehep-graphics2d/2.3/7ebc567c3f37f34e7db96dc0e5f4079cd2f7c242/freehep-graphics2d-2.3-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.freehep/freehep-graphics2d/2.3/dd95f1a4583afa574dc1443a48d18e114782f18c/freehep-graphics2d-2.3-sources.jar!/" />
       </SOURCES>
@@ -574,7 +801,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.freehep/freehep-graphicsbase/2.3/a03abccb685009c08a912efdf27d4df53980d9d4/freehep-graphicsbase-2.3.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.freehep/freehep-graphicsbase/2.3/114071434fc6bcbe58a5ab5f065362eaff275d0a/freehep-graphicsbase-2.3-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.freehep/freehep-graphicsbase/2.3/a9e0e82ed67f0eb9408f38c181691cf964f9907c/freehep-graphicsbase-2.3-sources.jar!/" />
       </SOURCES>
@@ -583,7 +812,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.freehep/freehep-graphicsio-ps/2.3/ffea8c93d59af3d739933c8e6f9596564bb7670a/freehep-graphicsio-ps-2.3.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.freehep/freehep-graphicsio-ps/2.3/ab4d5885903cd74da920530cb8aec2b8905ad0c6/freehep-graphicsio-ps-2.3-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.freehep/freehep-graphicsio-ps/2.3/2b5a26050ad08fc3a88627a992653ecaa238c68c/freehep-graphicsio-ps-2.3-sources.jar!/" />
       </SOURCES>
@@ -592,7 +823,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.freehep/freehep-graphicsio-svg/2.3/28f451fdd74a97dc3704ff8d0faf98bdd44c351/freehep-graphicsio-svg-2.3.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.freehep/freehep-graphicsio-svg/2.3/477e09b574c1727269281dc6e1eb46825cbd6f6b/freehep-graphicsio-svg-2.3-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.freehep/freehep-graphicsio-svg/2.3/840869bd398dcfeae5eef7fa4aa54b7094d2705/freehep-graphicsio-svg-2.3-sources.jar!/" />
       </SOURCES>
@@ -601,7 +834,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.freehep/freehep-graphicsio/2.3/ef5f8bc45c5daa8aa34fd2ac64963f969369ed94/freehep-graphicsio-2.3.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.freehep/freehep-graphicsio/2.3/7d897bc0953212d558504edcadca7cf5391109de/freehep-graphicsio-2.3-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.freehep/freehep-graphicsio/2.3/1781baf0e3dc31ff6d80acdbd9317d69ea3bc2af/freehep-graphicsio-2.3-sources.jar!/" />
       </SOURCES>
@@ -610,7 +845,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.freehep/freehep-io/2.2.2/da1929e034f70bcd88e4f24bc9cb399cbcead82d/freehep-io-2.2.2.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.freehep/freehep-io/2.2.2/7b8432d3d725ace3c3124eb7e1b3cb6ab8b8e525/freehep-io-2.2.2-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.freehep/freehep-io/2.2.2/b75446ad57f2627955bdc9a4035b9ba60f1a4f66/freehep-io-2.2.2-sources.jar!/" />
       </SOURCES>
@@ -619,7 +856,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.hamcrest/hamcrest-core/1.3/42a25dc3219429f0e5d060061f71acb49bf010a0/hamcrest-core-1.3.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.hamcrest/hamcrest-core/1.3/ad09811315f1d4f5756986575b0ea16b99cd686f/hamcrest-core-1.3-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.hamcrest/hamcrest-core/1.3/1dc37250fbc78e23a65a67fbbaf71d2e9cbc3c0b/hamcrest-core-1.3-sources.jar!/" />
       </SOURCES>
@@ -628,7 +867,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jasypt/jasypt/1.9.1/216c6d255de36d3de4246f5e90a2587ea61fb930/jasypt-1.9.1-lite.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jasypt/jasypt/1.9.1/9bf326121b84516c9c5b5b7e8727af931e0bd87f/jasypt-1.9.1-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jasypt/jasypt/1.9.1/50629b26054a3dec2a01dad13f59f1ab5a9c4d32/jasypt-1.9.1-sources.jar!/" />
       </SOURCES>
@@ -637,7 +878,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jfree/jcommon/1.0.21/e354d6663dd3695bef264d95586fde66505492d9/jcommon-1.0.21.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jfree/jcommon/1.0.21/66666d5e9339d96cdc7353806b8de50535252d8a/jcommon-1.0.21-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jfree/jcommon/1.0.21/1dbf3b7d444c6b49c341963cd93941663ae6a5ca/jcommon-1.0.21-sources.jar!/" />
       </SOURCES>
@@ -646,7 +889,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jfree/jfreechart/1.0.17/5766f5838947395cd2503911d5fd0ffa4d6e257d/jfreechart-1.0.17.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jfree/jfreechart/1.0.17/67a7a8766fee2bc6e9a691abf02bc212dfc4706f/jfreechart-1.0.17-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jfree/jfreechart/1.0.17/af16c316e063cd611f21d05e01b91fbfeca3c165/jfreechart-1.0.17-sources.jar!/" />
       </SOURCES>
@@ -655,7 +900,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.16.16/245b50f714bf89ed7659266ace12f9e509d13551/lombok-1.16.16.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.16.16/c993689858853337f1ca32a17cf32905e4b3aaa9/lombok-1.16.16-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.16.16/c4b112e9645070ac05946084317cc5d01cf4ddcd/lombok-1.16.16-sources.jar!/" />
       </SOURCES>
@@ -664,7 +911,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.13/7fcf30c25b8f4a9379b9dad0d3f487b25272c026/slf4j-api-1.7.13.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.13/41718b99e4923f5fd88d5ffbd1f74343702e4829/slf4j-api-1.7.13-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.13/96e785df399a4e1a6c030877097807b7e18520cc/slf4j-api-1.7.13-sources.jar!/" />
       </SOURCES>
@@ -673,7 +922,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.25/da76ca59f6a57ee3102f8f9bd9cee742973efa8a/slf4j-api-1.7.25.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.25/f003e89ddebdbaca5cf3fc7cc0c67c88c2ca1a3c/slf4j-api-1.7.25-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.25/962153db4a9ea71b79d047dfd1b2a0d80d8f4739/slf4j-api-1.7.25-sources.jar!/" />
       </SOURCES>
@@ -682,7 +933,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.swinglabs.swingx/swingx-all/1.6.5/d947460f7e2687db371c2b3b9f2f70f418d6804/swingx-all-1.6.5.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.swinglabs.swingx/swingx-all/1.6.5/af52e65141d794b14f0c1b0fe7570c82200c5828/swingx-all-1.6.5-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.swinglabs.swingx/swingx-all/1.6.5/7b32c29c677ffdf9d2e8f7d1d447e44303764276/swingx-all-1.6.5-sources.jar!/" />
       </SOURCES>
@@ -698,7 +951,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/xalan/serializer/2.7.2/24247f3bb052ee068971393bdb83e04512bb1c3c/serializer-2.7.2.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/xalan/serializer/2.7.2/17597b2ce707acc76488ecba8c8186697eb85119/serializer-2.7.2-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/xalan/serializer/2.7.2/fe9c3d37a49238fac9d4d6c4f5bbd8c334da787a/serializer-2.7.2-sources.jar!/" />
       </SOURCES>
@@ -707,7 +962,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/xalan/xalan/2.7.2/d55d3f02a56ec4c25695fe67e1334ff8c2ecea23/xalan-2.7.2.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/xalan/xalan/2.7.2/17597b2ce707acc76488ecba8c8186697eb85119/xalan-2.7.2-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/xalan/xalan/2.7.2/fe9c3d37a49238fac9d4d6c4f5bbd8c334da787a/xalan-2.7.2-sources.jar!/" />
       </SOURCES>
@@ -732,7 +989,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/xpp3/xpp3_min/1.1.4c/19d4e90b43059058f6e056f794f0ea4030d60b86/xpp3_min-1.1.4c.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/xpp3/xpp3_min/1.1.4c/aa7f7f5da2c34374c2880ce04bd8fe32a24fc87/xpp3_min-1.1.4c-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/xpp3/xpp3_min/1.1.4c/fffe25ec1f20ec1cfdc0edd41c6e0d55bc0dbaf5/xpp3_min-1.1.4c-sources.jar!/" />
       </SOURCES>

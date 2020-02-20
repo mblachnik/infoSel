@@ -11,21 +11,24 @@ import com.rapidminer.example.Example;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.operator.Operator;
 import keel.Algorithms.Instance_Selection.CCIS.CCIS;
+import keel.Algorithms.Instance_Selection.HMNEI.HMNEI;
 import org.prules.operator.learner.tools.IDataIndex;
 import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
+
 /**
- *
  * @author Marcin
  */
 public class KeelISModel extends AbstractInstanceSelectorModel {
-//
+    //
 //    String configurationString;
 //    Operator parent;
 //
+    KeelISAlgorithms model;
 
-    public KeelISModel(String configurationString, Operator parent) {
+    public KeelISModel(KeelISAlgorithms model, String configurationString, Operator parent) {
 //        this.configurationString = configurationString;
 //        this.parent = parent;
+        this.model = model;
     }
 //  
 
@@ -51,14 +54,28 @@ public class KeelISModel extends AbstractInstanceSelectorModel {
         //========================> Create final DataFilter to get an index out of KeelResults
         KeelDataFilter filter = new KeelDataFilter(trainingSet, labels);
         //========================> RUN KEEL IS model
-        CCIS model = new CCIS(trainingSet, labels);
-        model.ejecutar();
-        labels = model.getLabels();
-        trainingSet = model.getSamples();
+        switch (model) {
+            case CCIS: {
+                CCIS model = new CCIS(trainingSet, labels);
+                model.ejecutar();
+                labels = model.getLabels();
+                trainingSet = model.getSamples();
+            }
+            break;
+            case HMNEI: {
+                HMNEI model = new HMNEI(trainingSet, labels);
+                model.ejecutar();
+                labels = model.getLabels();
+                trainingSet = model.getSamples();
+            }
+            break;
+        }
+
         int numberOfMisses = 0;
         //=========================> Convert results to index
         IDataIndex index = filter.filterSamples(trainingSet, labels);
-        if (filter.getNumberOfMisses()>0) throw new RuntimeException("Numer of misses in DataFIlter should be 0 but it isnt. Number of misses= " + filter.getNumberOfMisses());        
+        if (filter.getNumberOfMisses() > 0)
+            throw new RuntimeException("Numer of misses in DataFIlter should be 0 but it isnt. Number of misses= " + filter.getNumberOfMisses());
         return index;
     }
 }

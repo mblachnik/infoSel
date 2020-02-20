@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.prules.operator.learner.misc;
+package org.prules.operator.learner.classifiers.data_splitter;
 
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
@@ -18,7 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.IntStream;
-import org.prules.operator.learner.misc.NearestPrototypesOperator.PiredTriple;
+
+import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import org.prules.operator.learner.tools.DataIndex;
 import org.prules.operator.learner.tools.IDataIndex;
 
@@ -30,16 +31,16 @@ import org.prules.operator.learner.tools.IDataIndex;
 public class PrototypesEnsembelePredictionModel extends PredictionModel {
 
     /**
-     * PrototypesEnsembeleModel which contains informations such as: prototypes 
+     * {@link NearestPrototypesSplitter} which contains informations such as: prototypes
      * position, labels, a map which allows to decode pair into the prototypes
      */
-    PrototypesEnsembeleModel model;
+    NearestPrototypesSplitter model;
     /**
      * It maps given pair into prediction model
      */
     Map<Long, PredictionModel> predictionModelsMap;
 
-    public PrototypesEnsembelePredictionModel(PrototypesEnsembeleModel model, Map<Long, PredictionModel> predictionModelsMap, ExampleSet trainingExampleSet, ExampleSetUtilities.SetsCompareOption sizeCompareOperator, ExampleSetUtilities.TypesCompareOption typeCompareOperator) {
+    public PrototypesEnsembelePredictionModel(NearestPrototypesSplitter model, Map<Long, PredictionModel> predictionModelsMap, ExampleSet trainingExampleSet, ExampleSetUtilities.SetsCompareOption sizeCompareOperator, ExampleSetUtilities.TypesCompareOption typeCompareOperator) {
         super(trainingExampleSet, sizeCompareOperator, typeCompareOperator);
         this.model = model;
         this.predictionModelsMap = predictionModelsMap;
@@ -53,6 +54,7 @@ public class PrototypesEnsembelePredictionModel extends PredictionModel {
         Map<Long, IDataIndex> subsetMap = new HashMap<>();
         int n = exampleSet.size();
         int exampleIndex = 0;
+        DistanceMeasure distance =  model.getDistance();
         for (Example example : exampleSet) {
             int i = 0;
             for (String attribute : model.getAttributes()) {
@@ -60,7 +62,7 @@ public class PrototypesEnsembelePredictionModel extends PredictionModel {
             }
             i = 0;
             for (double[] prototype : model.getPrototypes()) {
-                distances[i++] = model.getMeasure().calculateDistance(exampleValues, prototype);
+                distances[i++] = distance.calculateDistance(exampleValues, prototype);
             }
             double minSum = Double.MAX_VALUE;
             Long bestPair = new Long(-1);
@@ -111,7 +113,7 @@ public class PrototypesEnsembelePredictionModel extends PredictionModel {
             Arrays.stream(row).forEach( element -> {
                 sb.append(element).append(" | ");
             });
-            sb.append(model.labels[idx]);
+            sb.append(model.getPrototypeLabels()[idx]);
             sb.append("\n");
         });
         return sb.toString(); //To change body of generated methods, choose Tools | Templates.

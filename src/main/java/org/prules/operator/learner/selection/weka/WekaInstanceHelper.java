@@ -10,10 +10,9 @@ import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import java.util.ArrayList;
-import weka.core.Attribute;
-import weka.core.DenseInstance;
-import weka.core.Instance;
-import weka.core.Instances;
+import java.util.List;
+
+import weka.core.*;
 
 /**
  *
@@ -30,23 +29,30 @@ public class WekaInstanceHelper {
         Attributes rmAttributes = exampleSet.getAttributes();
         int numAttr = rmAttributes.size();
         boolean isLabel = exampleSet.getAttributes().getLabel() != null;
-        ArrayList<Attribute> wAttributes = null;
+        FastVector wAttributes = null;
         if (isLabel)
-            wAttributes = new ArrayList<>(numAttr + 1);
+            wAttributes = new FastVector(numAttr + 1);
         else
-            wAttributes = new ArrayList<>(numAttr);
+            wAttributes = new FastVector(numAttr);
         for(com.rapidminer.example.Attribute rmAttr : rmAttributes){
-            if (rmAttr.isNominal()){                
-                Attribute wAttr = new Attribute(rmAttr.getName(),rmAttr.getMapping().getValues());
-                wAttributes.add(wAttr);
+            if (rmAttr.isNominal()){
+                FastVector attributeValues =new FastVector();
+                for (String value : rmAttr.getMapping().getValues())
+                    attributeValues.addElement(value);
+                String attrName = rmAttr.getName();
+                Attribute wAttr = new Attribute(attrName,attributeValues);
+                wAttributes.addElement(wAttr);
             } else
-                wAttributes.add(new Attribute(rmAttr.getName()));
+                wAttributes.addElement(new Attribute(rmAttr.getName()));
         }
         if (isLabel)
-            wAttributes.add(new Attribute("Label"));
+            wAttributes.addElement(new Attribute("Label"));
+        FastVector fwAttributes = new FastVector();
+
         Instances instances = new Instances("exampleSet",wAttributes,exampleSet.size());        
         for(Example example : exampleSet){
-            Instance instance = new DenseInstance(numAttr+1);            
+            //Instance instance = new DenseInstance(numAttr+1);
+            Instance instance = new Instance(numAttr+1);
             int i = 0;
             for(com.rapidminer.example.Attribute rmAttr : rmAttributes){
                 instance.setValue(i, example.getValue(rmAttr));

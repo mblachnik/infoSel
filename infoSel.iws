@@ -2,19 +2,33 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6807e0df-d924-4a1a-a996-0bdd6d52a82b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.nb-gradle/profiles/private/aux-config" beforeDir="false" afterPath="$PROJECT_DIR$/.nb-gradle/profiles/private/aux-config" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/IS-HMNEI.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/old libs/rapidminer-Weka-5.3.002.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/old libs/weka.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/data_splitter/DecisionBorderSplitter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/data_splitter/NearestPrototypeBatchOperator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/data_splitter/NearestPrototypeEnsembleOperator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/data_splitter/PiredTriple.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/ensemble/ISEnsembleVoteOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/ensemble/ISEnsembleVoteOperator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/weighting/AbstractWeightingOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/weighting/AbstractWeightingOperator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/weighting/LocalNNEDeltaTestOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/weighting/LocalNNEDeltaTestOperator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/weighting/LocalNNEGammaTestOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/weighting/LocalNNEGammaTestOperator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/weighting/NNEDeltaTestOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/weighting/NNEDeltaTestOperator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/weighting/NNEGammaTestOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/weighting/NNEGammaTestOperator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/weighting/NNEVarianceOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/weighting/NNEVarianceOperator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/infoSel.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/infoSel.ipr" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/infoSel.iws" beforeDir="false" afterPath="$PROJECT_DIR$/infoSel.iws" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/rapidminer-Weka-5.3.002.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/weka.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/rapidminer/example/set/SelectedExampleSet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/rapidminer/example/set/SelectedExampleSet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/AbstractPrototypeBasedOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/AbstractPrototypeBasedOperator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/clustering/models/GNG_VQ_Model.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/clustering/models/GNG_VQ_Model.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/misc/BatchLoopOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/ensemble/BatchLoopOperator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/misc/NearestPrototypesOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/data_splitter/NearestPrototypesSplitter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/misc/PrototypesEnsembeleModel.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/misc/PrototypesEnsembelePredictionModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/data_splitter/PrototypesEnsembelePredictionModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/keel/KeelISAlgorithms.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/keel/KeelISAlgorithms.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/keel/KeelISModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/keel/KeelISModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/keel/KeelISOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/keel/KeelISOperator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/weka/WekaInstanceHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/weka/WekaInstanceHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/prules/resources/OperatorsISPR.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/prules/resources/OperatorsISPR.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/prules/resources/i18n/OperatorsDocISPR.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/prules/resources/i18n/OperatorsDocISPR.xml" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -84,11 +98,6 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="infoSel" type="f1a62948:ProjectNode" />
-                <item name="Source Sets" type="e897c970:GradleViewContributor$SourceSetsNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="infoSel" type="f1a62948:ProjectNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
               </path>
               <path>
@@ -113,19 +122,12 @@
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="infoSel" type="f1a62948:ProjectNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="rapidminer extension" type="c8890929:TasksNode$1" />
+                <item name="help" type="c8890929:TasksNode$1" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="infoSel" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="other" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="infoSel" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="publishing" type="c8890929:TasksNode$1" />
+                <item name="Run Configurations" type="7b0102dc:RunConfigurationsNode" />
               </path>
             </expand>
             <select />
@@ -133,6 +135,14 @@
         </projects_view>
       </state>
     </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="Interface" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -150,11 +160,19 @@
       <profile-state />
     </entry>
   </component>
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectReloadState">
     <option name="STATE" value="0" />
   </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="GoToFile.includeJavaFiles" value="false" />
@@ -163,37 +181,39 @@
     <property name="MemberChooser.sorted" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
+    <property name="external.system.task.project.file.to.start" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../IneliJ/PRiR" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.annotationProcessors" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="debugger.hotswap" />
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
+  <component name="RecentsManager">
+    <key name="ExtractSuperBase.RECENT_KEYS">
+      <recent name="org.prules.operator.learner.misc.splitter" />
+      <recent name="org.prules.operator.learner.misc" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.prules.operator.learner.classifiers.data_splitter" />
+    </key>
   </component>
-  <component name="RunManager" selected="Gradle.infoSel [run]">
-    <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
-      <Host>localhost</Host>
-      <Port>5050</Port>
-    </configuration>
+  <component name="RunManager" selected="Gradle.infoSel [dependentComponents]">
     <configuration default="true" type="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
         <option name="BuildArtifacts" enabled="false" />
         <option name="Make" enabled="true" />
       </method>
+    </configuration>
+    <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
+      <Host>localhost</Host>
+      <Port>5050</Port>
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
@@ -202,7 +222,26 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="infoSel [MyRun]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="infoSel [compileJava]" type="GradleRunConfiguration" factoryName="Gradle" nameIsGenerated="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="compileJava" />
+          </list>
+        </option>
+        <option name="vmOptions" value="" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="infoSel [dependencies]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -213,7 +252,7 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="MyRun" />
+            <option value="dependencies" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -221,7 +260,7 @@
       <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="infoSel [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="infoSel [dependencyInsight]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -232,7 +271,7 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="clean" />
+            <option value="dependencyInsight" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -240,7 +279,7 @@
       <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="infoSel [copyPluginFast]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="infoSel [dependentComponents]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -251,7 +290,7 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="copyPluginFast" />
+            <option value="dependentComponents" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -259,7 +298,7 @@
       <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="infoSel [installExtension]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="infoSel [help]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -270,7 +309,7 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="installExtension" />
+            <option value="help" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -278,7 +317,7 @@
       <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="infoSel [run]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="infoSel [javadoc]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -289,7 +328,7 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="run" />
+            <option value="javadoc" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -321,21 +360,34 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Gradle.infoSel [run]" />
-      <item itemvalue="Gradle.infoSel [copyPluginFast]" />
-      <item itemvalue="Gradle.infoSel [MyRun]" />
-      <item itemvalue="Gradle.infoSel [clean]" />
-      <item itemvalue="Gradle.infoSel [installExtension]" />
+      <item itemvalue="Gradle.infoSel [compileJava]" />
+      <item itemvalue="Gradle.infoSel [dependencies]" />
+      <item itemvalue="Gradle.infoSel [javadoc]" />
+      <item itemvalue="Gradle.infoSel [help]" />
+      <item itemvalue="Gradle.infoSel [dependencyInsight]" />
+      <item itemvalue="Gradle.infoSel [dependentComponents]" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.infoSel [run]" />
-        <item itemvalue="Gradle.infoSel [copyPluginFast]" />
-        <item itemvalue="Gradle.infoSel [installExtension]" />
-        <item itemvalue="Gradle.infoSel [MyRun]" />
-        <item itemvalue="Gradle.infoSel [clean]" />
+        <item itemvalue="Gradle.infoSel [dependentComponents]" />
+        <item itemvalue="Gradle.infoSel [dependencyInsight]" />
+        <item itemvalue="Gradle.infoSel [help]" />
+        <item itemvalue="Gradle.infoSel [dependencies]" />
+        <item itemvalue="Gradle.infoSel [javadoc]" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -350,6 +402,16 @@
       <workItem from="1568796427682" duration="7911000" />
       <workItem from="1568806145774" duration="6313000" />
       <workItem from="1570612551640" duration="1117000" />
+      <workItem from="1570797730391" duration="900000" />
+      <workItem from="1571137564329" duration="1614000" />
+      <workItem from="1571164546303" duration="286000" />
+      <workItem from="1571167118230" duration="146000" />
+      <workItem from="1571167355440" duration="693000" />
+      <workItem from="1571171632207" duration="21000" />
+      <workItem from="1574954322528" duration="32000" />
+      <workItem from="1574954387122" duration="24878000" />
+      <workItem from="1575294444493" duration="141000" />
+      <workItem from="1575539472210" duration="916000" />
     </task>
     <servers />
   </component>
@@ -371,6 +433,33 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="true" />
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="549" y="175" key="FileChooserDialogImpl" timestamp="1575540384023">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state x="549" y="175" key="FileChooserDialogImpl/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1575540384023" />
+    <state width="1493" height="249" key="GridCell.Tab.0.bottom" timestamp="1575540388538">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state width="1493" height="249" key="GridCell.Tab.0.bottom/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1575540388538" />
+    <state width="1493" height="249" key="GridCell.Tab.0.center" timestamp="1575540388538">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state width="1493" height="249" key="GridCell.Tab.0.center/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1575540388538" />
+    <state width="1493" height="249" key="GridCell.Tab.0.left" timestamp="1575540388538">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state width="1493" height="249" key="GridCell.Tab.0.left/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1575540388538" />
+    <state width="1493" height="249" key="GridCell.Tab.0.right" timestamp="1575540388538">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state width="1493" height="249" key="GridCell.Tab.0.right/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1575540388538" />
+    <state x="249" y="0" key="SettingsEditor" timestamp="1575539676224">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state x="249" y="0" key="SettingsEditor/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1575539676224" />
   </component>
 </project>
