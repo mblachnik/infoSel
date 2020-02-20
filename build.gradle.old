@@ -1,0 +1,156 @@
+buildscript {
+	repositories {
+	    jcenter()
+		maven { url 'https://maven.rapidminer.com/content/groups/public/' }
+	}
+}
+
+//plugins { id 'com.rapidminer.extension' version '0.8.0' }
+plugins { id 'com.rapidminer.extension' version '0.9.3' }
+
+// Define Maven artifact repositories
+repositories {
+    jcenter()
+	maven { url 'https://maven.rapidminer.com/content/groups/public/' }
+}
+
+configurations {
+    runtime
+ }
+ 
+
+apply plugin: 'java'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+compileJava {
+    options.compilerArgs += ["-Xlint:deprecation"]
+}
+
+extensionConfig {
+    //
+    
+    // The extension name
+    name = 'Information Selection'
+    //The namespace
+    namespace = 'prules'
+    //Version id
+    version = '8.1.0'
+    
+    /*
+     * The artifact group which will be used when publishing the extensions Jar
+     * and for package customization when initializing the project repository.
+     *
+     * It is 'com.rapidminer.extension' by default.
+     */
+    groupId = 'org.prules'
+
+    /*
+     * The extension vendor which will be displayed in the extensions about box
+     * and for customizing the license headers when initializing the project repository.
+     *
+     * It is 'RapidMiner GmbH' by default.
+     */
+    vendor = "Silesian University of Technology, Marcin Blachnik"
+
+    /*
+     * The vendor homepage which will be displayed in the extensions about box
+     * and for customizing the license headers when initializing the project repository.
+     *
+     * It is 'www.rapidminer.com' by default.
+     */
+    homepage = "www.prules.org"
+
+	// define RapidMiner version and extension dependencies
+	dependencies {
+       rapidminer '8.0.0'
+		//extension namespace: 'text', version: '6.1.0'
+	}
+}
+
+
+idea {
+    module {
+        downloadJavadoc = true
+    }
+}
+
+eclipse {
+    classpath {
+        downloadJavadoc = true
+    }
+}
+// Define third party library dependencies
+dependencies {
+        // https://mvnrepository.com/artifact/com.github.haifengl/smile-core
+        compile group: 'com.github.haifengl', name: 'smile-core', version: '1.5.3'
+        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+	    //compile 'com.google.guava:guava:18.0'
+        compile files('lib/mdsj.jar')
+        //compile files('lib/rapidminer-Weka-5.3.002.jar')
+        compile files('lib/rmx_weka-ANY-7.3.0.jar')
+        //compile files('lib/weka.jar')
+        compile files('lib/instanceselection.jar')
+        compile files('lib/Infosel.jar')            
+        //compile files('D:/Projects/Java/Common/Keel/dist/algorithm/methods/IS-CCIS.jar')
+        compile files('lib/IS-CCIS.jar')
+        compile files('lib/IS-HMNEI.jar')
+        compile files('lib/JavaMI.jar')    
+        //compile files('C:\\Users\\Marcin\\Documents\\Projects\\Java\\Common\\RapidMiner\\Extension\\RM-Tools\\build\\libs\\RM-Tools-7.0.0.jar')
+        //compile files('..\\RM-Tools\\build\\libs\\RM-Tools-7.0.0.jar')
+        //compile files('lib/RM-Tools-7.0.0.jar');
+        //compileOnly "org.projectlombok:lombok:1.16.16"
+        provided "org.projectlombok:lombok:1.16.16"
+        //runtime fileTree(dir: 'C:/Marcin/Projects/Java/Common/RapidMiner/6.x/RapidM~1/lib/', include: '*.*', exclude: 'output/*')
+        runtime fileTree(dir: "C:\\Program Files\\RapidMiner\\RapidMiner Studio\\lib\\", include: '*.*')
+        //runtime fileTree(dir: 'C:/Marcin/Projects/Java/Common/RapidMiner/Extension/ISPR/lib/', include: '*.*')
+}
+
+import java.nio.file.Paths;
+
+def usersHomeDir =  'D:/Projects/Java/Common/RapidMiner/9.x/home' //This is directory which is used for debuging
+def usersHomeDir2 = Paths.get(System.getProperty('user.home'))  //This is directory which is used for fast start  
+
+//UWAGA w Gradle kolejność uruchamiania zależy od sposobu zapisu kodu.
+//Jeśli kod jest zapisany jako
+////each { dest -> copy{
+////        from jar.archivePath
+////        into dest+"/.RapidMiner/extensions"
+////        }
+////    }
+////To jest on uruchamiany w sekcji initialize, a jeśli tak jak poniżej to będzie on uruchomiony później - chyba execute
+task copyPluginFast(type: Copy, dependsOn: jar){
+    description 'Copy jar file into RapidMiner extensions folder'
+    println "Destination dir: " + "$usersHomeDir"
+    from jar
+    into "$usersHomeDir" + "/.RapidMiner/extensions"
+}
+
+//task copyPlugin(type: Copy, dependsOn: installExtension) {
+//     description 'Copy jar file into RapidMiner extensions folder'
+//
+//    ["$usersHomeDir", "$usersHomeDir2"].each { dest -> copy{
+//        from jar.archivePath
+//        into dest+"/.RapidMiner/extensions"
+//        }
+//    }
+//    //from 'C:/Marcin/Projects/Java/Common/RapidMiner/Extension/ISPR/build/libs/ISPR-8.0.0-all.jar'
+//    //from jar.archivePath
+//    //into "$usersHomeDir /.RapidMiner/extensions"
+//}
+
+
+task run(type: JavaExec, dependsOn: copyPluginFast) {
+    description 'Executes RapidMiner'
+    main = 'com.rapidminer.launcher.GUILauncher'
+    classpath = configurations.runtime
+    jvmArgs = ["-Duser.home=$usersHomeDir"]
+}
+
+//task debug(type: JavaExec, dependsOn: copyPluginFast) {
+//    description 'Executes RapidMiner in debug mode'
+//    main = 'com.rapidminer.launcher.GUILauncher'
+//    classpath = configurations.runtime
+//    jvmArgs = ["-Duser.home=$usersHomeDir"]
+//    debug true
+//}
