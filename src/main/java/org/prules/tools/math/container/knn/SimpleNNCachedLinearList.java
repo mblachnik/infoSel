@@ -33,7 +33,7 @@ import org.prules.dataset.IInstanceLabels;
 import org.prules.dataset.InstanceFactory;
 import org.prules.dataset.Vector;
 import org.prules.tools.math.container.DoubleObjectContainer;
-import org.prules.tools.math.container.SymmetricDoubleMatrix;
+import org.prules.tools.math.container.SymetricDoubleMatrix;
 import org.prules.tools.math.similarity.DistanceEvaluator;
 import org.prules.tools.math.similarity.IDistanceEvaluator;
 
@@ -57,7 +57,7 @@ public class SimpleNNCachedLinearList<T extends IInstanceLabels> implements ISPR
     private DistanceMeasure distance;
     private List<Vector> samples;
     private List<T> storedValues;
-    private SymmetricDoubleMatrix distanceCache; //Structure which holds symmetric matrix
+    private SymetricDoubleMatrix distanceCache; //Structure which holds symmetric matrix
     private int index = -1;
     private IDistanceEvaluator distanceEvaluator;
 
@@ -72,7 +72,7 @@ public class SimpleNNCachedLinearList<T extends IInstanceLabels> implements ISPR
         samples = new ArrayList<>(n);
         storedValues = new ArrayList<>(n);
         //int cacheSize  = (n*n + n)/2;                
-        distanceCache = new SymmetricDoubleMatrix(n);
+        distanceCache = new SymetricDoubleMatrix(n);
         distanceEvaluator = new DistanceEvaluator(distance);
     }
 
