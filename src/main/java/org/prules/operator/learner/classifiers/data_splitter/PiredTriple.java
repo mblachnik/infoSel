@@ -1,11 +1,14 @@
 package org.prules.operator.learner.classifiers.data_splitter;
-
+/**
+ * A class which holds three elements
+ */
 class PiredTriple {
 
-        long pired = -1;
-        int protoId1 = -1;
-        int protoId2 = -1;
-        boolean isPure = false;
+
+        long pired = -1; //An id of paired prototypes
+        int protoId1 = -1; //First prototype id
+        int protoId2 = -1; //Second prototype id
+        boolean isPure = false; //?
 
         public PiredTriple(long pired, int protoId1, int protoId2) {
             set(pired, protoId1, protoId2, false);

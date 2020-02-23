@@ -87,33 +87,40 @@ public class NearestPrototypesSplitter implements DecisionBorderSplitter {
         double[][] example2ProtoDistances = new double[exampleSet.size()][prototypes.length];
         PiredTriple[] examplesNearestPair = new PiredTriple[exampleSet.size()]; //Data structure used to store selected prototypes for given training sample. It contains three elements pired value, id_nearest_prototype, id_nearest_enemy
         Map<Long, int[]> counterMap = new HashMap<>(); //Counter used to count frequency of prototypes pair
-        double[] labels = new double[exampleSet.size()]; //Here use use array to store labels as it is much facter then iterating over exampleSet
+        int[] labels = new int[exampleSet.size()]; //Here use use array to store labels as it is much facter then iterating over exampleSet
         Map<String,Integer> prototypeAttributeNames2PosMap = new HashMap<>(numberOfAttributesInExampleSet);
         List<String> prototypeAttributeNames = new ArrayList<>(numberOfAttributesInExampleSet);
         int[] counts;
         //<editor-fold defaultstate="collapsed" desc="Reorder values of prototypes so they much the order of the input trainingSet ">
+        boolean attrIndexSame = true;
         int attrIndex = 0;
         for (Attribute attr : attributesExampleSet) {
             String attrName = attr.getName();
             prototypeAttributeNames2PosMap.put(attrName,attrIndex);
             prototypeAttributeNames.add(attrName);
+            if (!attrName.equals(attributes.get(attrIndex))){
+                attrIndexSame = false;
+            }
             attrIndex++;
         }
-        for (int prototypeIndex = 0; prototypeIndex<prototypes.length; prototypeIndex++) {
-            double[] prototype = prototypes[prototypeIndex];
-            double[] newPrototype = new double[prototype.length];
-            for (int j = 0; j<attributes.size(); j++) {
-                String attrName = attributes.get(j);
-                int newId = prototypeAttributeNames2PosMap.get(attrName);
-                newPrototype[newId] = prototype[j];
+        if (!attrIndexSame) {
+            for (int prototypeIndex = 0; prototypeIndex < prototypes.length; prototypeIndex++) {
+                double[] prototype = prototypes[prototypeIndex];
+                double[] newPrototype = new double[prototype.length];
+                for (int j = 0; j < attributes.size(); j++) {
+                    String attrName = attributes.get(j);
+                    int newId = prototypeAttributeNames2PosMap.get(attrName);
+                    newPrototype[newId] = prototype[j];
+                }
+                prototypes[prototypeIndex] = newPrototype;
             }
-            prototypes[prototypeIndex] = newPrototype;
+            attributes = prototypeAttributeNames;
         }
-        attributes = prototypeAttributeNames;
         //</editor-fold>
         selectedPairs = new HashMap<>();
         int exampleIndex = 0;
         for (Example example : exampleSet) {
+            labels[exampleIndex] = (int)example.getLabel();
             //<editor-fold defaultstate="collapsed" desc="Extract values of example for the distance calculations">
             {
                 int i = 0;
@@ -151,11 +158,8 @@ public class NearestPrototypesSplitter implements DecisionBorderSplitter {
             }
             long pair = neighborId < enemyId ? BasicMath.pair((long) neighborId, (long) enemyId) : BasicMath.pair((long) enemyId, (long) neighborId);
             //<editor-fold desc="Count class distribution for given pair">
-            int label = (int) labels[exampleIndex];
-            if ((counts = counterMap.get(pair)) == null) {
-                counts = new int[labelsNum];
-                counterMap.put(pair, counts);
-            }
+            int label = labels[exampleIndex];
+            counts = counterMap.computeIfAbsent(pair,(k)->new int[labelsNum]);
             counts[label]++;
             //</editor-fold>
             PiredTriple nearestPair;
@@ -169,7 +173,6 @@ public class NearestPrototypesSplitter implements DecisionBorderSplitter {
             nearestPair.protoId1 = neighborId;
             nearestPair.protoId2 = enemyId;
             //</editor-fold>
-            labels[exampleIndex] = example.getLabel();
             exampleIndex++;
         }
         //<editor-fold defaultstate="collapsed" desc="Determine maximum value of the counter, minimum value and indekx of the minimum value. Also examples which belong to a batch which is clear (all samples belong to a single class ) are added to pureSet variable.">
