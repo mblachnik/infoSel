@@ -1,18 +1,17 @@
 package org.prules.operator.learner.classifiers.neuralnet.models;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import org.prules.tools.math.BasicMath;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import java.io.IOException;
+import org.prules.tools.math.BasicMath;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
@@ -29,20 +28,20 @@ public class GLVQModel extends AbstractLVQModel {
     private final double timeMax = 10;
     private final double timeMin = 1;
     private final boolean debug; //In debug mode the true cost function is calculated
-    private double costValue; //The value of the cost function
+    private AtomicDouble costValue; //The value of the cost function
     private final List<Double> costValues; //List of cost Function values
     private final List<Double> learningRateValues; //List of learning rate values
     private final List<Double> timeRateValues; //List of time (lambda) rate values
     private final LearningRateUpdateRule learningRateUpdateRule; //THe update rule of the learning rate
-    private int numberOfUpdates; //The number of times the update function was executed before nextIteration was executed
-    private double tmpFactor = 0;
+    private AtomicInteger numberOfUpdates; //The number of times the update function was executed before nextIteration was executed
+    private AtomicDouble tmpFactor;
     /**
      *
      * @param prototypes
      * @param iterations
      * @param measure
      * @param alpha
-     * @param debug - wether to use debug mode. In debug mode the algorithm also calculates the cost function which can be time consuming
+     //* @param debug - wether to use debug mode. In debug mode the algorithm also calculates the cost function which can be time consuming
      * @throws OperatorException
      */
     public GLVQModel(ExampleSet prototypes, int iterations,
@@ -55,11 +54,15 @@ public class GLVQModel extends AbstractLVQModel {
         this.initialAlpha = alpha;
         this.measure = measure;
         this.measure.init(prototypes);        
-        this.costValues = new ArrayList<>(iterations);
+        this.costValues = Collections.synchronizedList(new ArrayList<Double>(iterations));
         this.debug = false;
         learningRateUpdateRule = new HyperbolicLearningRateUpdateRule();
+        //learningRateUpdateRule = new LinearLearningRateUpdateRule(alpha,iterations);
         learningRateValues = new ArrayList<>(iterations);
         timeRateValues = new ArrayList<>(iterations);
+        numberOfUpdates = new AtomicInteger(0);
+        costValue = new AtomicDouble(0);
+        tmpFactor = new AtomicDouble(0);
         addStoredValue(LEARNING_RATE_KEY, learningRateValues);
         addStoredValue(LAMBDA_RATE_KEY, timeRateValues);        
     }
@@ -68,7 +71,7 @@ public class GLVQModel extends AbstractLVQModel {
      *
      */
     @Override
-    public void update() {
+    public void update(double[][] prototypeValues, double[] prototypeLabels, double[] exampleValues, double exampleLabel, Example example) {
 
         double dist, minDistCorrect = Double.MAX_VALUE, minDistIncorrect = Double.MAX_VALUE;
         int selectedPrototypeCorrect = 0;
@@ -93,12 +96,12 @@ public class GLVQModel extends AbstractLVQModel {
         denominator = denominator == 0 ? 1e-10 : denominator;
         double mu = (minDistCorrect - minDistIncorrect) / denominator;
         double currentCostValue = BasicMath.sigmoid(mu * time);
-        costValue += currentCostValue;
+        costValue.addAndGet(Double.doubleToLongBits(currentCostValue));
         
         double dif_df_mu = currentCostValue * time * (1 - currentCostValue);
         double factorCorrect = minDistIncorrect / (denominator * denominator);
         double factorIncorrect = minDistCorrect / (denominator * denominator);
-        tmpFactor += 2 * alpha * dif_df_mu * factorCorrect;
+        //tmpFactor += 2 * alpha * dif_df_mu * factorCorrect;
         for (i = 0; i < getAttributesSize(); i++) {
             double trainValue = exampleValues[i];
             double valueCorrect = prototypeValues[selectedPrototypeCorrect][i];
@@ -108,7 +111,7 @@ public class GLVQModel extends AbstractLVQModel {
             prototypeValues[selectedPrototypeCorrect][i] = valueCorrect;
             prototypeValues[selectedPrototypeIncorrect][i] = valueIncorrect;
         }
-        numberOfUpdates++;
+        numberOfUpdates.incrementAndGet();
     }
 
     /**
@@ -117,20 +120,20 @@ public class GLVQModel extends AbstractLVQModel {
      * @return
      */
     @Override
-    public boolean nextIteration(ExampleSet trainingSet) {
+    public boolean isNextIteration(ExampleSet trainingSet) {
         currentIteration++;
         //time *= 1.1;
         
         if (debug) {
             costValues.add(calcCostFunction(trainingSet));
         } else {
-            costValues.add(costValue/numberOfUpdates);
-            timeRateValues.add(tmpFactor/numberOfUpdates);
+            costValues.add(costValue.get()/numberOfUpdates.get());
+            timeRateValues.add(tmpFactor.get()/numberOfUpdates.get());
             learningRateValues.add(alpha);        
         }
-        costValue = 0;
-        numberOfUpdates = 0;
-        tmpFactor = 0;
+        costValue.set(0);
+        numberOfUpdates.set(0);
+        tmpFactor.set(0);
         time = Math.min(time + (timeMax - timeMin) / iterations, timeMax);
         alpha = learningRateUpdateRule.update(alpha);
         return currentIteration < iterations;
@@ -152,23 +155,22 @@ public class GLVQModel extends AbstractLVQModel {
         double costValue = 0;
         for (Example e : trainingSet) {
             int j = 0;
-            for (Attribute attribute : trainingAttributes) {
+            for (Attribute attribute : getAttributes()) {
                 tmpExampleValues[j] = e.getValue(attribute);
                 j++;
             }
             tmpExampleLabel = e.getLabel();
             double dist, minDistCorrect = Double.MAX_VALUE, minDistIncorrect = Double.MAX_VALUE;
-            int i = 0;
-            for (double[] prototype : prototypeValues) {
+            for (int i = 0;i<getNumberOfPrototypes();i++) {
+                double[] prototype = getPrototypeAsDouble(i);
                 dist = measure.calculateDistance(prototype, tmpExampleValues);
-                double protoLabel = prototypeLabels[i];
+                double protoLabel = getPrototypeLabel(i);
                 if (dist < minDistCorrect && tmpExampleLabel == protoLabel) {
                     minDistCorrect = dist;
                 }
                 if (dist < minDistIncorrect && tmpExampleLabel != protoLabel) {
                     minDistIncorrect = dist;
                 }
-                i++;
             }
 
             double denominator = minDistCorrect + minDistIncorrect;
@@ -219,5 +221,10 @@ public class GLVQModel extends AbstractLVQModel {
     @Override
     public List<Double> getCostFunctionValues() {
         return costValues;
+    }
+
+    @Override
+    public boolean isParallelizable() {
+        return true;
     }
 }

@@ -26,7 +26,7 @@ public class SelectedExampleSet extends AbstractExampleSet {
     /**
      * DataIndex stores information on each example if this example is on or off.
      */
-    protected final IDataIndex index;
+    protected IDataIndex index;
 
     /**
      * Creates  SelectedExampleSet by wrapping another ExampleSet
@@ -45,10 +45,15 @@ public class SelectedExampleSet extends AbstractExampleSet {
      * @param index     - an index of examples which are on/off
      */
     public SelectedExampleSet(ExampleSet parentSet, IDataIndex index) {
-        parent = (ExampleSet) parentSet.clone();
-        if (parentSet.size() != index.size())
-            throw new RuntimeException("Incorect size of index variable");
-        this.index = index;
+        if (parentSet instanceof SelectedExampleSet) {
+            selectedExampleSet((SelectedExampleSet) parentSet);
+            index.setIndex(index);
+        } else {
+            parent = (ExampleSet) parentSet.clone();
+            if (parentSet.size() != index.size())
+                throw new RuntimeException("Incorect size of index variable");
+            this.index = index;
+        }
     }
 
 
@@ -59,6 +64,10 @@ public class SelectedExampleSet extends AbstractExampleSet {
      * @param parentSet
      */
     public SelectedExampleSet(SelectedExampleSet parentSet) {
+        selectedExampleSet(parentSet);
+    }
+
+    private final void selectedExampleSet(SelectedExampleSet parentSet) {
         parent = (ExampleSet) parentSet.parent.clone();
         index = new DataIndex(parentSet.index);
     }

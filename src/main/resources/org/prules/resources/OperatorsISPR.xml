@@ -178,6 +178,14 @@
                     <key>NearestPrototypeBatchOperator</key>
                     <class>org.prules.operator.learner.classifiers.data_splitter.NearestPrototypeBatchOperator</class>
                 </operator>
+                <operator>
+                    <key>DemocraticEnsembleOperator</key>
+                    <class>org.prules.operator.learner.selection.ensemble.DemocraticEnsembleOperator</class>
+                </operator>
+                <operator>
+                    <key>ISEnsembleProtoPairOperator</key>
+                    <class>org.prules.operator.learner.selection.ensemble.ISEnsembleProtoPairOperator</class>
+                </operator>
             </group>
         </group>
         <group key="Feature_reduction">

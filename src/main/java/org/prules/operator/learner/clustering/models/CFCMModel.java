@@ -118,14 +118,11 @@ public class CFCMModel extends AbstractBatchModel {
                 partitionMatrixEntry[prototypeIndex] = weight * v / sum;
             }
         }
+        costFunctionValue.add(objFun);
         int size = costFunctionValue.size();        
         double gain = costFunctionValue.get(size-1) - costFunctionValue.get(size-2);
-        if (Math.abs(gain) < minGain) {
-            nextItertion = false;
-        } else {            
-            nextItertion = true;
-            costFunctionValue.add(objFun);
-        }
+        nextItertion = Math.abs(gain) < minGain ? false : true;
+
     }
     
     /**

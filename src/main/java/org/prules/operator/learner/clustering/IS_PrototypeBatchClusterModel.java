@@ -35,8 +35,9 @@ public class IS_PrototypeBatchClusterModel extends IS_ClusterModel {
     final List<String> attributeNames;
     final boolean addCluster;
     final int numberOfClusters;
+    final List<Double> costFunctionValues;
 
-    public IS_PrototypeBatchClusterModel(AbstractBatchModel model, Map<Integer, String> clusterNamesMap, ExampleSet exampleSet, int k, boolean addCluster, boolean addClusterAsLabel, boolean removeUnknown, boolean addPartitionMatrix) {
+    public IS_PrototypeBatchClusterModel(AbstractBatchModel model, Map<Integer, String> clusterNamesMap, ExampleSet exampleSet, int k, boolean addCluster, boolean addClusterAsLabel, boolean removeUnknown, boolean addPartitionMatrix, List<Double> costFunctionValues) {
         super(exampleSet, k, addClusterAsLabel, removeUnknown);
         this.clusterNames = clusterNamesMap;
         this.model = model;
@@ -48,6 +49,7 @@ public class IS_PrototypeBatchClusterModel extends IS_ClusterModel {
         }
         this.addCluster = addCluster;
         numberOfClusters = clusterNames.size();
+        this.costFunctionValues = costFunctionValues;
     }
 
     /**
@@ -160,5 +162,17 @@ public class IS_PrototypeBatchClusterModel extends IS_ClusterModel {
 
         }
         return results;
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("Model info:\n")
+                .append(super.toString())
+                .append("\n")
+                .append("Cost function:");
+        costFunctionValues.forEach(x->builder.append("  ").append(x).append("\n"));
+        return builder.toString();
     }
 }

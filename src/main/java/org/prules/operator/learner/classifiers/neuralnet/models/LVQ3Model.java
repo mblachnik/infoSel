@@ -1,6 +1,7 @@
 package org.prules.operator.learner.classifiers.neuralnet.models;
 
 import com.rapidminer.example.ExampleSet;
+import com.rapidminer.example.Example;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import java.util.ArrayList;
@@ -23,19 +24,18 @@ public class LVQ3Model extends AbstractLVQModel {
     /**
      *
      * @param prototypes
-     * @param iterations
+     * @param maxIterations
      * @param measure
      * @param alpha
-     * @param alphaNegative
      * @param window
      * @param epsilon
      * @throws OperatorException
      */
-    public LVQ3Model(ExampleSet prototypes, int iterations,
+    public LVQ3Model(ExampleSet prototypes, int maxIterations,
             DistanceMeasure measure, double alpha,
             double window, double epsilon) throws OperatorException {
         super(prototypes);
-        this.iterations = iterations;
+        this.iterations = maxIterations;
         this.currentIteration = 0;        
         this.alpha = alpha;
         this.initialAlpha = alpha;
@@ -49,13 +49,13 @@ public class LVQ3Model extends AbstractLVQModel {
      *
      */
     @Override
-    public void update() {
+    public void update(double[][] prototypeValues, double[] prototypeLabels, double[] exampleValues, double exampleLabel, Example example) {
         double dist, minDist1 = Double.MAX_VALUE, minDist2 = Double.MAX_VALUE;
         int selectedPrototypeNr1 = 0;
         int selectedPrototypeNr2 = 0;
         int i = 0;
         for (double[] prototype : prototypeValues) {
-            dist = measure.calculateDistance(prototype, getCurrentExampleValues());
+            dist = measure.calculateDistance(prototype, exampleValues);
             if (dist < minDist1) {
                 minDist2 = minDist1;
                 minDist1 = dist;
@@ -109,7 +109,7 @@ public class LVQ3Model extends AbstractLVQModel {
      * @return
      */
     @Override
-    public boolean nextIteration(ExampleSet trainingSet) {
+    public boolean isNextIteration(ExampleSet trainingSet) {
         currentIteration++;
         alpha = LVQTools.learingRateUpdateRule(alpha, currentIteration, iterations, initialAlpha);        
         return currentIteration < iterations;
@@ -153,5 +153,10 @@ public class LVQ3Model extends AbstractLVQModel {
     @Override
     public List<Double> getCostFunctionValues() {
         return new ArrayList<>(0);
+    }
+
+    @Override
+    public boolean isParallelizable() {
+        return true;
     }
 }

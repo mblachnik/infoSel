@@ -59,6 +59,16 @@ public class DataIndex implements IDataIndex {
         length = indexSize;
     }
 
+//    /**
+//     * Constructor which set all instances as present.
+//     * @param indexSize - number of elements in the structure
+//     */
+//    public DataIndex(int indexSize, boolean defaultValue) {
+//        this.index = new boolean[indexSize];
+//        Arrays.fill(this.index, defaultValue);
+//        length = indexSize;
+//    }
+
     /**
      * Copy constructor
      * @param index

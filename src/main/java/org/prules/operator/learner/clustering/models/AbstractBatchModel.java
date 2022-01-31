@@ -21,7 +21,6 @@ public abstract class AbstractBatchModel {
     /**
      * Constructor of any batch based data processing (clusterubg) model
      *
-     * @param numberOfPrototypes - number of prototypes => number of clusters
      * @param distance - distanceMeasure
      */
     public AbstractBatchModel(DistanceMeasure distance) {
@@ -89,6 +88,12 @@ public abstract class AbstractBatchModel {
     public double getCostFunctionValue() {
         return costFunctionValue.get(costFunctionValue.size()-1);
     }
+
+    /**
+     * Returns values of the cost function. THe first value indicates the firest iteration.
+     * @return
+     */
+    public List<Double> getCostFunctionValues() { return costFunctionValue; }
 
     /**
      * Method executed by the train method to check if next iteration of the

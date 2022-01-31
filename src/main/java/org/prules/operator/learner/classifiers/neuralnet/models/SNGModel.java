@@ -1,5 +1,6 @@
 package org.prules.operator.learner.classifiers.neuralnet.models;
 
+import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
@@ -29,15 +30,15 @@ public class SNGModel extends AbstractLVQModel {
     /**
      *
      * @param prototypes
-     * @param iterations
+     * @param maxIterations
      * @param measure
      * @param alpha
      * @param lambda
      * @throws OperatorException
      */
-    public SNGModel(ExampleSet prototypes, int iterations, DistanceMeasure measure, double alpha, double lambda) throws OperatorException {
+    public SNGModel(ExampleSet prototypes, int maxIterations, DistanceMeasure measure, double alpha, double lambda) throws OperatorException {
         super(prototypes);
-        this.iterations = iterations;
+        this.iterations = maxIterations;
         this.currentIteration = 0;
         this.alpha = alpha;
         this.initialAlpha = alpha;
@@ -49,8 +50,8 @@ public class SNGModel extends AbstractLVQModel {
         for(int i=0; i<prototypes.size(); i++ ){
             distanceTable[i] = new Pair();
         }
-        learningRateValues = new ArrayList<>(iterations);
-        lambdaRateValues = new ArrayList<>(iterations);
+        learningRateValues = new ArrayList<>(maxIterations);
+        lambdaRateValues = new ArrayList<>(maxIterations);
         addStoredValue(LEARNING_RATE_KEY, learningRateValues);
         addStoredValue(LAMBDA_RATE_KEY, lambdaRateValues);
     }
@@ -59,7 +60,7 @@ public class SNGModel extends AbstractLVQModel {
      * Update codebooks weights
      */
     @Override
-    public void update() {
+    public void update(double[][] prototypeValues, double[] prototypeLabels, double[] exampleValues, double exampleLabel, Example example) {
 
         double dist, minDist = Double.MAX_VALUE;
 
@@ -115,7 +116,7 @@ public class SNGModel extends AbstractLVQModel {
      * @return
      */
     @Override
-    public boolean nextIteration(ExampleSet trainingSet) {
+    public boolean isNextIteration(ExampleSet trainingSet) {
         currentIteration++;
         learningRateValues.add(alpha);
         lambdaRateValues.add(lambda);

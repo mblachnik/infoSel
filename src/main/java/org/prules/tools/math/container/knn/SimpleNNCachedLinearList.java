@@ -26,18 +26,25 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
+import org.prules.dataset.Const;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.RandomAccess;
+import org.prules.tools.math.similarity.DistanceEvaluator;
 import com.rapidminer.tools.math.container.BoundedPriorityQueue;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import org.prules.dataset.Const;
-import org.prules.dataset.IInstanceLabels;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.prules.dataset.InstanceFactory;
-import org.prules.dataset.Vector;
 import org.prules.tools.math.container.DoubleObjectContainer;
 import org.prules.tools.math.container.SymetricDoubleMatrix;
-import org.prules.tools.math.similarity.DistanceEvaluator;
+import org.prules.dataset.IInstanceLabels;
+import org.prules.dataset.Vector;
 import org.prules.tools.math.similarity.IDistanceEvaluator;
-
-import java.util.*;
 
 /**
  * This class is an implementation of the GeometricDataCollection interface, It
@@ -47,25 +54,26 @@ import java.util.*;
  * distances. The distance ceche is recalculated each time new sample is added
  * It use simple linear search algorithm
  *
- * @param <T> This is the type of value with is stored with the points and
- *            retrieved on nearest neighbour search
  * @author Marcin Blachnik
+ *
+ * @param <T> This is the type of value with is stored with the points and
+ * retrieved on nearest neighbour search
  */
 public class SimpleNNCachedLinearList<T extends IInstanceLabels> implements ISPRCachedGeometricDataCollection<T>, RandomAccess {
 
     private static final long serialVersionUID = -746048910140779285L;
-    private DistanceMeasure distance;
-    private List<Vector> samples;
-    private List<T> storedValues;
-    private SymetricDoubleMatrix distanceCache; //Structure which holds symmetric matrix
+    DistanceMeasure distance;
+    List<Vector> samples;
+    List<T> storedValues;
+    SymetricDoubleMatrix distanceCache; //Structure which holds symetrix matrix
     private int index = -1;
-    private IDistanceEvaluator distanceEvaluator;
+    IDistanceEvaluator distanceEvaluator;
 
     /**
      * Constructor of the class
      *
      * @param distance - distance measure (it is assumed that it is symetric)
-     * @param n        - size of internal data structures and cache size
+     * @param n - size of internal data structures and cache size
      */
     public SimpleNNCachedLinearList(DistanceMeasure distance, int n) {
         this.distance = distance;
@@ -128,7 +136,7 @@ public class SimpleNNCachedLinearList<T extends IInstanceLabels> implements ISPR
      * Returns a collection of values associated with k nearest samples to the
      * input sample
      *
-     * @param k      - number of nearest neighbors
+     * @param k - number of nearest neighbors
      * @param values - coordinates of input sample
      * @return
      */
@@ -144,8 +152,8 @@ public class SimpleNNCachedLinearList<T extends IInstanceLabels> implements ISPR
                 i++;
             }
             while (!queue.isEmpty()) {
-                DoubleObjectContainer<T> tuple = queue.poll();
-                result.add(tuple.getSecond());
+                DoubleObjectContainer<T> tupel = queue.poll();
+                result.add(tupel.getSecond());
             }
             Collections.reverse(result);
         } else {
@@ -164,13 +172,13 @@ public class SimpleNNCachedLinearList<T extends IInstanceLabels> implements ISPR
         }
         //Collections.reverse(result);
         return result;
-    }
-
+    }   
+    
     /**
      * Returns a collection of pairs including distance value and value
      * associated with k nearest samples to the input sample
      *
-     * @param k      - number of nearest neighbors
+     * @param k - number of nearest neighbors
      * @param values - coordinates of input sample
      * @return
      */
@@ -186,14 +194,14 @@ public class SimpleNNCachedLinearList<T extends IInstanceLabels> implements ISPR
         List<DoubleObjectContainer<T>> results = new ArrayList<>(queue);
         Collections.sort(results);
         return results;
-    }
+    }    
 
     /**
      * Returns a collection values associated with nearest samples that fall
      * into a hyper-sphere of radius withinDistance
      *
      * @param withinDistance - size of radius
-     * @param values         - input sample coordinates
+     * @param values - input sample coordinates
      * @return
      */
     @Override
@@ -210,7 +218,7 @@ public class SimpleNNCachedLinearList<T extends IInstanceLabels> implements ISPR
         List<DoubleObjectContainer<T>> results = new ArrayList<>(queue);
         Collections.sort(results);
         return results;
-    }
+    }   
 
     /**
      * Returns a collection values associated with nearest samples that fall
@@ -218,8 +226,8 @@ public class SimpleNNCachedLinearList<T extends IInstanceLabels> implements ISPR
      * samples is less then butAtLeastK, then at least k values are returned
      *
      * @param withinDistance - size of radius
-     * @param butAtLeastK    -
-     * @param values         - input sample coordinates
+     * @param butAtLeastK -
+     * @param values - input sample coordinates
      * @return
      */
     @Override
@@ -229,7 +237,7 @@ public class SimpleNNCachedLinearList<T extends IInstanceLabels> implements ISPR
             return getNearestValueDistances(butAtLeastK, values);
         }
         return result;
-    }
+    }    
 
     /**
      * Returns a collection of values associated with k nearest samples to the
@@ -237,7 +245,7 @@ public class SimpleNNCachedLinearList<T extends IInstanceLabels> implements ISPR
      * this algorithm uses internal cache. This method is very useful for
      * instance selection.
      *
-     * @param k   - number of nearest neighbors
+     * @param k - number of nearest neighbors
      * @param idx
      * @return
      */
@@ -253,15 +261,15 @@ public class SimpleNNCachedLinearList<T extends IInstanceLabels> implements ISPR
                 i++;
             }
             while (!queue.isEmpty()) {
-                DoubleObjectContainer<T> tuple = queue.poll();
-                result.add(tuple.getSecond());
+                DoubleObjectContainer<T> tupel = queue.poll();
+                result.add(tupel.getSecond());
             }
             Collections.reverse(result);
         } else {
             int i = 0;
             double minDist = Double.MAX_VALUE;
             T subResult = null;
-            for (Vector ignored : this.samples) {
+            for (Vector sample : this.samples) {
                 double dist = distanceCache.get(idx, i);
                 if (dist < minDist) {
                     minDist = dist;
@@ -281,7 +289,7 @@ public class SimpleNNCachedLinearList<T extends IInstanceLabels> implements ISPR
      * cache. This method is very useful for instance selection. which is a
      * member of the dataset
      *
-     * @param k   - number of nearest neighbors
+     * @param k - number of nearest neighbors
      * @param idx
      * @return
      */
@@ -289,12 +297,12 @@ public class SimpleNNCachedLinearList<T extends IInstanceLabels> implements ISPR
     public Collection<DoubleObjectContainer<T>> getNearestValueDistances(int k, int idx) {
         BoundedPriorityQueue<DoubleObjectContainer<T>> queue = new BoundedPriorityQueue<>(k);
         int i = 0;
-        for (Vector ignored : this.samples) {
+        for (Vector sample : this.samples) {
             double dist = distanceCache.get(idx, i);
             queue.add(new DoubleObjectContainer<>(dist, storedValues.get(i)));
             i++;
         }
-        List<DoubleObjectContainer<T>> result = new ArrayList<>(queue);
+        List<DoubleObjectContainer<T>> result = new ArrayList<>(queue);        
         Collections.sort(result);
         return result;
     }
@@ -307,22 +315,22 @@ public class SimpleNNCachedLinearList<T extends IInstanceLabels> implements ISPR
      * selection.
      *
      * @param withinDistance - size of radius
-     * @param index          - index of the input sample. It should be an element of the
-     *                       input data added by the addSample method
+     * @param index - index of the input sample. It should be an element of the
+     * input data added by the addSample method
      * @return
      */
     @Override
     public Collection<DoubleObjectContainer<T>> getNearestValueDistances(double withinDistance, int index) {
         ArrayList<DoubleObjectContainer<T>> queue = new ArrayList<>();
         int i = 0;
-        for (Vector ignored : this.samples) {
+        for (Vector sample : this.samples) {
             double currentDistance = distanceCache.get(index, i);
             if (currentDistance <= withinDistance) {
                 queue.add(new DoubleObjectContainer<>(currentDistance, storedValues.get(i)));
             }
             i++;
         }
-        List<DoubleObjectContainer<T>> result = new ArrayList<>(queue);
+        List<DoubleObjectContainer<T>> result = new ArrayList<>(queue);        
         Collections.sort(result);
         return result;
     }
@@ -336,9 +344,9 @@ public class SimpleNNCachedLinearList<T extends IInstanceLabels> implements ISPR
      * useful for instance selection.
      *
      * @param withinDistance - size of radius
-     * @param butAtLeastK    - number of nearest neighbors
-     * @param index          - index of the input sample. It should be an element of the
-     *                       input data added by the addSample method
+     * @param butAtLeastK - number of nearest neighbors
+     * @param index - index of the input sample. It should be an element of the
+     * input data added by the addSample method
      * @return
      */
     @Override
@@ -416,8 +424,8 @@ public class SimpleNNCachedLinearList<T extends IInstanceLabels> implements ISPR
     /**
      * THis method allows to modify values associated with input data
      *
-     * @param index       - index of input data to modify
-     * @param sample      - coordinated of the input data
+     * @param index - index of input data to modify
+     * @param sample - coordinated of the input data
      * @param storedValue - new value associated with the input data
      */
     @Override
@@ -439,11 +447,16 @@ public class SimpleNNCachedLinearList<T extends IInstanceLabels> implements ISPR
      */
     @Override
     public int numberOfUniquesOfStoredValues() {
-        return new HashSet<>(storedValues).size();
+        Set<T> uniqueValues = new HashSet<>();
+        for (T value : storedValues) {
+            uniqueValues.add(value);
+        }
+        return uniqueValues.size();
     }
-
+    
     @Override
     public DistanceMeasure getMeasure() {
         return this.distance;
     }
+
 }

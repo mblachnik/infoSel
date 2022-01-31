@@ -1,5 +1,6 @@
 package org.prules.operator.learner.classifiers.neuralnet.models;
 
+import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
@@ -20,15 +21,14 @@ public class LVQ1Model extends AbstractLVQModel {
     /**
      * 
      * @param prototypes
-     * @param iterations
+     * @param maxIterations
      * @param measure
      * @param alpha
-     * @param alphaNegative
      * @throws OperatorException
      */
-    public LVQ1Model(ExampleSet prototypes, int iterations, DistanceMeasure measure, double alpha) throws OperatorException {
+    public LVQ1Model(ExampleSet prototypes, int maxIterations, DistanceMeasure measure, double alpha) throws OperatorException {
         super(prototypes);
-        this.iterations = iterations;
+        this.iterations = maxIterations;
         this.currentIteration = 0;        
         this.alpha = alpha;        
         this.initialAlpha = alpha;
@@ -40,7 +40,7 @@ public class LVQ1Model extends AbstractLVQModel {
      * 
      */
     @Override
-    public void update() {
+    public void update(double[][] prototypeValues, double[] prototypeLabels, double[] exampleValues, double exampleLabel, Example example){
         double dist, minDist = Double.MAX_VALUE;
         int selectedPrototype = 0;
         int i = 0;
@@ -73,7 +73,7 @@ public class LVQ1Model extends AbstractLVQModel {
      * @return
      */
     @Override
-    public boolean nextIteration(ExampleSet trainingSet) {
+    public boolean isNextIteration(ExampleSet trainingSet) {
         currentIteration++;
         alpha = LVQTools.learingRateUpdateRule(alpha, currentIteration, iterations, initialAlpha);        
         return currentIteration < iterations;
@@ -118,4 +118,10 @@ public class LVQ1Model extends AbstractLVQModel {
     public List<Double> getCostFunctionValues() {
         return new ArrayList<>(0);
     }
+
+    @Override
+    public boolean isParallelizable() {
+        return true;
+    }
+
 }

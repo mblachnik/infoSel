@@ -43,7 +43,7 @@ public class ISEnsembleBaggingOperator extends AbstractISEnsembleOperator {
     }
 
     @Override
-    protected ExampleSet preprocessExampleSet(ExampleSet trainingSet) throws OperatorException {
+    protected ExampleSet preprocessingMainLoop(ExampleSet trainingSet) throws OperatorException {
         ExampleSet dataSet;
         if (useEntrySet) {
             dataSet = trainingSet;

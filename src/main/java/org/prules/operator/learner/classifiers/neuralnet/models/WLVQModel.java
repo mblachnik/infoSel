@@ -1,5 +1,6 @@
 package org.prules.operator.learner.classifiers.neuralnet.models;
 
+import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
@@ -13,21 +14,22 @@ import java.util.List;
 public class WLVQModel extends AbstractLVQModel {
 
     DistanceMeasure measure;
-    private int currentIteration, iterations;
+    private int currentIteration;
+    private final int iterations;
     private double alpha;
-    private double initialAlpha;
+    private final double initialAlpha;
 
     /**
      * 
      * @param prototypes
-     * @param iterations
+     * @param maxIterations
      * @param measure
      * @param alpha
      * @throws OperatorException
      */
-    public WLVQModel(ExampleSet prototypes, int iterations, DistanceMeasure measure, double alpha) throws OperatorException {
+    public WLVQModel(ExampleSet prototypes, int maxIterations, DistanceMeasure measure, double alpha) throws OperatorException {
         super(prototypes);
-        this.iterations = iterations;
+        this.iterations = maxIterations;
         this.currentIteration = 0;        
         this.alpha = alpha;        
         this.initialAlpha = alpha;
@@ -39,18 +41,18 @@ public class WLVQModel extends AbstractLVQModel {
      * Update codebooks position. Evaluated for every example in the example set until nextIteration returns false
      */
     @Override
-    public void update() {
+    public void update(double[][] prototypeValues, double[] prototypeLabels, double[] exampleValues, double exampleLabel, Example example) {
         double dist, minDist = Double.MAX_VALUE;
         int selectedPrototype = 0, i = 0;
         for (double[] prototype : prototypeValues) {
-            dist = measure.calculateDistance(prototype, getCurrentExampleValues());
+            dist = measure.calculateDistance(prototype, exampleValues);
             if (dist < minDist) {
                 minDist = dist;
                 selectedPrototype = i;
             }
             i++;
         }
-        double weight = getCurrentExample().getWeight();
+        double weight = example.getWeight();
         if (prototypeLabels[selectedPrototype] == exampleLabel) {
             for (i = 0; i < getAttributesSize(); i++) {
                 double value = prototypeValues[selectedPrototype][i];
@@ -72,9 +74,9 @@ public class WLVQModel extends AbstractLVQModel {
      * @return
      */
     @Override
-    public boolean nextIteration(ExampleSet trainingSet) {
+    public boolean isNextIteration(ExampleSet trainingSet) {
         currentIteration++;
-        alpha = LVQTools.learingRateUpdateRule(alpha, currentIteration, iterations, initialAlpha);        
+        alpha = LVQTools.learingRateUpdateRule(alpha, currentIteration, iterations, initialAlpha);
         return currentIteration < iterations;
     }
     
@@ -116,5 +118,10 @@ public class WLVQModel extends AbstractLVQModel {
     @Override
     public List<Double> getCostFunctionValues() {
         return new ArrayList<>(0);
+    }
+
+    @Override
+    public boolean isParallelizable() {
+        return true;
     }
 }

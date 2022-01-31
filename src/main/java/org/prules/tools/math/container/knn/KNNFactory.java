@@ -50,7 +50,7 @@ public class KNNFactory {
                 samples = new LinearList(exampleSet, storedAttributes, measure);
                 break;
             case CACHED_LINEAR_SEARCH:
-                samples = new SimpleNNCachedLineraList(exampleSet, storedAttributes, measure);
+                samples = new SimpleNNCachedLinearList(exampleSet, storedAttributes, measure);
                 break;
             case BALL_TREE_SEARCH:
                 samples = new BallTree(exampleSet, storedAttributes, measure);

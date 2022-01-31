@@ -33,7 +33,9 @@ public abstract class AbstractPrototypeClusteringBatchOperator extends AbstractP
     private static final long serialVersionUID = 21;
     protected final OutputPort modelOutputPort = getOutputPorts().createPort("model");
     double costFunctionValue = Double.NaN;
+    List<Double> costFunctionValues;
     protected Map<Integer, String> clusterNames;
+    protected Map<Integer,Integer> clusterSizes;
 
     /**
      * Constructor of prototype based clustering operator. 
@@ -69,11 +71,12 @@ public abstract class AbstractPrototypeClusteringBatchOperator extends AbstractP
         AbstractBatchModel trainModel = optimize(trainingSet);
         Collection<Vector> prototypes = trainModel.getPrototypes();
         costFunctionValue = trainModel.getCostFunctionValue();
+        costFunctionValues = trainModel.getCostFunctionValues();
         clusterNames = IS_ClusterModelTools.prepareClusterNamesMap(prototypes.size());
         boolean addCluster = getParameterAsBoolean(RMAbstractClusterer.PARAMETER_ADD_CLUSTER_ATTRIBUTE);
         boolean addClusterAsLabel = getParameterAsBoolean(RMAbstractClusterer.PARAMETER_ADD_AS_LABEL);
         boolean keepPartitionMatrix = getParameterAsBoolean(PARAMETER_ADD_PARTITION_MATRIX);
-        IS_PrototypeBatchClusterModel model = new IS_PrototypeBatchClusterModel(trainModel, clusterNames, trainingSet, prototypes.size(), addCluster, addClusterAsLabel, true, keepPartitionMatrix);
+        IS_PrototypeBatchClusterModel model = new IS_PrototypeBatchClusterModel(trainModel, clusterNames, trainingSet, prototypes.size(), addCluster, addClusterAsLabel, true, keepPartitionMatrix, costFunctionValues);
         modelOutputPort.deliver(model);
         Tools.checkAndCreateIds(trainingSet);
         model.apply(trainingSet, true);

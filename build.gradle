@@ -22,7 +22,7 @@ def propertyMap = [
         'paths.homeDir' : Paths.get(System.getProperty('user.home')),
         'paths.homeDirDebug' : Paths.get(System.getProperty('user.home')),
         'paths.RapidMiner': 'C:/Program Files/RapidMiner/RapidMiner Studio',
-        'rapidminerVer' : '9.0.0'
+        'rapidminerVer' : '9.7.1'
 ];
 import java.nio.file.Paths
 
@@ -58,6 +58,7 @@ extensionConfig {
      */
     groupId = 'org.prules'
 
+    
     /*
      * The extension vendor which will be displayed in the extensions about box
      * and for customizing the license headers when initializing the project repository.
@@ -85,6 +86,7 @@ dependencies {
     // https://mvnrepository.com/artifact/com.github.haifengl/smile-core
     compile group: 'com.github.haifengl', name: 'smile-core', version: '1.5.3'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+    compile 'com.google.guava:guava:28.0-jre'
     //Java 9+ libraries
     compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
     compile group: 'org.openjfx', name: 'javafx-base', version: '13'
@@ -108,6 +110,13 @@ dependencies {
     providedCompile group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
 
     runtime fileTree(dir: (propertyMap['paths.RapidMiner'] + '/lib/'), include: '*.*')
+}
+
+/**
+ * turn on ZIP64 to support more then 65k files
+ */
+shadowJar {
+    zip64 true
 }
 
 task copyPluginDebug(type: Copy, dependsOn: jar) {

@@ -59,7 +59,7 @@ public class CFCMOperator extends AbstractPrototypeClusteringBatchOperator {
         c = 3; //Number of clusters
         m = 2; //Fuzzynes values
         numberOfIteration = 50;
-        minGain = 0.0001;
+        minGain = 0.00001;
         measureHelper = new DistanceMeasureHelper(this);
     }
 

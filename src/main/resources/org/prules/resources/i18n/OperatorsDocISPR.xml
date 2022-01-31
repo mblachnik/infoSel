@@ -173,6 +173,39 @@
     </operator>
 
     <operator>
+        <key>DemocraticEnsembleOperator</key>
+        <name>Democratic IS Ensemble</name>
+        <synopsis>Ensamble for instance selection based on batches obtained after random projections and discretization
+            from oposite classes
+        </synopsis>
+        <help>
+            This operator generates random projections of the input data, then each projection discretized into several
+            bins. Training examples which fall into single bin constitute a single batch, for which instance selection
+            is executed.
+            Finally, the results of instance selection are aggregated and the frequency of an example being selected is
+            determined. Vectors which were selected more than given number of times (see threshold) are selected to the final
+            example set.
+        </help>
+        <icon>ispr.png</icon>
+    </operator>
+
+    <operator>
+        <key>ISEnsembleProtoPairOperator</key>
+        <name>IS Ensemble Pired Prototypes</name>
+        <synopsis>Ensamble for instance selection based on training set decomposition. The dataset is decomposed using pairs of prototypes from oposite classes.
+        </synopsis>
+        <help>
+            This operator generates random projections of the input data, then each projection discretized into several
+            bins. Training examples which fall into single bin constitute a single batch, for which instance selection
+            is executed.
+            Finally, the results of instance selection are aggregated and the frequency of an example being selected is
+            determined. Vectors which were selected more than given number of times (see threshold) are selected to the final
+            example set.
+        </help>
+        <icon>ispr.png</icon>
+    </operator>
+
+    <operator>
         <key>BatchLoopOperator</key>
         <name>Loop Batches</name>
         <synopsis>Loop over batches in example set and for each batch inner instance selection process is executed, and selected instances are collected into IOObjectCollection.

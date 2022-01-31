@@ -149,13 +149,14 @@ public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedO
 
         initializeProcessExamples(trainingSet);
         //Performing bootstrap validation
+        int iterationCounter = 0;
         try {
-            for (currentIteration = 0; currentIteration < iterations; currentIteration++) {
-                ExampleSet trainingSubSet = preprocessExampleSet(trainingSet);
+            do {
+                ExampleSet trainingSubSet = preprocessingMainLoop(trainingSet);
                 exampleInnerSourcePort.deliver(trainingSubSet);
                 getSubprocess(0).execute();
                 ExampleSet resultSet = prototypeExampleSetOutput.getDataOrNull(ExampleSet.class);
-                resultSet = postprocessExampleSet(resultSet);
+                resultSet = postprocessingMainLoop(resultSet);
                 if (resultSet != null) {
                     double value;
                     for (Example e : resultSet) {
@@ -169,7 +170,8 @@ public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedO
                         idCounter.put(id, value);
                     }
                 }
-            }
+                iterationCounter++;
+            } while (isNextIteration());
         } finally {
             finalizeProcessExamples();
         }
@@ -182,7 +184,7 @@ public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedO
             }
             max = max == 0 ? 1 : max; //If max==0 then max is set to 1;        
         } else {
-            max = iterations;
+            max = iterationCounter;
         }
         for (double key : idCounter.keySet()) {
             double value = idCounter.get(key);
@@ -292,6 +294,19 @@ public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedO
     }
 
     /**
+     * Returns total number of iterations (maximum number of iterations)
+     *
+     * @return
+     */
+    public int getMaxIterations(){
+        return iterations;
+    }
+
+    public boolean isNextIteration(){
+        currentIteration++;
+        return currentIteration <= iterations;
+    }
+    /**
      * Get weight of given iteration. By default it returns const value
      * 1.0/iterations, but it can be overwritten to change the weight as in
      * AdaBoost
@@ -327,7 +342,7 @@ public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedO
      * @return 
      * @throws com.rapidminer.operator.OperatorException
      */
-    protected ExampleSet preprocessExampleSet(ExampleSet trainingSet) throws OperatorException {
+    protected ExampleSet preprocessingMainLoop(ExampleSet trainingSet) throws OperatorException {
         return trainingSet;
     }
 
@@ -341,7 +356,7 @@ public abstract class AbstractISEnsembleOperator extends AbstractPrototypeBasedO
      * @return
      * @throws OperatorException
      */
-    protected ExampleSet postprocessExampleSet(ExampleSet resultSet) throws OperatorException {
+    protected ExampleSet postprocessingMainLoop(ExampleSet resultSet) throws OperatorException {
         return resultSet;
     }
 

@@ -1,5 +1,167 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactManager">
+    <artifact type="exploded-war" name="Gradle : org.prules : infoSel-8.1.0.war (exploded)">
+      <output-path>$PROJECT_DIR$/build/libs/exploded/infoSel-8.1.0.war</output-path>
+      <properties id="gradle-properties">
+        <options external-project-path="$PROJECT_DIR$" />
+      </properties>
+      <root id="root">
+        <element id="javaee-facet-resources" facet="infoSel.main/web/Web Gradle : infoSel-8.1.0.war" />
+        <element id="directory" name="WEB-INF">
+          <element id="directory" name="classes">
+            <element id="module-output" name="infoSel.main" />
+            <element id="dir-copy" path="$PROJECT_DIR$/build/resources/main" />
+          </element>
+          <element id="directory" name="lib">
+            <element id="archive" name="org.prules-infoSel_external-8.1.0.jar">
+              <element id="module-output" name="infoSel.external" />
+              <element id="dir-copy" path="$PROJECT_DIR$/build/resources/external" />
+            </element>
+            <element id="file-copy" path="$PROJECT_DIR$/lib/Infosel.jar" />
+            <element id="file-copy" path="$PROJECT_DIR$/lib/rmx_weka-ANY-7.3.0.jar" />
+            <element id="file-copy" path="$PROJECT_DIR$/lib/instanceselection.jar" />
+            <element id="file-copy" path="$PROJECT_DIR$/lib/IS-CCIS.jar" />
+            <element id="file-copy" path="$PROJECT_DIR$/lib/IS-HMNEI.jar" />
+            <element id="file-copy" path="$PROJECT_DIR$/lib/JavaMI.jar" />
+            <element id="file-copy" path="$PROJECT_DIR$/lib/mdsj.jar" />
+            <element id="library" level="project" name="Gradle: com.github.haifengl:smile-core:1.5.3" />
+            <element id="library" level="project" name="Gradle: javax.xml.ws:jaxws-api:2.3.1" />
+            <element id="library" level="project" name="Gradle: javax.xml.bind:jaxb-api:2.3.1" />
+            <element id="library" level="project" name="Gradle: org.openjfx:javafx-base:13" />
+            <element id="library" level="project" name="Gradle: com.github.haifengl:smile-data:1.5.3" />
+            <element id="library" level="project" name="Gradle: com.github.haifengl:smile-graph:1.5.3" />
+            <element id="library" level="project" name="Gradle: com.github.haifengl:smile-math:1.5.3" />
+            <element id="library" level="project" name="Gradle: org.slf4j:slf4j-api:1.7.25" />
+            <element id="library" level="project" name="Gradle: javax.xml.soap:javax.xml.soap-api:1.4.0" />
+            <element id="library" level="project" name="Gradle: javax.annotation:javax.annotation-api:1.3.2" />
+            <element id="library" level="project" name="Gradle: javax.activation:javax.activation-api:1.2.0" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/activation-1.1.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/adapter-0.0.3.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/alphanumeric-sorting-1.0.1.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/annotations-3.0.0.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/antlr4-runtime-4.5.1.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/autocomplete-2.5.0.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/bcpg-jdk15on-1.64.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/bcpkix-jdk15on-1.64.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/bcprov-jdk15on-1.50.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/belt-1.0.0-BETA5.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/belt-adapter-0.7.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/collections-generic-4.01.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/colt-1.2.0.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/commons-codec-1.14.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/commons-collections4-4.1.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/commons-email-1.5.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/commons-io-2.6.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/commons-lang-2.6.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/commons-lang3-3.9.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/commons-math3-3.3.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/commons-text-1.8.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/concurrent-1.3.4.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/curvesapi-1.04.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/freehep-graphics2d-2.3.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/freehep-graphicsbase-2.3.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/freehep-graphicsio-2.3.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/freehep-graphicsio-ps-2.3.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/freehep-graphicsio-svg-2.3.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/freehep-io-2.2.2.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/groovy-all-2.4.10.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/gson-2.8.2.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/h2-1.4.194.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/hamcrest-core-1.3.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/itext-2.1.7.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/jackson-annotations-2.9.0.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/jackson-core-2.9.5.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/jackson-databind-2.9.5.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/jama-1.0.3.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/jasypt-1.9.1-lite.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/JavaEWAH-1.1.7.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/javafx.base-8.60.11.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/javax.mail-1.6.2.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/jcommon-1.0.21.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/jfreechart-1.0.17.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/jgraphx-3.9.4.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/jhdf-0.5.7.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/jmathplot-1.0.0.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/jna-4.5.2.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/jna-platform-4.5.2.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/jsch-0.1.55.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/json-20180813.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/jsoup-1.8.3.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/jung-algorithms-2.0.1.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/jung-api-2.0.1.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/jung-graph-impl-2.0.1.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/jung-visualization-2.0.1.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/junit-4.12.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/jxbrowser-win64-7.7.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/jxl-2.6.12.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/jzlib-1.1.1.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/launcher.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/looks-2.2.2.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/lucene-analyzers-common-7.2.0.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/lucene-core-7.2.0.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/lucene-highlighter-7.2.0.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/lucene-join-7.2.0.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/lucene-memory-7.2.0.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/lucene-queries-7.2.0.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/lucene-queryparser-7.2.0.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/lucene-sandbox-7.2.0.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/microba-0.4.4.3.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/ojalgo-47.3.0.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/org.eclipse.jgit-5.7.0.202003110725-r.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/org.eclipse.jgit.lfs-5.7.0.202003110725-r.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/poi-3.17.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/poi-ooxml-3.17.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/poi-ooxml-schemas-3.17.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/poi-scratchpad-3.17.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/protobuf-java-3.11.1.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/rapidminer-api-0.2.2.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/rapidminer-hdf5-writer-0.5.0.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/rapidminer-license-api-4.2.4.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/rapidminer-license-commons-4.2.4.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/rapidminer-license-core-4.2.4.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/rapidminer-studio-core-9.7.1.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/rapidminer-studio-marketplace-9.7.1.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/rapidminer-studio-onboarding-9.7.1.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/rapidminer-studio-osx-adapter-1.0.3.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/rapidminer-studio-reference-manual-9.7.1.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/rsyntaxtextarea-2.5.0.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/serializer-2.7.2.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/slf4j-api-1.7.13.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/stax-api-1.0.1.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/swingx-all-1.6.5-1.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/tika-core-1.18.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/tink-1.3.0.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/versioned-repository-0.1.1.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/vldocking-9.0.2.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/xalan-2.7.2.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/xml-apis-1.3.04.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/xmlbeans-2.6.0.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/xmlpull-1.1.3.1.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/xpp3_min-1.1.4c.jar" />
+            <element id="file-copy" path="C:/Program Files/RapidMiner/RapidMiner Studio/lib/xstream-1.4.10.jar" />
+            <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/28.0-jre/54fed371b4b8a8cce1e94a9abd9620982d3aa54b/guava-28.0-jre.jar" />
+            <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.guava/failureaccess/1.0.1/1dcf1de382a0bf95a3d8b0849546c88bac1292c9/failureaccess-1.0.1.jar" />
+            <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/b421526c5f297295adef1c886e5246c39d4ac629/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar" />
+            <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/3.0.2/25ea2e8b0c338a877313bd4672d3fe056ea78f0d/jsr305-3.0.2.jar" />
+            <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.checkerframework/checker-qual/2.8.1/eb2e8ab75598548cc8acf9a1ca227e480e01881e/checker-qual-2.8.1.jar" />
+            <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.errorprone/error_prone_annotations/2.3.2/d1a0c5032570e0f64be6b4d9c90cdeb103129029/error_prone_annotations-2.3.2.jar" />
+            <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.j2objc/j2objc-annotations/1.3/ba035118bc8bac37d7eff77700720999acd9986d/j2objc-annotations-1.3.jar" />
+            <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.mojo/animal-sniffer-annotations/1.17/f97ce6decaea32b36101e37979f8b647f00681fb/animal-sniffer-annotations-1.17.jar" />
+          </element>
+        </element>
+      </root>
+    </artifact>
+    <artifact type="war" name="Gradle : org.prules : infoSel-8.1.0.war">
+      <output-path>$PROJECT_DIR$/build/libs</output-path>
+      <properties id="gradle-properties">
+        <options external-project-path="$PROJECT_DIR$" />
+      </properties>
+      <root id="archive" name="infoSel-8.1.0.war">
+        <element id="artifact" artifact-name="Gradle : org.prules : infoSel-8.1.0.war (exploded)" />
+      </root>
+    </artifact>
+  </component>
   <component name="CompilerConfiguration">
     <resourceExtensions>
       <entry name=".+\.(properties|xml|html|dtd|tld)" />
@@ -14,15 +176,14 @@
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
-    <bytecodeTargetLevel target="1.8">
-      <module name="infoSel.external" target="1.8" />
-      <module name="infoSel.main" target="1.8" />
-      <module name="infoSel.test" target="1.8" />
-    </bytecodeTargetLevel>
+    <bytecodeTargetLevel target="1.8" />
   </component>
   <component name="CopyrightManager" default="" />
   <component name="DependencyValidationManager">
     <option name="SKIP_IMPORT_STATEMENTS" value="false" />
+  </component>
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$" />
   </component>
   <component name="GradleMigrationSettings" migrationVersion="1" />
   <component name="GradleSettings">
@@ -36,8 +197,6 @@
             <option value="$PROJECT_DIR$" />
           </set>
         </option>
-        <option name="useAutoImport" value="true" />
-        <option name="useQualifiedModuleNames" value="true" />
       </GradleProjectSettings>
     </option>
   </component>
@@ -189,7 +348,7 @@
       <module fileurl="file://$PROJECT_DIR$/infoSel.test.iml" filepath="$PROJECT_DIR$/infoSel.test.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="RemoteRepositoriesConfiguration">
@@ -228,37 +387,44 @@
       <JAVADOC />
       <SOURCES />
     </library>
-    <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.6.0">
+    <library name="Gradle: com.dukescript.api:javafx.base:8.60.11">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.6.0/a0990e2e812ac6639b6ce955c91b13228500476e/jackson-annotations-2.6.0.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.dukescript.api/javafx.base/8.60.11/b9417225c4480ae8737c6b483cbf2da84b01e6ac/javafx.base-8.60.11.jar!/" />
       </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.6.0/9932ce9495cc196f23b40c9935ad42c891bb55db/jackson-annotations-2.6.0-javadoc.jar!/" />
-      </JAVADOC>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.9.0">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.9.0/7c10d545325e3a6e72e06381afe469fd40eb701/jackson-annotations-2.9.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.6.0/7bcb615d523d88acbc121c92aafeba8d37a83792/jackson-annotations-2.6.0-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.9.0/a0ad4e203304ccab7e01266fa814115850edb8a9/jackson-annotations-2.9.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Gradle: com.fasterxml.jackson.core:jackson-core:2.6.6">
+    <library name="Gradle: com.fasterxml.jackson.core:jackson-core:2.9.5">
+      <ANNOTATIONS>
+        <root url="jar://$MAVEN_REPOSITORY$/org/jetbrains/externalAnnotations/com/fasterxml/jackson/core/jackson-core/2.9.6-an1/jackson-core-2.9.6-an1-annotations.zip!/" />
+      </ANNOTATIONS>
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.6.6/2eb801df67aacaf5b1deb4ac626e1964508e47b/jackson-core-2.6.6.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.9.5/a22ac51016944b06fd9ffbc9541c6e7ce5eea117/jackson-core-2.9.5.jar!/" />
       </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.6.6/5ba0ee8ab679176612e81772b7a80550aa2ba8d/jackson-core-2.6.6-javadoc.jar!/" />
-      </JAVADOC>
+      <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.6.6/8ee54db2ad9ea0e244c38d584150b3d524b13d80/jackson-core-2.6.6-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.9.5/739ee692a42ee8c0cf9d3c504f0df568797b0a85/jackson-core-2.9.5-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.6.6">
+    <library name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.9.5">
+      <ANNOTATIONS>
+        <root url="jar://$MAVEN_REPOSITORY$/org/jetbrains/externalAnnotations/com/fasterxml/jackson/core/jackson-databind/2.9.6-an1/jackson-databind-2.9.6-an1-annotations.zip!/" />
+      </ANNOTATIONS>
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.6.6/5108dde6049374ba980b360e1ecff49847baba4a/jackson-databind-2.6.6.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.9.5/3490508379d065fe3fcb80042b62f630f7588606/jackson-databind-2.9.5.jar!/" />
       </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.6.6/2f8d2b985f956ba8b7a416f58c25e7ccd41b6d64/jackson-databind-2.6.6-javadoc.jar!/" />
-      </JAVADOC>
+      <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.6.6/ca843a8233bdac6e7bb0aeb57473c622b9fdee8b/jackson-databind-2.6.6-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.9.5/7f93f92d7ff619c1a49b5442ba77c0c297a88019/jackson-databind-2.9.5-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: com.fifesoft:autocomplete:2.5.0">
@@ -334,6 +500,15 @@
       <JAVADOC />
       <SOURCES />
     </library>
+    <library name="Gradle: com.github.virtuald:curvesapi:1.04">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.virtuald/curvesapi/1.04/3386abf821719bc89c7685f9eaafaf4a842f0199/curvesapi-1.04.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.virtuald/curvesapi/1.04/5c01708d122c6a61e90716e931b58226d8261312/curvesapi-1.04-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="Gradle: com.google.code.findbugs:annotations:3.0.0">
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/annotations/3.0.0/e20984c024b3baf63d06cf481c65c242dcd541de/annotations-3.0.0.jar!/" />
@@ -345,6 +520,94 @@
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/annotations/3.0.0/936f4430478909ed7b138d42f9ad73c919a87b26/annotations-3.0.0-sources.jar!/" />
       </SOURCES>
     </library>
+    <library name="Gradle: com.google.code.findbugs:jsr305:3.0.2">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/3.0.2/25ea2e8b0c338a877313bd4672d3fe056ea78f0d/jsr305-3.0.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/3.0.2/b19b5927c2c25b6c70f093767041e641ae0b1b35/jsr305-3.0.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.google.code.gson:gson:2.8.2">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.8.2/3edcfe49d2c6053a70a2a47e4e1c2f94998a49cf/gson-2.8.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.8.2/b2da9f8444128651758719856de579eacff7f387/gson-2.8.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.google.crypto.tink:tink:1.3.0">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.crypto.tink/tink/1.3.0/538aad9805ebf2099f672450e2408e8258776c79/tink-1.3.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.crypto.tink/tink/1.3.0/6a9d15977188d2fbb85aa9fcfc80196c1fa75caf/tink-1.3.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.google.errorprone:error_prone_annotations:2.3.2">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.errorprone/error_prone_annotations/2.3.2/d1a0c5032570e0f64be6b4d9c90cdeb103129029/error_prone_annotations-2.3.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.errorprone/error_prone_annotations/2.3.2/6e986bccd3d116d8bc1aaac8534d068ea8edd2ae/error_prone_annotations-2.3.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.google.guava:failureaccess:1.0.1">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.guava/failureaccess/1.0.1/1dcf1de382a0bf95a3d8b0849546c88bac1292c9/failureaccess-1.0.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.guava/failureaccess/1.0.1/1d064e61aad6c51cc77f9b59dc2cccc78e792f5a/failureaccess-1.0.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.google.guava:guava:28.0-jre">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/28.0-jre/54fed371b4b8a8cce1e94a9abd9620982d3aa54b/guava-28.0-jre.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/28.0-jre/2d1dca555245ef4bacb35f25299f323d8dd10b27/guava-28.0-jre-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/b421526c5f297295adef1c886e5246c39d4ac629/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="Gradle: com.google.j2objc:j2objc-annotations:1.3">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.j2objc/j2objc-annotations/1.3/ba035118bc8bac37d7eff77700720999acd9986d/j2objc-annotations-1.3.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.j2objc/j2objc-annotations/1.3/d26c56180205cbb50447c3eca98ecb617cf9f58b/j2objc-annotations-1.3-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.google.protobuf:protobuf-java:3.11.1">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.protobuf/protobuf-java/3.11.1/1752390841a56e112b01990c9b523e6978abb24f/protobuf-java-3.11.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.protobuf/protobuf-java/3.11.1/790213fca2554a533dad59ad22fa9da498f419f3/protobuf-java-3.11.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.googlecode.javaewah:JavaEWAH:1.1.7">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.googlecode.javaewah/JavaEWAH/1.1.7/570dde3cd706ae10c62fe19b150928cfdb415e87/JavaEWAH-1.1.7.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.googlecode.javaewah/JavaEWAH/1.1.7/873ede6129ef0df62bddab6a6f14a2420ada8a7/JavaEWAH-1.1.7-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="Gradle: com.h2database:h2:1.4.194">
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.h2database/h2/1.4.194/a180e95af52ad8116d52beb5f1d28596dcafa9d8/h2-1.4.194.jar!/" />
@@ -354,6 +617,24 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.h2database/h2/1.4.194/60aba689ca3459012da9115f68c4dcfcceee51b2/h2-1.4.194-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.jcraft:jsch:0.1.55">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jcraft/jsch/0.1.55/bbd40e5aa7aa3cfad5db34965456cee738a42a50/jsch-0.1.55.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jcraft/jsch/0.1.55/1ed25a5ba2c0bbe14bae93817b76a246e622efd7/jsch-0.1.55-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.jcraft:jzlib:1.1.1">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jcraft/jzlib/1.1.1/a1551373315ffc2f96130a0e5704f74e151777ba/jzlib-1.1.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jcraft/jzlib/1.1.1/dc910806edfb4c9a4b4c7e439a9cd3a3f0a090a9/jzlib-1.1.1-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: com.jgoodies:looks:2.2.2">
@@ -389,9 +670,9 @@
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.external/alphanumeric-sorting/1.0.1/b9660c16ed6e5d1d140b56f15ec412582689516e/alphanumeric-sorting-1.0.1-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Gradle: com.rapidminer.external:jgraphx:2.1.0.2">
+    <library name="Gradle: com.rapidminer.external:jgraphx:3.9.4">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.external/jgraphx/2.1.0.2/25539cfe3bcc6bcf8fbf270ca5bd1b378508c3bf/jgraphx-2.1.0.2.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.external/jgraphx/3.9.4/b8263fc281754653ac05224eb8ead25d72b42dd8/jgraphx-3.9.4.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
@@ -403,110 +684,135 @@
       <JAVADOC />
       <SOURCES />
     </library>
-    <library name="Gradle: com.rapidminer.external:vldocking:1.2.1">
+    <library name="Gradle: com.rapidminer.external:vldocking:9.0.2">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.external/vldocking/1.2.1/35eca571e3d6c77a1bd19463e2d5e72078da4acf/vldocking-1.2.1.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.external/vldocking/9.0.2/54bc96acad19682cf08a227408042c4a1d5bc33b/vldocking-9.0.2.jar!/" />
       </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.external/vldocking/1.2.1/e8b7991651b9e209781aa7bf437d2d1f6fdfa071/vldocking-1.2.1-javadoc.jar!/" />
-      </JAVADOC>
+      <JAVADOC />
       <SOURCES />
     </library>
-    <library name="Gradle: com.rapidminer.license:rapidminer-license-api:4.0.0">
+    <library name="Gradle: com.rapidminer.git:adapter:0.0.3">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.license/rapidminer-license-api/4.0.0/d592b0ccb80bae9c4f2fdf467365be786de493a8/rapidminer-license-api-4.0.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.license/rapidminer-license-api/4.0.0/f9a24ca4665c2481c909d6e8018c025fe30e7f9e/rapidminer-license-api-4.0.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.license/rapidminer-license-api/4.0.0/c25ebaf18a33cb61378c3d1ec8c333f41f75db8d/rapidminer-license-api-4.0.0-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Gradle: com.rapidminer.license:rapidminer-license-commons:4.0.0">
-      <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.license/rapidminer-license-commons/4.0.0/3e4fe30129173bc83b16513fb8131b561df168ba/rapidminer-license-commons-4.0.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.license/rapidminer-license-commons/4.0.0/98a89a0ba023428d42b819ed347c706c5c9fd9da/rapidminer-license-commons-4.0.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.license/rapidminer-license-commons/4.0.0/4bf2de8f5746148d4e95024bf0b95abdb8e76fa1/rapidminer-license-commons-4.0.0-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Gradle: com.rapidminer.studio:rapidminer-studio-core:8.0.0">
-      <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.studio/rapidminer-studio-core/8.0.0/a89b2e14463946fc5d9458ca1f78cec158fd3573/rapidminer-studio-core-8.0.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.studio/rapidminer-studio-core/8.0.0/38a437d6e0bca2c3a791b52186a5080914825dd3/rapidminer-studio-core-8.0.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.studio/rapidminer-studio-core/8.0.0/68d3460d1ba7178b6669950d3dd983884debf20a/rapidminer-studio-core-8.0.0-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Gradle: com.rapidminer.studio:rapidminer-studio-osx-adapter:1.0.1">
-      <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.studio/rapidminer-studio-osx-adapter/1.0.1/db976ade7417461247af44ed1414c658db76609a/rapidminer-studio-osx-adapter-1.0.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.studio/rapidminer-studio-osx-adapter/1.0.1/40c1c1c9ada8d46865cfe5f4ae75262b4c461dc8/rapidminer-studio-osx-adapter-1.0.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.studio/rapidminer-studio-osx-adapter/1.0.1/a6d4dea71e0a97fb4cbac4bb4f3dbaedde3e7496/rapidminer-studio-osx-adapter-1.0.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Gradle: com.rapidminer:rapidminer-api:0.2.1">
-      <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer/rapidminer-api/0.2.1/3a8622d7db96b322cd55dff244d45380ff4e96fe/rapidminer-api-0.2.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer/rapidminer-api/0.2.1/d645b0b81f5fc8fb6ff4fde761f091072befcaa8/rapidminer-api-0.2.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer/rapidminer-api/0.2.1/e3e802a73a62de259edb6569e47dd9951e7d49f2/rapidminer-api-0.2.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Gradle: com.sun.mail:javax.mail:1.6.0">
-      <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.mail/javax.mail/1.6.0/a055c648842c4954c1f7db7254f45d9ad565e278/javax.mail-1.6.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.mail/javax.mail/1.6.0/7d158973e7acac11e4b485cf2bbb63d3d8870292/javax.mail-1.6.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.mail/javax.mail/1.6.0/835d0bd1271818612c2d6f33764e1687e8a59a41/javax.mail-1.6.0-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Gradle: com.thoughtworks.xstream:xstream:1.4.7">
-      <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.thoughtworks.xstream/xstream/1.4.7/bce3282142b63068260f021fcbe48b72e8d71a1a/xstream-1.4.7.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.thoughtworks.xstream/xstream/1.4.7/c68e42df2f4a306860f6b6fe5cb8d30825b5bd13/xstream-1.4.7-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.thoughtworks.xstream/xstream/1.4.7/5db922f39e8bd8af65d4c4a9471fd94771e273d7/xstream-1.4.7-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Gradle: commons-codec:commons-codec:1.9">
-      <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.9/9ce04e34240f674bc72680f8b843b1457383161a/commons-codec-1.9.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.9/d103169e712eb2473072d53636b0c3bc380b8afb/commons-codec-1.9-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.9/3f15fff45d57656685abfee9e8302bf14580044c/commons-codec-1.9-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Gradle: commons-httpclient:commons-httpclient:3.1">
-      <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-httpclient/commons-httpclient/3.1/964cd74171f427720480efdec40a7c7f6e58426a/commons-httpclient-3.1.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.git/adapter/0.0.3/688c64b3e0b3c3cca6bc3138f90d611cfdf83e93/adapter-0.0.3.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-httpclient/commons-httpclient/3.1/8f95b134ed1222d9ea5c0c34cdad0b470fa9bf9d/commons-httpclient-3.1-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.git/adapter/0.0.3/3306a39a17bb631e9591b87673a8b5dc0b632be4/adapter-0.0.3-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.rapidminer.license:rapidminer-license-api:4.2.4">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.license/rapidminer-license-api/4.2.4/bc40a5ba52eba29f006319ce14a6b1733a0c6963/rapidminer-license-api-4.2.4.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.license/rapidminer-license-api/4.2.4/b238970e8b6d2e3c3f212841608a77c6470b1a71/rapidminer-license-api-4.2.4-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.rapidminer.license:rapidminer-license-commons:4.2.4">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.license/rapidminer-license-commons/4.2.4/1e1de5d7256d4c45f2801346e1c01135d272df9c/rapidminer-license-commons-4.2.4.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.license/rapidminer-license-commons/4.2.4/863a6934ae7ae0fbd6b3637d1e773701bcb8e93f/rapidminer-license-commons-4.2.4-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.rapidminer.repository:versioned-repository:0.1.1">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.repository/versioned-repository/0.1.1/88c5eca8922567dd67c3d5ccd44a9335b86f5aad/versioned-repository-0.1.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.repository/versioned-repository/0.1.1/6a53797811c7ef490137ea2c897d3b389980dcab/versioned-repository-0.1.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.rapidminer.studio:rapidminer-studio-core:9.7.1">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.studio/rapidminer-studio-core/9.7.1/cd0591ca24925b0fc208f85046b18ee1eee9e0ff/rapidminer-studio-core-9.7.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.studio/rapidminer-studio-core/9.7.1/c9354289f8e1a6565abd4daa2677c964fb6d4961/rapidminer-studio-core-9.7.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.rapidminer.studio:rapidminer-studio-osx-adapter:1.0.3">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.studio/rapidminer-studio-osx-adapter/1.0.3/cfc78ba06448a3c3ced34afa1c1b231263d70622/rapidminer-studio-osx-adapter-1.0.3.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer.studio/rapidminer-studio-osx-adapter/1.0.3/8d03dd923c05b4bd288ebc5abbc2d22e9e9d5dda/rapidminer-studio-osx-adapter-1.0.3-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.rapidminer:belt-adapter:0.7">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer/belt-adapter/0.7/127d39e8de4698bcd31b045bbe25b5865d5f6fd3/belt-adapter-0.7.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer/belt-adapter/0.7/1b37ee00bed895198f41616bdedfb3abe13b919e/belt-adapter-0.7-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.rapidminer:belt:1.0.0-BETA5">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer/belt/1.0.0-BETA5/112d2be9d6826fc987c996489d2391c6ca014b7d/belt-1.0.0-BETA5.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer/belt/1.0.0-BETA5/a356b081e3d3694b101c4b66af37d7902d04eb39/belt-1.0.0-BETA5-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.rapidminer:rapidminer-api:0.2.2">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer/rapidminer-api/0.2.2/f40f9a16902089c521292e1df1fd906ed332e0b/rapidminer-api-0.2.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer/rapidminer-api/0.2.2/2ed2d74890a7b78bb58d114df89a63091be5a71f/rapidminer-api-0.2.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.rapidminer:rapidminer-hdf5-writer:0.5.0">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rapidminer/rapidminer-hdf5-writer/0.5.0/c8253bbf35511e9d4c81d301e9bacb6478b9c941/rapidminer-hdf5-writer-0.5.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="Gradle: com.sun.mail:javax.mail:1.6.2">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.mail/javax.mail/1.6.2/935151eb71beff17a2ffac15dd80184a99a0514f/javax.mail-1.6.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.mail/javax.mail/1.6.2/f74a1213edad69087c1f8829ca7c68adcce35942/javax.mail-1.6.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.thoughtworks.xstream:xstream:1.4.10">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.thoughtworks.xstream/xstream/1.4.10/dfecae23647abc9d9fd0416629a4213a3882b101/xstream-1.4.10.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.thoughtworks.xstream/xstream/1.4.10/24b0de5fa33b368f5fe8f9eb5242343bb39d3abb/xstream-1.4.10-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: commons-codec:commons-codec:1.14">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.14/3cb1181b2141a7e752f5bdc998b7ef1849f726cf/commons-codec-1.14.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.14/674f0614376ac38259b01bcc67189ef240234569/commons-codec-1.14-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: commons-io:commons-io:2.6">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.6/815893df5f31da2ece4040fe0a12fd44b577afaf/commons-io-2.6.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.6/2566800dc841d9d2c5a0d34d807e45d4107dbbdf/commons-io-2.6-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: commons-lang:commons-lang:2.6">
@@ -518,17 +824,6 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-lang/commons-lang/2.6/67313d715fbf0ea4fd0bdb69217fb77f807a8ce5/commons-lang-2.6-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Gradle: commons-logging:commons-logging:1.0.4">
-      <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-logging/commons-logging/1.0.4/f029a2aefe2b3e1517573c580f948caac31b1056/commons-logging-1.0.4.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-logging/commons-logging/1.0.4/e6ab582bb54e0eba076f314d98272457261501ee/commons-logging-1.0.4-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-logging/commons-logging/1.0.4/8d3424a318e818f88568dfb3b55c58583364ba9/commons-logging-1.0.4-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: concurrent:concurrent:1.3.4">
@@ -551,6 +846,15 @@
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/gov.nist.math/jama/1.0.3/20096c609fe3bfc8eec7654529da763ff1015d32/jama-1.0.3-sources.jar!/" />
       </SOURCES>
     </library>
+    <library name="Gradle: io.jhdf:jhdf:0.5.7">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.jhdf/jhdf/0.5.7/473cdbc05333cafbb30727e2cc676a77c320221c/jhdf-0.5.7.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.jhdf/jhdf/0.5.7/9b052401407a3581c1ac5d833c068f75e07d3fb1/jhdf-0.5.7-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="Gradle: javax.activation:activation:1.1">
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.activation/activation/1.1/e6cb541461c2834bdea3eb920f1884d1eb508b50/activation-1.1.jar!/" />
@@ -560,7 +864,55 @@
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.activation/activation/1.1/3697e9f67a2ed7ac5f589cff30f21173299440/activation-1.1-sources.jar!/" />
       </SOURCES>
     </library>
+    <library name="Gradle: javax.activation:javax.activation-api:1.2.0">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.activation/javax.activation-api/1.2.0/85262acf3ca9816f9537ca47d5adeabaead7cb16/javax.activation-api-1.2.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.activation/javax.activation-api/1.2.0/1b4c6e77d35adab19794746d8ea753df30d77dca/javax.activation-api-1.2.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: javax.annotation:javax.annotation-api:1.3.2">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.annotation/javax.annotation-api/1.3.2/934c04d3cfef185a8008e7bf34331b79730a9d43/javax.annotation-api-1.3.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.annotation/javax.annotation-api/1.3.2/65dfd2c47380bf72ec62a5b8c4ceb78a4eda1a53/javax.annotation-api-1.3.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: javax.xml.bind:jaxb-api:2.3.1">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.xml.bind/jaxb-api/2.3.1/8531ad5ac454cc2deb9d4d32c40c4d7451939b5d/jaxb-api-2.3.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.xml.bind/jaxb-api/2.3.1/e47264d065cecbc572ba99856fcc7da19a470ae3/jaxb-api-2.3.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: javax.xml.soap:javax.xml.soap-api:1.4.0">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.xml.soap/javax.xml.soap-api/1.4.0/667ef2eee594ca7e05a1cbe0b37a428f7b57778f/javax.xml.soap-api-1.4.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.xml.soap/javax.xml.soap-api/1.4.0/e98dcd4b25ebe7202fd0a5bf798f9c3ca231997c/javax.xml.soap-api-1.4.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: javax.xml.ws:jaxws-api:2.3.1">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.xml.ws/jaxws-api/2.3.1/15e46dba25b1f767a3f517721badf6cce8dbb13d/jaxws-api-2.3.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.xml.ws/jaxws-api/2.3.1/d2fda2ca501322d07d2613ffb8f4a96e35af3a62/jaxws-api-2.3.1-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="Gradle: junit:junit:4.12">
+      <ANNOTATIONS>
+        <root url="jar://$MAVEN_REPOSITORY$/org/jetbrains/externalAnnotations/junit/junit/4.12-an1/junit-4.12-an1-annotations.zip!/" />
+      </ANNOTATIONS>
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/junit/junit/4.12/2973d150c0dc1fefe998f834810d68f278ea58ec/junit-4.12.jar!/" />
       </CLASSES>
@@ -569,6 +921,24 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/junit/junit/4.12/a6c32b40bf3d76eca54e3c601e5d1470c86fcdfa/junit-4.12-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: net.java.dev.jna:jna-platform:4.5.2">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.java.dev.jna/jna-platform/4.5.2/741853c07152f6c0fef5194efa6b2dabac22e9c0/jna-platform-4.5.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.java.dev.jna/jna-platform/4.5.2/acd7e40e3c37103db081f71d52115b242e769757/jna-platform-4.5.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: net.java.dev.jna:jna:4.5.2">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.java.dev.jna/jna/4.5.2/35d000afbaa4ed425d91873b40f4df9b8236875b/jna-4.5.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.java.dev.jna/jna/4.5.2/abbb850e6885dd52b7b785add4a821f4b45ceb5a/jna-4.5.2-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: net.sf.jung:jung-algorithms:2.0.1">
@@ -629,26 +999,31 @@
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.jexcelapi/jxl/2.6.12/7e5ce7fe751bac58c5fe9eaf4600fd7f2d1bb112/jxl-2.6.12-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Gradle: org.abego.treelayout:org.abego.treelayout.core:1.0.1">
+    <library name="Gradle: org.antlr:antlr4-runtime:4.5.1">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.abego.treelayout/org.abego.treelayout.core/1.0.1/e31e79cba7a5414cf18fa69f3f0a2cf9ee997b61/org.abego.treelayout.core-1.0.1.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.antlr/antlr4-runtime/4.5.1/7d7288bbe0599b32b844971f270ed001a661357/antlr4-runtime-4.5.1.jar!/" />
       </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.abego.treelayout/org.abego.treelayout.core/1.0.1/709456de700d9389f623b1cba0a098097927722f/org.abego.treelayout.core-1.0.1-javadoc.jar!/" />
-      </JAVADOC>
+      <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.abego.treelayout/org.abego.treelayout.core/1.0.1/6e1dd6f6efdb453c7b8ba35726c63fbf50cd7142/org.abego.treelayout.core-1.0.1-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.antlr/antlr4-runtime/4.5.1/60577bd5fb9621ceda4d4c092d8dffaca005c332/antlr4-runtime-4.5.1-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Gradle: org.antlr:antlr4-runtime:4.5">
+    <library name="Gradle: org.apache.commons:commons-collections4:4.1">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.antlr/antlr4-runtime/4.5/29e48af049f17dd89153b83a7ad5d01b3b4bcdda/antlr4-runtime-4.5.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-collections4/4.1/a4cf4688fe1c7e3a63aa636cc96d013af537768e/commons-collections4-4.1.jar!/" />
       </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.antlr/antlr4-runtime/4.5/de665bf598dcce18b24e8483f4f374eb28d9ae92/antlr4-runtime-4.5-javadoc.jar!/" />
-      </JAVADOC>
+      <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.antlr/antlr4-runtime/4.5/d29d705a4ed0f425c878474af4836278862f1db9/antlr4-runtime-4.5-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-collections4/4.1/f305f3aa45a3b208c013ef92328f8f230329f20e/commons-collections4-4.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.apache.commons:commons-email:1.5">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-email/1.5/e8e677c6362eba14ff3c476ba63ccb83132dbd52/commons-email-1.5.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-email/1.5/dbe951d1b89eb9472b4b2c8f618b8bc9783b6623/commons-email-1.5-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: org.apache.commons:commons-lang3:3.9">
@@ -673,66 +1048,128 @@
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-math3/3.3/4b633be316e46542307aa640dbad4d82db861225/commons-math3-3.3-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Gradle: org.apache.poi:poi-ooxml-schemas:3.13">
+    <library name="Gradle: org.apache.commons:commons-text:1.8">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-ooxml-schemas/3.13/56fb0b9f3ffc3d7f7fc9b59e17b5fa2c3ab921e7/poi-ooxml-schemas-3.13.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-text/1.8/879a6bde4c0537a25504c72ec7a94ba4099f469c/commons-text-1.8.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-text/1.8/79ddc6e7b5ea247f5553f4e948863708dbdd5316/commons-text-1.8-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.apache.lucene:lucene-analyzers-common:7.2.0">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-analyzers-common/7.2.0/4e1b4638fb8b07befc8175880641f821af3e655a/lucene-analyzers-common-7.2.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-analyzers-common/7.2.0/cc701f5f12158cb1c85ddbffc9e43415e74a9e9e/lucene-analyzers-common-7.2.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.apache.lucene:lucene-core:7.2.0">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-core/7.2.0/f88107aa577ce8edc0a5cee036b485943107a552/lucene-core-7.2.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-core/7.2.0/6650a5a411fde98213361a273aa7a867c43604a7/lucene-core-7.2.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.apache.lucene:lucene-highlighter:7.2.0">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-highlighter/7.2.0/afd4093723520b0cdb59852018b545efeefd544a/lucene-highlighter-7.2.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-highlighter/7.2.0/18c81fd9bba26573c95c2cd8dadffdf549f339c2/lucene-highlighter-7.2.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.apache.lucene:lucene-join:7.2.0">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-join/7.2.0/16029d54fa9c99b3187b68791b182a1ea4f78e89/lucene-join-7.2.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-join/7.2.0/dfa86344342bff47daa0cab75c6ac5fc24a0c2b9/lucene-join-7.2.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.apache.lucene:lucene-memory:7.2.0">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-memory/7.2.0/32f26371224c595f625f061d67fc2edd9c8c836b/lucene-memory-7.2.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-memory/7.2.0/ea50888d52430cf78851396e057101f7e46cfaac/lucene-memory-7.2.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.apache.lucene:lucene-queries:7.2.0">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-queries/7.2.0/e0b41af59bc2baed0315abb04621d62e500d094a/lucene-queries-7.2.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-queries/7.2.0/75e8643dc72701cc7e5b2715751bfbd857b047e4/lucene-queries-7.2.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.apache.lucene:lucene-queryparser:7.2.0">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-queryparser/7.2.0/9a17128e35e5e924cf28c283415d83c7a8935e58/lucene-queryparser-7.2.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-queryparser/7.2.0/569b229c931e50adb177c94b4083dac2a439c2e0/lucene-queryparser-7.2.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.apache.lucene:lucene-sandbox:7.2.0">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-sandbox/7.2.0/1fa77169831ec17636357b55bd2c8ca5a97ec7a2/lucene-sandbox-7.2.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-sandbox/7.2.0/fc4081b72e38c4084979303b72c97e66577e8465/lucene-sandbox-7.2.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.apache.poi:poi-ooxml-schemas:3.17">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-ooxml-schemas/3.17/890114bfa82f5b6380ea0e9b0bf49b0af797b414/poi-ooxml-schemas-3.17.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
     </library>
-    <library name="Gradle: org.apache.poi:poi-ooxml:3.13">
+    <library name="Gradle: org.apache.poi:poi-ooxml:3.17">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-ooxml/3.13/c364a8f5422d613e3a56db3b4b889f2989d7ee73/poi-ooxml-3.13.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-ooxml/3.17/7d8c44407178b73246462842bf1e206e99c8e0a/poi-ooxml-3.17.jar!/" />
       </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-ooxml/3.13/b7c218f7da30787428cd567a0fbffc48cbaf2a5b/poi-ooxml-3.13-javadoc.jar!/" />
-      </JAVADOC>
+      <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-ooxml/3.13/a33de037e9c3d7147b56e80425621b97b6f05686/poi-ooxml-3.13-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-ooxml/3.17/c9967472b96ef92372352958dcfd3e8e0e5bd2d0/poi-ooxml-3.17-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Gradle: org.apache.poi:poi-scratchpad:3.13">
+    <library name="Gradle: org.apache.poi:poi-scratchpad:3.17">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-scratchpad/3.13/9d763275e6c7fa05d47e2581606748669e88c55/poi-scratchpad-3.13.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-scratchpad/3.17/85d86a0e26c7f5c0db4ee63e8c7728e51c5d64ce/poi-scratchpad-3.17.jar!/" />
       </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-scratchpad/3.13/3bd8bd72cdb89aebf2c3d455fa379ff605d075a0/poi-scratchpad-3.13-javadoc.jar!/" />
-      </JAVADOC>
+      <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-scratchpad/3.13/d9f81fcfdb07f49e1177cdf50bcad207243788b3/poi-scratchpad-3.13-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-scratchpad/3.17/3c712c08982db354bd4e3212e01bd6b7a7375a49/poi-scratchpad-3.17-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Gradle: org.apache.poi:poi:3.13">
+    <library name="Gradle: org.apache.poi:poi:3.17">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi/3.13/f59f504ba8c521e61e25f417ec652fd485010f3/poi-3.13.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi/3.17/ae92292a2043888b40d418da97dc0b669fde326/poi-3.17.jar!/" />
       </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi/3.13/4529b696a772510eded33a8c1135c3507abc43cb/poi-3.13-javadoc.jar!/" />
-      </JAVADOC>
+      <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi/3.13/a400503268b807b06ce712bb99ae47710c21fb55/poi-3.13-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi/3.17/9d185f2c484774285585e76f5f1d887208482f93/poi-3.17-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Gradle: org.apache.tika:tika-core:1.11">
+    <library name="Gradle: org.apache.tika:tika-core:1.18">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.tika/tika-core/1.11/d37a6b9080c8361e47b2050f69833fd61501ede9/tika-core-1.11.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.tika/tika-core/1.18/69556697de96cf0b22df846e970dafd29866eee0/tika-core-1.18.jar!/" />
       </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.tika/tika-core/1.11/6eceaa5484881a09a9bdcf12635754c2e04c2a01/tika-core-1.11-javadoc.jar!/" />
-      </JAVADOC>
+      <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.tika/tika-core/1.11/2967c4b6b1977e41dc1f61245b61812a4ec9dcbe/tika-core-1.11-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Gradle: org.apache.ws.commons.util:ws-commons-util:1.0.2">
-      <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ws.commons.util/ws-commons-util/1.0.2/3f478e6def772c19d1053f61198fa1f6a6119238/ws-commons-util-1.0.2.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ws.commons.util/ws-commons-util/1.0.2/95d0df23b6c1feea10f22c88f905b1640dcedb77/ws-commons-util-1.0.2-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ws.commons.util/ws-commons-util/1.0.2/f978561682c1c405aab6b0abc5d584faeb35933c/ws-commons-util-1.0.2-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.tika/tika-core/1.18/d52e325aa65e44d91a468d5eafbdab6c3034ebcd/tika-core-1.18-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: org.apache.xmlbeans:xmlbeans:2.6.0">
@@ -742,26 +1179,22 @@
       <JAVADOC />
       <SOURCES />
     </library>
-    <library name="Gradle: org.apache.xmlrpc:xmlrpc-client:3.1.3">
+    <library name="Gradle: org.bouncycastle:bcpg-jdk15on:1.64">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.xmlrpc/xmlrpc-client/3.1.3/e486ad917028b52265610206fb5a1e2b5914b94b/xmlrpc-client-3.1.3.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcpg-jdk15on/1.64/56956a8c63ccadf62e7c678571cf86f30bd84441/bcpg-jdk15on-1.64.jar!/" />
       </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.xmlrpc/xmlrpc-client/3.1.3/3f72eab4350c45f55e0882312290fb1e2298fc7/xmlrpc-client-3.1.3-javadoc.jar!/" />
-      </JAVADOC>
+      <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.xmlrpc/xmlrpc-client/3.1.3/6977b145e65dfa1194b7dc22ebc6bafd0b271b9f/xmlrpc-client-3.1.3-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcpg-jdk15on/1.64/b241337df9516b35637d9be84451e2f03a81d186/bcpg-jdk15on-1.64-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Gradle: org.apache.xmlrpc:xmlrpc-common:3.1.3">
+    <library name="Gradle: org.bouncycastle:bcpkix-jdk15on:1.64">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.xmlrpc/xmlrpc-common/3.1.3/415daf1f1473a947452588906dc9f5b3575fb44d/xmlrpc-common-3.1.3.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15on/1.64/3dac163e20110817d850d17e0444852a6d7d0bd7/bcpkix-jdk15on-1.64.jar!/" />
       </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.xmlrpc/xmlrpc-common/3.1.3/5a775e6663c8d8e79ae48920206ed01148b6a2a7/xmlrpc-common-3.1.3-javadoc.jar!/" />
-      </JAVADOC>
+      <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.xmlrpc/xmlrpc-common/3.1.3/da31e4f56f490476283f38404563108341a5bf22/xmlrpc-common-3.1.3-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15on/1.64/5c87199786c06e1a53adf16b1998386bad52da89/bcpkix-jdk15on-1.64-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: org.bouncycastle:bcprov-jdk15on:1.50">
@@ -775,6 +1208,15 @@
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcprov-jdk15on/1.50/293fc74de21f7055f7de96850151e37a0b0ceb60/bcprov-jdk15on-1.50-sources.jar!/" />
       </SOURCES>
     </library>
+    <library name="Gradle: org.checkerframework:checker-qual:2.8.1">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.checkerframework/checker-qual/2.8.1/eb2e8ab75598548cc8acf9a1ca227e480e01881e/checker-qual-2.8.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.checkerframework/checker-qual/2.8.1/4b07e85f804e861360ee09ddd4550bc6b3fcfcad/checker-qual-2.8.1-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="Gradle: org.codehaus.groovy:groovy-all:2.4.10">
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/2.4.10/4660c69a6fb68c1507d09e3de01e56bc87ffd85d/groovy-all-2.4.10.jar!/" />
@@ -784,6 +1226,33 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/2.4.10/4cd3ebb112ce901e969f6f85d2a42c22f04854d0/groovy-all-2.4.10-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.codehaus.mojo:animal-sniffer-annotations:1.17">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.mojo/animal-sniffer-annotations/1.17/f97ce6decaea32b36101e37979f8b647f00681fb/animal-sniffer-annotations-1.17.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.mojo/animal-sniffer-annotations/1.17/8fb5b5ad9c9723951b9fccaba5bb657fa6064868/animal-sniffer-annotations-1.17-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.eclipse.jgit:org.eclipse.jgit.lfs:5.7.0.202003110725-r">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.jgit/org.eclipse.jgit.lfs/5.7.0.202003110725-r/bc837622ff1c015a4711df3de26c7d80d3ec2b8a/org.eclipse.jgit.lfs-5.7.0.202003110725-r.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.jgit/org.eclipse.jgit.lfs/5.7.0.202003110725-r/96fd724b98ce8527bf75e079935daf8f6736b2a5/org.eclipse.jgit.lfs-5.7.0.202003110725-r-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.eclipse.jgit:org.eclipse.jgit:5.7.0.202003110725-r">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.jgit/org.eclipse.jgit/5.7.0.202003110725-r/8dfe333ee6850df171a3d6b696aca3f93e23abc3/org.eclipse.jgit-5.7.0.202003110725-r.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.jgit/org.eclipse.jgit/5.7.0.202003110725-r/770c95b2666ca1c300e87861423480bc004d5fb1/org.eclipse.jgit-5.7.0.202003110725-r-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: org.freehep:freehep-graphics2d:2.3">
@@ -896,26 +1365,49 @@
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jfree/jfreechart/1.0.17/af16c316e063cd611f21d05e01b91fbfeca3c165/jfreechart-1.0.17-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Gradle: org.projectlombok:lombok:1.16.16">
+    <library name="Gradle: org.json:json:20180813">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.16.16/245b50f714bf89ed7659266ace12f9e509d13551/lombok-1.16.16.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.json/json/20180813/8566b2b0391d9d4479ea225645c6ed47ef17fe41/json-20180813.jar!/" />
       </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.16.16/c993689858853337f1ca32a17cf32905e4b3aaa9/lombok-1.16.16-javadoc.jar!/" />
-      </JAVADOC>
+      <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.16.16/c4b112e9645070ac05946084317cc5d01cf4ddcd/lombok-1.16.16-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.json/json/20180813/60753006d96d5fc85b61b0897f3326b5c4e1c4f0/json-20180813-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Gradle: org.slf4j:slf4j-api:1.7.13">
+    <library name="Gradle: org.jsoup:jsoup:1.8.3">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.13/7fcf30c25b8f4a9379b9dad0d3f487b25272c026/slf4j-api-1.7.13.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jsoup/jsoup/1.8.3/65fd012581ded67bc20945d85c32b4598c3a9cf1/jsoup-1.8.3.jar!/" />
       </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.13/41718b99e4923f5fd88d5ffbd1f74343702e4829/slf4j-api-1.7.13-javadoc.jar!/" />
-      </JAVADOC>
+      <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.13/96e785df399a4e1a6c030877097807b7e18520cc/slf4j-api-1.7.13-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jsoup/jsoup/1.8.3/17b6b6cb133d73e13e2e1f3550f90d4e23451b10/jsoup-1.8.3-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.ojalgo:ojalgo:47.3.0">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ojalgo/ojalgo/47.3.0/1c97a9c51a0b24d38f8564a873e8f2fff2a5770a/ojalgo-47.3.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ojalgo/ojalgo/47.3.0/aded9382f5b7e553694b56149ab8d1a8a6438083/ojalgo-47.3.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.openjfx:javafx-base:13">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.openjfx/javafx-base/13/43c52e1d11b38514e9d2421ad98ca6a35de12b0/javafx-base-13.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.openjfx/javafx-base/13/8eb09db90732ee5c3c4589bece50bcb836af827c/javafx-base-13-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.projectlombok:lombok:1.18.10">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.10/625fc0055674dff70dbc76efa36d0f2c89b04a24/lombok-1.18.10.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.10/1853e1e74e4963a316bd16aa21ce3e9a8c139efe/lombok-1.18.10-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: org.slf4j:slf4j-api:1.7.25">
@@ -929,15 +1421,13 @@
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.25/962153db4a9ea71b79d047dfd1b2a0d80d8f4739/slf4j-api-1.7.25-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Gradle: org.swinglabs.swingx:swingx-all:1.6.5">
+    <library name="Gradle: org.swinglabs.swingx:swingx-all:1.6.5-1">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.swinglabs.swingx/swingx-all/1.6.5/d947460f7e2687db371c2b3b9f2f70f418d6804/swingx-all-1.6.5.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.swinglabs.swingx/swingx-all/1.6.5-1/1ea704cd8779f8df8a3d345ee1344239e7774d52/swingx-all-1.6.5-1.jar!/" />
       </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.swinglabs.swingx/swingx-all/1.6.5/af52e65141d794b14f0c1b0fe7570c82200c5828/swingx-all-1.6.5-javadoc.jar!/" />
-      </JAVADOC>
+      <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.swinglabs.swingx/swingx-all/1.6.5/7b32c29c677ffdf9d2e8f7d1d447e44303764276/swingx-all-1.6.5-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.swinglabs.swingx/swingx-all/1.6.5-1/9a3a906edc005af1bf704cdff88d15a440e8df4d/swingx-all-1.6.5-1-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: stax:stax-api:1.0.1">

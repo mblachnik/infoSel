@@ -10,7 +10,7 @@ public enum LVQTypes {
 
     LVQ1, LVQ2, LVQ21, LVQ3, OLVQ, WLVQ, SLVQ, 
     //MyLVQ2, MyLVQ21, MyLVQ3, 
-     WTM_LVQ, SNG, GLVQ;
+     WTM_LVQ, SNG, GLVQ, ParLVQ1;
             
     public static final String PARAMETER_LVQ_TYPE = "LVQ Type";
     

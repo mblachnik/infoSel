@@ -18,22 +18,20 @@ import com.rapidminer.example.table.MemoryExampleTable;
 import com.rapidminer.example.table.NominalMapping;
 import com.rapidminer.example.utils.ExampleSets;
 import com.rapidminer.operator.UserError;
+import com.rapidminer.tools.LogService;
 import com.rapidminer.tools.RandomGenerator;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+
+import java.util.*;
+
 import org.prules.dataset.IInstanceLabels;
+import org.prules.exceptions.IncorrectAttributeException;
+import org.prules.tools.math.container.DoubleIntContainer;
+import org.prules.tools.math.container.DoubleIntIntContainer;
+import org.prules.tools.math.container.DoubleObjectContainer;
+import org.prules.tools.math.container.knn.ISPRClassGeometricDataCollection;
 import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
 
 /**
- *
  * @author Marcin
  */
 public class PRulesUtil {
@@ -90,8 +88,8 @@ public class PRulesUtil {
      return selectedInstances;
      }
      */
+
     /**
-     *
      * @param size
      * @param randomGenerator
      * @return
@@ -106,8 +104,7 @@ public class PRulesUtil {
     }
 
     /**
-     *
-     * @param size
+     * @param idx             a table with elements to be permutated
      * @param randomGenerator
      */
     public static void randomPermutation(int[] idx, Random randomGenerator) {
@@ -121,7 +118,6 @@ public class PRulesUtil {
     }
 
     /**
-     *
      * @param size
      * @param numberOfInstancesToSelect
      * @param randomGenerator
@@ -155,8 +151,8 @@ public class PRulesUtil {
      * @param regularAttributesList a list that would contain just the regular attributes that appear in the exampleSet
      * @param specialAttributes a map that would contain just the mapping of the names and the corresponding attributes that appear in the exampleSet
      */
+
     /**
-     *
      * @param attributes
      * @param attributesList
      * @param regularAttributesList
@@ -186,7 +182,6 @@ public class PRulesUtil {
     }
 
     /**
-     *
      * @param inputSet
      * @return
      */
@@ -220,7 +215,6 @@ public class PRulesUtil {
     }
 
     /**
-     *
      * @param exampleSets
      * @return
      */
@@ -271,7 +265,7 @@ public class PRulesUtil {
         }
         //ExampleTable outputTable = new MemoryExampleTable(attributesList, new DataRowFactory(DataRowFactory.TYPE_DOUBLE_ARRAY, '.'), numberOfSamples);
         //ExampleSet outputSet = new SimpleExampleSet(outputTable, regularAttributesList, specialAttributes);
-        ExampleSet outputSet =  ExampleSets.from(attributesList).withBlankSize(numberOfSamples).withRoles(specialAttributes).build();
+        ExampleSet outputSet = ExampleSets.from(attributesList).withBlankSize(numberOfSamples).withRoles(specialAttributes).build();
         Iterator<Example> outputSetIterator = outputSet.iterator();
 
         for (ExampleSet inputSet : exampleSets) {
@@ -302,10 +296,10 @@ public class PRulesUtil {
      * classes. This method does not reorder samples so in case of stratified
      * samples has to be randomized
      *
-     * @param exampleSet input exampleSet
-     * @param sampleSize number of samples to select
+     * @param exampleSet      input exampleSet
+     * @param sampleSize      number of samples to select
      * @param randomGenerator randomGenerator (used when it is impossible to
-     * divide number of samples proportional to ocurence of the class labels)
+     *                        divide number of samples proportional to ocurence of the class labels)
      * @return data index
      */
     public static DataIndex stratifiedSelectionOfFirstSamplesFromEachClass(ExampleSet exampleSet, int sampleSize, RandomGenerator randomGenerator) {
@@ -367,10 +361,10 @@ public class PRulesUtil {
      * This method selects from the input exampleSet sampleSize samples, random
      * sample preserving class labels distribution
      *
-     * @param exampleSet input exampleSet
-     * @param sampleSize number of samples to select
+     * @param exampleSet      input exampleSet
+     * @param sampleSize      number of samples to select
      * @param randomGenerator randomGenerator (used when it is impossible to
-     * divide number of samples proportional to ocurence of the class labels)
+     *                        divide number of samples proportional to ocurence of the class labels)
      * @return data index
      */
     public static DataIndex stratifiedSelection(ExampleSet exampleSet, int sampleSize, RandomGenerator randomGenerator) {
@@ -404,7 +398,7 @@ public class PRulesUtil {
         //randomize each list
         for (i = 0; i < numClasses; i++) {
             int n = classCounter[i];
-            for(int j=0; j<n; j++){
+            for (int j = 0; j < n; j++) {
                 int k = randomGenerator.nextInt(n);
                 int vj = classesIndexer[i].get(j);
                 int vk = classesIndexer[i].get(k);
@@ -431,7 +425,7 @@ public class PRulesUtil {
         //Select instancess        
         for (i = 0; i < numClasses; i++) {
             //For i'th class get number of samples to be selected, and generate appropriate number of random ints
-            for(int j=0; j<classCounterAfterResampling[i]; j++){
+            for (int j = 0; j < classCounterAfterResampling[i]; j++) {
                 //Select appropriate samples
                 int ii = classesIndexer[i].get(j);
                 index.set(ii, true);
@@ -446,10 +440,10 @@ public class PRulesUtil {
      * classes. This method does not reorder samples so in case of stratified
      * samples has to be randomized
      *
-     * @param exampleSet input exampleSet
-     * @param sampleSize number of samples to select
+     * @param exampleSet      input exampleSet
+     * @param sampleSize      number of samples to select
      * @param randomGenerator randomGenerator (used when it is impossible to
-     * divide number of samples proportional to ocurence of the class labels)
+     *                        divide number of samples proportional to ocurence of the class labels)
      * @return data index
      */
     public static DataIndex stratifiedSelection(ExampleSet exampleSet, int sampleSize, int[] order, RandomGenerator randomGenerator) {
@@ -503,7 +497,7 @@ public class PRulesUtil {
      * attribute names First exampleSet is cloned, then the order of attributes
      * is adjusted according to the list
      *
-     * @param exampleSet input example set
+     * @param exampleSet     input example set
      * @param attributeNames list of attribute names
      * @return
      */
@@ -522,7 +516,7 @@ public class PRulesUtil {
      * Method changes the order of attributes to the given by the list of
      * attribute names
      *
-     * @param attributes list of attributes
+     * @param attributes     list of attributes
      * @param attributeNames list of attribute names (the order is important)
      * @return
      */
@@ -557,5 +551,96 @@ public class PRulesUtil {
             }
         }
         return map;
+    }
+
+    public static double[] project(ExampleSet set, double[] vector) {
+        Attributes attrs = set.getAttributes();
+        int m = attrs.size();
+        int n = set.size();
+        assert m == vector.length : "Internal error. Incorect vector size when performing projection";
+        for (Attribute a : attrs) {
+            if (!a.isNumerical()) {
+                LogService.getRoot().info("Incorect attribute type");
+                throw new IncorrectAttributeException("Attribute: " + a.getName() + "must be numeric");
+            }
+        }
+
+        double[] projection = new double[n];
+        int j = 0;
+        for (Example ex : set) {
+            int i = 0;
+            for (Attribute a : attrs) {
+                projection[j] += ex.getValue(a) * vector[i];
+                i++;
+            }
+            projection[j] /= m;
+            j++;
+        }
+        return projection;
+    }
+
+    /**
+     * Discretize of input double array into given number of bins, trying yto keep equal number of examples in all beens. This implementation is fast that is sort + linear in time, but when the number of unique values in the input data is significantly lower then the size of the input data, than there can be inconsistancy in the size of each bean.
+     *
+     * @param values - input array to be discretized
+     * @param bins   - number of bins
+     * @return array of lists. Each index in the array corresponds to given unique bin, and the list contains all elements which belong to this bin
+     */
+    public static List<Integer>[] discretizeFastEqFrequency(double[] values, int bins) {
+        List<DoubleIntContainer> list = new ArrayList<>(values.length);
+        int i = 0;
+        for (double d : values) {
+            list.add(new DoubleIntContainer(d, i));
+            i++;
+        }
+        Collections.sort(list, (x, y) -> (x.first > y.first) ? 1 : (x.first == y.first) ? 0 : -1);
+        int batch = values.length / bins;
+        i = 0;
+        int counter = 0;
+        double oldValue = Double.NaN;
+        //int[] res = new int[values.length];
+        List<Integer>[] res = new List[bins];
+        res[0] = new LinkedList<Integer>();
+        for (DoubleIntContainer c : list) {
+            if (c.first != oldValue) {
+                oldValue = c.first;
+                if (counter >= batch && i + 1 < bins) {
+                    counter = 0;
+                    i++;
+                    res[i] = new LinkedList<Integer>();
+                }
+            }
+            counter++;
+            res[i].add(c.second);
+        }
+        return res;
+    }
+
+    public static boolean isSingleLabel(ISPRClassGeometricDataCollection<IInstanceLabels> samples) {
+        Iterator<IInstanceLabels> iterator = samples.storedValueIterator();
+        boolean out = true;
+        if (iterator.hasNext()) {
+            double oldLabel = iterator.next().getLabel();
+            while (iterator.hasNext()) {
+                if (iterator.next().getLabel() != oldLabel) {
+                    out = false;
+                    break;
+                }
+            }
+        }
+        return out;
+    }
+
+    public static boolean isSingleLabel(ExampleSet samples) {
+        if (samples.size()==0) return true;
+        boolean out = true;
+        double oldLabel = samples.getExample(0).getLabel();
+        for (Example ex : samples) {
+            if (ex.getLabel() != oldLabel) {
+                out = false;
+                break;
+            }
+        }
+        return out;
     }
 }

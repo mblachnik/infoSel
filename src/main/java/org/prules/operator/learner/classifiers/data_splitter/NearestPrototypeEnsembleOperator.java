@@ -27,6 +27,7 @@ import java.util.Map.Entry;
 
 import org.prules.operator.learner.tools.DataIndex;
 import org.prules.operator.learner.tools.IDataIndex;
+import org.prules.tools.math.similarity.numerical.SquareEuclidianDistance;
 
 /**
  * The class implements NearestPrototypeBatchOperator. It takes the prototypes
@@ -74,7 +75,7 @@ public class NearestPrototypeEnsembleOperator extends OperatorChain implements C
     /**
      * Distance measure helper for creating appropriate distance measure
      */
-    private DistanceMeasureHelper measureHelper = new DistanceMeasureHelper(this);
+    //private DistanceMeasureHelper measureHelper = new DistanceMeasureHelper(this);
 
     /**
      * <p>
@@ -91,11 +92,11 @@ public class NearestPrototypeEnsembleOperator extends OperatorChain implements C
         super(description,"Train prediction model");
         exampleSetInputPort.addPrecondition(new DistanceMeasurePrecondition(exampleSetInputPort, this));
         exampleSetInputPort.addPrecondition(new CapabilityPrecondition(capability -> {
-            int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
-            try {
-                measureType = measureHelper.getSelectedMeasureType();
-            } catch (UndefinedParameterError ignored) {
-            }
+            int measureType = DistanceMeasures.NUMERICAL_MEASURES_TYPE; //DistanceMeasures.MIXED_MEASURES_TYPE;
+//            try {
+//                measureType = measureHelper.getSelectedMeasureType();
+//            } catch (UndefinedParameterError ignored) {
+//            }
             switch (capability) {
                 case BINOMINAL_ATTRIBUTES:
                 case POLYNOMINAL_ATTRIBUTES:
@@ -114,11 +115,11 @@ public class NearestPrototypeEnsembleOperator extends OperatorChain implements C
         }, exampleSetInputPort));
         prototypesInputPort.addPrecondition(new DistanceMeasurePrecondition(prototypesInputPort, this));
         prototypesInputPort.addPrecondition(new CapabilityPrecondition(capability -> {
-            int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
-            try {
-                measureType = measureHelper.getSelectedMeasureType();
-            } catch (UndefinedParameterError ignored) {
-            }
+            int measureType = DistanceMeasures.NUMERICAL_MEASURES_TYPE; //DistanceMeasures.MIXED_MEASURES_TYPE;
+//            try {
+//                measureType = measureHelper.getSelectedMeasureType();
+//            } catch (UndefinedParameterError ignored) {
+//            }
             switch (capability) {
                 case BINOMINAL_ATTRIBUTES:
                 case POLYNOMINAL_ATTRIBUTES:
@@ -144,7 +145,6 @@ public class NearestPrototypeEnsembleOperator extends OperatorChain implements C
      * This method performs prediction model training for every value of batch attribute. The algorithm starts by
      * identifing examples with given batch value, and than in a loop it trains prediction model defined within the
      * inner process. Each prediction model is collected and returned to the output as PrototypesEnsemblePredictionModel
-     * @param prototypePiredModelAndData
      * @throws OperatorException
      */
     @Override
@@ -154,7 +154,9 @@ public class NearestPrototypeEnsembleOperator extends OperatorChain implements C
         //boolean detectPureSubsets = getParameterAsBoolean(PARAMETER_DETECT_PURE_SUBSETS);
         ExampleSet exampleSet = this.exampleSetInputPort.getDataOrNull(ExampleSet.class);
         ExampleSet prototypeSet = this.prototypesInputPort.getDataOrNull(ExampleSet.class);
-        NearestPrototypesSplitter inputModel = new NearestPrototypesSplitter(prototypeSet,measureHelper.getInitializedMeasure(exampleSet),minFactor,minSupport);
+        SquareEuclidianDistance measure = new SquareEuclidianDistance();//measureHelper.getInitializedMeasure(exampleSet)
+        measure.init(exampleSet);
+        NearestPrototypesSplitter inputModel = new NearestPrototypesSplitterV2(prototypeSet,measure,minFactor,minSupport);
         exampleSet = inputModel.split(exampleSet);
         this.exampleSetOutputPort.deliver(exampleSet);
         Map<Long,PredictionModel> modelsMap;
@@ -203,11 +205,11 @@ public class NearestPrototypeEnsembleOperator extends OperatorChain implements C
 
     @Override
     public boolean supportsCapability(OperatorCapability capability) {
-        int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
-        try {
-            measureType = measureHelper.getSelectedMeasureType();
-        } catch (UndefinedParameterError e) {
-        }
+        int measureType = DistanceMeasures.NUMERICAL_MEASURES_TYPE; //DistanceMeasures.MIXED_MEASURES_TYPE;
+//        try {
+//            measureType = measureHelper.getSelectedMeasureType();
+//        } catch (UndefinedParameterError e) {
+//        }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:
             case POLYNOMINAL_ATTRIBUTES:
@@ -235,7 +237,7 @@ public class NearestPrototypeEnsembleOperator extends OperatorChain implements C
         types.add(type);
         //type = new ParameterTypeBoolean(PARAMETER_DETECT_PURE_SUBSETS,"Detect pure subsets and keep them (for examples falling into this pair label will be determined without training a model) ",false);
         //types.add(type);
-        types.addAll(DistanceMeasures.getParameterTypes(this));
+        //types.addAll(DistanceMeasures.getParameterTypes(this));
         return types;
     }
 }

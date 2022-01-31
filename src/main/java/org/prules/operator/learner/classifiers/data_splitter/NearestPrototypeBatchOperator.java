@@ -1,14 +1,8 @@
 package org.prules.operator.learner.classifiers.data_splitter;
 
-import com.rapidminer.example.Attribute;
-import com.rapidminer.example.Attributes;
-import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.example.set.ExampleSetUtilities;
-import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.operator.*;
 import com.rapidminer.operator.learner.CapabilityProvider;
-import com.rapidminer.operator.learner.PredictionModel;
 import com.rapidminer.operator.ports.InputPort;
 import com.rapidminer.operator.ports.OutputPort;
 import com.rapidminer.operator.ports.metadata.CapabilityPrecondition;
@@ -18,15 +12,12 @@ import com.rapidminer.parameter.ParameterTypeDouble;
 import com.rapidminer.parameter.ParameterTypeInt;
 import com.rapidminer.parameter.UndefinedParameterError;
 import com.rapidminer.tools.OperatorService;
+import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
-import org.prules.operator.learner.tools.DataIndex;
-import org.prules.operator.learner.tools.IDataIndex;
+import org.prules.tools.math.similarity.numerical.SquareEuclidianDistance;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * The class implements NearestPrototypeBatchOperator. It takes the prototypes
@@ -59,7 +50,7 @@ public class NearestPrototypeBatchOperator extends Operator implements Capabilit
     /**
      * Distance measure helper for creating appropriate distance measure
      */
-    private DistanceMeasureHelper measureHelper = new DistanceMeasureHelper(this);
+    //private DistanceMeasureHelper measureHelper = new DistanceMeasureHelper(this); //For now DistanceMeasureHelper is switched off becouse here we use SquaredEuclidianDistance to make all calculations faster. If we use other measure, then there may be an issue with adding distances.
 
     /**
      * <p>
@@ -76,11 +67,11 @@ public class NearestPrototypeBatchOperator extends Operator implements Capabilit
         super(description);
         exampleSetInputPort.addPrecondition(new DistanceMeasurePrecondition(exampleSetInputPort, this));
         exampleSetInputPort.addPrecondition(new CapabilityPrecondition(capability -> {
-            int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
-            try {
-                measureType = measureHelper.getSelectedMeasureType();
-            } catch (UndefinedParameterError ignored) {
-            }
+            int measureType = DistanceMeasures.NUMERICAL_MEASURES_TYPE;//DistanceMeasures.MIXED_MEASURES_TYPE;
+//            try {
+//                measureType = measureHelper.getSelectedMeasureType();
+//            } catch (UndefinedParameterError ignored) {
+//            }
             switch (capability) {
                 case BINOMINAL_ATTRIBUTES:
                 case POLYNOMINAL_ATTRIBUTES:
@@ -100,11 +91,11 @@ public class NearestPrototypeBatchOperator extends Operator implements Capabilit
         }, exampleSetInputPort));
         prototypesInputPort.addPrecondition(new DistanceMeasurePrecondition(prototypesInputPort, this));
         prototypesInputPort.addPrecondition(new CapabilityPrecondition(capability -> {
-            int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
-            try {
-                measureType = measureHelper.getSelectedMeasureType();
-            } catch (UndefinedParameterError ignored) {
-            }
+            int measureType = DistanceMeasures.NUMERICAL_MEASURES_TYPE;//DistanceMeasures.MIXED_MEASURES_TYPE;
+//            try {
+//                measureType = measureHelper.getSelectedMeasureType();
+//            } catch (UndefinedParameterError ignored) {
+//            }
             switch (capability) {
                 case BINOMINAL_ATTRIBUTES:
                 case POLYNOMINAL_ATTRIBUTES:
@@ -138,18 +129,21 @@ public class NearestPrototypeBatchOperator extends Operator implements Capabilit
         //boolean detectPureSubsets = getParameterAsBoolean(PARAMETER_DETECT_PURE_SUBSETS);
         ExampleSet exampleSet = this.exampleSetInputPort.getDataOrNull(ExampleSet.class);
         ExampleSet prototypeSet = this.prototypesInputPort.getDataOrNull(ExampleSet.class);
-        NearestPrototypesSplitter inputModel = new NearestPrototypesSplitter(prototypeSet,measureHelper.getInitializedMeasure(exampleSet),minFactor,minSupport);
+        SquareEuclidianDistance measure = new SquareEuclidianDistance();//measureHelper.getInitializedMeasure(exampleSet)
+        measure.init(exampleSet);
+        //measureHelper.getInitializedMeasure(exampleSet)
+        NearestPrototypesSplitter inputModel = new NearestPrototypesSplitterV2(prototypeSet,measure,minFactor,minSupport);
         exampleSet = inputModel.split(exampleSet);
         this.exampleSetOutputPort.deliver(exampleSet);
     }
 
     @Override
     public boolean supportsCapability(OperatorCapability capability) {
-        int measureType = DistanceMeasures.MIXED_MEASURES_TYPE;
-        try {
-            measureType = measureHelper.getSelectedMeasureType();
-        } catch (UndefinedParameterError e) {
-        }
+        int measureType = DistanceMeasures.NUMERICAL_MEASURES_TYPE;//DistanceMeasures.MIXED_MEASURES_TYPE;
+//        try {
+//            measureType = measureHelper.getSelectedMeasureType();
+//        } catch (UndefinedParameterError e) {
+//        }
         switch (capability) {
             case BINOMINAL_ATTRIBUTES:
             case POLYNOMINAL_ATTRIBUTES:
@@ -176,7 +170,7 @@ public class NearestPrototypeBatchOperator extends Operator implements Capabilit
         types.add(type);
         //type = new ParameterTypeBoolean(PARAMETER_DETECT_PURE_SUBSETS,"Detect pure subsets and keep them (for examples falling into this pair label will be determined without training a model) ",false);
         //types.add(type);
-        types.addAll(DistanceMeasures.getParameterTypes(this));
+        //types.addAll(DistanceMeasures.getParameterTypes(this));
         return types;
     }
 }

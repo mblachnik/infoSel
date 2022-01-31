@@ -1,5 +1,6 @@
 package org.prules.operator.learner.classifiers.neuralnet.models;
 
+import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
@@ -22,17 +23,16 @@ public class LVQ21Model extends AbstractLVQModel {
     /**
      *
      * @param prototypes
-     * @param iterations
+     * @param maxIterations
      * @param measure
      * @param alpha
-     * @param alphaNegative
      * @param window
      * @throws OperatorException
      */
-    public LVQ21Model(ExampleSet prototypes, int iterations,
+    public LVQ21Model(ExampleSet prototypes, int maxIterations,
             DistanceMeasure measure, double alpha, double window) throws OperatorException {
         super(prototypes);
-        this.iterations = iterations;
+        this.iterations = maxIterations;
         this.currentIteration = 0;        
         this.alpha = alpha;        
         this.initialAlpha = alpha;
@@ -45,7 +45,7 @@ public class LVQ21Model extends AbstractLVQModel {
      *
      */
     @Override
-    public void update() {
+    public void update(double[][] prototypeValues, double[] prototypeLabels, double[] exampleValues, double exampleLabel, Example example) {
 
         double dist, minDist1 = Double.MAX_VALUE, minDist2 = Double.MAX_VALUE;
         int selectedPrototypeNr1 = 0;
@@ -96,7 +96,7 @@ public class LVQ21Model extends AbstractLVQModel {
      * @return
      */
     @Override
-    public boolean nextIteration(ExampleSet trainingSet) {
+    public boolean isNextIteration(ExampleSet trainingSet) {
         currentIteration++;
         alpha = LVQTools.learingRateUpdateRule(alpha, currentIteration, iterations, initialAlpha);        
         return currentIteration < iterations;
@@ -140,5 +140,10 @@ public class LVQ21Model extends AbstractLVQModel {
     @Override
     public List<Double> getCostFunctionValues() {
         return new ArrayList<>(0);
+    }
+
+    @Override
+    public boolean isParallelizable() {
+        return true;
     }
 }

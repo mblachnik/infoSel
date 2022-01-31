@@ -37,7 +37,7 @@ public class ISEnsembleNoisOperator extends AbstractISEnsembleOperator {
     }
 
     @Override
-    protected ExampleSet preprocessExampleSet(ExampleSet trainingSet) throws OperatorException {
+    protected ExampleSet preprocessingMainLoop(ExampleSet trainingSet) throws OperatorException {
         ExampleSet trainingSubSet = PRulesUtil.duplicateExampleSet(trainingSet);
         double noiseLevel = getParameterAsDouble(PARAMETER_NOISE_LEVEL);
         Attributes attributes = trainingSubSet.getAttributes();        

@@ -4,46 +4,34 @@
  */
 package org.prules.operator.learner.classifiers.neuralnet;
 
-import org.prules.operator.learner.classifiers.neuralnet.models.SLVQ1Model;
-import org.prules.operator.learner.classifiers.neuralnet.models.LVQ1Model;
-import org.prules.operator.learner.classifiers.neuralnet.models.OLVQModel;
-import org.prules.operator.learner.classifiers.neuralnet.models.WLVQModel;
-import java.util.List;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorCapability;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.UserError;
-import org.prules.operator.learner.classifiers.IS_KNNClassificationModel;
-import org.prules.operator.learner.classifiers.PredictionType;
-import org.prules.operator.learner.classifiers.VotingType;
-import org.prules.operator.learner.classifiers.neuralnet.models.GLVQModel;
-import org.prules.operator.learner.classifiers.neuralnet.models.LVQ2Model;
-import org.prules.operator.learner.classifiers.neuralnet.models.LVQNeighborhoodTypes;
-import org.prules.operator.learner.classifiers.neuralnet.models.LVQTypes;
-import org.prules.operator.learner.classifiers.neuralnet.models.SNGModel;
-import org.prules.operator.learner.classifiers.neuralnet.models.WTMLVQModel;
-import org.prules.tools.math.container.knn.GeometricCollectionTypes;
 import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
 import com.rapidminer.operator.ports.metadata.MDInteger;
-import com.rapidminer.parameter.ParameterType;
-import com.rapidminer.parameter.ParameterTypeBoolean;
-import com.rapidminer.parameter.ParameterTypeCategory;
-import com.rapidminer.parameter.ParameterTypeDouble;
-import com.rapidminer.parameter.ParameterTypeInt;
-import com.rapidminer.parameter.UndefinedParameterError;
+import com.rapidminer.parameter.*;
 import com.rapidminer.parameter.conditions.EqualTypeCondition;
+import com.rapidminer.studio.internal.Resources;
 import com.rapidminer.tools.LogService;
-import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
+import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
-import java.util.stream.Collectors;
-import org.prules.tools.math.container.knn.KNNFactory;
+import org.prules.concurent.PRulesExecutorFactory;
 import org.prules.dataset.IInstanceLabels;
-import org.prules.operator.learner.classifiers.neuralnet.models.AbstractLVQModel;
-import org.prules.operator.learner.classifiers.neuralnet.models.LVQ21Model;
-import org.prules.operator.learner.classifiers.neuralnet.models.LVQ3Model;
+import org.prules.operator.learner.classifiers.IS_KNNClassificationModel;
+import org.prules.operator.learner.classifiers.PredictionType;
+import org.prules.operator.learner.classifiers.VotingType;
+import org.prules.operator.learner.classifiers.neuralnet.models.*;
+import org.prules.operator.learner.tools.genetic.RMRandomGenerator;
+import org.prules.tools.math.container.knn.GeometricCollectionTypes;
+import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
+import org.prules.tools.math.container.knn.KNNFactory;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * LVQ Operator which provides a set of LVQ neuralNetwork GLVQ algorithm - based
@@ -94,6 +82,12 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
 
     public static final String PARAMETER_CALCDIFF = "Calc dF(u)/du";
 
+    public static final String PARAMETER_USE_PARALLEL = "Use parallel";
+
+    public static final String PARAMETER_PARALLEL_MIN_BATCH_SIZE = "Parallel: min batch size";
+
+    public static final String PARAMETER_RANDOMIZE_SAMPLES = "Randomize samples";
+
     private DistanceMeasureHelper measureHelper;
     private int numberOfIteration;
     private double updateRate;
@@ -101,6 +95,8 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
     private double window;
     private double lambda;
     private double epsilon;
+    private boolean isParallel;
+    private int minBatchSize;
     private LVQNeighborhoodTypes lvqNeighborhoodType;
 
     /**
@@ -141,10 +137,15 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
         int idLvqType = getParameterAsInt(PARAMETER_LVQ_TYPE);
         lvqType = LVQTypes.values()[idLvqType];
         int idLvqNeighborhood = 0;
+        PRulesExecutorFactory.registerRapidMinerConcurencyContext(Resources.getConcurrencyContext(this));
         switch (lvqType) {
             case LVQ1:
                 this.updateRate = getParameterAsDouble(PARAMETER_UPDATE_RATE);
                 lvqModel = new LVQ1Model(codebooks, numberOfIteration, distance, updateRate);
+                break;
+            case ParLVQ1:
+                this.updateRate = getParameterAsDouble(PARAMETER_UPDATE_RATE);
+                lvqModel = new ParallelLVQ1Model(codebooks, numberOfIteration, distance, updateRate);
                 break;
             case SLVQ:
                 this.updateRate = getParameterAsDouble(PARAMETER_UPDATE_RATE);
@@ -197,7 +198,17 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
                 throw new UserError(this, "Unknown LVQ type");
 
         }
-
+        lvqModel.setRandom(null);
+        if (lvqModel.isParallelizable()) {
+            if (!getParameterAsBoolean(PARAMETER_USE_PARALLEL)) {
+                lvqModel.setMinBatchSize(Integer.MAX_VALUE);
+            } else {
+                if (getParameterAsBoolean(PARAMETER_RANDOMIZE_SAMPLES)) {
+                    lvqModel.setMinBatchSize(getParameterAsInt(PARAMETER_PARALLEL_MIN_BATCH_SIZE));
+                    lvqModel.setRandom(new RMRandomGenerator(RandomGenerator.getRandomGenerator(this)));
+                }
+            }
+        }
         lvqModel.run(trainingSet);
 
         if (getParameterAsBoolean(PARAMETER_DEBUG)) {
@@ -297,7 +308,7 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
         type.registerDependencyCondition(new EqualTypeCondition(this, PARAMETER_LVQ_TYPE, LVQTypes.typeNames(), false,
                 LVQTypes.LVQ1.ordinal(), LVQTypes.LVQ2.ordinal(), LVQTypes.LVQ21.ordinal(), LVQTypes.LVQ3.ordinal(),
                 LVQTypes.OLVQ.ordinal(), LVQTypes.WLVQ.ordinal(), LVQTypes.SLVQ.ordinal(), LVQTypes.GLVQ.ordinal(),
-                LVQTypes.WTM_LVQ.ordinal(), LVQTypes.SNG.ordinal()));
+                LVQTypes.WTM_LVQ.ordinal(), LVQTypes.SNG.ordinal(),LVQTypes.ParLVQ1.ordinal()));
         types.add(type);
 
         type = new ParameterTypeDouble(PARAMETER_UPDATE_RATE, "Value of update rate", 0, Double.MAX_VALUE, this.updateRate);
@@ -305,7 +316,7 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
         type.registerDependencyCondition(new EqualTypeCondition(this, PARAMETER_LVQ_TYPE, LVQTypes.typeNames(), false,
                 LVQTypes.LVQ1.ordinal(), LVQTypes.LVQ2.ordinal(), LVQTypes.LVQ21.ordinal(), LVQTypes.LVQ3.ordinal(),
                 LVQTypes.WLVQ.ordinal(), LVQTypes.SLVQ.ordinal(), LVQTypes.GLVQ.ordinal(), LVQTypes.OLVQ.ordinal(),
-                LVQTypes.WTM_LVQ.ordinal(), LVQTypes.SNG.ordinal()));
+                LVQTypes.WTM_LVQ.ordinal(), LVQTypes.SNG.ordinal(),LVQTypes.ParLVQ1.ordinal()));
         types.add(type);
 
         type = new ParameterTypeDouble(PARAMETER_WINDOW, "Defines the relative window width", 0, 1, window);
@@ -336,6 +347,26 @@ public class LVQOperator extends //AbstractPrototypeClassificationOnlineOperator
         
         type = new ParameterTypeBoolean(PARAMETER_DEBUG, "Debug mode. Recorded values are stored in a RapidMiner log", false );
         types.add(type);
+
+        type = new ParameterTypeBoolean(PARAMETER_USE_PARALLEL, "Whether to use parallelism", true);
+        type.setExpert(true);
+        type.registerDependencyCondition(new EqualTypeCondition(this, PARAMETER_LVQ_TYPE, LVQTypes.typeNames(), false,
+                LVQTypes.LVQ1.ordinal(), LVQTypes.LVQ2.ordinal(), LVQTypes.LVQ3.ordinal(), LVQTypes.LVQ21.ordinal(), LVQTypes.GLVQ.ordinal(), LVQTypes.WLVQ.ordinal()));
+        types.add(type);
+
+        type = new ParameterTypeBoolean(PARAMETER_RANDOMIZE_SAMPLES, "Whether to regenerate batches in each iteration ", true);
+        type.setExpert(true);
+        type.registerDependencyCondition(new EqualTypeCondition(this, PARAMETER_LVQ_TYPE, LVQTypes.typeNames(), false,
+                LVQTypes.LVQ1.ordinal(), LVQTypes.LVQ2.ordinal(), LVQTypes.LVQ3.ordinal(), LVQTypes.LVQ21.ordinal(), LVQTypes.GLVQ.ordinal(), LVQTypes.WLVQ.ordinal()));
+        types.add(type);
+
+        type = new ParameterTypeInt(PARAMETER_PARALLEL_MIN_BATCH_SIZE, "Minimum batch size for parallel execution", 1, Integer.MAX_VALUE,5000);
+        type.registerDependencyCondition(new EqualTypeCondition(this, PARAMETER_LVQ_TYPE, LVQTypes.typeNames(), false,
+                LVQTypes.LVQ1.ordinal(), LVQTypes.LVQ2.ordinal(), LVQTypes.LVQ3.ordinal(), LVQTypes.LVQ21.ordinal(), LVQTypes.GLVQ.ordinal(), LVQTypes.WLVQ.ordinal()));
+        type.setExpert(true);
+        types.add(type);
+
+        types.addAll(RandomGenerator.getRandomGeneratorParameters(this));
         return types;
     }
 }

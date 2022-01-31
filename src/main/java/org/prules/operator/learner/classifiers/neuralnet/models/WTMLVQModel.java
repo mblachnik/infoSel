@@ -1,5 +1,6 @@
 package org.prules.operator.learner.classifiers.neuralnet.models;
 
+import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
@@ -16,9 +17,9 @@ public class WTMLVQModel extends AbstractLVQModel {
     private LVQNeighborhoodTypes neighborhoodType; // typ sąsiedztwa : prostokątne lub gaussowskie
 
 //konstruktor inicjujący parametry wymagane przez algorytm
-    public WTMLVQModel(ExampleSet prototypes, int iterations, DistanceMeasure measure, double alpha, double lambda, LVQNeighborhoodTypes neighbourhoodType) throws OperatorException {
+    public WTMLVQModel(ExampleSet prototypes, int maxIterations, DistanceMeasure measure, double alpha, double lambda, LVQNeighborhoodTypes neighbourhoodType) throws OperatorException {
         super(prototypes);
-        this.iterations = iterations;
+        this.iterations = maxIterations;
         this.currentIteration = 0;        
         this.alpha = alpha;        
         this.initialAlpha = alpha;
@@ -30,7 +31,7 @@ public class WTMLVQModel extends AbstractLVQModel {
     }
 
 // metoda uaktualniająca wagi wynikajace z procesu uczenia
-    public void update() {
+    public void update(double[][] prototypeValues, double[] prototypeLabels, double[] exampleValues, double exampleLabel, Example example) {
         double dist, minDist = Double.MAX_VALUE;
         int selectedPrototype = 0;
         int i = 0;
@@ -88,7 +89,7 @@ public class WTMLVQModel extends AbstractLVQModel {
 
     // metoda uaktualniająca współczynnik uczenia oraz promienia sąsiedztwa, które maleją w czasie
     @Override
-    public boolean nextIteration(ExampleSet trainingSet) {
+    public boolean isNextIteration(ExampleSet trainingSet) {
         currentIteration++;
         alpha = LVQTools.learingRateUpdateRule(alpha, currentIteration, iterations, initialAlpha);        
         lambda = LVQTools.lambdaRateUpdateRule(lambda, currentIteration, iterations, initialLambdaRate);
@@ -135,4 +136,5 @@ public class WTMLVQModel extends AbstractLVQModel {
     public List<Double> getCostFunctionValues() {
         return new ArrayList<>(0);
     }
+
 }

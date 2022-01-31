@@ -482,10 +482,21 @@ public class BasicMath {
          us to perform a check. As well as getting the orignal values*/
 
         //Cantors depairing function:
+        return depair(z,new long[2]);
+    }
+
+    public static long[] depair(long z, long[] pair) {
+        /*Depair function is the reverse of the pairing function. It takes a
+         single input and returns the two corespoding values. This allows
+         us to perform a check. As well as getting the orignal values*/
+
+        //Cantors depairing function:
         long t = (int) (Math.floor((Math.sqrt(8 * z + 1) - 1) / 2));
         long x = t * (t + 3) / 2 - z;
         long y = z - t * (t + 1) / 2;
-        return new long[]{x, y}; //Returning an array containing the two numbers
+        pair[0] = x;
+        pair[1] = y;
+        return pair; //Returning an array containing the two numbers
     }
 
     public static void main(String[] args){
@@ -493,5 +504,5 @@ public class BasicMath {
             System.out.println(sigmoid(i));
         }
     }
-        
+
 }

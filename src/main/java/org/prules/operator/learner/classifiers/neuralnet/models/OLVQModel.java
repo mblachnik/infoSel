@@ -1,5 +1,6 @@
 package org.prules.operator.learner.classifiers.neuralnet.models;
 
+import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.tools.math.similarity.DistanceMeasure;
@@ -19,14 +20,14 @@ public class OLVQModel extends AbstractLVQModel {
     /**
      * 
      * @param prototypes
-     * @param iterations
+     * @param maxIterations
      * @param measure
      * @param alpha
      * @throws OperatorException
      */
-    public OLVQModel(ExampleSet prototypes, int iterations, DistanceMeasure measure, double alpha) throws OperatorException {
+    public OLVQModel(ExampleSet prototypes, int maxIterations, DistanceMeasure measure, double alpha) throws OperatorException {
         super(prototypes);
-        this.iterations = iterations;
+        this.iterations = maxIterations;
         this.currentIteration = 0;
         alphas = new double[prototypes.size()];
         for (int i = 0; i < prototypes.size(); i++) {
@@ -41,12 +42,12 @@ public class OLVQModel extends AbstractLVQModel {
      * 
      */
     @Override
-    public void update() {
+    public void update(double[][] prototypeValues, double[] prototypeLabels, double[] exampleValues, double exampleLabel, Example example) {
         double dist, minDist = Double.MAX_VALUE;
         int selectedPrototype = 0;
         int i = 0;
         for (double[] prototype : prototypeValues) {
-            dist = measure.calculateDistance(prototype, getCurrentExampleValues());
+            dist = measure.calculateDistance(prototype, exampleValues);
             if (dist < minDist) {
                 minDist = dist;
                 selectedPrototype = i;
@@ -79,7 +80,7 @@ public class OLVQModel extends AbstractLVQModel {
      * @return
      */
     @Override
-    public boolean nextIteration(ExampleSet trainingSet) {
+    public boolean isNextIteration(ExampleSet trainingSet) {
         currentIteration++;
         return currentIteration < iterations;
     }
@@ -123,4 +124,5 @@ public class OLVQModel extends AbstractLVQModel {
     public List<Double> getCostFunctionValues() {
         return new ArrayList<>(0);
     }
+
 }

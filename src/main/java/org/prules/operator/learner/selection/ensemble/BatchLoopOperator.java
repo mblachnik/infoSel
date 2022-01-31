@@ -84,17 +84,15 @@ public class BatchLoopOperator extends OperatorChain {
         //Map which contons list of elements which belong to given batch
         Map<Double,IDataIndex> batchIndexMap = new HashMap<>();
         //Get all possible pairs and samples which belong to given pair
-        IDataIndex idx;
+
         int exampleIndex = 0;
         for(Example e : exampleSet){
             double batchVal = e.getValue(attr);
-            if (batchIndexMap.containsKey(batchVal)){
-                idx = batchIndexMap.get(batchVal);
-            }else {
-                idx = new DataIndex(exampleSet.size());
-                idx.setAllFalse();
-                batchIndexMap.put(batchVal, idx);
-            }            
+            IDataIndex idx = batchIndexMap.computeIfAbsent(batchVal, val -> {
+                IDataIndex index = new DataIndex(exampleSet.size());
+                index.setAllFalse();
+                return index;
+            });
             idx.set(exampleIndex,true);            
             exampleIndex++;
         }

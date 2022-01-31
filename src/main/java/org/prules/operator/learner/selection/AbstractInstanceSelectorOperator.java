@@ -1,14 +1,27 @@
 package org.prules.operator.learner.selection;
 
-import com.rapidminer.example.Attribute;
-import com.rapidminer.example.Attributes;
-import com.rapidminer.example.Example;
-import com.rapidminer.example.ExampleSet;
+import com.rapidminer.example.*;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.example.set.SortedExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
+import com.rapidminer.operator.ProcessSetupError;
+import com.rapidminer.operator.ProcessSetupError.Severity;
+import com.rapidminer.operator.UserError;
+import com.rapidminer.operator.error.AttributeNotFoundError;
+import com.rapidminer.operator.ports.OutputPort;
+import com.rapidminer.operator.ports.metadata.*;
+import com.rapidminer.parameter.ParameterType;
+import com.rapidminer.parameter.ParameterTypeBoolean;
+import com.rapidminer.parameter.UndefinedParameterError;
+import com.rapidminer.tools.LogService;
+import com.rapidminer.tools.Ontology;
+import com.rapidminer.tools.RandomGenerator;
+import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
+import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import org.prules.dataset.IInstanceLabels;
 import org.prules.operator.AbstractPrototypeBasedOperator;
 import org.prules.operator.learner.classifiers.IS_KNNClassificationModel;
 import org.prules.operator.learner.classifiers.PredictionType;
@@ -16,42 +29,16 @@ import org.prules.operator.learner.classifiers.VotingType;
 import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
 import org.prules.operator.learner.selection.models.decisionfunctions.IISDecisionFunction;
 import org.prules.operator.learner.selection.models.decisionfunctions.ISDecisionFunctionHelper;
-import org.prules.operator.learner.tools.DataIndex;
-import org.prules.tools.math.container.knn.KNNTools;
+import org.prules.operator.learner.tools.IDataIndex;
+import org.prules.operator.learner.tools.PRulesUtil;
 import org.prules.tools.math.container.knn.GeometricCollectionTypes;
-import com.rapidminer.operator.ports.OutputPort;
-import com.rapidminer.operator.ports.metadata.ExampleSetMetaData;
-import com.rapidminer.operator.ports.metadata.GeneratePredictionModelTransformationRule;
-import com.rapidminer.operator.ports.metadata.MDInteger;
-import com.rapidminer.parameter.ParameterType;
-import com.rapidminer.parameter.ParameterTypeBoolean;
-import com.rapidminer.parameter.UndefinedParameterError;
-import com.rapidminer.tools.RandomGenerator;
 import org.prules.tools.math.container.knn.ISPRGeometricDataCollection;
-import com.rapidminer.operator.OperatorCapability;
-import com.rapidminer.operator.ProcessSetupError;
-import com.rapidminer.operator.UserError;
-import com.rapidminer.operator.ports.metadata.AttributeMetaData;
-import com.rapidminer.operator.ports.metadata.ExampleSetPrecondition;
-import com.rapidminer.operator.ports.metadata.MetaData;
-import com.rapidminer.operator.ports.metadata.ParameterConditionedPrecondition;
-import com.rapidminer.operator.ports.metadata.SimpleMetaDataError;
-import com.rapidminer.operator.ports.metadata.SimplePrecondition;
-import com.rapidminer.tools.Ontology;
-import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import com.rapidminer.tools.math.similarity.DistanceMeasureHelper;
-import com.rapidminer.tools.math.similarity.DistanceMeasures;
+import org.prules.tools.math.container.knn.KNNFactory;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import org.prules.tools.math.container.knn.KNNFactory;
-import com.rapidminer.operator.ProcessSetupError.Severity;
-import com.rapidminer.operator.error.AttributeNotFoundError;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.prules.dataset.IInstanceLabels;
-import org.prules.operator.learner.tools.IDataIndex;
 
 /**
  * Abstract class which should be used as a base for any instance selection
@@ -67,6 +54,7 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPrototype
     public static final String PARAMETER_RANDOMIZE_EXAMPLES = "randomize_examples";
     public static final String PARAMETER_ADD_WEIGHTS = "add weight attribute";
     public static final String PARAMETER_INVERSE_SELECTION = "inverse selection";
+    public static final String PARAMETER_ONE_CLASS = "Keep one sample if mono class";
     int sampleSize = -1;
     protected DistanceMeasureHelper measureHelper;
     protected final OutputPort modelOutputPort = getOutputPorts().createPort("model");
@@ -149,18 +137,13 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPrototype
      */
     @Override
     public ExampleSet processExamples(ExampleSet trainingSet) throws OperatorException {
+        if (trainingSet.size()==0) return trainingSet;
         /*
          * Attribute weightsAttribute = trainingSet.getAttributes().getWeight(); if ( weightsAttribute == null ){ weightsAttribute
          * = AttributeFactory.createAttribute (PRulesUtil.INSTANCES_WEIGHTS_NAME,Ontology.NUMERICAL);
          * trainingSet.getExampleTable().addAttribute(weightsAttribute); trainingSet.getAttributes().setWeight(weightsAttribute);
          * for (Example example : trainingSet){ example.setWeight(1); } }
          */
-        if (isLabelRequired()){
-            if (trainingSet.getAttributes().getLabel()==null){
-                throw new AttributeNotFoundError(this,"","label");
-            }
-                
-        }
         if (isSampleRandomize()) {
             boolean shufleExamples = getParameterAsBoolean(PARAMETER_RANDOMIZE_EXAMPLES);
             if (shufleExamples) { //We can shuffle examples ony if we don't use initial geometricCollection. Order of examples in both in GemoetricCollection and ExampleSet must be equal            
@@ -179,6 +162,28 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPrototype
                 trainingSet = new SortedExampleSet(trainingSet, indices);
             }
         }
+
+        /** Check if label is required. If so, then check if the dataset containes more than one class. If only one class
+         * is present then check the isMidPointIfOneClass(). If false then return entire set, but if true then select only
+         * the most representative sample. (sample closest to the average)
+         *
+         */
+        if (isLabelRequired()){
+            if (trainingSet.getAttributes().getLabel()==null){
+                throw new AttributeNotFoundError(this,"","label");
+            }
+            if (PRulesUtil.isSingleLabel(trainingSet)){
+                LogService.getRoot().info("All sampels have the same class label");
+                if (isMidPointIfOneClass()){
+                    LogService.getRoot().info("Return only the most representative sample");
+                    return findReferencePoint(trainingSet);
+                } else {
+                    LogService.getRoot().info("Return the first sample (the sample depedns on randomization parameter)");
+                    return trainingSet;
+                }
+            }
+        }
+
         SelectedExampleSet instanceSelectionInput;
         SelectedExampleSet output;
         if (trainingSet instanceof SelectedExampleSet) {
@@ -248,6 +253,50 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPrototype
     }
 
     /**
+     * Procedure to find the most representative examples that is the closes to the average example. THe algorithms determines
+     * average or mode for each column, which is a reference point and then search for example which is closest to that reference point
+     * Only the cosest example is marked to be keepted in the final set. If given instance selection method is not based on
+     * the distance measure then the first samle is selected.
+     * @param exampleSet
+     * @return
+     * @throws OperatorException
+     */
+    private ExampleSet findReferencePoint(ExampleSet exampleSet) throws OperatorException {
+        SelectedExampleSet outSet = new SelectedExampleSet(exampleSet);
+        IDataIndex index = outSet.getIndex();
+        index.setAllFalse();
+        if (isDistanceBased()){
+            DistanceMeasure measure = measureHelper.getInitializedMeasure(exampleSet);
+            Attributes attrs = exampleSet.getAttributes();
+            double[] stats = new double[attrs.size()];
+            int i=0;
+            for(Attribute a : attrs){
+                if (a.isNumerical()) {
+                    stats[i] = exampleSet.getStatistics(a, Statistics.AVERAGE);
+                } else {
+                    stats[i] = exampleSet.getStatistics(a, Statistics.MODE);
+                }
+                i++;
+            };
+            double minDist = Double.POSITIVE_INFINITY;
+            int minI = -1;
+            i=0;
+            for(Example ex : exampleSet){
+                double dist = measure.calculateDistance(ex,stats);
+                if (dist < minDist){
+                    minDist = dist;
+                    minI = i;
+                }
+                i++;
+            }
+            index.set(i,true);
+        } else {
+            index.set(0,true);
+        }
+        outSet.setIndex(index);
+        return outSet;
+    }
+    /**
      * This method may be override if an algorithm doesn't want to allow sample
      * randomization. This may be used for ENN algorithm because the order of
      * samples doesn't influence the result. This cannot be solved using class
@@ -306,13 +355,16 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPrototype
         return new MDInteger();
     }        
 
+    public boolean isMidPointIfOneClass(){
+        return true;
+    }
     /**
      * Whenever ones would like to implement self instance selection algorithm
      * should override this method. It takes as input exampleSet on which we
      * would like to perform instance selection and returns an instance of
      * {@link AbstractInstanceSelectorModel} class which implements instance
      * selection algorithm which is farther executed by
-     * {@link #processExampleswhich}
+     * {@link #processExamples}
      *
      * @param trainingSet
      * @return
@@ -364,6 +416,12 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPrototype
         }
         if (this.isDistanceBased()) {
             types.addAll(DistanceMeasures.getParameterTypes(this));
+        }
+
+        if (isMidPointIfOneClass()){
+            type = new ParameterTypeBoolean(PARAMETER_ONE_CLASS, "", true);
+            type.setExpert(true);
+            types.add(type);
         }
         return types;
     }

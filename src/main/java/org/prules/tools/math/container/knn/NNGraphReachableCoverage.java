@@ -206,7 +206,8 @@ public class NNGraphReachableCoverage implements INNGraph {
                 int neighborID = (int) lab.getValueAsLong(Const.INDEX_CONTAINER);
                 reachable.get(currentInstanceID).add(new DoubleIntContainer(distance, neighborID));
                 coverage.get(neighborID).add(currentInstanceID);
-                enemyAssociate.get(enemyID).add(currentInstanceID);
+                if (enemyID>-1)
+                    enemyAssociate.get(enemyID).add(currentInstanceID);
             } else {
                 break;
             }
