@@ -34,9 +34,8 @@ public class IS_ClusterModelTools {
 
     /**
      * Creates a Map<Integer, String> which maps cluster number into cluster
-     * name in a form of {
-     *
-     * @see com.rapidminer.example.Attributes.CLUSTER_NAME} _\#cluster_number
+     * name in a form of {@see
+     * com.rapidminer.example.Attributes.CLUSTER_NAME} _\#cluster_number
      * @param c - number of clusters
      */
     public static Map<Integer, String> prepareClusterNamesMap(int c) {
