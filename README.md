@@ -4,7 +4,7 @@ RapidMiner InfoSel Extension
 This is a source code for RapidMiner Extansion called Information Selection, previouselly called ISPR.
 
 This extension implements instance selection algorithms as well as some clustering methods and other extra features.
-## Natively implemented Instance selection algorithms:
+## Implemented Instance selection algorithms:
    - CNN - Condensed Nearest Neighbor Rule
    - ENN - Edited Nearest Neighbor Rule
    - RENN - Repeated Edited Nearest Neighbor Rule
@@ -25,8 +25,8 @@ This extension implements instance selection algorithms as well as some clusteri
    - Random Selection
  Note: The most of these algorithms supports regression problems with additive as well as multiplicative noise
  
-### The extension also wraps other libraries, which were:
-#### Developed for Weka:
+### The extension also wraps other instance selection libraries:
+#### Instance Selection for Weka by Álvar Arnaiz-González:
    - Weka Drop1-5
    - Weka ICF
    - Weka BSE
@@ -37,7 +37,7 @@ This extension implements instance selection algorithms as well as some clusteri
    - Weka MC
    - Weka MSS
    - Weka RNN    
-#### Developed for Keel project:
+#### Instance Selection methods from Keel project:
    - Keel CCIS
     
 ## Ensembles of  Instance Selection methods:
