@@ -57,6 +57,10 @@
                 <key>icf_sel</key>
                 <class>org.prules.operator.learner.selection.ICFInstanceSelectionOperator</class>                
             </operator>
+            <operator>
+                <key>ga_sel</key>
+                <class>org.prules.operator.learner.selection.GAInstanceSelectionOperator</class>
+            </operator>
             <!--
             Experimental operators. These are modifications of ICF similar to ICF but elements are removed iteratively one by one on the fly recalculating Coverage and Rechability
             <operator>

@@ -352,6 +352,23 @@
     </operator>
 
     <operator>
+        <name>Select by GA</name>
+        <synopsis>GA-based Neares Neighbor instance selection</synopsis>
+        <help>
+            This operator performs instance selection which is a process of selecting a subset of examples
+            from the full training set of any classification or regression task. &lt;br/&gt;
+            As a result only a subset of instances is returned (they are returned on Prot output port).
+            &lt;br/&gt;
+            Originally this kind of algorithms were developed to improve the k-NN
+            algorithm to reduce computational complexity and reduce the influence of noise in the data.
+            &lt;br/&gt;
+            This algorithm uses a genetic algorithm to perform instance selection, where each training sample is encoded as a single binary gene in a chromosome.
+        </help>
+        <key>ga_sel</key>
+        <icon>ispr.png</icon>
+    </operator>
+
+    <operator>
         <name>Select by IB2</name>
         <synopsis>IB2 instance selection</synopsis>
         <help>This operator performs instance selection which is a process of selecting a subset of examples

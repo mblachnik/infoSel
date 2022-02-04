@@ -4,67 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6807e0df-d924-4a1a-a996-0bdd6d52a82b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/prules/concurent/PRulesExecutorFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/prules/concurent/PRulesExecutorService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/prules/concurent/PRulesForkJoinExecutor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/prules/concurent/PRulessConcurentTools.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/prules/concurent/RapidMinerExecutorService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/data_splitter/NearestPrototypesSplitterV1.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/data_splitter/NearestPrototypesSplitterV2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/ensemble/DemocraticEnsembleOperator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/ensemble/ISEnsembleProtoPairOperator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/prules/tools/math/container/DoubleIntIntContainer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/prules/operator/learner/classifiers/neuralnet/models/ParallelLVQ1ModelTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/prules/operator/learner/tools/PRulesUtilTest.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+    <list default="true" id="6807e0df-d924-4a1a-a996-0bdd6d52a82b" name="Default Changelist" comment="Added base classes for GA-based instance selection. &#10;Only the skeleton is available, and the operator does nothing">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/GAInstanceSelectionOperator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/models/GAInstanceSelectionModel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/infoSel.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/infoSel.ipr" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/infoSel.iws" beforeDir="false" afterPath="$PROJECT_DIR$/infoSel.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/rapidminer/example/set/SelectedExampleSet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/rapidminer/example/set/SelectedExampleSet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/data_splitter/NearestPrototypeBatchOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/data_splitter/NearestPrototypeBatchOperator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/data_splitter/NearestPrototypeEnsembleOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/data_splitter/NearestPrototypeEnsembleOperator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/data_splitter/NearestPrototypesSplitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/data_splitter/NearestPrototypesSplitter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/data_splitter/PiredTriple.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/data_splitter/PiredTriple.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/data_splitter/PrototypesEnsembelePredictionModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/data_splitter/PrototypesEnsembelePredictionModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/LVQOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/LVQOperator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/AbstractLVQModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/AbstractLVQModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/GLVQModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/GLVQModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/LVQ1Model.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/LVQ1Model.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/LVQ21Model.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/LVQ21Model.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/LVQ21ModelMy.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/LVQ21ModelSGD.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/LVQ2Model.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/LVQ2Model.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/LVQ2ModelMy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/ParallelLVQ1Model.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/LVQ3Model.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/LVQ3Model.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/LVQ3ModelMy.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/LVQTypes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/LVQTypes.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/OLVQModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/OLVQModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/SLVQ1Model.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/SLVQ1Model.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/SNGModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/SNGModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/WLVQModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/WLVQModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/WTMLVQModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/classifiers/neuralnet/models/WTMLVQModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/clustering/AbstractPrototypeClusteringBatchOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/clustering/AbstractPrototypeClusteringBatchOperator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/clustering/CFCMOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/clustering/CFCMOperator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/clustering/FCMOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/clustering/FCMOperator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/clustering/IS_ClusterModelTools.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/clustering/IS_ClusterModelTools.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/clustering/IS_PrototypeBatchClusterModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/clustering/IS_PrototypeBatchClusterModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/clustering/models/AbstractBatchModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/clustering/models/AbstractBatchModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/clustering/models/CFCMModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/clustering/models/CFCMModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/AbstractInstanceSelectorOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/AbstractInstanceSelectorOperator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/ensemble/AbstractISEnsembleOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/ensemble/AbstractISEnsembleOperator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/ensemble/BatchLoopOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/ensemble/BatchLoopOperator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/ensemble/ISEnsembleAdaBoostOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/ensemble/ISEnsembleAdaBoostOperator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/ensemble/ISEnsembleBaggingOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/ensemble/ISEnsembleBaggingOperator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/ensemble/ISEnsembleNoisOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/ensemble/ISEnsembleNoisOperator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/ensemble/ISEnsembleRndFeatureOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/ensemble/ISEnsembleRndFeatureOperator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/models/Drop1InstanceSelectionModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/models/Drop1InstanceSelectionModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/tools/DataIndex.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/tools/DataIndex.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/tools/PRulesUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/tools/PRulesUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/tools/math/BasicMath.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/tools/math/BasicMath.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/tools/math/container/knn/KNNFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/tools/math/container/knn/KNNFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/tools/math/container/knn/NNGraphReachableCoverage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/tools/math/container/knn/NNGraphReachableCoverage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/tools/math/container/knn/SimpleNNCachedLinearList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/tools/math/container/knn/SimpleNNCachedLinearList.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/tools/math/container/knn/SimpleNNCachedLineraList.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/org/prules/resources/OperatorsISPR.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/prules/resources/OperatorsISPR.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/org/prules/resources/i18n/OperatorsDocISPR.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/prules/resources/i18n/OperatorsDocISPR.xml" afterDir="false" />
     </list>
@@ -200,7 +144,7 @@
     <option name="LAST_EDITED_TAB_NAME" />
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
-    <option name="version" value="1" />
+    <option name="version" value="2" />
   </component>
   <component name="ProjectId" id="1R0G62T5be6IBWMYNZhguQ3yGJt" />
   <component name="ProjectInspectionProfilesVisibleTreeState">
@@ -226,13 +170,15 @@
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="MemberChooser.sorted" value="false" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit3" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit3" value="junit.framework.TestCase" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.includeInheritedMembers" value="true" />
     <property name="external.system.task.project.file.to.start" value="$PROJECT_DIR$" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../IneliJ/SparkTest/pom.xml" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -245,22 +191,22 @@
     <property name="settings.editor.selected.configurable" value="debugger.hotswap" />
   </component>
   <component name="RecentsManager">
-    <key name="CreateTestDialog.RecentsKey">
-      <recent name="org.prules.operator.learner.classifiers.neuralnet.models" />
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.prules.concurent" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="junit.framework.TestCase" />
     </key>
     <key name="ExtractSuperBase.RECENT_KEYS">
       <recent name="org.prules.operator.learner.misc.splitter" />
       <recent name="org.prules.operator.learner.misc" />
     </key>
-    <key name="CreateTestDialog.Recents.Supers">
-      <recent name="junit.framework.TestCase" />
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="org.prules.operator.learner.classifiers.neuralnet.models" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="org.prules.operator.learner.classifiers.neuralnet.models" />
       <recent name="org.prules.operator.learner.classifiers.data_splitter" />
-    </key>
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="org.prules.concurent" />
     </key>
   </component>
   <component name="RunManager" selected="Gradle.infoSel [debug]">
@@ -298,7 +244,9 @@
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
     <configuration name="ParallelLVQ1ModelTest.testTestRun" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -317,7 +265,9 @@
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
     <configuration name="infoSel [compileJava]" type="GradleRunConfiguration" factoryName="Gradle" nameIsGenerated="true">
@@ -336,7 +286,9 @@
         </option>
         <option name="vmOptions" value="" />
       </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
     <configuration name="infoSel [debug]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -355,7 +307,9 @@
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
     <configuration name="infoSel [dependencyInsight]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -374,7 +328,9 @@
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
     <configuration name="infoSel [dependentComponents]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -393,7 +349,9 @@
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
@@ -471,6 +429,9 @@
       <workItem from="1597162923440" duration="1156000" />
       <workItem from="1598015308138" duration="1091000" />
       <workItem from="1598016692423" duration="53000" />
+      <workItem from="1643642790123" duration="461000" />
+      <workItem from="1643703990477" duration="3437000" />
+      <workItem from="1643984637106" duration="6284000" />
     </task>
     <servers />
   </component>
@@ -492,122 +453,9 @@
   <component name="VcsManagerConfiguration">
     <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="true" />
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="Added base classes for GA-based instance selection. &#10;Only the skeleton is available, and the operator does nothing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added base classes for GA-based instance selection. &#10;Only the skeleton is available, and the operator does nothing" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="526" y="241" key="#Notifications" timestamp="1596180778426">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="526" y="241" key="#Notifications/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1596180778426" />
-    <state x="590" y="179" key="#com.intellij.ide.util.MemberChooser" timestamp="1596449429188">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="590" y="179" key="#com.intellij.ide.util.MemberChooser/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1596449429188" />
-    <state x="2565" y="245" key="#com.intellij.ide.util.MemberChooser/0.0.1536.834/1920.26.1680.1020@1920.26.1680.1020" timestamp="1595503602045" />
-    <state x="496" y="193" key="#com.intellij.ide.util.PackageChooserDialog" timestamp="1596204494811">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="496" y="193" key="#com.intellij.ide.util.PackageChooserDialog/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1596204494811" />
-    <state x="449" y="156" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1596104579896">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="449" y="156" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1596104579896" />
-    <state x="2291" y="465" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog" timestamp="1595510356554">
-      <screen x="1920" y="26" width="1680" height="1020" />
-    </state>
-    <state x="2291" y="465" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog/0.0.1536.834/1920.26.1680.1020@1920.26.1680.1020" timestamp="1595510356554" />
-    <state x="500" y="286" width="537" height="268" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1596204296436">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="500" y="286" width="537" height="268" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1596204296436" />
-    <state x="2269" y="26" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1595506935660">
-      <screen x="1920" y="26" width="1680" height="1020" />
-    </state>
-    <state x="2269" y="26" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1536.834/1920.26.1680.1020@1920.26.1680.1020" timestamp="1595506935660" />
-    <state x="327" y="0" key="CommitChangelistDialog2" timestamp="1596451724592">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="327" y="0" key="CommitChangelistDialog2/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1596451724592" />
-    <state x="549" y="158" key="FileChooserDialogImpl" timestamp="1598016738486">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="549" y="158" key="FileChooserDialogImpl/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1598016738486" />
-    <state width="1493" height="156" key="GridCell.Tab.0.bottom" timestamp="1596903567444">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state width="1493" height="156" key="GridCell.Tab.0.bottom/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1596903567444" />
-    <state width="1637" height="321" key="GridCell.Tab.0.bottom/0.0.1536.834/1920.26.1680.1020@1920.26.1680.1020" timestamp="1595508858162" />
-    <state width="1493" height="259" key="GridCell.Tab.0.bottom/0.0.1536.834@0.0.1536.834" timestamp="1596123643789" />
-    <state width="1493" height="156" key="GridCell.Tab.0.center" timestamp="1596903567444">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state width="1493" height="156" key="GridCell.Tab.0.center/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1596903567444" />
-    <state width="1637" height="321" key="GridCell.Tab.0.center/0.0.1536.834/1920.26.1680.1020@1920.26.1680.1020" timestamp="1595508858161" />
-    <state width="1493" height="259" key="GridCell.Tab.0.center/0.0.1536.834@0.0.1536.834" timestamp="1596123643789" />
-    <state width="1493" height="156" key="GridCell.Tab.0.left" timestamp="1596903567444">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state width="1493" height="156" key="GridCell.Tab.0.left/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1596903567444" />
-    <state width="1637" height="321" key="GridCell.Tab.0.left/0.0.1536.834/1920.26.1680.1020@1920.26.1680.1020" timestamp="1595508858161" />
-    <state width="1493" height="259" key="GridCell.Tab.0.left/0.0.1536.834@0.0.1536.834" timestamp="1596123643789" />
-    <state width="1493" height="156" key="GridCell.Tab.0.right" timestamp="1596903567444">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state width="1493" height="156" key="GridCell.Tab.0.right/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1596903567444" />
-    <state width="1637" height="321" key="GridCell.Tab.0.right/0.0.1536.834/1920.26.1680.1020@1920.26.1680.1020" timestamp="1595508858161" />
-    <state width="1493" height="259" key="GridCell.Tab.0.right/0.0.1536.834@0.0.1536.834" timestamp="1596123643789" />
-    <state width="1493" height="156" key="GridCell.Tab.1.bottom" timestamp="1596903567445">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state width="1493" height="156" key="GridCell.Tab.1.bottom/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1596903567445" />
-    <state width="1637" height="234" key="GridCell.Tab.1.bottom/0.0.1536.834/1920.26.1680.1020@1920.26.1680.1020" timestamp="1595501633950" />
-    <state width="1493" height="259" key="GridCell.Tab.1.bottom/0.0.1536.834@0.0.1536.834" timestamp="1596123643790" />
-    <state width="1493" height="156" key="GridCell.Tab.1.center" timestamp="1596903567445">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state width="1493" height="156" key="GridCell.Tab.1.center/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1596903567445" />
-    <state width="1637" height="234" key="GridCell.Tab.1.center/0.0.1536.834/1920.26.1680.1020@1920.26.1680.1020" timestamp="1595501633950" />
-    <state width="1493" height="259" key="GridCell.Tab.1.center/0.0.1536.834@0.0.1536.834" timestamp="1596123643790" />
-    <state width="1493" height="156" key="GridCell.Tab.1.left" timestamp="1596903567445">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state width="1493" height="156" key="GridCell.Tab.1.left/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1596903567445" />
-    <state width="1637" height="234" key="GridCell.Tab.1.left/0.0.1536.834/1920.26.1680.1020@1920.26.1680.1020" timestamp="1595501633950" />
-    <state width="1493" height="259" key="GridCell.Tab.1.left/0.0.1536.834@0.0.1536.834" timestamp="1596123643789" />
-    <state width="1493" height="156" key="GridCell.Tab.1.right" timestamp="1596903567445">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state width="1493" height="156" key="GridCell.Tab.1.right/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1596903567445" />
-    <state width="1637" height="234" key="GridCell.Tab.1.right/0.0.1536.834/1920.26.1680.1020@1920.26.1680.1020" timestamp="1595501633950" />
-    <state width="1493" height="259" key="GridCell.Tab.1.right/0.0.1536.834@0.0.1536.834" timestamp="1596123643790" />
-    <state x="479" y="167" key="com.intellij.testIntegration.createTest.CreateTestDialog" timestamp="1596204497902">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="479" y="167" key="com.intellij.testIntegration.createTest.CreateTestDialog/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1596204497902" />
-    <state x="1912" y="18" width="856" height="1036" maximized="true" key="dock-window-1" timestamp="1596296398287">
-      <screen x="1920" y="26" width="1680" height="1020" />
-    </state>
-    <state x="1912" y="18" width="856" height="1036" maximized="true" key="dock-window-1/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1596296398287" />
-    <state x="0" y="0" width="1550" height="882" key="dock-window-2" timestamp="1596307170429">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="0" y="0" width="1550" height="882" key="dock-window-2/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1596307170429" />
-    <state x="1920" y="26" width="1121" height="570" maximized="true" key="dock-window-3" timestamp="1596368412600">
-      <screen x="1920" y="26" width="1680" height="1020" />
-    </state>
-    <state x="1920" y="26" width="1121" height="570" maximized="true" key="dock-window-3/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1596368412600" />
-    <state x="1920" y="26" width="1121" height="530" maximized="true" key="dock-window-4" timestamp="1596376933700">
-      <screen x="1920" y="26" width="1680" height="1020" />
-    </state>
-    <state x="1920" y="26" width="1121" height="530" maximized="true" key="dock-window-4/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1596376933700" />
-    <state x="209" y="37" key="new project wizard" timestamp="1598015796709">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="209" y="37" key="new project wizard/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1598015796709" />
-    <state x="431" y="155" width="672" height="678" key="search.everywhere.popup" timestamp="1596298764583">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="431" y="155" width="672" height="678" key="search.everywhere.popup/0.0.1536.834/1920.26.1680.1020@0.0.1536.834" timestamp="1596298764583" />
   </component>
   <component name="XDebuggerManager">
     <pin-to-top-manager>
