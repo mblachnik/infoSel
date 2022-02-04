@@ -5,12 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6807e0df-d924-4a1a-a996-0bdd6d52a82b" name="Default Changelist" comment="Added base classes for GA-based instance selection. &#10;Only the skeleton is available, and the operator does nothing">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/GAInstanceSelectionOperator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/models/GAInstanceSelectionModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/infoSel.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/infoSel.ipr" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/performance/evaluator/Accuracy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/performance/evaluator/PerformanceEvaluator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/infoSel.iws" beforeDir="false" afterPath="$PROJECT_DIR$/infoSel.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/org/prules/resources/OperatorsISPR.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/prules/resources/OperatorsISPR.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/org/prules/resources/i18n/OperatorsDocISPR.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/prules/resources/i18n/OperatorsDocISPR.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/GAInstanceSelectionOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/GAInstanceSelectionOperator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/models/GAInstanceSelectionModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/models/GAInstanceSelectionModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/tools/math/container/knn/NNGraphWithoutAssocuateUpdates.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/tools/math/container/knn/NNGraphWithoutAssocuateUpdates.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,8 +125,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="JUnit3 Test Class" />
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -431,8 +431,16 @@
       <workItem from="1598016692423" duration="53000" />
       <workItem from="1643642790123" duration="461000" />
       <workItem from="1643703990477" duration="3437000" />
-      <workItem from="1643984637106" duration="6284000" />
+      <workItem from="1643984637106" duration="12873000" />
     </task>
+    <task id="LOCAL-00001" summary="Added base classes for GA-based instance selection. &#10;Only the skeleton is available, and the operator does nothing">
+      <created>1643991216569</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1643991216569</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

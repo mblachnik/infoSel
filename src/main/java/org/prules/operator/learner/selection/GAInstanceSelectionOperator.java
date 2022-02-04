@@ -9,6 +9,8 @@ import com.rapidminer.tools.math.similarity.DistanceMeasure;
 import com.rapidminer.tools.math.similarity.DistanceMeasures;
 import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
 import org.prules.operator.learner.selection.models.GAInstanceSelectionModel;
+import org.prules.operator.performance.evaluator.Accuracy;
+import org.prules.operator.performance.evaluator.PerformanceEvaluator;
 
 import java.util.List;
 
@@ -29,7 +31,11 @@ public class GAInstanceSelectionOperator extends AbstractInstanceSelectorOperato
     public AbstractInstanceSelectorModel configureInstanceSelectionModel(SelectedExampleSet trainingSet) throws OperatorException {
         int liczbaGeneracji = 100;
         DistanceMeasure distance = measureHelper.getInitializedMeasure(trainingSet);
-        GAInstanceSelectionModel model = new GAInstanceSelectionModel(distance,liczbaGeneracji);
+        int k = 1;
+        double performanceRatio = 0.95;
+        PerformanceEvaluator evaluator = new Accuracy();
+
+        GAInstanceSelectionModel model = new GAInstanceSelectionModel(distance,liczbaGeneracji,k,performanceRatio,evaluator);
         return model;
     }
 

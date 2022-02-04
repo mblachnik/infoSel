@@ -5,15 +5,6 @@
  */
 package org.prules.tools.math.container.knn;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.prules.dataset.Const;
 import org.prules.dataset.IInstanceLabels;
 import org.prules.dataset.Vector;
@@ -21,6 +12,8 @@ import org.prules.operator.learner.tools.IDataIndex;
 import org.prules.tools.math.container.DoubleIntContainer;
 import org.prules.tools.math.container.DoubleObjectContainer;
 import org.prules.tools.math.container.PairContainer;
+
+import java.util.*;
 
 /**
  *
