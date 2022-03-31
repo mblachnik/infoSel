@@ -5,20 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6807e0df-d924-4a1a-a996-0bdd6d52a82b" name="Default Changelist" comment="Added base classes for GA-based instance selection. &#10;Only the skeleton is available, and the operator does nothing">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/performance/evaluator/Accuracy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/performance/evaluator/PerformanceEvaluator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/infoSel.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/infoSel.ipr" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/infoSel.iws" beforeDir="false" afterPath="$PROJECT_DIR$/infoSel.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/GAInstanceSelectionOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/GAInstanceSelectionOperator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/models/GAInstanceSelectionModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/models/GAInstanceSelectionModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/tools/math/container/knn/NNGraphWithoutAssocuateUpdates.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/tools/math/container/knn/NNGraphWithoutAssocuateUpdates.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user.properties" beforeDir="false" afterPath="$PROJECT_DIR$/user.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="CodeInsightWorkspaceSettings">
-    <option name="optimizeImportsOnTheFly" value="true" />
   </component>
   <component name="CodeStyleSettingsInfer">
     <option name="done" value="true" />
@@ -186,9 +183,9 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="project.structure.last.edited" value="Modules" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
-    <property name="settings.editor.selected.configurable" value="debugger.hotswap" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.345977" />
+    <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
@@ -242,7 +239,7 @@
             <option value=":test" />
           </list>
         </option>
-        <option name="vmOptions" />
+        <option name="vmOptions" value="" />
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
@@ -263,7 +260,7 @@
             <option value=":test" />
           </list>
         </option>
-        <option name="vmOptions" />
+        <option name="vmOptions" value="" />
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
@@ -296,7 +293,7 @@
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
+        <option name="scriptParameters" value="--stacktrace" />
         <option name="taskDescriptions">
           <list />
         </option>
@@ -305,7 +302,7 @@
             <option value="debug" />
           </list>
         </option>
-        <option name="vmOptions" />
+        <option name="vmOptions" value="" />
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
@@ -317,7 +314,7 @@
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
+        <option name="scriptParameters" value="" />
         <option name="taskDescriptions">
           <list />
         </option>
@@ -326,7 +323,7 @@
             <option value="dependencyInsight" />
           </list>
         </option>
-        <option name="vmOptions" />
+        <option name="vmOptions" value="" />
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
@@ -338,7 +335,7 @@
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
+        <option name="scriptParameters" value="" />
         <option name="taskDescriptions">
           <list />
         </option>
@@ -347,7 +344,7 @@
             <option value="dependentComponents" />
           </list>
         </option>
-        <option name="vmOptions" />
+        <option name="vmOptions" value="" />
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
@@ -432,6 +429,27 @@
       <workItem from="1643642790123" duration="461000" />
       <workItem from="1643703990477" duration="3437000" />
       <workItem from="1643984637106" duration="12873000" />
+      <workItem from="1644163217434" duration="947000" />
+      <workItem from="1644181258991" duration="1886000" />
+      <workItem from="1644244539865" duration="612000" />
+      <workItem from="1644324336119" duration="599000" />
+      <workItem from="1644331805190" duration="1795000" />
+      <workItem from="1644413944389" duration="9000" />
+      <workItem from="1644504078938" duration="2273000" />
+      <workItem from="1644530730730" duration="628000" />
+      <workItem from="1644573861578" duration="1780000" />
+      <workItem from="1644593480178" duration="1037000" />
+      <workItem from="1644833912450" duration="1187000" />
+      <workItem from="1644863604915" duration="588000" />
+      <workItem from="1646406411920" duration="7482000" />
+      <workItem from="1646418602122" duration="15105000" />
+      <workItem from="1646499818181" duration="35000" />
+      <workItem from="1646603156621" duration="49000" />
+      <workItem from="1646745602820" duration="5374000" />
+      <workItem from="1647270019876" duration="4664000" />
+      <workItem from="1647293023863" duration="1744000" />
+      <workItem from="1647359243540" duration="888000" />
+      <workItem from="1647368770911" duration="13000" />
     </task>
     <task id="LOCAL-00001" summary="Added base classes for GA-based instance selection. &#10;Only the skeleton is available, and the operator does nothing">
       <created>1643991216569</created>
@@ -471,5 +489,8 @@
         <PinnedItemInfo parentTag="com.rapidminer.example.SimpleAttributes" memberName="attributes" />
       </pinned-members>
     </pin-to-top-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/infoSel$infoSel__debug_.ic" NAME="infoSel [debug] Coverage Results" MODIFIED="1646438354670" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>
