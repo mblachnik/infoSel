@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6807e0df-d924-4a1a-a996-0bdd6d52a82b" name="Default Changelist" comment="Added base classes for GA-based instance selection. &#10;Only the skeleton is available, and the operator does nothing">
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+    <list default="true" id="6807e0df-d924-4a1a-a996-0bdd6d52a82b" name="Default Changelist" comment="Updated GA based instance selection classes + added accuracy measure">
       <change beforePath="$PROJECT_DIR$/infoSel.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/infoSel.ipr" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/infoSel.iws" beforeDir="false" afterPath="$PROJECT_DIR$/infoSel.iws" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/AbstractInstanceSelectorOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/AbstractInstanceSelectorOperator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/GAInstanceSelectionOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/GAInstanceSelectionOperator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/models/GAInstanceSelectionModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/prules/operator/learner/selection/models/GAInstanceSelectionModel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user.properties" beforeDir="false" afterPath="$PROJECT_DIR$/user.properties" afterDir="false" />
     </list>
@@ -76,41 +76,7 @@
             <expand>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="infoSel" type="f1a62948:ProjectNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="infoSel" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="infoSel" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="infoSel" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build setup" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="infoSel" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="documentation" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="infoSel" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="help" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="infoSel" type="f1a62948:ProjectNode" />
-                <item name="Run Configurations" type="7b0102dc:RunConfigurationsNode" />
+                <item name="infoSel_dev_GA" type="f1a62948:ProjectNode" />
               </path>
             </expand>
             <select />
@@ -135,6 +101,9 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ModuleEditorState">
     <option name="LAST_EDITED_MODULE_NAME" />
@@ -450,6 +419,7 @@
       <workItem from="1647293023863" duration="1744000" />
       <workItem from="1647359243540" duration="888000" />
       <workItem from="1647368770911" duration="13000" />
+      <workItem from="1649072248320" duration="8136000" />
     </task>
     <task id="LOCAL-00001" summary="Added base classes for GA-based instance selection. &#10;Only the skeleton is available, and the operator does nothing">
       <created>1643991216569</created>
@@ -474,7 +444,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="true" />

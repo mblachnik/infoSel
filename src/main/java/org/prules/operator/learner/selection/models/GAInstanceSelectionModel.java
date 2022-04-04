@@ -16,14 +16,12 @@ import org.prules.tools.math.container.knn.KNNFactory;
 import io.jenetics.*;
 import io.jenetics.engine.*;
 import io.jenetics.util.ISeq;
+
+import java.util.*;
 import java.util.function.Function;
 import io.jenetics.BitGene;
 import static io.jenetics.engine.EvolutionResult.*;
 import static io.jenetics.engine.Limits.bySteadyFitness;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * Implementation of the Genetic Algorithms based instance selection.
@@ -36,6 +34,8 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
     final int k;
     final double performanceRatio;
     final PerformanceEvaluator evaluator;
+    final Map<String,List<Double>> costFunctionPerformance;
+
 
 
     public GAInstanceSelectionModel(DistanceMeasure distance, int liczbaGeneracji, int k, double performanceRatio, PerformanceEvaluator evaluator) {
@@ -44,11 +44,16 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
         this.k = k;
         this.performanceRatio =  performanceRatio;
         this.evaluator = evaluator;
-
+        this.costFunctionPerformance = new HashMap<String,List<Double>>(){{
+            put("Performance", new ArrayList(liczbaGeneracji));
+            put("Accuracy", new ArrayList(liczbaGeneracji));
+            put("Compression", new ArrayList(liczbaGeneracji));
+        }};
     }
 
     @Override
     public IDataIndex selectInstances(final SelectedExampleSet exampleSet) {
+
         model = (ISPRGeometricDataCollectionWithIndex)KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, exampleSet, distance);
         boolean[] idx = new boolean[model.size()];
         Arrays.fill(idx,true);
@@ -62,6 +67,7 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
 //        Arrays.fill(bestChromosome,true);
 //        double acc = costFunction(exampleSet,  idx);
         //start
+
         Integer[] items = new Integer[exampleSet.size()];
         int i = 0;
         for (Example example : exampleSet){
@@ -85,8 +91,8 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
 //        final EvolutionStatistics<Double,?> statistics=EvolutionStatistics.ofNumber();
 
         final  Phenotype<BitGene,Double> best=engine.stream()
-                .limit(bySteadyFitness(15))
-                .limit(100)
+                .limit(bySteadyFitness(1))
+                .limit(liczbaGeneracji)
 //                .peek(statistics)
                 .collect(toBestPhenotype());
 
@@ -106,6 +112,8 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
             bestChromosome[l]=b.booleanValue();
             l++;
         }
+
+
         return new DataIndex(bestChromosome);
     }
 
@@ -135,11 +143,39 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
             instanceIndex++;
         }
         double accuracy = evaluator.getPerformance(trueLabels,predictions);
-        double compression = 1 - BasicMath.sum(chromosome) / chromosome.length;
+        double compression = 1.0-((double)BasicMath.sum(chromosome)) / chromosome.length;
         double performance = accuracy *  performanceRatio + (1-performanceRatio) * compression;
+
+        costFunctionPerformance.get("Performance").add(performance);
+        costFunctionPerformance.get("Accuracy").add(accuracy);
+        costFunctionPerformance.get("Compression").add(compression);
         return performance;
     }
 
+    /**
+     * Returns values of the performance of the GA model after each iteration including accuraacy and compression.
+     * If the GA algorithm was not executed it returns null
+     * @return
+     */
+    public Map<String,List<Double>> getCostFunctionPerformance() {
+        return costFunctionPerformance;
+    }
+
+    public int getLiczbaGeneracji() {
+        return liczbaGeneracji;
+    }
+
+    public int getK() {
+        return k;
+    }
+
+    public double getPerformanceRatio() {
+        return performanceRatio;
+    }
+
+    public PerformanceEvaluator getEvaluator() {
+        return evaluator;
+    }
 
 }
 class ISProblem implements Problem<ISeq<Integer>, BitGene,Double>{

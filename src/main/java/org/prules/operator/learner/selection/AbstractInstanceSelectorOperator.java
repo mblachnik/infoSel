@@ -4,6 +4,8 @@ import com.rapidminer.example.*;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.example.set.SortedExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
+import com.rapidminer.example.utils.ExampleSetBuilder;
+import com.rapidminer.example.utils.ExampleSets;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.ProcessSetupError;
@@ -197,6 +199,7 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPrototype
         IDataIndex initialIndex = instanceSelectionInput.getIndex();
         AbstractInstanceSelectorModel m = configureInstanceSelectionModel(instanceSelectionInput);
         IDataIndex index = m.selectInstances(instanceSelectionInput);
+        postProcessingAfterIS(m);
         if (index == null) {
             throw new UserError(this, 0);
         }
@@ -250,6 +253,13 @@ public abstract class AbstractInstanceSelectorOperator extends AbstractPrototype
             return tmpTraining;
         }
         return output;
+    }
+
+    /**
+     * This method is executed after performing instance selection in order to extract additional information
+     * @param m
+     */
+    public void postProcessingAfterIS(AbstractInstanceSelectorModel m) {
     }
 
     /**
