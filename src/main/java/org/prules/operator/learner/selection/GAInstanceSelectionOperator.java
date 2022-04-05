@@ -1,5 +1,7 @@
 package org.prules.operator.learner.selection;
 
+import com.rapidminer.example.Attribute;
+import com.rapidminer.example.Attributes;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
@@ -21,6 +23,7 @@ import org.prules.operator.learner.selection.models.GAInstanceSelectionModel;
 import org.prules.operator.performance.evaluator.Accuracy;
 import org.prules.operator.performance.evaluator.PerformanceEvaluator;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -75,9 +78,9 @@ public class GAInstanceSelectionOperator extends AbstractInstanceSelectorOperato
         //https://docs.rapidminer.com/9.2/developers/changes-in-7.3/
 
         GAInstanceSelectionModel model = (GAInstanceSelectionModel)m;
-        ExampleSetBuilder esb = ExampleSets.from(AttributeFactory.createAttribute("Performance", Ontology.REAL),
-                AttributeFactory.createAttribute("Accuracy", Ontology.REAL),
-                AttributeFactory.createAttribute("Compression", Ontology.REAL));
+        ExampleSetBuilder esb = ExampleSets.from(AttributeFactory.createAttribute("a1", Ontology.REAL),
+                AttributeFactory.createAttribute("a2", Ontology.REAL),
+                AttributeFactory.createAttribute("a3", Ontology.REAL));
 
         Map<String,List<Double>> performances = model.getCostFunctionPerformance();
 
@@ -94,8 +97,13 @@ public class GAInstanceSelectionOperator extends AbstractInstanceSelectorOperato
             }
             esb.addRow(row);
         }
+
         ExampleSet performancesSet = esb.build();
 
+        Iterator<Attribute> as = performancesSet.getAttributes().iterator();
+        for(String key : keys){
+            as.next().setName(key);
+        }
         performanceOutputPort.deliver(performancesSet);
     }
 
