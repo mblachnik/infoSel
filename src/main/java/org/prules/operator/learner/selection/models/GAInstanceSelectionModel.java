@@ -28,26 +28,39 @@ import static io.jenetics.engine.Limits.bySteadyFitness;
  * It is based on Jenetics framework
  */
 public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
-    final int liczbaGeneracji;
-    ISPRGeometricDataCollectionWithIndex<IInstanceLabels>  model;
-    final DistanceMeasure distance;
+    //Parameters for RapidMiner GUI
+    final int numberOfGenerations;
     final int k;
     final double performanceRatio;
+    final int populationSize;
+    final int tournamentSelectorSize;
+    final double singlePointCrossoverProbability;
+    final double mutationProbability;
+    final int limitBySteadyFitness;
+
+    //Internal parameters
     final PerformanceEvaluator evaluator;
     final Map<String,List<Double>> costFunctionPerformance;
+    ISPRGeometricDataCollectionWithIndex<IInstanceLabels>  model;
+    final DistanceMeasure distance;
 
+    public GAInstanceSelectionModel(DistanceMeasure distance, int numberOfGenerations, int k, double performanceRatio, PerformanceEvaluator evaluator,
+                                    int populationSize, int tournamentSelectorSize, double singlePointCrossoverProbability, double mutationProbability, int limitBySteadyFitness) {
+        this.populationSize=populationSize;
+        this.tournamentSelectorSize=tournamentSelectorSize;
+        this.singlePointCrossoverProbability=singlePointCrossoverProbability;
+        this.mutationProbability=mutationProbability;
+        this.limitBySteadyFitness=limitBySteadyFitness;
 
-
-    public GAInstanceSelectionModel(DistanceMeasure distance, int liczbaGeneracji, int k, double performanceRatio, PerformanceEvaluator evaluator) {
-        this.liczbaGeneracji = liczbaGeneracji;
+        this.numberOfGenerations = numberOfGenerations;
         this.distance = distance;
         this.k = k;
         this.performanceRatio =  performanceRatio;
         this.evaluator = evaluator;
         this.costFunctionPerformance = new HashMap<String,List<Double>>(){{
-            put("Performance", new ArrayList(liczbaGeneracji));
-            put("Accuracy", new ArrayList(liczbaGeneracji));
-            put("Compression", new ArrayList(liczbaGeneracji));
+            put("Performance", new ArrayList(numberOfGenerations));
+            put("Accuracy", new ArrayList(numberOfGenerations));
+            put("Compression", new ArrayList(numberOfGenerations));
         }};
     }
 
@@ -80,19 +93,19 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
         );
 
         final Engine<BitGene,Double> engine= Engine.builder(instanceSelectionProblem)
-                .populationSize(50)
-                .survivorsSelector(new TournamentSelector<>(5))
+                .populationSize(populationSize)
+                .survivorsSelector(new TournamentSelector<>(tournamentSelectorSize))
                 .offspringSelector(new RouletteWheelSelector<>())
                 .alterers(
-                        new Mutator<>(0.115),
-                        new SinglePointCrossover<>(0.20)
+                        new Mutator<>(mutationProbability),
+                        new SinglePointCrossover<>(singlePointCrossoverProbability)
                 ).build();
 
 //        final EvolutionStatistics<Double,?> statistics=EvolutionStatistics.ofNumber();
 
         final  Phenotype<BitGene,Double> best=engine.stream()
-                .limit(bySteadyFitness(1))
-                .limit(liczbaGeneracji)
+                .limit(bySteadyFitness(limitBySteadyFitness))
+                .limit(numberOfGenerations)
 //                .peek(statistics)
                 .collect(toBestPhenotype());
 
@@ -161,8 +174,8 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
         return costFunctionPerformance;
     }
 
-    public int getLiczbaGeneracji() {
-        return liczbaGeneracji;
+    public int getnumberOfGenerations() {
+        return numberOfGenerations;
     }
 
     public int getK() {
@@ -177,6 +190,25 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
         return evaluator;
     }
 
+    public int getPopulationSize() {
+        return populationSize;
+    }
+
+    public int getTournamentSelectorSize() {
+        return tournamentSelectorSize;
+    }
+
+    public double getSinglePointCrossoverProbability() {
+        return singlePointCrossoverProbability;
+    }
+
+    public double getMutationProbability() {
+        return mutationProbability;
+    }
+
+    public int getLimitBySteadyFitness() {
+        return limitBySteadyFitness;
+    }
 }
 class ISProblem implements Problem<ISeq<Integer>, BitGene,Double>{
 

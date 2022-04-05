@@ -34,6 +34,13 @@ import java.util.Set;
 public class GAInstanceSelectionOperator extends AbstractInstanceSelectorOperator{
     public static final String PARAMETER_K = "K";
     public static final String PARAMETER_PERF_RATIO = "Performance ratio";
+    public static final String PARAMETER_NUM_OF_GENERATIONS = "Number of generations";
+    public static final String PARAMETER_POPULATION_SIZE = "Population size";
+    public static final String PARAMETER_TOURNAMENT_SELECTOR_SIZE = "Tournament selector size";
+    public static final String PARAMETER_MUTATION_PROB = "Mutation probability";
+    public static final String PARAMETER_CROSSOVER_PROB = "Crossover probability";
+    public static final String PARAMETER_LIMIT_BY_STEADY_FITNESS = "Limit by steady fitness";
+
     protected final OutputPort performanceOutputPort = getOutputPorts().createPort("perf");
     /**
      * Default constructor for Genetic Algorithms-based instance selection
@@ -61,13 +68,19 @@ public class GAInstanceSelectionOperator extends AbstractInstanceSelectorOperato
 
     @Override
     public AbstractInstanceSelectorModel configureInstanceSelectionModel(SelectedExampleSet trainingSet) throws OperatorException {
-        int liczbaGeneracji = 100;
-        DistanceMeasure distance = measureHelper.getInitializedMeasure(trainingSet);
+        int numberOfGenerations=this.getParameterAsInt(PARAMETER_NUM_OF_GENERATIONS);
         int k = this.getParameterAsInt(PARAMETER_K);
         double performanceRatio = this.getParameterAsDouble(PARAMETER_PERF_RATIO);
-        PerformanceEvaluator evaluator = new Accuracy();
+        int populationSize=this.getParameterAsInt(PARAMETER_POPULATION_SIZE);
+        int tournamentSelectorSize=this.getParameterAsInt(PARAMETER_TOURNAMENT_SELECTOR_SIZE);
+        double singlePointCrossoverProbability=this.getParameterAsDouble(PARAMETER_CROSSOVER_PROB);
+        double mutationProbability=this.getParameterAsDouble(PARAMETER_MUTATION_PROB);
+        int limitBySteadyFitness=this.getParameterAsInt(PARAMETER_LIMIT_BY_STEADY_FITNESS);
 
-        GAInstanceSelectionModel model = new GAInstanceSelectionModel(distance,liczbaGeneracji,k,performanceRatio,evaluator);
+        DistanceMeasure distance = measureHelper.getInitializedMeasure(trainingSet);
+        PerformanceEvaluator evaluator = new Accuracy();
+        GAInstanceSelectionModel model = new GAInstanceSelectionModel(distance,numberOfGenerations,k,performanceRatio,evaluator,populationSize,tournamentSelectorSize,
+                singlePointCrossoverProbability,mutationProbability,limitBySteadyFitness);
         return model;
     }
 
@@ -84,7 +97,7 @@ public class GAInstanceSelectionOperator extends AbstractInstanceSelectorOperato
 
         Map<String,List<Double>> performances = model.getCostFunctionPerformance();
 
-        esb.withExpectedSize(model.getLiczbaGeneracji());
+        esb.withExpectedSize(model.getnumberOfGenerations());
         Set<String> keys = performances.keySet();
 
         int n = performances.get(keys.iterator().next()).size();
@@ -166,12 +179,40 @@ public class GAInstanceSelectionOperator extends AbstractInstanceSelectorOperato
     @Override
     public List<ParameterType> getParameterTypes() {
         List<ParameterType> types = super.getParameterTypes();
+
         ParameterType typeK = new ParameterTypeInt(PARAMETER_K, "The value for k in kNN", 1, Integer.MAX_VALUE, 1);
         typeK.setExpert(false);
         types.add(typeK);
+
         ParameterType typeA2CRatio = new ParameterTypeDouble(PARAMETER_PERF_RATIO, "The performance ratio between accuracy and compression", 0.5,  1,  0.9);
         typeA2CRatio.setExpert(false);
         types.add(typeA2CRatio);
+
+        ParameterType typeNumOfGens = new ParameterTypeInt(PARAMETER_NUM_OF_GENERATIONS, "The value for number of generations in GA", 1, Integer.MAX_VALUE, 100);
+        typeK.setExpert(false);
+        types.add(typeNumOfGens);
+
+        ParameterType typePopulationSize = new ParameterTypeInt(PARAMETER_POPULATION_SIZE, "The value for the population size in GA", 1, Integer.MAX_VALUE, 50);
+        typeK.setExpert(false);
+        types.add(typePopulationSize);
+
+        ParameterType typeTournSelSize = new ParameterTypeInt(PARAMETER_TOURNAMENT_SELECTOR_SIZE, "The value for the size of tournament selector of survivors in GA", 1, Integer.MAX_VALUE, 5);
+        typeK.setExpert(true);
+        types.add(typeTournSelSize);
+
+        ParameterType typeCrossoverProb = new ParameterTypeDouble(PARAMETER_CROSSOVER_PROB, "The value for the probability of crossover operation in GA", 0.0, 1.0, 0.115);
+        typeK.setExpert(true);
+        types.add(typeCrossoverProb);
+
+        ParameterType typeMutProb = new ParameterTypeDouble(PARAMETER_MUTATION_PROB, "The value for the probability of mutation operation in GA", 0.0, 1.0, 0.2);
+        typeK.setExpert(true);
+        types.add(typeMutProb);
+
+        ParameterType typeLmtBySteadyFitness = new ParameterTypeInt(PARAMETER_LIMIT_BY_STEADY_FITNESS, "The value for the number of generations that will be generated when the fitness function no longer changes its value", 1, Integer.MAX_VALUE, 15);
+        typeK.setExpert(true);
+        types.add(typeLmtBySteadyFitness);
+
+
         return types;
     }
 }
