@@ -23,10 +23,7 @@ import org.prules.operator.learner.selection.models.GAInstanceSelectionModel;
 import org.prules.operator.performance.evaluator.Accuracy;
 import org.prules.operator.performance.evaluator.PerformanceEvaluator;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Genetic Algorithms-based instance selection operator based on Jenetics library
@@ -57,8 +54,6 @@ public class GAInstanceSelectionOperator extends AbstractInstanceSelectorOperato
              * original. Subclasses may safely modify the meta data, since a copy is used for this method.
              */
             public MetaData modifyMetaData(ExampleSetMetaData meta) {
-                meta.addAttribute(new AttributeMetaData("Performance",Ontology.REAL));
-                meta.addAttribute(new AttributeMetaData("Performance",Ontology.REAL));
                 meta.addAttribute(new AttributeMetaData("Performance",Ontology.REAL));
                 return meta;
             }
@@ -91,16 +86,20 @@ public class GAInstanceSelectionOperator extends AbstractInstanceSelectorOperato
         //https://docs.rapidminer.com/9.2/developers/changes-in-7.3/
 
         GAInstanceSelectionModel model = (GAInstanceSelectionModel)m;
-        ExampleSetBuilder esb = ExampleSets.from(AttributeFactory.createAttribute("a1", Ontology.REAL),
-                AttributeFactory.createAttribute("a2", Ontology.REAL),
-                AttributeFactory.createAttribute("a3", Ontology.REAL));
 
         Map<String,List<Double>> performances = model.getCostFunctionPerformance();
-
-        esb.withExpectedSize(model.getnumberOfGenerations());
         Set<String> keys = performances.keySet();
+        List<Attribute> atts = new ArrayList<>();
+        for (String key : keys){
+            atts.add(AttributeFactory.createAttribute(key, Ontology.REAL));
+        }
+
+        ExampleSetBuilder esb = ExampleSets.from(atts);
 
         int n = performances.get(keys.iterator().next()).size();
+        esb.withExpectedSize(n);
+
+
         for (int i=0; i<n; i++) {
             double[] row = new double[]{Double.NaN, Double.NaN, Double.NaN};
             int j=0;
@@ -112,11 +111,6 @@ public class GAInstanceSelectionOperator extends AbstractInstanceSelectorOperato
         }
 
         ExampleSet performancesSet = esb.build();
-
-        Iterator<Attribute> as = performancesSet.getAttributes().iterator();
-        for(String key : keys){
-            as.next().setName(key);
-        }
         performanceOutputPort.deliver(performancesSet);
     }
 
@@ -184,33 +178,34 @@ public class GAInstanceSelectionOperator extends AbstractInstanceSelectorOperato
         typeK.setExpert(false);
         types.add(typeK);
 
-        ParameterType typeA2CRatio = new ParameterTypeDouble(PARAMETER_PERF_RATIO, "The performance ratio between accuracy and compression", 0.5,  1,  0.9);
-        typeA2CRatio.setExpert(false);
-        types.add(typeA2CRatio);
+        ParameterType param;
+        param = new ParameterTypeDouble(PARAMETER_PERF_RATIO, "The performance ratio between accuracy and compression", 0.5,  1,  0.9);
+        param.setExpert(false);
+        types.add(param);
 
-        ParameterType typeNumOfGens = new ParameterTypeInt(PARAMETER_NUM_OF_GENERATIONS, "The value for number of generations in GA", 1, Integer.MAX_VALUE, 100);
-        typeK.setExpert(false);
-        types.add(typeNumOfGens);
+        param = new ParameterTypeInt(PARAMETER_NUM_OF_GENERATIONS, "The value for number of generations in GA", 1, Integer.MAX_VALUE, 100);
+        param.setExpert(false);
+        types.add(param);
 
-        ParameterType typePopulationSize = new ParameterTypeInt(PARAMETER_POPULATION_SIZE, "The value for the population size in GA", 1, Integer.MAX_VALUE, 50);
-        typeK.setExpert(false);
-        types.add(typePopulationSize);
+        param = new ParameterTypeInt(PARAMETER_POPULATION_SIZE, "The value for the population size in GA", 1, Integer.MAX_VALUE, 50);
+        param.setExpert(false);
+        types.add(param);
 
-        ParameterType typeTournSelSize = new ParameterTypeInt(PARAMETER_TOURNAMENT_SELECTOR_SIZE, "The value for the size of tournament selector of survivors in GA", 1, Integer.MAX_VALUE, 5);
-        typeK.setExpert(true);
-        types.add(typeTournSelSize);
+        param= new ParameterTypeInt(PARAMETER_TOURNAMENT_SELECTOR_SIZE, "The value for the size of tournament selector of survivors in GA", 1, Integer.MAX_VALUE, 5);
+        param.setExpert(false);
+        types.add(param);
 
-        ParameterType typeCrossoverProb = new ParameterTypeDouble(PARAMETER_CROSSOVER_PROB, "The value for the probability of crossover operation in GA", 0.0, 1.0, 0.115);
-        typeK.setExpert(true);
-        types.add(typeCrossoverProb);
+        param = new ParameterTypeDouble(PARAMETER_CROSSOVER_PROB, "The value for the probability of crossover operation in GA", 0.0, 1.0, 0.115);
+        param.setExpert(false);
+        types.add(param);
 
-        ParameterType typeMutProb = new ParameterTypeDouble(PARAMETER_MUTATION_PROB, "The value for the probability of mutation operation in GA", 0.0, 1.0, 0.2);
-        typeK.setExpert(true);
-        types.add(typeMutProb);
+        param = new ParameterTypeDouble(PARAMETER_MUTATION_PROB, "The value for the probability of mutation operation in GA", 0.0, 1.0, 0.2);
+        param.setExpert(false);
+        types.add(param);
 
-        ParameterType typeLmtBySteadyFitness = new ParameterTypeInt(PARAMETER_LIMIT_BY_STEADY_FITNESS, "The value for the number of generations that will be generated when the fitness function no longer changes its value", 1, Integer.MAX_VALUE, 15);
-        typeK.setExpert(true);
-        types.add(typeLmtBySteadyFitness);
+        param = new ParameterTypeInt(PARAMETER_LIMIT_BY_STEADY_FITNESS, "The value for the number of generations that will be generated when the fitness function no longer changes its value", 1, Integer.MAX_VALUE, 15);
+        param.setExpert(false);
+        types.add(param);
 
 
         return types;

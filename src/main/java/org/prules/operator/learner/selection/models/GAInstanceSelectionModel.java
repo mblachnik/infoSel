@@ -58,9 +58,9 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
         this.performanceRatio =  performanceRatio;
         this.evaluator = evaluator;
         this.costFunctionPerformance = new HashMap<String,List<Double>>(){{
-            put("Performance", new ArrayList(numberOfGenerations));
-            put("Accuracy", new ArrayList(numberOfGenerations));
-            put("Compression", new ArrayList(numberOfGenerations));
+            put("Performance", Collections.synchronizedList(new ArrayList(numberOfGenerations)));
+            put("Accuracy", Collections.synchronizedList(new ArrayList(numberOfGenerations)));
+            put("Compression", Collections.synchronizedList(new ArrayList(numberOfGenerations)));
         }};
     }
 
