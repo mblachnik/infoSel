@@ -17,7 +17,11 @@ import io.jenetics.*;
 import io.jenetics.engine.*;
 import io.jenetics.util.ISeq;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.function.Function;
 import io.jenetics.BitGene;
 import static io.jenetics.engine.EvolutionResult.*;
@@ -37,6 +41,8 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
     final double singlePointCrossoverProbability;
     final double mutationProbability;
     final int limitBySteadyFitness;
+    final double offspringFraction;
+    final int numOfCrossoverPoints;
 
     //Internal parameters
     final PerformanceEvaluator evaluator;
@@ -45,12 +51,15 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
     final DistanceMeasure distance;
 
     public GAInstanceSelectionModel(DistanceMeasure distance, int numberOfGenerations, int k, double performanceRatio, PerformanceEvaluator evaluator,
-                                    int populationSize, int tournamentSelectorSize, double singlePointCrossoverProbability, double mutationProbability, int limitBySteadyFitness) {
+                                    int populationSize, int tournamentSelectorSize, double singlePointCrossoverProbability, double mutationProbability,
+                                    int limitBySteadyFitness, double offspringFraction, int numOfCrossoverPoints) {
         this.populationSize=populationSize;
         this.tournamentSelectorSize=tournamentSelectorSize;
         this.singlePointCrossoverProbability=singlePointCrossoverProbability;
         this.mutationProbability=mutationProbability;
         this.limitBySteadyFitness=limitBySteadyFitness;
+        this.offspringFraction=offspringFraction;
+        this.numOfCrossoverPoints=numOfCrossoverPoints;
 
         this.numberOfGenerations = numberOfGenerations;
         this.distance = distance;
@@ -93,28 +102,68 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
         );
 
         final Engine<BitGene,Double> engine= Engine.builder(instanceSelectionProblem)
+                .executor(Runnable::run)
                 .populationSize(populationSize)
+                .offspringFraction(offspringFraction)
                 .survivorsSelector(new TournamentSelector<>(tournamentSelectorSize))
                 .offspringSelector(new RouletteWheelSelector<>())
                 .alterers(
                         new Mutator<>(mutationProbability),
-                        new SinglePointCrossover<>(singlePointCrossoverProbability)
+                        new MultiPointCrossover<>(singlePointCrossoverProbability, numOfCrossoverPoints)
                 ).build();
 
-//        final EvolutionStatistics<Double,?> statistics=EvolutionStatistics.ofNumber();
+        final EvolutionStatistics<Double,?> statistics=EvolutionStatistics.ofNumber();
+
+
 
         final  Phenotype<BitGene,Double> best=engine.stream()
-                .limit(bySteadyFitness(limitBySteadyFitness))
+               // .limit(bySteadyFitness(limitBySteadyFitness))
+//                .peek(r-> System.out.println("########CURRENT GEN: "
+//                        +r.generation()+
+//                        ": "+ r.totalGenerations()+
+//                        ": "+r.bestPhenotype()+
+//                        " ALTERED: "+r.alterCount()+
+//                        " INVALID: "+r.invalidCount()+
+//                        " GENOTYPE: "+r.genotypes()))
+//                .peek(r-> {
+//                    try {
+//                        FileWriter fileWriter = new FileWriter("D:/INTELLIJ ULTIMATE/ZAPISY INTELLIJ ULTIMATE/jeneticsGenotype.txt",true);
+//                        String output=r.genotypes()+"#####\n";
+//                        String toWrite=output.replaceAll("\\[|\\]|\\|","");
+//                        toWrite=toWrite.replaceAll(",","\n");
+//                        int countOnes=0;
+//                        for(int c=0;c<toWrite.length();c++){
+//                            if(toWrite.charAt(c)=='1')countOnes++;
+//                        }
+//                        fileWriter.write(toWrite+"NumOfOnes: "+countOnes+"\n");
+//                        fileWriter.close();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                })
                 .limit(numberOfGenerations)
-//                .peek(statistics)
+                .peek(statistics)
                 .collect(toBestPhenotype());
 
+
+//        try {
+//            FileWriter fileWriter = new FileWriter("D:/INTELLIJ ULTIMATE/ZAPISY INTELLIJ ULTIMATE/jeneticsGenotype.txt",true);
+//            fileWriter.write("NUMBER OF GENERATIONS: "+ numberOfGenerations+"#########\n\n\n");
+//            fileWriter.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+       // System.out.println("STATISTICS: "+statistics);
+       // System.out.println(statistics);
 
         //stop
         //Przykładowy podgląd jak sobie wyświetlić wyniki na potrzeby np. debugowania
         //Logger log = Logger.getLogger(this.getClass().getName());
         //log.info("ACC: " + acc);
 
+
+  //      System.out.println("##############BEST: "+best.generation()+best);
 
         Object[] tab=best.genotype().chromosome().stream().toArray();
         boolean[] bestChromosome = new boolean[model.size()];
@@ -125,11 +174,10 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
             bestChromosome[l]=b.booleanValue();
             l++;
         }
-
-
         return new DataIndex(bestChromosome);
     }
 
+   // int debugCounter=1;
 
     private double costFunction(SelectedExampleSet exampleSet,  boolean[] chromosome){
         IDataIndex index = new DataIndex(chromosome);
@@ -162,6 +210,8 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
         costFunctionPerformance.get("Performance").add(performance);
         costFunctionPerformance.get("Accuracy").add(accuracy);
         costFunctionPerformance.get("Compression").add(compression);
+      //  System.out.println("COSTFUNCTION:"+debugCounter++ +": "+performance);
+
         return performance;
     }
 
@@ -209,6 +259,14 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
     public int getLimitBySteadyFitness() {
         return limitBySteadyFitness;
     }
+
+    public double getOffspringFraction() {
+        return offspringFraction;
+    }
+
+    public int getNumOfCrossoverPoints() {
+        return numOfCrossoverPoints;
+    }
 }
 class ISProblem implements Problem<ISeq<Integer>, BitGene,Double>{
 
@@ -224,12 +282,14 @@ class ISProblem implements Problem<ISeq<Integer>, BitGene,Double>{
         this.costFunction = costFunction;
     }
 
+   // int debugFitnessCounter=1;
     @Override
     public Function<ISeq<Integer>, Double> fitness() {
+     //   System.out.println("FITNESS: "+ debugFitnessCounter++);
         return items->{
             boolean[] chromosome=new boolean[dataSize];
             for(Integer i: items){
-                chromosome[i]=true;
+                chromosome[i]= true;
             }
             return costFunction.apply(chromosome);
         };

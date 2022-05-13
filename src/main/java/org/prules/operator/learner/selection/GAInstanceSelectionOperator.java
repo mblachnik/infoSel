@@ -37,6 +37,8 @@ public class GAInstanceSelectionOperator extends AbstractInstanceSelectorOperato
     public static final String PARAMETER_MUTATION_PROB = "Mutation probability";
     public static final String PARAMETER_CROSSOVER_PROB = "Crossover probability";
     public static final String PARAMETER_LIMIT_BY_STEADY_FITNESS = "Limit by steady fitness";
+    public static final String PARAMETER_OFFSPRING_FRACTION="Offspring fraction";
+    public static final String PARAMETER_NUM_OF_CROSSOVER_POINTS="Number of crossover points";
 
     protected final OutputPort performanceOutputPort = getOutputPorts().createPort("perf");
     /**
@@ -71,11 +73,13 @@ public class GAInstanceSelectionOperator extends AbstractInstanceSelectorOperato
         double singlePointCrossoverProbability=this.getParameterAsDouble(PARAMETER_CROSSOVER_PROB);
         double mutationProbability=this.getParameterAsDouble(PARAMETER_MUTATION_PROB);
         int limitBySteadyFitness=this.getParameterAsInt(PARAMETER_LIMIT_BY_STEADY_FITNESS);
+        double offspringFraction=this.getParameterAsDouble(PARAMETER_OFFSPRING_FRACTION);
+        int numOfCrossoverPoints=this.getParameterAsInt(PARAMETER_NUM_OF_CROSSOVER_POINTS);
 
         DistanceMeasure distance = measureHelper.getInitializedMeasure(trainingSet);
         PerformanceEvaluator evaluator = new Accuracy();
         GAInstanceSelectionModel model = new GAInstanceSelectionModel(distance,numberOfGenerations,k,performanceRatio,evaluator,populationSize,tournamentSelectorSize,
-                singlePointCrossoverProbability,mutationProbability,limitBySteadyFitness);
+                singlePointCrossoverProbability,mutationProbability,limitBySteadyFitness,offspringFraction, numOfCrossoverPoints);
         return model;
     }
 
@@ -191,7 +195,7 @@ public class GAInstanceSelectionOperator extends AbstractInstanceSelectorOperato
         param.setExpert(false);
         types.add(param);
 
-        param= new ParameterTypeInt(PARAMETER_TOURNAMENT_SELECTOR_SIZE, "The value for the size of tournament selector of survivors in GA", 1, Integer.MAX_VALUE, 5);
+        param= new ParameterTypeInt(PARAMETER_TOURNAMENT_SELECTOR_SIZE, "The value for the size of tournament selector of survivors in GA", 1, Integer.MAX_VALUE, 3);
         param.setExpert(false);
         types.add(param);
 
@@ -199,13 +203,22 @@ public class GAInstanceSelectionOperator extends AbstractInstanceSelectorOperato
         param.setExpert(false);
         types.add(param);
 
+        param = new ParameterTypeInt(PARAMETER_NUM_OF_CROSSOVER_POINTS, "The value for the number of crossover points in chromosome", 1, 5, 2);
+        param.setExpert(true);
+        types.add(param);
+
         param = new ParameterTypeDouble(PARAMETER_MUTATION_PROB, "The value for the probability of mutation operation in GA", 0.0, 1.0, 0.2);
         param.setExpert(false);
         types.add(param);
 
-        param = new ParameterTypeInt(PARAMETER_LIMIT_BY_STEADY_FITNESS, "The value for the number of generations that will be generated when the fitness function no longer changes its value", 1, Integer.MAX_VALUE, 15);
+        param = new ParameterTypeInt(PARAMETER_LIMIT_BY_STEADY_FITNESS, "The steady fitness strategy truncates the EvolutionStream if its best fitness hasn’t changed after a given number of generations", 1, Integer.MAX_VALUE, 15);
         param.setExpert(false);
         types.add(param);
+
+        param = new ParameterTypeDouble(PARAMETER_OFFSPRING_FRACTION, "The value that determines how many individuals of the population will be altered", 0.1, 0.9, 0.6);
+        param.setExpert(true);
+        types.add(param);
+
 
 
         return types;
