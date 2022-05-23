@@ -34,7 +34,7 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
     final double performanceRatio;
     final int populationSize;
     final int tournamentSelectorSize;
-    final double singlePointCrossoverProbability;
+    final double crossoverProbability;
     final double mutationProbability;
     final int limitBySteadyFitness;
     final double offspringFraction;
@@ -50,13 +50,13 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
                                     int k, double performanceRatio,
                                     PerformanceEvaluator evaluator,
                                     int populationSize, int tournamentSelectorSize,
-                                    double singlePointCrossoverProbability,
+                                    double crossoverProbability,
                                     double mutationProbability,
                                     int limitBySteadyFitness, double offspringFraction,
                                     int numOfCrossoverPoints) {
         this.populationSize=populationSize;
         this.tournamentSelectorSize=tournamentSelectorSize;
-        this.singlePointCrossoverProbability=singlePointCrossoverProbability;
+        this.crossoverProbability =crossoverProbability;
         this.mutationProbability=mutationProbability;
         this.limitBySteadyFitness=limitBySteadyFitness;
         this.offspringFraction=offspringFraction;
@@ -98,7 +98,8 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
                 .offspringSelector(new RouletteWheelSelector<>())
                 .alterers(
                         new Mutator<>(mutationProbability),
-                        new MultiPointCrossover<>(singlePointCrossoverProbability, numOfCrossoverPoints)
+                        new MultiPointCrossover<>(crossoverProbability,
+                                numOfCrossoverPoints)
                 ).build();
 
         final  Phenotype<BitGene,Double> best=engine.stream()
@@ -178,8 +179,8 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
         return tournamentSelectorSize;
     }
 
-    public double getSinglePointCrossoverProbability() {
-        return singlePointCrossoverProbability;
+    public double getCrossoverProbability() {
+        return crossoverProbability;
     }
 
     public double getMutationProbability() {

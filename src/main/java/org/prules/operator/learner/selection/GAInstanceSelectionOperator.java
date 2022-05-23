@@ -64,13 +64,14 @@ public class GAInstanceSelectionOperator extends AbstractInstanceSelectorOperato
 
 
     @Override
-    public AbstractInstanceSelectorModel configureInstanceSelectionModel(SelectedExampleSet trainingSet) throws OperatorException {
+    public AbstractInstanceSelectorModel configureInstanceSelectionModel(SelectedExampleSet trainingSet)
+            throws OperatorException {
         int numberOfGenerations=this.getParameterAsInt(PARAMETER_NUM_OF_GENERATIONS);
         int k = this.getParameterAsInt(PARAMETER_K);
         double performanceRatio = this.getParameterAsDouble(PARAMETER_PERF_RATIO);
         int populationSize=this.getParameterAsInt(PARAMETER_POPULATION_SIZE);
         int tournamentSelectorSize=this.getParameterAsInt(PARAMETER_TOURNAMENT_SELECTOR_SIZE);
-        double singlePointCrossoverProbability=this.getParameterAsDouble(PARAMETER_CROSSOVER_PROB);
+        double crossoverProbability=this.getParameterAsDouble(PARAMETER_CROSSOVER_PROB);
         double mutationProbability=this.getParameterAsDouble(PARAMETER_MUTATION_PROB);
         int limitBySteadyFitness=this.getParameterAsInt(PARAMETER_LIMIT_BY_STEADY_FITNESS);
         double offspringFraction=this.getParameterAsDouble(PARAMETER_OFFSPRING_FRACTION);
@@ -78,8 +79,10 @@ public class GAInstanceSelectionOperator extends AbstractInstanceSelectorOperato
 
         DistanceMeasure distance = measureHelper.getInitializedMeasure(trainingSet);
         PerformanceEvaluator evaluator = new Accuracy();
-        GAInstanceSelectionModel model = new GAInstanceSelectionModel(distance,numberOfGenerations,k,performanceRatio,evaluator,populationSize,tournamentSelectorSize,
-                singlePointCrossoverProbability,mutationProbability,limitBySteadyFitness,offspringFraction, numOfCrossoverPoints);
+        GAInstanceSelectionModel model = new GAInstanceSelectionModel(distance,numberOfGenerations,
+                k,performanceRatio,evaluator,populationSize,tournamentSelectorSize,
+                crossoverProbability,mutationProbability,limitBySteadyFitness,
+                offspringFraction, numOfCrossoverPoints);
         return model;
     }
 
