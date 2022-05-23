@@ -178,48 +178,66 @@ public class GAInstanceSelectionOperator extends AbstractInstanceSelectorOperato
     public List<ParameterType> getParameterTypes() {
         List<ParameterType> types = super.getParameterTypes();
 
-        ParameterType typeK = new ParameterTypeInt(PARAMETER_K, "The value for k in kNN", 1, Integer.MAX_VALUE, 1);
+        ParameterType typeK = new ParameterTypeInt(PARAMETER_K,
+                "The value for k in kNN", 1,
+                Integer.MAX_VALUE, 1);
         typeK.setExpert(false);
         types.add(typeK);
 
         ParameterType param;
-        param = new ParameterTypeDouble(PARAMETER_PERF_RATIO, "The performance ratio between accuracy and compression", 0.5,  1,  0.9);
+        param = new ParameterTypeDouble(PARAMETER_PERF_RATIO,
+                "The performance ratio between accuracy and compression",
+                0.5,  1,  0.9);
         param.setExpert(false);
         types.add(param);
 
-        param = new ParameterTypeInt(PARAMETER_NUM_OF_GENERATIONS, "The value for number of generations in GA", 1, Integer.MAX_VALUE, 100);
+        param = new ParameterTypeInt(PARAMETER_NUM_OF_GENERATIONS,
+                "The value for number of generations in GA",
+                1, Integer.MAX_VALUE, 100);
         param.setExpert(false);
         types.add(param);
 
-        param = new ParameterTypeInt(PARAMETER_POPULATION_SIZE, "The value for the population size in GA", 1, Integer.MAX_VALUE, 50);
+        param = new ParameterTypeInt(PARAMETER_POPULATION_SIZE,
+                "The value for the population size in GA",
+                1, Integer.MAX_VALUE, 50);
         param.setExpert(false);
         types.add(param);
 
-        param= new ParameterTypeInt(PARAMETER_TOURNAMENT_SELECTOR_SIZE, "The value for the size of tournament selector of survivors in GA", 1, Integer.MAX_VALUE, 3);
+        param= new ParameterTypeInt(PARAMETER_TOURNAMENT_SELECTOR_SIZE,
+                "The value for the size of tournament selector of survivors in GA",
+                1, Integer.MAX_VALUE, 3);
         param.setExpert(false);
         types.add(param);
 
-        param = new ParameterTypeDouble(PARAMETER_CROSSOVER_PROB, "The value for the probability of crossover operation in GA", 0.0, 1.0, 0.115);
+        param = new ParameterTypeDouble(PARAMETER_CROSSOVER_PROB,
+                "The value for the probability of crossover operation in GA",
+                0.0, 1.0, 0.115);
         param.setExpert(false);
         types.add(param);
 
-        param = new ParameterTypeInt(PARAMETER_NUM_OF_CROSSOVER_POINTS, "The value for the number of crossover points in chromosome", 1, 5, 2);
+        param = new ParameterTypeInt(PARAMETER_NUM_OF_CROSSOVER_POINTS,
+                "The value for the number of crossover points in chromosome",
+                1, 5, 2);
         param.setExpert(true);
         types.add(param);
 
-        param = new ParameterTypeDouble(PARAMETER_MUTATION_PROB, "The value for the probability of mutation operation in GA", 0.0, 1.0, 0.2);
+        param = new ParameterTypeDouble(PARAMETER_MUTATION_PROB,
+                "The value for the probability of mutation operation in GA",
+                0.0, 1.0, 0.2);
         param.setExpert(false);
         types.add(param);
 
-        param = new ParameterTypeInt(PARAMETER_LIMIT_BY_STEADY_FITNESS, "The steady fitness strategy truncates the EvolutionStream if its best fitness hasn’t changed after a given number of generations", 1, Integer.MAX_VALUE, 15);
+        param = new ParameterTypeInt(PARAMETER_LIMIT_BY_STEADY_FITNESS,
+                "The steady fitness strategy truncates the EvolutionStream if its best fitness hasn’t changed after a given number of generations",
+                1, Integer.MAX_VALUE, 15);
         param.setExpert(false);
         types.add(param);
 
-        param = new ParameterTypeDouble(PARAMETER_OFFSPRING_FRACTION, "The value that determines how many individuals of the population will be altered", 0.1, 0.9, 0.6);
+        param = new ParameterTypeDouble(PARAMETER_OFFSPRING_FRACTION,
+                "The value that determines how many individuals of the population will be altered",
+                0.1, 0.9, 0.6);
         param.setExpert(true);
         types.add(param);
-
-
 
         return types;
     }

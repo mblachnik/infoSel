@@ -17,11 +17,7 @@ import io.jenetics.*;
 import io.jenetics.engine.*;
 import io.jenetics.util.ISeq;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
 import io.jenetics.BitGene;
 import static io.jenetics.engine.EvolutionResult.*;
@@ -50,9 +46,14 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
     ISPRGeometricDataCollectionWithIndex<IInstanceLabels>  model;
     final DistanceMeasure distance;
 
-    public GAInstanceSelectionModel(DistanceMeasure distance, int numberOfGenerations, int k, double performanceRatio, PerformanceEvaluator evaluator,
-                                    int populationSize, int tournamentSelectorSize, double singlePointCrossoverProbability, double mutationProbability,
-                                    int limitBySteadyFitness, double offspringFraction, int numOfCrossoverPoints) {
+    public GAInstanceSelectionModel(DistanceMeasure distance, int numberOfGenerations,
+                                    int k, double performanceRatio,
+                                    PerformanceEvaluator evaluator,
+                                    int populationSize, int tournamentSelectorSize,
+                                    double singlePointCrossoverProbability,
+                                    double mutationProbability,
+                                    int limitBySteadyFitness, double offspringFraction,
+                                    int numOfCrossoverPoints) {
         this.populationSize=populationSize;
         this.tournamentSelectorSize=tournamentSelectorSize;
         this.singlePointCrossoverProbability=singlePointCrossoverProbability;
@@ -76,20 +77,9 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
     @Override
     public IDataIndex selectInstances(final SelectedExampleSet exampleSet) {
 
-        model = (ISPRGeometricDataCollectionWithIndex)KNNFactory.initializeKNearestNeighbourFactory(GeometricCollectionTypes.LINEAR_SEARCH, exampleSet, distance);
-        boolean[] idx = new boolean[model.size()];
-        Arrays.fill(idx,true);
-        double acc = costFunction(exampleSet,  idx);
-//        Przykładowy podgląd jak sobie wyświetlić wyniki na potrzeby np. debugowania
-//        Logger log = Logger.getLogger(this.getClass().getName());
-//        log.info("ACC: " + acc);
-//
-//        return new DataIndex(idx);
-//        boolean[] bestChromosome = new boolean[model.size()];
-//        Arrays.fill(bestChromosome,true);
-//        double acc = costFunction(exampleSet,  idx);
-        //start
-
+        model = (ISPRGeometricDataCollectionWithIndex)KNNFactory.
+                initializeKNearestNeighbourFactory(GeometricCollectionTypes.
+                        LINEAR_SEARCH, exampleSet, distance);
         Integer[] items = new Integer[exampleSet.size()];
         int i = 0;
         for (Example example : exampleSet){
@@ -102,7 +92,6 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
         );
 
         final Engine<BitGene,Double> engine= Engine.builder(instanceSelectionProblem)
-                .executor(Runnable::run)
                 .populationSize(populationSize)
                 .offspringFraction(offspringFraction)
                 .survivorsSelector(new TournamentSelector<>(tournamentSelectorSize))
@@ -112,58 +101,10 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
                         new MultiPointCrossover<>(singlePointCrossoverProbability, numOfCrossoverPoints)
                 ).build();
 
-        final EvolutionStatistics<Double,?> statistics=EvolutionStatistics.ofNumber();
-
-
-
         final  Phenotype<BitGene,Double> best=engine.stream()
-               // .limit(bySteadyFitness(limitBySteadyFitness))
-//                .peek(r-> System.out.println("########CURRENT GEN: "
-//                        +r.generation()+
-//                        ": "+ r.totalGenerations()+
-//                        ": "+r.bestPhenotype()+
-//                        " ALTERED: "+r.alterCount()+
-//                        " INVALID: "+r.invalidCount()+
-//                        " GENOTYPE: "+r.genotypes()))
-//                .peek(r-> {
-//                    try {
-//                        FileWriter fileWriter = new FileWriter("D:/INTELLIJ ULTIMATE/ZAPISY INTELLIJ ULTIMATE/jeneticsGenotype.txt",true);
-//                        String output=r.genotypes()+"#####\n";
-//                        String toWrite=output.replaceAll("\\[|\\]|\\|","");
-//                        toWrite=toWrite.replaceAll(",","\n");
-//                        int countOnes=0;
-//                        for(int c=0;c<toWrite.length();c++){
-//                            if(toWrite.charAt(c)=='1')countOnes++;
-//                        }
-//                        fileWriter.write(toWrite+"NumOfOnes: "+countOnes+"\n");
-//                        fileWriter.close();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                })
+                .limit(bySteadyFitness(limitBySteadyFitness))
                 .limit(numberOfGenerations)
-                .peek(statistics)
                 .collect(toBestPhenotype());
-
-
-//        try {
-//            FileWriter fileWriter = new FileWriter("D:/INTELLIJ ULTIMATE/ZAPISY INTELLIJ ULTIMATE/jeneticsGenotype.txt",true);
-//            fileWriter.write("NUMBER OF GENERATIONS: "+ numberOfGenerations+"#########\n\n\n");
-//            fileWriter.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-       // System.out.println("STATISTICS: "+statistics);
-       // System.out.println(statistics);
-
-        //stop
-        //Przykładowy podgląd jak sobie wyświetlić wyniki na potrzeby np. debugowania
-        //Logger log = Logger.getLogger(this.getClass().getName());
-        //log.info("ACC: " + acc);
-
-
-  //      System.out.println("##############BEST: "+best.generation()+best);
 
         Object[] tab=best.genotype().chromosome().stream().toArray();
         boolean[] bestChromosome = new boolean[model.size()];
@@ -177,8 +118,6 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
         return new DataIndex(bestChromosome);
     }
 
-   // int debugCounter=1;
-
     private double costFunction(SelectedExampleSet exampleSet,  boolean[] chromosome){
         IDataIndex index = new DataIndex(chromosome);
         double[] predictions = new double[model.size()];
@@ -190,14 +129,6 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
         while(sampleIterator.hasNext() && labelIterator.hasNext()) {
             Vector instance = sampleIterator.next();
             IInstanceLabels label = labelIterator.next();
-//            if (chromosome[instanceIndex]) {
-//                index.set(instanceIndex, false); //Turn off sample for which we do prediction
-//                nn = model.getNearestValues(k, instance, index);
-//                index.set(instanceIndex, true); //Turn bck on sample for which we do prediction
-//            } else {
-//                nn = model.getNearestValues(k, instance, index);
-//            }
-
             nn = model.getNearestValues(k, instance, index);
             predictions[instanceIndex] = nn.iterator().next().getLabel();
             trueLabels[instanceIndex] = label.getLabel();
@@ -210,7 +141,6 @@ public class GAInstanceSelectionModel extends AbstractInstanceSelectorModel {
         costFunctionPerformance.get("Performance").add(performance);
         costFunctionPerformance.get("Accuracy").add(accuracy);
         costFunctionPerformance.get("Compression").add(compression);
-      //  System.out.println("COSTFUNCTION:"+debugCounter++ +": "+performance);
 
         return performance;
     }
@@ -275,17 +205,15 @@ class ISProblem implements Problem<ISeq<Integer>, BitGene,Double>{
     public int dataSize;
     Function<boolean[], Double> costFunction;
 
-    public ISProblem(final ISeq<Integer> items, Function<boolean[], Double> costFunction) {
+    public ISProblem(final ISeq<Integer> items, Function<boolean[],
+            Double> costFunction) {
         _codec = Codecs.ofSubSet(items);
         this.items = items;
         dataSize = items.size();
         this.costFunction = costFunction;
     }
-
-   // int debugFitnessCounter=1;
     @Override
     public Function<ISeq<Integer>, Double> fitness() {
-     //   System.out.println("FITNESS: "+ debugFitnessCounter++);
         return items->{
             boolean[] chromosome=new boolean[dataSize];
             for(Integer i: items){
@@ -294,7 +222,6 @@ class ISProblem implements Problem<ISeq<Integer>, BitGene,Double>{
             return costFunction.apply(chromosome);
         };
     }
-
     @Override
     public Codec<ISeq<Integer>, BitGene> codec() {
         return _codec;
