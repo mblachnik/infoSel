@@ -214,7 +214,7 @@ public class GAInstanceSelectionOperator extends AbstractInstanceSelectorOperato
 
         param = new ParameterTypeDouble(PARAMETER_CROSSOVER_PROB,
                 "The value for the probability of crossover operation in GA",
-                0.0, 1.0, 0.115);
+                0.0, 1.0, 0.2);
         param.setExpert(false);
         types.add(param);
 
@@ -226,7 +226,7 @@ public class GAInstanceSelectionOperator extends AbstractInstanceSelectorOperato
 
         param = new ParameterTypeDouble(PARAMETER_MUTATION_PROB,
                 "The value for the probability of mutation operation in GA",
-                0.0, 1.0, 0.2);
+                0.0, 1.0, 0.15);
         param.setExpert(false);
         types.add(param);
 
