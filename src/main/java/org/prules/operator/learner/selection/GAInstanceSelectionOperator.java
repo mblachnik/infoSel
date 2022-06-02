@@ -88,9 +88,6 @@ public class GAInstanceSelectionOperator extends AbstractInstanceSelectorOperato
 
 
     public void postProcessingAfterIS(AbstractInstanceSelectorModel m) {
-        //https://docs.rapidminer.com/9.2/developers/creating-your-own-extension/publishing-your-extension/
-        //Tam jest też PDF z instrukcją jak i co się robi w RapidMinerze
-        //https://docs.rapidminer.com/9.2/developers/changes-in-7.3/
 
         GAInstanceSelectionModel model = (GAInstanceSelectionModel)m;
 
