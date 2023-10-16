@@ -13,17 +13,15 @@ import com.rapidminer.example.set.ExampleSetUtilities;
 import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.operator.learner.PredictionModel;
+import com.rapidminer.tools.math.similarity.DistanceMeasure;
+import org.prules.operator.learner.tools.DataIndex;
+import org.prules.operator.learner.tools.IDataIndex;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.IntStream;
-
-import com.rapidminer.tools.math.similarity.DistanceMeasure;
-import org.prules.operator.learner.tools.DataIndex;
-import org.prules.operator.learner.tools.IDataIndex;
-import org.prules.tools.math.similarity.numerical.SquareEuclidianDistance;
 
 /**
  * A class implementing Ensembles based on nearest prototypes local competence models.
@@ -59,14 +57,17 @@ public class PrototypesEnsembelePredictionModel extends PredictionModel {
         int exampleIndex = 0;
         DistanceMeasure distance = model.getDistance();
         for (Example example : exampleSet) {
+            //Adjust attributes so that they are in same order
             int i = 0;
             for (String attribute : model.getAttributes()) {
                 exampleValues[i++] = example.getValue(attributes.get(attribute));
             }
+            //Calculate distance to all prototypes
             i = 0;
             for (double[] prototype : model.getPrototypes()) {
                 distances[i++] = distance.calculateDistance(exampleValues, prototype);
             }
+            //Iterate over regions and get the closest one, the one which is closest to the pair of prototypes, here we use sum of distances
             double minSum = Double.MAX_VALUE;
             long bestPair = -1;
             for (Entry<Long, PiredTriple> entry : model.getSelectedPairs().entrySet()) {
@@ -78,16 +79,17 @@ public class PrototypesEnsembelePredictionModel extends PredictionModel {
                     bestPair = entry.getKey();
                 }
             }
+            //Set appropriate ID of the sample, that is determine a region, and as each region has its DataIndex which will be used at the end to deliver samples of the same region
             IDataIndex index;
-            if ((index = subsetMap.get(bestPair)) == null) {
+            if ((index = subsetMap.get(bestPair)) == null) { //subsetMap holds a DataIndex structure, one for each region, if that sample does not exist initialize it
                 index = new DataIndex(n);
                 index.setAllFalse();
                 subsetMap.put(bestPair, index);
             }
-            index.set(exampleIndex, true);
+            index.set(exampleIndex, true); //Set sample id as present for given region
             exampleIndex++;
         }
-        for (Entry<Long, IDataIndex> entry : subsetMap.entrySet()) {
+        for (Entry<Long, IDataIndex> entry : subsetMap.entrySet()) { // Iterate over region and get DataIndex structure and create specific SelectedExampleSets which will be used for cclassification
             SelectedExampleSet subset = new SelectedExampleSet(exampleSet, entry.getValue());
             PredictionModel predictionModel = predictionModelsMap.get(entry.getKey());
             predictionModel.performPrediction(subset, predictedLabel);
@@ -114,16 +116,15 @@ public class PrototypesEnsembelePredictionModel extends PredictionModel {
         sb.append("=====================================\n");
         sb.append("=========== Prototypes ==============\n");
         sb.append("=====================================\n");
-        int i = 0;
         model.getAttributes().stream().forEach(str -> sb.append(str).append(" | "));
         sb.append("Label \n");
         double[][] prototypes = model.getPrototypes();
         IntStream.range(0, prototypes.length).forEachOrdered(idx -> {
             double[] row = prototypes[idx];
             sb.append("id").append(idx).append(" | ");
-            Arrays.stream(row).forEach(element -> {
-                sb.append(element).append(" | ");
-            });
+            Arrays.stream(row).forEach(element ->
+                sb.append(element).append(" | ")
+            );
             sb.append(model.getPrototypeLabels()[idx]);
             sb.append("\n");
         });

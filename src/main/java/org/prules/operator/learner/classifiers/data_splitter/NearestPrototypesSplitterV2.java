@@ -204,21 +204,21 @@ public class NearestPrototypesSplitterV2 implements NearestPrototypesSplitter {
     }
 
     private void reassignSmallesBatch(Map<Long, PairContainer<int[], List<Integer>>> piredTrainingSetAndCounterMap, long pair, double[][] example2ProtoDistances, int[] labels, PiredTriple[] examplesNearestPair) {
-        List<Integer> idSmallestBatch = piredTrainingSetAndCounterMap.remove(pair).getSecond();
+        List<Integer> idSmallestBatch = piredTrainingSetAndCounterMap.remove(pair).getSecond(); //Get list of samples which belong to the too small region
         LogService.getRoot().finest("Pair being removed: " + pair);
         Set<Long> pairs = piredTrainingSetAndCounterMap.keySet();
-        for (int exampleIndex : idSmallestBatch) {
-            double[] protoDistances = example2ProtoDistances[exampleIndex];
+        for (int exampleIndex : idSmallestBatch) { //Iterate over samples from the region which ist too small
+            double[] protoDistances = example2ProtoDistances[exampleIndex]; //Get the list of distances from all prototypes to the given samples which used to belong to the too small region
             long minPair = -1;
             int minProtoId1 = -1;
             int minProtoId2 = -1;
             double minDist = Double.MAX_VALUE;
-            for (long newPair : pairs) {
-                int exampleNewPairId = piredTrainingSetAndCounterMap.get(newPair).getSecond().get(0); //Take the first id of an instance from the colsest pair
-                int protoId1 = examplesNearestPair[exampleNewPairId].protoId1;
-                int protoId2 = examplesNearestPair[exampleNewPairId].protoId2;
-                double dist = protoDistances[protoId1] + protoDistances[protoId2];
-                if (dist < minDist) {
+            for (long newPair : pairs) { //We iterate over existing regions
+                int exampleNewPairId = piredTrainingSetAndCounterMap.get(newPair).getSecond().get(0); //Take the id of an istance from exiting regions (pairs)
+                int protoId1 = examplesNearestPair[exampleNewPairId].protoId1; //Based on the ID we extracy what consitutes the region - which pair of prototypes
+                int protoId2 = examplesNearestPair[exampleNewPairId].protoId2; //We take a pair of prototypes
+                double dist = protoDistances[protoId1] + protoDistances[protoId2]; //The overal cost is the sume of the distances to both prototypes
+                if (dist < minDist) { //Get the closes pair
                     minDist = dist;
                     minPair = newPair;
                     minProtoId1 = protoId1;
