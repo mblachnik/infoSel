@@ -102,6 +102,10 @@ dependencies {
 	//======= KEEL =========
     compile files('lib/IS-CCIS.jar')
     compile files('lib/IS-HMNEI.jar')
+    compile files('lib/IS-DROP3.jar')
+    compile files('lib/IS-Explore.jar');
+    //compile files('lib/IS-ICF.jar');
+    compile files('D:/Projects/Java/Common/RapidMiner/Extension/infoSel/lib/IS-ICF.jar');
 	//======= Mutual Information =========
     compile files('lib/JavaMI.jar')
 	//======= MDS Scalling ========= to remove, incopatible license

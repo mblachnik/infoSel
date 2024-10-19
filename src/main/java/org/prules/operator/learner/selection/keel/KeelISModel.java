@@ -12,6 +12,9 @@ import com.rapidminer.example.set.SelectedExampleSet;
 import com.rapidminer.operator.Operator;
 import keel.Algorithms.Instance_Selection.CCIS.CCIS;
 import keel.Algorithms.Instance_Selection.HMNEI.HMNEI;
+import keel.Algorithms.Instance_Selection.DROP3.DROP3;
+import keel.Algorithms.Instance_Selection.Explore.Explore;
+import keel.Algorithms.Instance_Selection.ICF.ICF;
 import org.prules.operator.learner.tools.IDataIndex;
 import org.prules.operator.learner.selection.models.AbstractInstanceSelectorModel;
 
@@ -60,15 +63,36 @@ public class KeelISModel extends AbstractInstanceSelectorModel {
                 model.ejecutar();
                 labels = model.getLabels();
                 trainingSet = model.getSamples();
+                break;
             }
-            break;
             case HMNEI: {
                 HMNEI model = new HMNEI(trainingSet, labels);
                 model.ejecutar();
                 labels = model.getLabels();
                 trainingSet = model.getSamples();
+                break;
             }
-            break;
+            case DROP3: {
+                DROP3 model = new DROP3(trainingSet, labels, 3);
+                model.ejecutar();
+                labels = model.getLabels();
+                trainingSet = model.getSamples();
+                break;
+            }
+            case Explore: {
+                Explore model = new Explore(trainingSet, labels, 3, 100);
+                model.ejecutar();
+                labels = model.getLabels();
+                trainingSet = model.getSamples();
+                break;
+            }
+            case ICF: {
+                ICF model = new ICF(trainingSet, labels, 3);
+                model.ejecutar();
+                labels = model.getLabels();
+                trainingSet = model.getSamples();
+                break;
+            }
         }
 
         int numberOfMisses = 0;

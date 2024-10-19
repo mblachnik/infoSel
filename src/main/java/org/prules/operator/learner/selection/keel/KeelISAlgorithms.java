@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public enum KeelISAlgorithms {
 
-    CCIS,HMNEI;
+    CCIS,HMNEI,DROP3,Explore, ICF;
 
     public static final String PARAMETER_IS_ALGORITHM = "IS_Algorithm";
 

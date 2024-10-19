@@ -217,7 +217,7 @@ public class NearestPrototypesSplitterV2 implements NearestPrototypesSplitter {
                 int exampleNewPairId = piredTrainingSetAndCounterMap.get(newPair).getSecond().get(0); //Take the id of an istance from exiting regions (pairs)
                 int protoId1 = examplesNearestPair[exampleNewPairId].protoId1; //Based on the ID we extracy what consitutes the region - which pair of prototypes
                 int protoId2 = examplesNearestPair[exampleNewPairId].protoId2; //We take a pair of prototypes
-                double dist = protoDistances[protoId1] + protoDistances[protoId2]; //The overal cost is the sume of the distances to both prototypes
+                double dist = Math.sqrt(protoDistances[protoId1]) + Math.sqrt(protoDistances[protoId2]); //The overal cost is the sume of the distances to both prototypes
                 if (dist < minDist) { //Get the closes pair
                     minDist = dist;
                     minPair = newPair;
